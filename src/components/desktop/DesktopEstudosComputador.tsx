@@ -29,8 +29,8 @@ export const DesktopEstudosComputador = memo(({ navigate }: DesktopEstudosComput
             </div>
 
             <div>
-              <h3 className="text-sm font-bold text-white/95">Funções Web</h3>
-              <p className="text-[11px] text-white/45 leading-snug">Mapas mentais, IA e mais</p>
+              <h3 className="text-sm font-bold text-white/95">Modo Desktop</h3>
+              <p className="text-[11px] text-white/45 leading-snug">Estude pelo computador</p>
             </div>
 
             <div className="flex items-center gap-1 text-red-400/80 text-[11px] font-medium">
