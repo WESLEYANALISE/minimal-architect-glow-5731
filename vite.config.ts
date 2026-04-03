@@ -37,6 +37,9 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     imagetools(),
     react(),
+    legacy({
+      targets: ['defaults', 'not IE 11', 'safari >= 13', 'chrome >= 64', 'iOS >= 13'],
+    }),
     mode === 'development' &&
     componentTagger(),
     VitePWA({
