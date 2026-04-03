@@ -1,0 +1,1 @@
+ALTER TABLE public.simulados_questoes ADD COLUMN IF NOT EXISTS texto_apoio_imagem_url TEXT DEFAULT NULL;

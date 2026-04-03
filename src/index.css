@@ -1,0 +1,1596 @@
+@tailwind base;
+
+@keyframes slideOutLeft {
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(-100%); opacity: 0.3; }
+}
+
+@keyframes neonPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(160,40,30,0.4), 0 0 20px rgba(160,40,30,0.2); ring-color: rgba(170,50,35,0.5); }
+  50% { box-shadow: 0 0 20px rgba(160,40,30,0.7), 0 0 40px rgba(160,40,30,0.35), 0 0 60px rgba(160,40,30,0.15); ring-color: rgba(170,50,35,0.8); }
+}
+
+@keyframes neonPulseBrown {
+  0%, 100% { box-shadow: 0 0 10px rgba(160,40,30,0.4), 0 0 20px rgba(160,40,30,0.2); ring-color: rgba(160,40,30,0.5); }
+  50% { box-shadow: 0 0 20px rgba(160,40,30,0.7), 0 0 40px rgba(160,40,30,0.35), 0 0 60px rgba(160,40,30,0.15); ring-color: rgba(160,40,30,0.8); }
+}
+
+@keyframes neonPulseText {
+  0%, 100% { text-shadow: 0 0 4px rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); }
+  33% { text-shadow: 0 0 16px rgba(255,255,255,0.6), 0 0 40px rgba(212,168,75,0.4); color: #fff; }
+}
+
+@keyframes lineGlow {
+  0%, 100% { opacity: 0.3; box-shadow: none; }
+  33% { opacity: 1; box-shadow: 0 0 8px rgba(212,168,75,0.6), 0 0 16px rgba(212,168,75,0.3); }
+}
+
+@keyframes shimmerSlide {
+  0% { transform: translateX(-120%); }
+  50% { transform: translateX(120%); }
+  100% { transform: translateX(120%); }
+}
+
+@keyframes dash-flow {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -28; }
+}
+
+@keyframes sparkle-fall {
+  0% { opacity: 0; transform: translateY(0); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(24px); }
+}
+
+/* Pratique slide animations */
+@keyframes shimmerLinePratique {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(300%); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes shinePratique {
+  0% { transform: translateX(-100%) skewX(-20deg); }
+  50% { transform: translateX(250%) skewX(-20deg); }
+  100% { transform: translateX(250%) skewX(-20deg); }
+}
+
+@keyframes ghostGlow {
+  0%, 20%, 100% { opacity: 0.45; color: rgba(255,255,255,0.5); }
+  8%, 14% { opacity: 0.7; color: rgba(255,255,255,0.75); }
+}
+
+@keyframes shineFooterCarousel {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(300%); }
+  100% { transform: translateX(300%); }
+}
+
+@keyframes bounceRight {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+
+/* ===========================================
+   PERFORMANCE-OPTIMIZED ANIMATIONS
+   GPU-accelerated, lightweight CSS animations
+   =========================================== */
+
+/* Core fade animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Slide animations - GPU accelerated with translateZ(0) */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px) translateZ(0); }
+  to { opacity: 1; transform: translateY(0) translateZ(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px) translateZ(0); }
+  to { opacity: 1; transform: translateY(0) translateZ(0); }
+}
+
+@keyframes shimmerLine {
+  0%, 100% { transform: translateX(-100%); opacity: 0; }
+  50% { transform: translateX(200%); opacity: 1; }
+}
+
+/* Typing placeholder animation */
+.typing-placeholder {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid hsl(var(--muted-foreground) / 0.5);
+  animation: 
+    typingCycle 18s steps(1) infinite,
+    blinkCaret 0.6s step-end infinite;
+}
+
+.typing-placeholder::after {
+  content: "";
+  animation: typingText 18s steps(1) infinite;
+}
+
+@keyframes typingText {
+  0%, 100% { content: ""; }
+  0.5% { content: "B"; }
+  1% { content: "Bu"; }
+  1.5% { content: "Bus"; }
+  2% { content: "Busc"; }
+  2.5% { content: "Busca"; }
+  3% { content: "Buscar"; }
+  3.5% { content: "Buscar "; }
+  4% { content: "Buscar a"; }
+  4.5% { content: "Buscar ar"; }
+  5% { content: "Buscar art"; }
+  5.5% { content: "Buscar arti"; }
+  6% { content: "Buscar artig"; }
+  6.5% { content: "Buscar artigo"; }
+  7% { content: "Buscar artigo,"; }
+  7.5% { content: "Buscar artigo, "; }
+  8% { content: "Buscar artigo, l"; }
+  8.5% { content: "Buscar artigo, le"; }
+  9% { content: "Buscar artigo, lei"; }
+  9.5% { content: "Buscar artigo, lei "; }
+  10% { content: "Buscar artigo, lei o"; }
+  10.5% { content: "Buscar artigo, lei ou"; }
+  11% { content: "Buscar artigo, lei ou "; }
+  11.5% { content: "Buscar artigo, lei ou c"; }
+  12% { content: "Buscar artigo, lei ou có"; }
+  12.5% { content: "Buscar artigo, lei ou cód"; }
+  13% { content: "Buscar artigo, lei ou códi"; }
+  13.5% { content: "Buscar artigo, lei ou códig"; }
+  14% { content: "Buscar artigo, lei ou código"; }
+  14.5%, 20% { content: "Buscar artigo, lei ou código..."; }
+
+  21% { content: ""; }
+  21.5% { content: "E"; }
+  22% { content: "Ex"; }
+  22.5% { content: "Ex:"; }
+  23% { content: "Ex: "; }
+  23.5% { content: "Ex: A"; }
+  24% { content: "Ex: Ar"; }
+  24.5% { content: "Ex: Art"; }
+  25% { content: "Ex: Art."; }
+  25.5% { content: "Ex: Art. "; }
+  26% { content: "Ex: Art. 5"; }
+  26.5% { content: "Ex: Art. 5º"; }
+  27% { content: "Ex: Art. 5º "; }
+  27.5% { content: "Ex: Art. 5º d"; }
+  28% { content: "Ex: Art. 5º da"; }
+  28.5% { content: "Ex: Art. 5º da "; }
+  29% { content: "Ex: Art. 5º da C"; }
+  29.5% { content: "Ex: Art. 5º da CF"; }
+  30%, 40% { content: "Ex: Art. 5º da CF"; }
+
+  41% { content: ""; }
+  41.5% { content: "L"; }
+  42% { content: "Le"; }
+  42.5% { content: "Lei"; }
+  43% { content: "Lei "; }
+  43.5% { content: "Lei M"; }
+  44% { content: "Lei Ma"; }
+  44.5% { content: "Lei Mar"; }
+  45% { content: "Lei Mari"; }
+  45.5% { content: "Lei Maria"; }
+  46% { content: "Lei Maria "; }
+  46.5% { content: "Lei Maria d"; }
+  47% { content: "Lei Maria da"; }
+  47.5% { content: "Lei Maria da "; }
+  48% { content: "Lei Maria da P"; }
+  48.5% { content: "Lei Maria da Pe"; }
+  49% { content: "Lei Maria da Pen"; }
+  49.5% { content: "Lei Maria da Penh"; }
+  50%, 60% { content: "Lei Maria da Penha"; }
+
+  61% { content: ""; }
+  61.5% { content: "S"; }
+  62% { content: "Sú"; }
+  62.5% { content: "Súm"; }
+  63% { content: "Súmu"; }
+  63.5% { content: "Súmul"; }
+  64% { content: "Súmula"; }
+  64.5% { content: "Súmula "; }
+  65% { content: "Súmula V"; }
+  65.5% { content: "Súmula Vi"; }
+  66% { content: "Súmula Vin"; }
+  66.5% { content: "Súmula Vinc"; }
+  67% { content: "Súmula Vincu"; }
+  67.5% { content: "Súmula Vincul"; }
+  68% { content: "Súmula Vincula"; }
+  68.5% { content: "Súmula Vinculan"; }
+  69% { content: "Súmula Vinculant"; }
+  69.5% { content: "Súmula Vinculante"; }
+  70%, 80% { content: "Súmula Vinculante"; }
+
+  81% { content: ""; }
+  81.5% { content: "C"; }
+  82% { content: "Có"; }
+  82.5% { content: "Cód"; }
+  83% { content: "Códi"; }
+  83.5% { content: "Códig"; }
+  84% { content: "Código"; }
+  84.5% { content: "Código "; }
+  85% { content: "Código P"; }
+  85.5% { content: "Código Pe"; }
+  86% { content: "Código Pen"; }
+  86.5% { content: "Código Pena"; }
+  87% { content: "Código Penal"; }
+  87.5%, 97% { content: "Código Penal"; }
+  98% { content: ""; }
+}
+
+@keyframes blinkCaret {
+  0%, 100% { border-color: hsl(var(--muted-foreground) / 0.5); }
+  50% { border-color: transparent; }
+}
+
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(16px) translateZ(0); }
+  to { opacity: 1; transform: translateX(0) translateZ(0); }
+}
+
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-16px) translateZ(0); }
+  to { opacity: 1; transform: translateX(0) translateZ(0); }
+}
+
+/* Card push animations for flashcard navigation */
+@keyframes cardPushFromRight {
+  0% { transform: translateX(100%) scale(0.95) translateZ(0); opacity: 0; }
+  20% { opacity: 1; }
+  60% { transform: translateX(-3%) scale(1.01) translateZ(0); }
+  80% { transform: translateX(1%) scale(1) translateZ(0); }
+  100% { transform: translateX(0) scale(1) translateZ(0); opacity: 1; }
+}
+
+@keyframes cardPushFromLeft {
+  0% { transform: translateX(-100%) scale(0.95) translateZ(0); opacity: 0; }
+  20% { opacity: 1; }
+  60% { transform: translateX(3%) scale(1.01) translateZ(0); }
+  80% { transform: translateX(-1%) scale(1) translateZ(0); }
+  100% { transform: translateX(0) scale(1) translateZ(0); opacity: 1; }
+}
+
+.animate-slide-in-right-card {
+  animation: cardPushFromRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-slide-in-left {
+  animation: cardPushFromLeft 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Scale animations */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95) translateZ(0); }
+  to { opacity: 1; transform: scale(1) translateZ(0); }
+}
+
+@keyframes scaleOut {
+  from { opacity: 1; transform: scale(1) translateZ(0); }
+  to { opacity: 0; transform: scale(0.95) translateZ(0); }
+}
+
+/* Combined fade + slide */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(12px) translateZ(0); }
+  to { opacity: 1; transform: translateY(0) translateZ(0); }
+}
+
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-12px) translateZ(0); }
+  to { opacity: 1; transform: translateY(0) translateZ(0); }
+}
+
+/* Shine sweep effect for cover images */
+@keyframes shine-sweep {
+  0%   { transform: translateX(-100%) translateY(-100%) rotate(25deg); }
+  40%  { transform: translateX(100%) translateY(100%) rotate(25deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(25deg); }
+}
+
+/* Shine sweep vertical (top to bottom) */
+@keyframes shine-sweep-vertical {
+  0%   { transform: translateY(-100%); }
+  30%  { transform: translateY(200%); }
+  100% { transform: translateY(200%); }
+}
+
+.shine-vertical {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-vertical::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -10%;
+  width: 120%;
+  height: 60%;
+  background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.15) 40%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.15) 60%, transparent 100%);
+  pointer-events: none;
+  z-index: 10;
+  animation: shine-sweep-vertical var(--shine-duration, 6s) ease-in-out var(--shine-delay, 0s) infinite;
+}
+
+/* Shine sweep horizontal (left to right, plays ONCE) */
+@keyframes shine-sweep-horizontal-once {
+  0%   { transform: translateX(-100%) skewX(-15deg); }
+  40%  { transform: translateX(250%) skewX(-15deg); }
+  100% { transform: translateX(250%) skewX(-15deg); }
+}
+
+.shine-horizontal-once {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-horizontal-once::after {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 40%;
+  height: 120%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.12) 35%, rgba(255, 255, 255, 0.22) 50%, rgba(255, 255, 255, 0.12) 65%, transparent 100%);
+  pointer-events: none;
+  z-index: 10;
+  animation: shine-sweep-horizontal-once var(--shine-duration, 2s) ease-in-out var(--shine-delay, 0s) forwards;
+}
+
+/* Testimonial golden glow card */
+.testimonial-glow-card {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(212,168,75,0.15), 0 0 20px rgba(212,168,75,0.08);
+  border: 1.5px solid rgba(212,168,75,0.25);
+  animation: testimonial-glow-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes testimonial-glow-pulse {
+  0%   { box-shadow: 0 0 6px rgba(212,168,75,0.1), 0 0 16px rgba(212,168,75,0.05); border-color: rgba(212,168,75,0.2); }
+  100% { box-shadow: 0 0 12px rgba(212,168,75,0.3), 0 0 28px rgba(212,168,75,0.12); border-color: rgba(212,168,75,0.45); }
+}
+
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-effect::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(25deg, transparent 30%, rgba(255, 255, 255, 0.22) 50%, transparent 70%);
+  animation: shine-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Cover reflection — static glossy glass effect for book/shortcut covers */
+.cover-reflection {
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-reflection::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.08) 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.03) 75%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Button shine — bold reflective sweep for white buttons */
+@keyframes btn-shine {
+  0%   { transform: translateX(-150%) skewX(-20deg); }
+  60%  { transform: translateX(250%) skewX(-20deg); }
+  100% { transform: translateX(250%) skewX(-20deg); }
+}
+
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%);
+  animation: btn-shine 2.8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Existing animations */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes icon-shimmer {
+  0%, 100% { color: rgb(163 163 163); }
+  50% { color: rgb(250 250 250); }
+}
+
+@keyframes wave-pulse {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+  50% { transform: translateY(-3px) scale(1.02); opacity: 0.8; }
+}
+
+@keyframes wave-shimmer {
+  0% { background-position: 200% 0; opacity: 0.3; }
+  50% { opacity: 0.7; }
+  100% { background-position: -200% 0; opacity: 0.3; }
+}
+
+@keyframes shimmer-banner {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes grow-width {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* Full-screen slide up from bottom */
+@keyframes slideUpFull {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* Marquee infinite scroll animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* CSS-only infinite slider for Assinatura page */
+@keyframes cssSlide {
+  0% { transform: translateX(0) translateZ(0); }
+  100% { transform: translateX(-50%) translateZ(0); }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+/* Onboarding book carousel */
+@keyframes scroll-books {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-scroll-books {
+  animation: scroll-books 25s linear infinite;
+}
+.animate-icon-shimmer { animation: icon-shimmer 2s linear infinite; }
+.animate-wave-pulse { animation: wave-pulse 3s ease-in-out infinite; }
+.animate-wave-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(160, 40, 30, 0.1) 0%, 
+    rgba(160, 40, 30, 0.4) 25%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    rgba(160, 40, 30, 0.4) 75%, 
+    rgba(160, 40, 30, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: wave-shimmer 3s linear infinite;
+}
+
+/* 3D Transform utilities for card flips */
+.preserve-3d { transform-style: preserve-3d; }
+.backface-hidden { backface-visibility: hidden; }
+.rotate-y-180 { transform: rotateY(180deg); }
+.perspective-1000 { perspective: 1000px; }
+
+/* ===========================================
+   ASSINATURA PLAN ICONS - CSS-only animations
+   GPU-accelerated, replaces framer-motion
+   =========================================== */
+
+@keyframes plan-hammer {
+  0%, 100% { transform: rotate(0deg) translateZ(0); }
+  15%       { transform: rotate(-22deg) translateZ(0); }
+  30%       { transform: rotate(6deg) translateZ(0); }
+  45%       { transform: rotate(-18deg) translateZ(0); }
+  60%       { transform: rotate(0deg) translateZ(0); }
+}
+
+@keyframes plan-scale-balance {
+  0%, 100% { transform: rotate(-10deg) scale(1) translateZ(0); }
+  50%       { transform: rotate(10deg) scale(1.1) translateZ(0); }
+}
+
+@keyframes plan-crown {
+  0%, 100% { transform: scale(1) translateY(0) rotate(0deg) translateZ(0); }
+  30%       { transform: scale(1.16) translateY(-4px) rotate(-3deg) translateZ(0); }
+  60%       { transform: scale(1.12) translateY(-3px) rotate(3deg) translateZ(0); }
+}
+
+@keyframes plan-glow-pulse {
+  0%, 100% { opacity: 0.2; transform: scale(0.9) translateZ(0); }
+  50%       { opacity: 0.7; transform: scale(1.25) translateZ(0); }
+}
+
+@keyframes plan-hero-zoom {
+  from { transform: scale(1.12) translateZ(0); }
+  to   { transform: scale(1) translateZ(0); }
+}
+
+.icon-hammer-animate {
+  animation: plan-hammer 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+.icon-scale-animate {
+  animation: plan-scale-balance 2.4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.icon-crown-animate {
+  animation: plan-crown 2.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.icon-glow-pulse {
+  animation: plan-glow-pulse 2s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+.icon-glow-pulse-slow {
+  animation: plan-glow-pulse 2.6s ease-in-out infinite;
+  will-change: opacity, transform;
+  animation-delay: 0.3s;
+}
+
+.hero-zoom-animate {
+  animation: plan-hero-zoom 8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  will-change: transform;
+}
+
+/* CSS containment for performance isolation */
+.contain-layout { contain: layout; }
+.contain-paint { contain: paint; }
+.contain-strict { contain: strict; }
+
+/* Prefers reduced motion - respect user preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@tailwind components;
+@tailwind utilities;
+
+/* Hide native video download controls */
+video::-webkit-media-controls-download-button,
+video::-webkit-media-controls-overflow-button {
+  display: none !important;
+}
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Cinza Neutro + Vermelho Puro */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 72% 42%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 13%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 55%;
+
+    --accent: 0 68% 48%;
+    --accent-foreground: 0 0% 100%;
+    
+    --accent-light: 0 62% 55%;
+    --accent-hover: 0 60% 38%;
+    --strong-color: 45 88% 72%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 14%;
+    --ring: 0 72% 50%;
+
+    --radius: 1rem;
+
+    --warning: 45 93% 58%;
+    --warning-foreground: 0 0% 0%;
+
+    /* Vade Mecum specific colors */
+    --constitution: 0 68% 50%;
+    --codes: 217 91% 60%;
+    --statutes: 239 84% 67%;
+    --summaries: 174 72% 56%;
+    
+    /* Academic environment gradients */
+    --gradient-purple-start: 240 55% 45%;
+    --gradient-purple-end: 250 60% 40%;
+    --gradient-red-start: 0 60% 40%;
+    --gradient-red-end: 0 55% 35%;
+    --gradient-green-start: 160 50% 35%;
+    --gradient-green-end: 150 55% 30%;
+    --gradient-pink-start: 290 50% 45%;
+    --gradient-pink-end: 280 55% 40%;
+
+    --article-highlight: 0 62% 55%;
+    
+    /* Audio progress colors */
+    --audio-progress: 0 68% 50%;
+    --audio-wave: 0 68% 50%;
+
+    /* Assistant specific colors */
+    --assistant-study: 210 90% 55%;
+    --assistant-realcase: 160 70% 45%;
+    --assistant-psychologist: 280 75% 60%;
+    --assistant-tcc: 30 95% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  /* Anti-flash: garantir background escuro em todo o app */
+  html, body, #root {
+    background-color: hsl(0, 0%, 7%) !important;
+  }
+
+  html {
+    overflow-x: hidden;
+    background-color: hsl(var(--background));
+    min-height: 100%;
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  #root {
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    background-color: hsl(var(--background));
+  }
+  
+  /* Anti-flash: garantir que AnimatePresence não mostre background branco */
+  [data-motion-pop-id],
+  .framer-motion-container {
+    background-color: inherit;
+  }
+  
+  /* Anti-flash: forçar background em elementos com opacity animada */
+  .motion-opacity-container {
+    background-color: hsl(0, 0%, 7%);
+  }
+
+  /* Markdown styles for chat */
+  .prose {
+    @apply text-foreground;
+  }
+  
+  .prose p {
+    @apply text-foreground leading-relaxed;
+  }
+  
+  .prose strong {
+    @apply font-bold;
+    color: hsl(var(--strong-color)) !important;
+  }
+  
+  strong {
+    @apply font-bold;
+    color: hsl(var(--strong-color)) !important;
+  }
+  
+  .resumo-content h1,
+  .resumo-content h2,
+  .resumo-content h3 {
+    color: hsl(var(--strong-color)) !important;
+  }
+
+  .resumo-content strong {
+    color: hsl(var(--strong-color)) !important;
+  }
+  
+  /* Article specific styles */
+  .article-content {
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+  
+  .article-content strong {
+    @apply text-accent font-bold;
+  }
+  
+  .article-content .uppercase-highlight {
+    @apply text-accent font-bold;
+  }
+  
+  /* Neutralize font-size classes within article content to allow parent control */
+  .article-content .text-sm,
+  .article-content .text-base {
+    font-size: inherit !important;
+  }
+  
+  .prose code {
+    @apply bg-secondary/50 px-1.5 py-0.5 rounded text-sm;
+  }
+  
+  .prose pre {
+    @apply bg-secondary/50 rounded-lg p-3 overflow-x-auto;
+  }
+  
+  .prose ul, .prose ol {
+    @apply my-2 pl-5;
+  }
+  
+  .prose li {
+    @apply my-1;
+  }
+  
+  .prose a {
+    @apply text-accent hover:underline;
+  }
+  
+  .prose h1 {
+    @apply text-foreground font-bold text-3xl;
+  }
+  
+  .prose h2 {
+    @apply text-foreground font-bold text-2xl;
+  }
+  
+  .prose h3 {
+    @apply text-foreground font-bold text-xl;
+  }
+  
+  .prose h4, .prose h5, .prose h6 {
+    @apply text-foreground font-bold text-lg;
+  }
+
+  /* Ocultar scrollbars mantendo funcionalidade de rolagem */
+  ::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
+
+  html, body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE e Edge */
+    overflow: auto;
+  }
+
+  body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
+/* ===========================================
+   INTERACTION FEEDBACK CLASSES
+   Tactile, fluid animations for touch/click
+   =========================================== */
+
+/* Tap bounce — elastic press feedback for buttons */
+.tap-bounce {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+.tap-bounce:active {
+  transform: scale(0.92);
+}
+
+/* Card press — subtle depth on tap */
+.card-press {
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+  will-change: transform;
+}
+.card-press:active {
+  transform: scale(0.97);
+}
+
+/* Nav item tap feedback */
+.nav-item-tap {
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
+  will-change: transform;
+}
+.nav-item-tap:active {
+  transform: scale(0.88);
+}
+
+/* Sound pulse — gentle glow when sound is active */
+.sound-pulse-active {
+  animation: sound-float-pulse 2s ease-in-out infinite;
+  will-change: transform, box-shadow;
+}
+
+/* Sound wave indicator bars */
+.sound-wave-bar {
+  display: inline-block;
+  width: 2px;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: sound-wave 0.8s ease-in-out infinite;
+  will-change: transform;
+}
+.sound-wave-bar:nth-child(1) { height: 8px; animation-delay: 0ms; }
+.sound-wave-bar:nth-child(2) { height: 12px; animation-delay: 150ms; }
+.sound-wave-bar:nth-child(3) { height: 6px; animation-delay: 300ms; }
+.sound-wave-bar:nth-child(4) { height: 10px; animation-delay: 100ms; }
+
+@keyframes sound-float-pulse {
+  0%, 100% { transform: scale(1) translateZ(0); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+  50% { transform: scale(1.05) translateZ(0); box-shadow: 0 8px 28px rgba(0,0,0,0.4); }
+}
+
+@keyframes sound-wave {
+  0%, 100% { transform: scaleY(0.4) translateZ(0); opacity: 0.6; }
+  50% { transform: scaleY(1) translateZ(0); opacity: 1; }
+}
+
+/* Improved btn-tactile */
+.btn-tactile {
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.12s ease;
+  will-change: transform;
+}
+.btn-tactile:active {
+  transform: scale(0.9);
+  opacity: 0.85;
+}
+
+/* Volume control slide animation */
+.volume-slide-enter {
+  animation: slideLeft 0.2s ease-out both;
+}
+
+/* Animation definitions */
+
+/* Animação staggered para listas - Performance otimizada */
+.stagger-item {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  will-change: transform, opacity;
+}
+
+.stagger-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Animação de botões do menu de ações - Delays reduzidos */
+.action-button {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fade-in-up 0.2s ease-out forwards;
+}
+
+.action-button:nth-child(1) { animation-delay: 0.03s; }
+.action-button:nth-child(2) { animation-delay: 0.06s; }
+.action-button:nth-child(3) { animation-delay: 0.09s; }
+.action-button:nth-child(4) { animation-delay: 0.12s; }
+.action-button:nth-child(5) { animation-delay: 0.15s; }
+.action-button:nth-child(6) { animation-delay: 0.18s; }
+
+/* Performance: Remove animações após primeiros 20 elementos */
+.article-card:nth-child(n+21) {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* GPU acceleration para elementos animados */
+.article-card {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* GPU acceleration para timeline cards - Performance otimizada */
+.timeline-card-gpu {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style paint;
+}
+
+/* Otimização de blur para melhor performance */
+.optimized-blur {
+  will-change: backdrop-filter;
+  transform: translateZ(0);
+}
+
+/* Container de scroll otimizado */
+.scroll-optimized {
+  contain: content;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* SVG animations GPU layer */
+.svg-gpu-layer {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Embla Carousel - GPU Acceleration para scroll fluido */
+.embla-container {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.embla-slide {
+  contain: layout style paint;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Animação fade-in-up para recursos */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animações para Simulação de Audiência */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out-right {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out forwards;
+}
+
+/* Markdown styling para resumos com melhor espaçamento */
+.resumo-markdown {
+  line-height: 1.75;
+}
+
+.resumo-markdown h1,
+.resumo-markdown h2,
+.resumo-markdown h3,
+.resumo-markdown h4 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  color: hsl(45, 95%, 60%);
+  font-weight: 700;
+}
+
+.resumo-markdown h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.resumo-markdown h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.resumo-markdown h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.resumo-markdown p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.9375rem;
+}
+
+.resumo-markdown ul,
+.resumo-markdown ol {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  font-size: 0.9375rem;
+}
+
+.resumo-markdown li {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.resumo-markdown blockquote {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 1rem;
+  border-left: 4px solid hsl(var(--primary));
+  font-style: italic;
+}
+
+.resumo-markdown code {
+  background: hsl(var(--muted));
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+.resumo-markdown pre {
+  background: hsl(var(--muted));
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.resumo-markdown table {
+  width: 100%;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  border-collapse: collapse;
+}
+
+.resumo-markdown th,
+.resumo-markdown td {
+  border: 1px solid hsl(var(--border));
+  padding: 0.5rem;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.resumo-markdown th {
+  background: hsl(var(--muted));
+  font-weight: 600;
+}
+
+.resumo-markdown strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.resumo-markdown em {
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+.resumo-markdown hr {
+  display: none !important;
+}
+
+/* Font size levels for resumo content */
+.resumo-font-size--2 .resumo-markdown p,
+.resumo-font-size--2 .resumo-markdown li { font-size: 0.8125rem; }
+.resumo-font-size--2 .resumo-markdown h1 { font-size: 1rem; }
+.resumo-font-size--2 .resumo-markdown h2 { font-size: 0.9375rem; }
+.resumo-font-size--2 .resumo-markdown h3 { font-size: 0.875rem; }
+
+.resumo-font-size--1 .resumo-markdown p,
+.resumo-font-size--1 .resumo-markdown li { font-size: 0.875rem; }
+.resumo-font-size--1 .resumo-markdown h1 { font-size: 1.125rem; }
+.resumo-font-size--1 .resumo-markdown h2 { font-size: 1rem; }
+.resumo-font-size--1 .resumo-markdown h3 { font-size: 0.9375rem; }
+
+.resumo-font-size-0 .resumo-markdown p,
+.resumo-font-size-0 .resumo-markdown li { font-size: 0.9375rem; }
+.resumo-font-size-0 .resumo-markdown h1 { font-size: 1.25rem; }
+.resumo-font-size-0 .resumo-markdown h2 { font-size: 1.125rem; }
+.resumo-font-size-0 .resumo-markdown h3 { font-size: 1rem; }
+
+.resumo-font-size-1 .resumo-markdown p,
+.resumo-font-size-1 .resumo-markdown li { font-size: 1rem; }
+.resumo-font-size-1 .resumo-markdown h1 { font-size: 1.375rem; }
+.resumo-font-size-1 .resumo-markdown h2 { font-size: 1.25rem; }
+.resumo-font-size-1 .resumo-markdown h3 { font-size: 1.125rem; }
+
+.resumo-font-size-2 .resumo-markdown p,
+.resumo-font-size-2 .resumo-markdown li { font-size: 1.0625rem; }
+.resumo-font-size-2 .resumo-markdown h1 { font-size: 1.5rem; }
+.resumo-font-size-2 .resumo-markdown h2 { font-size: 1.375rem; }
+.resumo-font-size-2 .resumo-markdown h3 { font-size: 1.25rem; }
+
+.resumo-font-size-3 .resumo-markdown p,
+.resumo-font-size-3 .resumo-markdown li { font-size: 1.125rem; }
+.resumo-font-size-3 .resumo-markdown h1 { font-size: 1.625rem; }
+.resumo-font-size-3 .resumo-markdown h2 { font-size: 1.5rem; }
+.resumo-font-size-3 .resumo-markdown h3 { font-size: 1.375rem; }
+
+/* Aplicar mesmos níveis para resumo-content */
+.resumo-font-size--2 .resumo-content p { font-size: 0.8125rem; }
+.resumo-font-size--2 .resumo-content h1 { font-size: 1.375rem; }
+.resumo-font-size--2 .resumo-content h2 { font-size: 1.125rem; }
+.resumo-font-size--2 .resumo-content h3 { font-size: 1rem; }
+
+.resumo-font-size--1 .resumo-content p { font-size: 0.875rem; }
+.resumo-font-size--1 .resumo-content h1 { font-size: 1.5rem; }
+.resumo-font-size--1 .resumo-content h2 { font-size: 1.25rem; }
+.resumo-font-size--1 .resumo-content h3 { font-size: 1.0625rem; }
+
+.resumo-font-size-0 .resumo-content p { font-size: 0.9375rem; }
+.resumo-font-size-0 .resumo-content h1 { font-size: 1.625rem; }
+.resumo-font-size-0 .resumo-content h2 { font-size: 1.375rem; }
+.resumo-font-size-0 .resumo-content h3 { font-size: 1.125rem; }
+
+.resumo-font-size-1 .resumo-content p { font-size: 1rem; }
+.resumo-font-size-1 .resumo-content h1 { font-size: 1.75rem; }
+.resumo-font-size-1 .resumo-content h2 { font-size: 1.5rem; }
+.resumo-font-size-1 .resumo-content h3 { font-size: 1.25rem; }
+
+.resumo-font-size-2 .resumo-content p { font-size: 1.0625rem; }
+.resumo-font-size-2 .resumo-content h1 { font-size: 1.875rem; }
+.resumo-font-size-2 .resumo-content h2 { font-size: 1.625rem; }
+.resumo-font-size-2 .resumo-content h3 { font-size: 1.375rem; }
+
+.resumo-font-size-3 .resumo-content p { font-size: 1.125rem; }
+.resumo-font-size-3 .resumo-content h1 { font-size: 2rem; }
+.resumo-font-size-3 .resumo-content h2 { font-size: 1.75rem; }
+.resumo-font-size-3 .resumo-content h3 { font-size: 1.5rem; }
+
+/* Estilos para conteúdo de resumos prontos */
+.resumo-content h1 {
+  color: hsl(45, 95%, 60%);
+  font-weight: bold;
+  font-size: 1.625rem; /* 26px - reduzido de 30px */
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.resumo-content h2 {
+  color: hsl(45, 95%, 60%);
+  font-weight: bold;
+  font-size: 1.375rem; /* 22px - reduzido de 24px */
+  margin-top: 1.5rem;
+  margin-bottom: 0.875rem;
+  line-height: 1.3;
+}
+
+.resumo-content h3 {
+  color: hsl(45, 95%, 60%);
+  font-weight: bold;
+  font-size: 1.125rem; /* 18px - reduzido de 20px */
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.resumo-content blockquote {
+  border-left: 4px solid hsl(45, 95%, 60%);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted) / 0.3);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.resumo-content strong {
+  font-weight: 700;
+  color: inherit;
+}
+
+.resumo-content h1 strong,
+.resumo-content h2 strong,
+.resumo-content h3 strong {
+  color: hsl(45, 95%, 60%);
+}
+
+/* Forçar amarelo negrito nos termos chaves */
+.resumo-content h3 strong {
+  color: hsl(45, 95%, 60%) !important;
+  font-weight: 700 !important;
+}
+
+.resumo-content table {
+  display: none !important;
+}
+
+.resumo-content ul,
+.resumo-content ol {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.resumo-content p {
+  margin-bottom: 1rem;
+  line-height: 1.75;
+  font-size: 0.9375rem; /* 15px - reduzido de 16px */
+}
+
+.resumo-content hr {
+  display: none !important;
+}
+
+/* Animação shake para feedback de erro */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Animações de entrada para cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Utility classes for optimized interactions */
+.btn-tactile {
+  @apply transition-transform duration-150 active:scale-95;
+}
+
+.card-hover {
+  @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
+}
+
+.hover-lift {
+  @apply transition-transform duration-200 hover:-translate-y-1;
+}
+
+/* GPU acceleration for animated elements */
+.gpu-accelerated {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Safe area padding for devices with notches/bottom bars */
+.safe-area-bottom {
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));
+}
+
+/* Text reveal animation for streaming text */
+@keyframes text-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes gradient-reveal {
+  from {
+    mask-image: linear-gradient(to bottom, black 0%, transparent 20%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 20%);
+  }
+  to {
+    mask-image: linear-gradient(to bottom, black 100%, black 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 100%, black 100%);
+  }
+}
+
+.text-reveal-animation {
+  animation: text-reveal 0.4s ease-out forwards;
+}
+
+.prose-streaming > * {
+  animation: text-reveal 0.3s ease-out forwards;
+}
+
+.prose-streaming > *:nth-child(1) { animation-delay: 0ms; }
+.prose-streaming > *:nth-child(2) { animation-delay: 50ms; }
+.prose-streaming > *:nth-child(3) { animation-delay: 100ms; }
+.prose-streaming > *:nth-child(4) { animation-delay: 150ms; }
+.prose-streaming > *:nth-child(5) { animation-delay: 200ms; }
+.prose-streaming > *:nth-child(6) { animation-delay: 250ms; }
+.prose-streaming > *:nth-child(7) { animation-delay: 300ms; }
+.prose-streaming > *:nth-child(8) { animation-delay: 350ms; }
+.prose-streaming > *:nth-child(9) { animation-delay: 400ms; }
+.prose-streaming > *:nth-child(10) { animation-delay: 450ms; }
+
+/* Carrossel contínuo lento */
+@keyframes carousel-slow {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-carousel-slow {
+  animation: carousel-slow 60s linear infinite;
+}
+
+/* ===============================================
+   PERFORMANCE OPTIMIZATIONS - SCROLL FLUIDITY
+   =============================================== */
+
+/* Isolar seções para evitar repaint global */
+.scroll-section {
+  contain: layout style paint;
+}
+
+/* Content visibility para lazy rendering */
+.lazy-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 300px;
+}
+
+/* GPU acceleration para elementos que animam */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Desabilitar will-change para elementos estáticos */
+.no-will-change {
+  will-change: auto !important;
+}
+
+/* Scroll otimizado */
+.optimized-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+}
+
+/* Remover transições durante scroll */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Cards de carrossel otimizados */
+.carousel-card {
+  contain: layout style;
+  will-change: auto;
+}
+
+.carousel-card:hover {
+  will-change: transform;
+}
+
+/* Imagens otimizadas */
+img {
+  content-visibility: auto;
+}
+
+/* ===============================================
+   UNIVERSAL IMAGE SYSTEM
+   =============================================== */
+
+/* Skeleton Shimmer Effect */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 0%,
+    hsl(var(--muted) / 0.5) 50%,
+    hsl(var(--muted)) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Skeleton Wave Effect */
+.skeleton-wave {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 0%,
+    hsl(var(--muted-foreground) / 0.15) 50%,
+    hsl(var(--muted)) 100%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-wave 2s ease-in-out infinite;
+}
+
+@keyframes skeleton-wave {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* Blur Placeholder - Estado inicial */
+.blur-placeholder {
+  filter: blur(20px);
+  transform: scale(1.1);
+  opacity: 1;
+  transition: 
+    filter 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: filter, transform, opacity;
+}
+
+/* Blur Placeholder - Estado carregado (oculto) */
+.blur-placeholder-hidden {
+  filter: blur(0);
+  transform: scale(1);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Imagem Universal - Estado inicial */
+.universal-image {
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Imagem Universal - Estado carregado */
+.universal-image-loaded {
+  opacity: 1;
+}
+
+/* Evitar layout thrashing em grids */
+.stable-grid {
+  contain: layout;
+}
+
+/* Sidebar custom scrollbar */
+.sidebar-scroll-inner::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-scroll-inner::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll-inner::-webkit-scrollbar-thumb {
+  background: hsl(var(--border) / 0.4);
+  border-radius: 9999px;
+}
+.sidebar-scroll-inner::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--border) / 0.7);
+}
+
+/* Shimmer subtle effect for free plan CTA */
+.shimmer-subtle {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-subtle::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.04), transparent);
+  animation: shimmer-slide 3s ease-in-out infinite;
+}
+@keyframes shimmer-slide {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* Artigo inline: faz todos os divs dentro do wrapper renderizar inline */
+.article-inline-wrapper > div,
+.article-inline-wrapper > div > div,
+.article-inline-wrapper > div > div > div {
+  display: inline;
+}

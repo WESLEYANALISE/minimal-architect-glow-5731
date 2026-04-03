@@ -1,0 +1,1 @@
+UPDATE "CF - Constituição Federal" SET ordem_artigo = id WHERE ordem_artigo IS NULL;

@@ -1,0 +1,1 @@
+DELETE FROM "AUDIO_FEEDBACK_CACHE" WHERE tipo = 'leis-do-dia-sobre';

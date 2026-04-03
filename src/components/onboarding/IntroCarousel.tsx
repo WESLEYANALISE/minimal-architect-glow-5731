@@ -1,0 +1,359 @@
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
+import { 
+  BookOpen, Video, Library, ClipboardList, MessageCircle, Sparkles,
+  ChevronRight, X, Brain, Scale, GraduationCap, Gavel, Volume2, VolumeX, Loader2
+} from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+
+// Imagens de fundo
+import capaFaculdade from '@/assets/landing/welcome-1.webp';
+import estudosSection from '@/assets/landing/estudos-section.webp';
+import oabSection from '@/assets/landing/oab-section.webp';
+import bibliotecaSection from '@/assets/landing/biblioteca-section-opt.webp';
+import concursoSection from '@/assets/landing/concurso-section.webp';
+import evelynSection from '@/assets/landing/evelyn-ai-section.webp';
+
+interface IntroCarouselProps {
+  onComplete: () => void;
+}
+
+const slides = [
+  {
+    image: capaFaculdade,
+    icon: GraduationCap,
+    title: 'Sua jornada jurídica começa agora',
+    description: 'O Direito Premium é a plataforma completa para estudantes, concurseiros, OAB e advogados. Tudo que você precisa em um só lugar.',
+    features: ['Plataforma completa', 'Para todos os perfis', '100% online'],
+  },
+  {
+    image: estudosSection,
+    icon: Brain,
+    title: 'Ferramentas inteligentes de estudo',
+    description: 'Aprenda de forma eficiente com tecnologia de ponta aplicada ao Direito.',
+    features: ['Flashcards', 'Mapas Mentais', 'Resumos inteligentes', 'Dicionário Jurídico'],
+  },
+  {
+    image: oabSection,
+    icon: Scale,
+    title: 'Videoaulas e Trilhas OAB',
+    description: 'Prepare-se para a OAB com aulas completas, trilhas organizadas e questões comentadas por especialistas.',
+    features: ['Videoaulas', 'Trilhas OAB', 'Questões comentadas', 'Áudio-aulas'],
+  },
+  {
+    image: bibliotecaSection,
+    icon: Library,
+    title: 'Biblioteca e Vade Mecum',
+    description: 'Acesse o maior acervo jurídico digital com legislação sempre atualizada.',
+    features: ['Vade Mecum completo', 'Legislação atualizada', 'Súmulas', 'Livros clássicos'],
+  },
+  {
+    image: concursoSection,
+    icon: ClipboardList,
+    title: 'Questões e Simulados',
+    description: 'Pratique diariamente com nosso banco de questões e simulados no estilo OAB e concursos.',
+    features: ['Banco de questões', 'Simulados OAB', 'Prática diária', 'Estatísticas'],
+  },
+  {
+    image: evelynSection,
+    icon: MessageCircle,
+    title: 'Conheça a Evelyn',
+    description: 'Sua assistente jurídica com IA disponível 24h no WhatsApp. Tire dúvidas, peça resumos e tenha ajuda instantânea nos estudos.',
+    features: ['IA no WhatsApp', 'Disponível 24h', 'Tira dúvidas', 'Resumos instantâneos'],
+    isFinal: true,
+  },
+];
+
+const swipeThreshold = 50;
+
+const IntroCarousel = ({ onComplete }: IntroCarouselProps) => {
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const [audioUrls, setAudioUrls] = useState<Record<number, string>>({});
+  const [audioLoading, setAudioLoading] = useState<Record<number, boolean>>({});
+  const [muted, setMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Fetch all cached audio URLs on mount
+  useEffect(() => {
+    const fetchAudioUrls = async () => {
+      const { data } = await supabase
+        .from('intro_carousel_narrations')
+        .select('slide_index, audio_url')
+        .not('audio_url', 'is', null);
+
+      if (data) {
+        const urls: Record<number, string> = {};
+        data.forEach((row: any) => {
+          if (row.audio_url) urls[row.slide_index] = row.audio_url;
+        });
+        setAudioUrls(urls);
+      }
+    };
+    fetchAudioUrls();
+  }, []);
+
+  // Generate narration for current slide if not cached
+  useEffect(() => {
+    const generateIfNeeded = async () => {
+      if (audioUrls[current] || audioLoading[current]) return;
+
+      setAudioLoading(prev => ({ ...prev, [current]: true }));
+      try {
+        const { data, error } = await supabase.functions.invoke('gerar-narracao-intro', {
+          body: { slideIndex: current },
+        });
+
+        if (data?.audio_url) {
+          setAudioUrls(prev => ({ ...prev, [current]: data.audio_url }));
+        }
+      } catch (err) {
+        console.error('Erro ao gerar narração:', err);
+      } finally {
+        setAudioLoading(prev => ({ ...prev, [current]: false }));
+      }
+    };
+
+    generateIfNeeded();
+  }, [current, audioUrls, audioLoading]);
+
+  // Play audio when slide changes or audio becomes available
+  useEffect(() => {
+    if (muted) return;
+
+    // Stop previous audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+
+    const url = audioUrls[current];
+    if (url) {
+      const audio = new Audio(url);
+      audio.volume = 0.8;
+      audioRef.current = audio;
+      audio.play().catch(() => {});
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, [current, audioUrls[current], muted]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    setMuted(prev => {
+      const newMuted = !prev;
+      if (audioRef.current) {
+        if (newMuted) {
+          audioRef.current.pause();
+        } else {
+          audioRef.current.play().catch(() => {});
+        }
+      }
+      return newMuted;
+    });
+  }, []);
+
+  const paginate = useCallback((newDirection: number) => {
+    const next = current + newDirection;
+    if (next < 0 || next >= slides.length) return;
+    setDirection(newDirection);
+    setCurrent(next);
+  }, [current]);
+
+  const handleDragEnd = useCallback((_: any, info: PanInfo) => {
+    if (info.offset.x < -swipeThreshold) paginate(1);
+    else if (info.offset.x > swipeThreshold) paginate(-1);
+  }, [paginate]);
+
+  const slide = slides[current];
+  const isLast = current === slides.length - 1;
+  const SlideIcon = slide.icon;
+  const isLoadingAudio = audioLoading[current];
+
+  const variants = {
+    enter: (d: number) => ({ x: d > 0 ? '100%' : '-100%', opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (d: number) => ({ x: d > 0 ? '-100%' : '100%', opacity: 0 }),
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[9999] bg-black flex flex-col overflow-hidden"
+    >
+      {/* Top controls */}
+      <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
+        {/* Audio toggle */}
+        <button
+          onClick={toggleMute}
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm text-white/80 hover:bg-white/20 transition-colors"
+        >
+          {isLoadingAudio ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : muted ? (
+            <VolumeX className="w-4 h-4" />
+          ) : (
+            <Volume2 className="w-4 h-4" />
+          )}
+        </button>
+
+        {/* Skip button */}
+        {!isLast && (
+          <button
+            onClick={onComplete}
+            className="flex items-center gap-1 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white/80 text-sm font-medium hover:bg-white/20 transition-colors"
+          >
+            Pular
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+
+      {/* Slide content */}
+      <AnimatePresence initial={false} custom={direction} mode="wait">
+        <motion.div
+          key={current}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ type: 'tween', duration: 0.35, ease: 'easeInOut' }}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.2}
+          onDragEnd={handleDragEnd}
+          className="absolute inset-0 flex flex-col"
+        >
+          {/* Background image */}
+          <div className="absolute inset-0">
+            <img
+              src={slide.image}
+              alt=""
+              className="w-full h-full object-cover"
+              loading="eager"
+              draggable={false}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+          </div>
+
+          {/* Content */}
+          <div className="relative z-10 flex-1 flex flex-col justify-end pb-32 px-6 md:px-12 lg:px-16 max-w-2xl lg:max-w-4xl mx-auto w-full lg:justify-center lg:pb-24">
+            <motion.div
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.15, duration: 0.4 }}
+              className="space-y-4"
+            >
+              {/* Icon */}
+              <div className="w-14 h-14 rounded-2xl bg-red-500/20 backdrop-blur-sm flex items-center justify-center border border-red-500/30">
+                <SlideIcon className="w-7 h-7 text-red-400" />
+              </div>
+
+              {/* Title */}
+              <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight font-playfair">
+                {slide.title}
+              </h2>
+
+              {/* Description */}
+              <p className="text-base md:text-lg lg:text-xl text-white/75 leading-relaxed">
+                {slide.description}
+              </p>
+
+              {/* Feature pills */}
+              <div className="flex flex-wrap gap-2 pt-2">
+                {slide.features.map((f) => (
+                  <span
+                    key={f}
+                    className="px-3 py-1.5 lg:px-4 lg:py-2 rounded-full text-xs lg:text-sm font-medium bg-white/10 text-white/90 backdrop-blur-sm border border-white/10"
+                  >
+                    {f}
+                  </span>
+                ))}
+              </div>
+
+              {/* Audio indicator */}
+              {!muted && audioUrls[current] && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex items-center gap-2 text-white/50 text-xs"
+                >
+                  <Volume2 className="w-3 h-3" />
+                  <span>Narração ativa</span>
+                  <div className="flex gap-0.5">
+                    {[0, 1, 2].map(i => (
+                      <motion.div
+                        key={i}
+                        className="w-0.5 bg-red-400 rounded-full"
+                        animate={{ height: [4, 12, 4] }}
+                        transition={{ repeat: Infinity, duration: 0.8, delay: i * 0.15 }}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </motion.div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Bottom controls */}
+      <div className="absolute bottom-0 left-0 right-0 z-50 pb-8 lg:pb-12 px-6 md:px-12 lg:px-16">
+        <div className="max-w-2xl lg:max-w-4xl mx-auto flex items-center justify-between">
+          {/* Dots */}
+          <div className="flex gap-2">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  i === current ? 'w-8 bg-red-500' : 'w-2 bg-white/30 hover:bg-white/50'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Next / CTA */}
+          {isLast ? (
+            <motion.button
+              onClick={onComplete}
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="px-6 py-3 lg:px-8 lg:py-4 rounded-full bg-gradient-to-r from-red-600 to-red-500 text-white font-semibold text-sm lg:text-base flex items-center gap-2 shadow-lg shadow-red-500/30"
+            >
+              <Sparkles className="w-4 h-4" />
+              Começar a Usar
+            </motion.button>
+          ) : (
+            <button
+              onClick={() => paginate(1)}
+              className="px-5 py-3 lg:px-7 lg:py-4 rounded-full bg-white/10 backdrop-blur-sm text-white font-medium text-sm lg:text-base flex items-center gap-1.5 hover:bg-white/20 transition-colors"
+            >
+              Próximo
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+export default IntroCarousel;

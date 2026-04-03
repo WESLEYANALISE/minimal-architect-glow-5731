@@ -1,0 +1,1 @@
+UPDATE simulados_concursos SET nome = 'Escrevente Técnico Judiciário' WHERE id = '70990036-c638-4339-8154-45a1ecb85f9b';

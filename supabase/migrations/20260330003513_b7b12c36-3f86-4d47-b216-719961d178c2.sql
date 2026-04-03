@@ -1,0 +1,1 @@
+DELETE FROM public.aulas_artigos WHERE codigo_tabela = 'CF' AND numero_artigo IN ('1°', '1º', '1');

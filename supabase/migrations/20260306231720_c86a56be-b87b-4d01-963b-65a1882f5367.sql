@@ -1,0 +1,1 @@
+ALTER TABLE gamificacao_casos_praticos ADD COLUMN IF NOT EXISTS audio_url text;

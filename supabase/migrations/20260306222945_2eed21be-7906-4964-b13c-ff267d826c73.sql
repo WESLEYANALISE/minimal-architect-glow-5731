@@ -1,0 +1,2 @@
+ALTER TABLE gamificacao_casos_praticos ADD COLUMN IF NOT EXISTS resumo_artigo text;
+UPDATE gamificacao_casos_praticos SET status = 'pendente', progresso_geracao = 0, imagem_capa_url = NULL WHERE imagem_capa_url IS NULL;

@@ -1,0 +1,1 @@
+ALTER TABLE noticias_legislativas_cache ADD COLUMN IF NOT EXISTS titulo_curto text;

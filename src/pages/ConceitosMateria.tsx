@@ -1,0 +1,543 @@
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { BookOpen, ArrowLeft, Loader2, Layers, ImageIcon, FileText, RefreshCw, CheckCircle, ChevronRight, Crown, Lock, Target } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { PdfProcessorModal } from "@/components/conceitos/PdfProcessorModal";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { ConceitosProgressBadge } from "@/components/conceitos/ConceitosProgressBadge";
+import { TopicoProgressoDetalhado } from "@/components/conceitos/TopicoProgressoDetalhado";
+import { useConceitosAutoGeneration } from "@/hooks/useConceitosAutoGeneration";
+import { useAuth } from "@/contexts/AuthContext";
+import { useSubscription } from "@/contexts/SubscriptionContext";
+import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
+
+
+const ADMIN_EMAIL = "wn7corporation@gmail.com";
+// Matérias gratuitas: "História do Direito" e "Introdução ao Estudo do Direito"
+const FREE_MATERIA_NAMES = [
+  "história do direito", 
+  "historia do direito",
+  "introdução ao estudo do direito",
+  "introducao ao estudo do direito"
+];
+
+const ConceitosMateria = () => {
+  const { id } = useParams<{ id: string }>();
+  const [showPdfModal, setShowPdfModal] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [topicoExpandido, setTopicoExpandido] = useState<number | null>(null);
+  
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const parsedMateriaId = id ? parseInt(id) : null;
+  const { user } = useAuth();
+  const { isPremium } = useSubscription();
+  const isAdmin = user?.email === ADMIN_EMAIL;
+
+  // Buscar matéria
+  const { data: materia, isLoading: loadingMateria } = useQuery({
+    queryKey: ["conceitos-materia", parsedMateriaId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("conceitos_materias")
+        .select("*")
+        .eq("id", parsedMateriaId!)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!parsedMateriaId,
+    staleTime: 1000 * 60 * 10,
+  });
+
+  // Buscar total de matérias
+  const { data: totalMaterias } = useQuery({
+    queryKey: ["conceitos-total-materias"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("conceitos_materias")
+        .select("*", { count: "exact", head: true });
+      if (error) throw error;
+      return count || 0;
+    },
+  });
+
+  // Buscar tópicos da matéria
+  const { data: topicos, isLoading: loadingTopicos } = useQuery({
+    queryKey: ["conceitos-topicos", parsedMateriaId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("conceitos_topicos")
+        .select("*")
+        .eq("materia_id", parsedMateriaId!)
+        .order("ordem");
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!parsedMateriaId,
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      const hasGenerating = data?.some(t => t.status === "gerando");
+      const hasPending = data?.some(t => t.status === "pendente" || !t.status);
+      return hasGenerating ? 3000 : (hasPending ? 5000 : false);
+    },
+  });
+
+  // Buscar progresso do usuário em cada tópico
+  const { data: progressoUsuario } = useQuery({
+    queryKey: ["conceitos-topicos-progresso", parsedMateriaId, user?.id],
+    queryFn: async () => {
+      if (!user?.id || !topicos) return {};
+      
+      const topicoIds = topicos.map(t => t.id);
+      const { data, error } = await supabase
+        .from("oab_trilhas_estudo_progresso")
+        .select("topico_id, leitura_completa, progresso_leitura, progresso_flashcards, progresso_questoes")
+        .eq("user_id", user.id)
+        .in("topico_id", topicoIds);
+      
+      if (error) {
+        console.error("Erro ao buscar progresso:", error);
+        return {};
+      }
+      
+      const progressoMap: Record<number, { 
+        leituraCompleta: boolean; 
+        progresso: number;
+        progressoFlashcards: number;
+        progressoQuestoes: number;
+      }> = {};
+      data?.forEach(p => {
+        progressoMap[p.topico_id] = {
+          leituraCompleta: p.leitura_completa || false,
+          progresso: p.progresso_leitura || 0,
+          progressoFlashcards: p.progresso_flashcards || 0,
+          progressoQuestoes: p.progresso_questoes || 0
+        };
+      });
+      return progressoMap;
+    },
+    enabled: !!user?.id && !!topicos && topicos.length > 0,
+    staleTime: 1000 * 30,
+  });
+
+  // Hook de geração automática
+  const {
+    isGenerating,
+    currentGeneratingTitle,
+    currentProgress,
+    totalTopicos: totalTopicosGerados,
+    concluidos,
+    pendentes,
+    percentualGeral,
+    getTopicoStatus,
+  } = useConceitosAutoGeneration({
+    materiaId: parsedMateriaId,
+    topicos: topicos?.map(t => ({
+      id: t.id,
+      titulo: t.titulo,
+      status: t.status,
+      progresso: t.progresso,
+      ordem: t.ordem,
+    })),
+    enabled: true,
+  });
+
+  const totalTopicosCount = topicos?.length || 0;
+  
+  // Calcular contagem de tópicos concluídos pelo usuário (leitura completa)
+  const topicosConcluidosUsuario = Object.values(progressoUsuario || {}).filter(p => p.leituraCompleta).length;
+  const topicosPendentesUsuario = totalTopicosCount - topicosConcluidosUsuario;
+
+  const isLoading = loadingMateria || loadingTopicos;
+
+  // Capa de fallback: usar capa da matéria ou gradiente
+  const fallbackCapa = materia?.capa_url;
+
+  // Verificar se a matéria é gratuita (História do Direito)
+  const isFreeMateria = materia?.nome 
+    ? FREE_MATERIA_NAMES.includes(materia.nome.toLowerCase().trim())
+    : false;
+  
+  // Determinar se os tópicos são acessíveis
+  const canAccessTopics = isPremium || isFreeMateria;
+
+  // Handler para clique no tópico
+  const handleTopicoClick = (topicoId: number) => {
+    if (!canAccessTopics) {
+      setShowPremiumModal(true);
+      return;
+    }
+    // Toggle expand
+    setTopicoExpandido(prev => prev === topicoId ? null : topicoId);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#0d0d14]">
+      {/* Header */}
+      <div className="sticky top-0 z-20 bg-[#0d0d14]/90 backdrop-blur-sm border-b border-white/10">
+        <div className="max-w-lg mx-auto px-4 py-3">
+          <button 
+            onClick={() => navigate('/?tab=jornada')}
+            className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="text-sm font-medium">Voltar</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Header com Capa de Fundo */}
+      <div className="relative">
+        {/* Imagem de Fundo */}
+        <div className="absolute inset-0 h-48 overflow-hidden">
+          {fallbackCapa ? (
+            <img 
+              src={fallbackCapa} 
+              alt={materia?.nome}
+              className="w-full h-full object-cover"
+              loading="eager"
+              decoding="sync"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-primary/30 to-primary/10" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0d0d14]/60 via-[#0d0d14]/80 to-[#0d0d14]" />
+        </div>
+
+        {/* Conteúdo do Header */}
+        <div className="relative z-10 px-4 pt-6 pb-4">
+          <div className="max-w-lg mx-auto">
+            {/* Badge + Título */}
+            {materia && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-primary/30 flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
+                    <Layers className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-mono text-primary">
+                      {materia.codigo}
+                    </span>
+                    <h1 className="text-xl font-bold text-white" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>
+                      {materia.nome}
+                    </h1>
+                  </div>
+                </div>
+
+                {/* Info - Contagem e Progresso */}
+                <div className="rounded-xl p-3 bg-neutral-800/80 backdrop-blur-sm border border-white/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-4 text-sm text-gray-300">
+                      <div className="flex items-center gap-1.5">
+                        <BookOpen className="w-4 h-4 text-primary" />
+                        <span>{totalTopicosCount} tópicos</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <CheckCircle className="w-4 h-4 text-green-400" />
+                        <span>{topicosConcluidosUsuario} concluídos</span>
+                      </div>
+                    </div>
+                    <span className="text-xs text-gray-500">{topicosPendentesUsuario} restantes</span>
+                  </div>
+                  
+                  {/* Barra de progresso geral */}
+                  <Progress 
+                    value={totalTopicosCount > 0 ? (topicosConcluidosUsuario / totalTopicosCount) * 100 : 0} 
+                    className="h-2 bg-white/10 [&>div]:bg-gradient-to-r [&>div]:from-green-500 [&>div]:to-emerald-500" 
+                  />
+
+                  {/* Legenda de cores */}
+                  <div className="flex items-center gap-4 mt-2">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-orange-400" />
+                      <span className="text-[10px] text-gray-400">Leitura</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-purple-400" />
+                      <span className="text-[10px] text-gray-400">Flashcards</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                      <span className="text-[10px] text-gray-400">Praticar</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </div>
+      </div>
+
+
+      {/* Label Conteúdo */}
+      <div className="px-4 pt-6 pb-3">
+        <div className="max-w-lg mx-auto flex items-center gap-2 text-gray-400">
+          <BookOpen className="w-4 h-4 flex-shrink-0" />
+          <span className="text-sm font-medium whitespace-nowrap">Conteúdo Programático</span>
+        </div>
+      </div>
+
+      {/* Lista de Tópicos - Layout de Lista */}
+      <div className="px-4 pb-24">
+        <div className="max-w-lg mx-auto space-y-3">
+          {isLoading && !topicos ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : topicos && topicos.length > 0 ? (
+            topicos.map((topico, index) => {
+              const topicoStatus = getTopicoStatus(topico.id);
+              const temCapa = !!topico.capa_url;
+              const progresso = progressoUsuario?.[topico.id];
+              const leituraCompleta = progresso?.leituraCompleta || false;
+              const progressoLeitura = progresso?.progresso || 0;
+              const progressoFlashcards = progresso?.progressoFlashcards || 0;
+              const progressoQuestoes = progresso?.progressoQuestoes || 0;
+              const hasConteudo = !!(topico as any)?.slides_json || !!topico.conteudo_gerado;
+              const isExpanded = topicoExpandido === topico.id;
+              
+              return (
+                <motion.div
+                  key={topico.id}
+                  initial={{ opacity: 0.9, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.02 }}
+                  className={`w-full text-left bg-neutral-800 rounded-xl border overflow-hidden transition-all group ${
+                    topico.status === "gerando"
+                      ? "border-amber-500/50 bg-amber-900/20"
+                      : isExpanded
+                        ? "border-primary/50"
+                        : "border-white/10 hover:border-primary/30"
+                  }`}
+                >
+                  <button
+                    onClick={() => handleTopicoClick(topico.id)}
+                    className="w-full text-left"
+                  >
+                    <div className="flex items-center">
+                      {/* Capa */}
+                      <div className="w-20 h-20 flex-shrink-0 relative bg-neutral-900 overflow-hidden rounded-l-xl">
+                        {(temCapa || fallbackCapa) ? (
+                          <img 
+                            src={topico.capa_url || fallbackCapa || ''}
+                            alt={topico.titulo}
+                            className="w-full h-full object-cover"
+                            loading="eager"
+                            decoding="sync"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/30 to-primary/10">
+                            <ImageIcon className="w-6 h-6 text-primary/50" />
+                          </div>
+                        )}
+                        
+                        {/* Badge do número */}
+                        <div className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded text-xs font-bold bg-primary text-white">
+                          {String(topico.ordem).padStart(2, '0')}
+                        </div>
+                        
+                        {/* Indicador de geração */}
+                        {topico.status === "gerando" && (
+                          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                            <Loader2 className="w-5 h-5 animate-spin text-amber-400" />
+                          </div>
+                        )}
+                        
+                        {/* Badge Premium */}
+                        {!canAccessTopics && (
+                          <div className="absolute top-1 right-1 p-1 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg">
+                            <Crown className="w-3 h-3 text-white" />
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Conteúdo */}
+                      <div className="flex-1 p-3 flex flex-col justify-center min-h-[80px] relative">
+                        <div className="flex items-center justify-between mb-1">
+                          <h3 className="text-white transition-colors text-sm group-hover:text-primary flex-1 pr-2 line-clamp-2">
+                            {topico.titulo
+                              .toLowerCase()
+                              .split(' ')
+                              .map((palavra, i) => {
+                                const preposicoes = ['da', 'das', 'de', 'do', 'dos', 'e', 'em', 'na', 'nas', 'no', 'nos', 'o', 'a', 'os', 'as', 'para', 'por', 'com', 'ao', 'à', 'às'];
+                                if (i > 0 && preposicoes.includes(palavra)) return palavra;
+                                return palavra.charAt(0).toUpperCase() + palavra.slice(1);
+                              })
+                              .join(' ')
+                            }
+                          </h3>
+                          
+                          {/* Ícone de status */}
+                          {!canAccessTopics ? (
+                            <Lock className="w-5 h-5 flex-shrink-0 text-amber-400" />
+                          ) : leituraCompleta ? (
+                            <CheckCircle className="w-5 h-5 flex-shrink-0 text-green-400" />
+                          ) : topicoStatus.status === "erro" ? (
+                            <ConceitosProgressBadge
+                              status={topicoStatus.status}
+                              progresso={topicoStatus.progresso}
+                              posicaoFila={topico.posicao_fila}
+                            />
+                          ) : topicoStatus.status === "na_fila" && topico.posicao_fila ? (
+                            <ConceitosProgressBadge
+                              status={topicoStatus.status}
+                              progresso={topicoStatus.progresso}
+                              posicaoFila={topico.posicao_fila}
+                            />
+                          ) : (
+                            <ChevronRight className={`w-5 h-5 flex-shrink-0 text-primary/50 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                          )}
+                        </div>
+                        
+                        {/* Barra de progresso do tópico */}
+                        {canAccessTopics && topico.status === "concluido" && hasConteudo && (
+                          <div className="mt-1">
+                            <Progress 
+                              value={(progressoLeitura + progressoFlashcards + progressoQuestoes) / 3} 
+                              className="h-1.5 bg-white/10 [&>div]:bg-gradient-to-r [&>div]:from-primary [&>div]:to-orange-500" 
+                            />
+                            <TopicoProgressoDetalhado
+                              progressoLeitura={progressoLeitura}
+                              progressoFlashcards={progressoFlashcards}
+                              progressoQuestoes={progressoQuestoes}
+                            />
+                          </div>
+                        )}
+                        
+                        {/* Indicador Premium */}
+                        {!canAccessTopics && (
+                          <div className="mt-1">
+                            <span className="text-[10px] text-amber-400 flex items-center gap-1">
+                              <Crown className="w-3 h-3" />
+                              Conteúdo Premium
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Área expandida com 3 botões */}
+                  <AnimatePresence>
+                    {isExpanded && canAccessTopics && topico.status === "concluido" && hasConteudo && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-3 pb-3 pt-1 border-t border-white/10">
+                          <div className="grid grid-cols-3 gap-2">
+                            {/* Ler */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/conceitos/topico/${topico.id}`);
+                              }}
+                              className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20 transition-colors"
+                            >
+                              <BookOpen className="w-5 h-5 text-orange-400" />
+                              <span className="text-[11px] font-medium text-orange-400">Ler</span>
+                              <span className="text-[10px] text-gray-400">{Math.round(progressoLeitura)}%</span>
+                            </button>
+
+                            {/* Flashcards */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/conceitos/topico/${topico.id}/flashcards`);
+                              }}
+                              className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-purple-500/10 border border-purple-500/20 hover:bg-purple-500/20 transition-colors"
+                            >
+                              <Layers className="w-5 h-5 text-purple-400" />
+                              <span className="text-[11px] font-medium text-purple-400">Flashcards</span>
+                              <span className="text-[10px] text-gray-400">{Math.round(progressoFlashcards)}%</span>
+                            </button>
+
+                            {/* Questões */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/conceitos/topico/${topico.id}/questoes`);
+                              }}
+                              className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
+                            >
+                              <Target className="w-5 h-5 text-emerald-400" />
+                              <span className="text-[11px] font-medium text-emerald-400">Questões</span>
+                              <span className="text-[10px] text-gray-400">{Math.round(progressoQuestoes)}%</span>
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })
+          ) : (
+            <div className="text-center py-12 text-gray-400">
+              <FileText className="w-12 h-12 mx-auto mb-4 opacity-50 text-primary" />
+              <p className="text-lg font-medium text-white">Nenhum tópico encontrado</p>
+              <p className="text-xs text-gray-500 mt-1 mb-4">Carregue um PDF para extrair os tópicos automaticamente</p>
+              <Button 
+                onClick={() => setShowPdfModal(true)}
+                className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Carregar PDF
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Botão de reprocessar PDF - apenas para admin */}
+      {isAdmin && topicos && topicos.length > 0 && (
+        <div className="fixed bottom-20 right-4">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowPdfModal(true)}
+            className="rounded-full w-12 h-12 bg-[#12121a]/90 border-primary/30 hover:border-primary hover:bg-primary/10"
+            title="Reprocessar PDF"
+          >
+            <RefreshCw className="w-5 h-5 text-primary" />
+          </Button>
+        </div>
+      )}
+      
+      {/* Modal de processamento de PDF */}
+      {materia && (
+        <PdfProcessorModal
+          open={showPdfModal}
+          onOpenChange={setShowPdfModal}
+          materiaId={parsedMateriaId!}
+          materiaNome={materia.nome}
+          onComplete={() => {
+            queryClient.invalidateQueries({ queryKey: ["conceitos-topicos"] });
+            queryClient.invalidateQueries({ queryKey: ["conceitos-materia"] });
+          }}
+        />
+      )}
+      
+      {/* Modal Premium */}
+      <PremiumFloatingCard
+        isOpen={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        title="Conteúdo Premium"
+        sourceFeature="Conceitos Matéria"
+      />
+    </div>
+  );
+};
+
+export default ConceitosMateria;

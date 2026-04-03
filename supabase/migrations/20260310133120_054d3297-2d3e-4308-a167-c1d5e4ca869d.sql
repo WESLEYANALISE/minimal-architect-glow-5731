@@ -1,0 +1,130 @@
+
+-- 1. Lei 8.112/1990 - Estatuto do Servidor Público Federal
+CREATE TABLE IF NOT EXISTS "LEI 8112 - SERVIDOR PUBLICO" (
+  id SERIAL PRIMARY KEY,
+  "Número do Artigo" TEXT,
+  "Artigo" TEXT,
+  explicacao_tecnico TEXT,
+  "Narração" TEXT,
+  ordem_artigo NUMERIC,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE "LEI 8112 - SERVIDOR PUBLICO" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read on LEI 8112" ON "LEI 8112 - SERVIDOR PUBLICO" FOR SELECT USING (true);
+
+-- 2. DL 3.688/1941 - Lei das Contravenções Penais
+CREATE TABLE IF NOT EXISTS "DL 3688 - CONTRAVENCOES PENAIS" (
+  id SERIAL PRIMARY KEY,
+  "Número do Artigo" TEXT,
+  "Artigo" TEXT,
+  explicacao_tecnico TEXT,
+  "Narração" TEXT,
+  ordem_artigo NUMERIC,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE "DL 3688 - CONTRAVENCOES PENAIS" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read on DL 3688" ON "DL 3688 - CONTRAVENCOES PENAIS" FOR SELECT USING (true);
+
+-- 3. Lei 7.960/1989 - Prisão Temporária
+CREATE TABLE IF NOT EXISTS "LEI 7960 - PRISAO TEMPORARIA" (
+  id SERIAL PRIMARY KEY,
+  "Número do Artigo" TEXT,
+  "Artigo" TEXT,
+  explicacao_tecnico TEXT,
+  "Narração" TEXT,
+  ordem_artigo NUMERIC,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE "LEI 7960 - PRISAO TEMPORARIA" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read on LEI 7960" ON "LEI 7960 - PRISAO TEMPORARIA" FOR SELECT USING (true);
+
+-- 4. Lei 12.037/2009 - Identificação Criminal
+CREATE TABLE IF NOT EXISTS "LEI 12037 - IDENTIFICACAO CRIMINAL" (
+  id SERIAL PRIMARY KEY,
+  "Número do Artigo" TEXT,
+  "Artigo" TEXT,
+  explicacao_tecnico TEXT,
+  "Narração" TEXT,
+  ordem_artigo NUMERIC,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE "LEI 12037 - IDENTIFICACAO CRIMINAL" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read on LEI 12037" ON "LEI 12037 - IDENTIFICACAO CRIMINAL" FOR SELECT USING (true);
+
+-- 5. Lei 6.404/1976 - Sociedades Anônimas
+CREATE TABLE IF NOT EXISTS "LEI 6404 - SOCIEDADES ANONIMAS" (
+  id SERIAL PRIMARY KEY,
+  "Número do Artigo" TEXT,
+  "Artigo" TEXT,
+  explicacao_tecnico TEXT,
+  "Narração" TEXT,
+  ordem_artigo NUMERIC,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE "LEI 6404 - SOCIEDADES ANONIMAS" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read on LEI 6404" ON "LEI 6404 - SOCIEDADES ANONIMAS" FOR SELECT USING (true);
+
+-- 6. Lei 8.987/1995 - Concessões
+CREATE TABLE IF NOT EXISTS "LEI 8987 - CONCESSOES" (
+  id SERIAL PRIMARY KEY,
+  "Número do Artigo" TEXT,
+  "Artigo" TEXT,
+  explicacao_tecnico TEXT,
+  "Narração" TEXT,
+  ordem_artigo NUMERIC,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE "LEI 8987 - CONCESSOES" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read on LEI 8987" ON "LEI 8987 - CONCESSOES" FOR SELECT USING (true);
+
+-- 7. Lei 11.079/2004 - PPPs
+CREATE TABLE IF NOT EXISTS "LEI 11079 - PPP" (
+  id SERIAL PRIMARY KEY,
+  "Número do Artigo" TEXT,
+  "Artigo" TEXT,
+  explicacao_tecnico TEXT,
+  "Narração" TEXT,
+  ordem_artigo NUMERIC,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE "LEI 11079 - PPP" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read on LEI 11079" ON "LEI 11079 - PPP" FOR SELECT USING (true);
+
+-- 8. LC 75/1993 - Ministério Público da União
+CREATE TABLE IF NOT EXISTS "LC 75 - MINISTERIO PUBLICO UNIAO" (
+  id SERIAL PRIMARY KEY,
+  "Número do Artigo" TEXT,
+  "Artigo" TEXT,
+  explicacao_tecnico TEXT,
+  "Narração" TEXT,
+  ordem_artigo NUMERIC,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE "LC 75 - MINISTERIO PUBLICO UNIAO" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read on LC 75" ON "LC 75 - MINISTERIO PUBLICO UNIAO" FOR SELECT USING (true);
+
+-- 9. LC 80/1994 - Defensoria Pública
+CREATE TABLE IF NOT EXISTS "LC 80 - DEFENSORIA PUBLICA" (
+  id SERIAL PRIMARY KEY,
+  "Número do Artigo" TEXT,
+  "Artigo" TEXT,
+  explicacao_tecnico TEXT,
+  "Narração" TEXT,
+  ordem_artigo NUMERIC,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE "LC 80 - DEFENSORIA PUBLICA" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read on LC 80" ON "LC 80 - DEFENSORIA PUBLICA" FOR SELECT USING (true);
+
+-- 10. Decreto 1.171/1994 - Ética do Servidor
+CREATE TABLE IF NOT EXISTS "DECRETO 1171 - ETICA SERVIDOR" (
+  id SERIAL PRIMARY KEY,
+  "Número do Artigo" TEXT,
+  "Artigo" TEXT,
+  explicacao_tecnico TEXT,
+  "Narração" TEXT,
+  ordem_artigo NUMERIC,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE "DECRETO 1171 - ETICA SERVIDOR" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read on DECRETO 1171" ON "DECRETO 1171 - ETICA SERVIDOR" FOR SELECT USING (true);

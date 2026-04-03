@@ -1,0 +1,1 @@
+DELETE FROM historico_alteracoes WHERE tabela_lei = 'CF - Constituição Federal';

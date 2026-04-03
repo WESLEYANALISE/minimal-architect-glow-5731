@@ -1,0 +1,1 @@
+DELETE FROM simulados_concursos WHERE cargo ILIKE '%Analista Judiciário%';

@@ -1,0 +1,1 @@
+ALTER TABLE simulados_questoes ADD COLUMN IF NOT EXISTS fontes_comentario text[] DEFAULT NULL;

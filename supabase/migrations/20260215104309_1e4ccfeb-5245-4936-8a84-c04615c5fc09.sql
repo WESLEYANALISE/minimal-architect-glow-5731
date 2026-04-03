@@ -1,0 +1,1 @@
+ALTER TABLE public.gamificacao_ranking ADD COLUMN IF NOT EXISTS total_xp INTEGER DEFAULT 0;

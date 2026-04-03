@@ -1,0 +1,1 @@
+ALTER TABLE public.subscriptions ADD COLUMN IF NOT EXISTS conversion_source TEXT DEFAULT NULL;

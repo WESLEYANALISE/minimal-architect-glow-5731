@@ -1,0 +1,1 @@
+UPDATE leis_push_2025 SET status = 'publicado' WHERE id = '00dd8fbd-059c-40ab-81f4-c2263e568955';

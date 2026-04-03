@@ -1,0 +1,1 @@
+DELETE FROM artigo_ai_cache WHERE modo = 'grifo_magico';

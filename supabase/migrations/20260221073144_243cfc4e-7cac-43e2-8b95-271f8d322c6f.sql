@@ -1,0 +1,1 @@
+UPDATE termos_juridicos_aulas SET estrutura_completa = NULL, gerado_em = NULL WHERE id = 1;

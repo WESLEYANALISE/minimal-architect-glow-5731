@@ -1,0 +1,1 @@
+UPDATE subscriptions SET plan_type = 'trimestral', expiration_date = created_at + INTERVAL '90 days' WHERE user_id = '74ea75c3-b29d-469f-a0a6-0dc29ab00041' AND status = 'authorized';

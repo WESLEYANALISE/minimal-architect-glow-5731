@@ -1,0 +1,1 @@
+ALTER TABLE public.gamificacao_casos_praticos ADD COLUMN IF NOT EXISTS termos_destaque jsonb DEFAULT NULL;

@@ -1,0 +1,2 @@
+CREATE POLICY "Anyone can insert deputados cache" ON public.deputados_cache FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anyone can update deputados cache" ON public.deputados_cache FOR UPDATE USING (true);

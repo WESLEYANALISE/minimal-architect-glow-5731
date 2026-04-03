@@ -1,0 +1,272 @@
+project_id = "izspjvegxdfgkgibpyst"
+
+[functions.processar-mensagem-evelyn]
+verify_jwt = false
+
+[functions.verificar-email]
+verify_jwt = false
+
+[functions.proxy-reader]
+verify_jwt = false
+
+[functions.gerar-conteudo-categorias]
+verify_jwt = false
+
+[functions.admin-daily-feedback]
+verify_jwt = false
+
+[functions.processar-pdf-categorias]
+verify_jwt = false
+
+[functions.identificar-temas-categorias]
+verify_jwt = false
+
+[functions.gerar-forca-gamificacao]
+verify_jwt = false
+
+[functions.confirmar-temas-categorias]
+verify_jwt = false
+
+[functions.processar-livro-completo]
+verify_jwt = false
+
+[functions.gerar-capa-area-flashcards]
+verify_jwt = false
+
+
+[functions.gerar-batalha-juridica]
+verify_jwt = false
+
+
+[functions.evelyn-feedback-diario-whatsapp]
+verify_jwt = false
+
+[functions.registrar-token-usage]
+verify_jwt = false
+
+[functions.gerar-aula-termo-juridico]
+verify_jwt = false
+
+
+[functions.gerar-conteudo-aula-tab]
+verify_jwt = false
+
+[functions.gerar-questao-invasores]
+verify_jwt = false
+
+[functions.gerar-dica-do-dia]
+verify_jwt = false
+
+[functions.gerar-imagens-recomendacao]
+verify_jwt = false
+
+[functions.gerar-narracao-recomendacao]
+verify_jwt = false
+
+[functions.enviar-compartilhamento-dica]
+verify_jwt = false
+
+[functions.gerar-filme-do-dia]
+verify_jwt = false
+
+[functions.gerar-mensagem-trial-expirado]
+verify_jwt = false
+
+[functions.capturar-ip]
+verify_jwt = false
+
+[functions.gerar-capa-topico]
+verify_jwt = false
+
+[functions.gerar-imagem-conceito-slide]
+verify_jwt = false
+
+[functions.gerar-narracao-filme]
+verify_jwt = false
+
+[functions.flickr-proxy]
+verify_jwt = false
+
+[functions.conceder-dia-bonus]
+verify_jwt = false
+
+[functions.gerar-audio-tutorial-assinatura]
+verify_jwt = false
+
+
+[functions.gerar-mapa-mental]
+verify_jwt = false
+
+[functions.gerar-metodologia]
+verify_jwt = false
+
+[functions.salvar-metodologia-drive]
+verify_jwt = false
+
+[functions.cron-gerar-metodologias]
+verify_jwt = false
+
+[functions.conceder-bonus-avaliacao]
+verify_jwt = false
+
+[functions.cron-push-agendados]
+verify_jwt = false
+
+[functions.fcm-subscribe-topic]
+verify_jwt = false
+
+[functions.fcm-device-stats]
+verify_jwt = false
+
+[functions.push-track-open]
+verify_jwt = false
+
+[functions.cron-gerar-aulas-areas]
+verify_jwt = false
+
+[functions.gerar-flashcards-lacunas]
+verify_jwt = false
+
+
+[functions.gerar-caso-pratico]
+verify_jwt = false
+
+[functions.gerar-questoes-sim-nao]
+verify_jwt = false
+
+[functions.gerar-questoes-caso-pratico]
+verify_jwt = false
+
+[functions.gerar-questoes-correspondencia]
+verify_jwt = false
+
+[functions.questoes-feedback]
+verify_jwt = false
+
+[functions.classificar-raio-x]
+verify_jwt = false
+
+[functions.explicar-raio-x]
+verify_jwt = false
+
+[functions.importar-historico-raio-x]
+verify_jwt = false
+
+[functions.importar-historico-codigos]
+verify_jwt = false
+
+[functions.extrair-lei-planalto]
+verify_jwt = false
+
+[functions.extrair-lei-padrao]
+verify_jwt = false
+
+
+[functions.asaas-criar-pix]
+verify_jwt = false
+
+[functions.asaas-criar-pagamento-cartao]
+verify_jwt = false
+
+[functions.asaas-webhook]
+verify_jwt = false
+
+[functions.gerar-deck-ia]
+verify_jwt = false
+
+[functions.gerar-capa-lei-dia]
+verify_jwt = false
+
+[functions.importar-lei-vademecum]
+verify_jwt = false
+
+[functions.recuperar-checkout-abandonado]
+verify_jwt = false
+
+[functions.gerar-explicacao-artigo]
+verify_jwt = false
+
+[functions.cron-explicacao-artigo-diaria]
+verify_jwt = false
+
+[functions.sincronizar-vademecum]
+verify_jwt = false
+
+[functions.gerar-pistas-artigo]
+verify_jwt = false
+
+[functions.narrar-aula]
+verify_jwt = false
+
+[functions.narrar-slide]
+verify_jwt = false
+
+[functions.aplicar-atualizacao-vademecum]
+verify_jwt = false
+
+[functions.popular-fila-explicacoes]
+verify_jwt = false
+
+[functions.cron-gerar-explicacoes-artigos]
+verify_jwt = false
+
+
+[functions.cron-gerar-conteudo-pendente]
+verify_jwt = false
+
+[functions.popular-fila-conteudo]
+verify_jwt = false
+
+[functions.importar-proposicoes-planalto]
+verify_jwt = false
+
+[functions.raspar-noticias-legislativas]
+verify_jwt = false
+
+[functions.processar-noticia-legislativa]
+verify_jwt = false
+
+[functions.cron-atualizar-proposicoes]
+verify_jwt = false
+
+[functions.evelyn-disparar-notificacoes]
+verify_jwt = false
+
+[functions.popular-simulado]
+verify_jwt = false
+
+[functions.confirmar-popular-simulado]
+verify_jwt = false
+
+[functions.classificar-questao-concurso]
+verify_jwt = false
+
+[functions.gerar-conteudo-faculdade-topico]
+verify_jwt = false
+
+[functions.raspar-informativos-stf]
+verify_jwt = false
+
+[functions.raspar-informativos-stj]
+verify_jwt = false
+
+[functions.verificar-atualizacao-lei]
+verify_jwt = false
+
+[functions.teste-langchain]
+verify_jwt = false
+
+[functions.teste-llamaindex]
+verify_jwt = false
+
+[functions.buscar-videoaulas-artigo]
+verify_jwt = false
+
+[functions.gerar-resumo-artigo-metodo]
+verify_jwt = false
+
+[functions.grifo-magico]
+verify_jwt = false
+
+[functions.automacao-formatacao-leis]
+verify_jwt = false

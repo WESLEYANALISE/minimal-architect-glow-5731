@@ -1,0 +1,1 @@
+UPDATE faculdade_topicos SET conteudo_gerado = NULL, status = 'pendente', flashcards = NULL, questoes = NULL, termos = NULL, exemplos = NULL, updated_at = now() WHERE status = 'concluido' OR status = 'erro' OR conteudo_gerado IS NOT NULL;

@@ -1,0 +1,1 @@
+UPDATE subscriptions SET status = 'cancelled' WHERE user_id = '2baaaa24-f38e-466d-bf31-8270967fc007' AND id = 'b93322f2-d4d0-4dff-99a6-6bb2e9c2e653';

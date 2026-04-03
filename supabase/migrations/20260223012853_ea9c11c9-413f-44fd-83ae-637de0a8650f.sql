@@ -1,0 +1,1 @@
+DELETE FROM filmes_do_dia WHERE data = '2026-02-22'::date;

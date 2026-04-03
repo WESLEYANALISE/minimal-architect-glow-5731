@@ -1,0 +1,1 @@
+ALTER TABLE public.user_anotacoes ADD COLUMN categoria TEXT DEFAULT NULL;

@@ -1,0 +1,1 @@
+DELETE FROM aulas_interativas WHERE id = '5cab8652-b032-4c14-8206-41c0d1465a17';

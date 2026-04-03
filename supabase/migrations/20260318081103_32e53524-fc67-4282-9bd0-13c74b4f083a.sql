@@ -1,0 +1,1 @@
+UPDATE blogger_faculdade SET conteudo_gerado = NULL;

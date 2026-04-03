@@ -1,0 +1,10 @@
+UPDATE noticias_legislativas_cache SET titulo_curto = 'Mulheres do campo ganham nova arma contra o câncer' WHERE id = '1a5b89f8-691a-4fa1-81b2-e9b5af612e27';
+UPDATE noticias_legislativas_cache SET titulo_curto = 'Novas leis blindam brasileiras contra violência' WHERE id = '6576c33c-123f-4bf3-97f8-5e4ea29f2eec';
+UPDATE noticias_legislativas_cache SET titulo_curto = 'Nova lei impõe prazo para tratar autismo no SUS' WHERE id = '83c1237e-4384-4417-a887-2774d1313ddf';
+UPDATE noticias_legislativas_cache SET titulo_curto = 'Padre Ibiapina entra no Livro dos Heróis da Pátria' WHERE id = '34c9409a-53d7-4ba0-b6c6-ec844e8df0cf';
+UPDATE noticias_legislativas_cache SET titulo_curto = 'CPMI revela fraude milionária entre C6 e INSS' WHERE id = 'ffaaba1f-5799-4390-bca2-4a2f3ec66392';
+UPDATE noticias_legislativas_cache SET titulo_curto = 'Câmara quer privatizar rios na região Norte' WHERE id = 'ed0c02c0-e790-49dc-bffe-5bf431ea49bd';
+UPDATE noticias_legislativas_cache SET titulo_curto = 'Heróis da pandemia terão livro oficial' WHERE id = '0aec854b-36a2-48a3-8b80-67573c6344ec';
+UPDATE noticias_legislativas_cache SET titulo_curto = 'PEC garante aposentadoria especial à segurança' WHERE id = '80c5d60d-1100-455e-962e-aa5d0e245db1';
+UPDATE noticias_legislativas_cache SET titulo_curto = 'Igreja no Piauí vira patrimônio nacional' WHERE id = 'b8aca1e3-fa1d-4708-9eb8-7f2aea358548';
+UPDATE noticias_legislativas_cache SET titulo_curto = 'Nova regra expõe processos ocultos do INSS' WHERE id = '5d8c71a8-01f3-44ed-945e-085adddf9ba2';

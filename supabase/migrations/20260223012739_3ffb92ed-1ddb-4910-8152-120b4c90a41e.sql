@@ -1,0 +1,1 @@
+DELETE FROM filmes_do_dia WHERE id = 3;

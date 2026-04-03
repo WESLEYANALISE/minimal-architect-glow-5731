@@ -1,0 +1,1 @@
+UPDATE dicas_do_dia SET livro_titulo = 'Dos Delitos e das Penas', livro_autor = 'Cesare Beccaria' WHERE data = '2026-03-02';

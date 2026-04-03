@@ -1,0 +1,1 @@
+UPDATE simulados_concursos SET cargo = 'Analista Judiciário - Tecnologia da Informação' WHERE cargo = 'Analista JudiciáRio - Tecnologia da InformaçãO - Analista de Sistemas';

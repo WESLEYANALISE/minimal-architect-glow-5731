@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN trial_modal_visto BOOLEAN DEFAULT FALSE;

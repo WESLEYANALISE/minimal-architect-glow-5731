@@ -1,0 +1,1 @@
+UPDATE dicas_do_dia SET liberado_em = now() WHERE data IN ('2026-02-21', '2026-02-22') AND liberado_em > now();

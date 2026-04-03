@@ -1,0 +1,1 @@
+UPDATE subscriptions SET status = 'authorized', updated_at = now() WHERE id = '4c86edfa-a315-4f61-8814-29c66caa651e';

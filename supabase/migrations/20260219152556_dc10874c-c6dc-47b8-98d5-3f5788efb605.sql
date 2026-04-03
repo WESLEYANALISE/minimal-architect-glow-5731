@@ -1,0 +1,1 @@
+UPDATE categorias_materias SET ordem = 99 WHERE id = 33 AND nome = 'Direito Inglês';

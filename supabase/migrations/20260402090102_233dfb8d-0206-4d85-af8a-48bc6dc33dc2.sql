@@ -1,0 +1,1 @@
+DELETE FROM artigo_ai_cache WHERE modo LIKE 'grifo_magico%' AND modo != 'grifo_magico_v5';

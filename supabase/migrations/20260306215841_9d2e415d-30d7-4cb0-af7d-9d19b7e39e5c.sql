@@ -1,0 +1,1 @@
+DELETE FROM gamificacao_casos_praticos WHERE numero_artigo = '1º' AND status != 'concluido';

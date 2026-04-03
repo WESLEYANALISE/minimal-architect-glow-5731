@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS idx_metodologias_area_tema_metodo;

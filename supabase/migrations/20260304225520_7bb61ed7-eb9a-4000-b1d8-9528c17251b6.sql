@@ -1,0 +1,3 @@
+UPDATE leis_push_2025 SET data_dou = '2026-03-04', data_publicacao = '2026-03-04' WHERE numero_lei = 'Decreto 12.866/2026';
+UPDATE leis_push_2025 SET data_dou = '2026-03-03', data_publicacao = '2026-03-03' WHERE numero_lei IN ('Decreto 12.865/2026', 'Decreto 12.864/2026', 'Decreto 12.863/2026', 'Decreto 12.862/2026');
+UPDATE leis_push_2025 SET data_dou = '2026-03-02', data_publicacao = '2026-03-02' WHERE numero_lei = 'Decreto 12.861/2026';

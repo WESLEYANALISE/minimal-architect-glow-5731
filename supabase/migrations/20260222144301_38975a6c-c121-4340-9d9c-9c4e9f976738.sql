@@ -1,0 +1,1 @@
+ALTER TABLE public.filmes_do_dia ADD COLUMN IF NOT EXISTS onde_assistir jsonb DEFAULT null;
