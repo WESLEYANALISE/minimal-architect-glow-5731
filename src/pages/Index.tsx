@@ -594,6 +594,11 @@ const Index = () => {
               </div>
             </div>
 
+            {/* Estudos no Computador — Funções Web + Estudo em Mídia (mobile only) */}
+            <div className="px-3 pt-2">
+              <DesktopEstudosComputador navigate={gatedNavigate} />
+            </div>
+
             {/* Estudos / Leis do Dia / Vade Mecum - Carousel com setas */}
             <div className="pt-4 pb-4">
               <EstudosViewCarousel>
