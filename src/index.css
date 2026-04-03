@@ -1,5 +1,19 @@
 @tailwind base;
 
+/* Cross-device & iframe stability */
+html {
+  overscroll-behavior: none;
+}
+
+body {
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+button, a, input, select, textarea, [role="button"] {
+  touch-action: manipulation;
+}
+
 @keyframes slideOutLeft {
   0% { transform: translateX(0); opacity: 1; }
   100% { transform: translateX(-100%); opacity: 0.3; }

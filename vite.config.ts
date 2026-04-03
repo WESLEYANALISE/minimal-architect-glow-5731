@@ -5,6 +5,7 @@ import { componentTagger } from "lovable-tagger";
 import { VitePWA } from 'vite-plugin-pwa';
 
 import { imagetools } from 'vite-imagetools';
+import legacy from '@vitejs/plugin-legacy';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -36,6 +37,9 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     imagetools(),
     react(),
+    legacy({
+      targets: ['defaults', 'not IE 11', 'safari >= 13', 'chrome >= 64', 'iOS >= 13'],
+    }),
     mode === 'development' &&
     componentTagger(),
     VitePWA({
