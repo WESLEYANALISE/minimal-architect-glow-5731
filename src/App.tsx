@@ -487,6 +487,8 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <SpeedInsights />
+        <Analytics />
         <AuthProvider>
         <SubscriptionProvider>
         <NarrationPlayerProvider>

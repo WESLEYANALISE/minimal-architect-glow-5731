@@ -168,18 +168,6 @@ export default defineConfig(({ mode }) => ({
         maximumFileSizeToCacheInBytes: 17 * 1024 * 1024
       }
     }),
-    // Compressão Brotli (melhor que gzip, ~20% menor)
-    viteCompression({
-      algorithm: 'brotliCompress',
-      ext: '.br',
-      threshold: 1024, // Comprimir arquivos > 1KB
-    }),
-    // Compressão Gzip como fallback
-    viteCompression({
-      algorithm: 'gzip',
-      ext: '.gz',
-      threshold: 1024,
-    }),
   ].filter(Boolean),
   resolve: {
     alias: {
