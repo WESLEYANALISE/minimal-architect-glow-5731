@@ -420,18 +420,34 @@ const Index = () => {
       {!isDesktop && (
         <>
           {/* Barra de pesquisa fixa no topo do hero */}
-          <div className="fixed top-0 left-0 right-0 pointer-events-auto px-4 pt-[env(safe-area-inset-top,0px)]" style={{ zIndex: 10 }}>
-            <div className="pt-2 pb-1">
-              <div
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 cursor-pointer group"
+          <div className="fixed top-0 left-0 right-0 pointer-events-auto px-3 pt-[env(safe-area-inset-top,0px)]" style={{ zIndex: 10 }}>
+            <div className="pt-2 pb-2">
+              <div className="flex items-center relative overflow-hidden rounded-full group cursor-pointer"
                 onClick={() => window.dispatchEvent(new Event('open-pesquisar-sheet'))}
               >
-                <Search className="w-4 h-4 text-white/50 flex-shrink-0" />
-                <div className="flex-1 overflow-hidden">
-                  <SearchBarAnimatedText />
+                <div className="absolute inset-0 z-30 pointer-events-none overflow-hidden rounded-full">
+                  <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-[-20deg]" style={{ animation: 'searchShine 4s ease-in-out infinite' }} />
                 </div>
-                <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 shadow-sm shadow-primary/30">
-                  <Search className="w-3 h-3 text-primary-foreground" />
+
+                <div className="relative z-20 flex-shrink-0 -mr-4">
+                  <img
+                    src={logoDireitoPremium}
+                    alt="Direito Prime"
+                    className="w-11 h-11 rounded-full object-contain shadow-xl ring-2 ring-[hsl(8,65%,32%)] bg-[#1a0a0a]"
+                    loading="eager"
+                    decoding="sync"
+                  />
+                </div>
+
+                <div
+                  className="flex-1 -ml-4 pl-7 pr-3 py-1.5 rounded-r-2xl rounded-l-lg bg-gradient-to-r from-[hsl(8,65%,32%)]/90 to-[hsl(8,50%,22%)]/90 border border-[hsl(8,65%,38%)]/60 relative shadow-lg shadow-[hsl(8,65%,20%)]/40 backdrop-blur-md"
+                >
+                  <div className="w-full flex items-center gap-3 px-3 py-0.5 rounded-xl bg-white/60 border border-white/30 relative z-10">
+                    <SearchBarAnimatedText />
+                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm shadow-primary/30">
+                      <Search className="w-3 h-3 text-primary-foreground" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
