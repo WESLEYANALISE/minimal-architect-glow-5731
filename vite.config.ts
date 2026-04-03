@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { VitePWA } from 'vite-plugin-pwa';
-import viteCompression from 'vite-plugin-compression';
+
 import { imagetools } from 'vite-imagetools';
 
 // https://vitejs.dev/config/
@@ -167,18 +167,6 @@ export default defineConfig(({ mode }) => ({
         // Increase limit to cache larger bundles (15MB)
         maximumFileSizeToCacheInBytes: 17 * 1024 * 1024
       }
-    }),
-    // Compressão Brotli (melhor que gzip, ~20% menor)
-    viteCompression({
-      algorithm: 'brotliCompress',
-      ext: '.br',
-      threshold: 1024, // Comprimir arquivos > 1KB
-    }),
-    // Compressão Gzip como fallback
-    viteCompression({
-      algorithm: 'gzip',
-      ext: '.gz',
-      threshold: 1024,
     }),
   ].filter(Boolean),
   resolve: {

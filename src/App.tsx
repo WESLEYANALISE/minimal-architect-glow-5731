@@ -1,4 +1,6 @@
 import { useEffect, Suspense, startTransition } from "react";
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from '@vercel/analytics/react';
 import { lazyWithRetry as lazy } from "./utils/lazyWithRetry";
 import { useAuth } from "./contexts/AuthContext";
 import { PageLoader } from "@/components/ui/page-loader";
@@ -485,6 +487,8 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <SpeedInsights />
+        <Analytics />
         <AuthProvider>
         <SubscriptionProvider>
         <NarrationPlayerProvider>
