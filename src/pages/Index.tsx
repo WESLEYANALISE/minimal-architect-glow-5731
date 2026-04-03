@@ -11,6 +11,7 @@ import { UniversalImage } from '@/components/ui/universal-image';
 import { DotPattern } from "@/components/ui/dot-pattern";
 
 import { DesktopVadeMecumHome } from "@/components/desktop/DesktopVadeMecumHome";
+import { DesktopEstudosComputador } from "@/components/desktop/DesktopEstudosComputador";
 import { ResenhaHojeSection } from "@/components/ResenhaHojeSection";
 import themisEstudosDesktop from "@/assets/themis-estudos-desktop.webp";
 import capaEstudosAulas from "@/assets/capa-estudos-aulas.jpg";
