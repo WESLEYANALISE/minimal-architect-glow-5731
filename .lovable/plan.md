@@ -1,85 +1,94 @@
 
+# Otimizações Vercel para o Direito Prime
 
-# Plano: Tornar Todas as Páginas Responsivas para Desktop
+## O que vamos instalar e configurar
 
-## Contexto
+### 1. `@vercel/speed-insights` — Monitoramento de Core Web Vitals
+Pacote oficial que coleta métricas reais (LCP, FID, CLS, FCP, TTFB) dos seus usuários e exibe no dashboard da Vercel. Ajuda a identificar páginas lentas.
 
-Analisei todas as ~400 páginas do projeto. Encontrei **29 páginas que já usam `useDeviceType`** com layout desktop dedicado, e **~20 páginas importantes que NÃO têm** — ficam com layout mobile estreito no desktop, desperdiçando espaço.
+- Instalar o pacote npm
+- Adicionar o componente `<SpeedInsights />` no `App.tsx`
 
-## Padrão de Referência
+### 2. `@vercel/analytics` — Web Analytics
+Analytics leve e privacy-friendly da Vercel (sem cookies). Mostra visitantes, pageviews, referrers, países — complementa o GTM que você já tem.
 
-Baseado nos dashboards open-source com shadcn/Tailwind (como shadcn-dashboard-landing-template), o padrão ideal para este projeto é:
+- Instalar o pacote npm
+- Adicionar o componente `<Analytics />` no `App.tsx`
 
-```text
-┌──────────────────────────────────────────────────┐
-│  DesktopTopNav (já existe, 4.5rem)               │
-├──────────┬───────────────────────┬───────────────┤
-│ Sidebar  │   Conteúdo Principal  │  Sidebar Dir  │
-│ (já      │   max-w-5xl           │  (opcional)   │
-│  existe) │   grid responsivo     │               │
-│          │   4-5 cols no desktop │               │
-└──────────┴───────────────────────┴───────────────┘
+### 3. Headers de Cache otimizados no `vercel.json`
+Configurar headers HTTP para que o CDN da Vercel cache seus assets de forma agressiva:
+
+- **Assets com hash** (JS, CSS do Vite): `max-age=31536000, immutable` — cache de 1 ano, nunca revalida
+- **Imagens/fontes**: `max-age=86400, stale-while-revalidate=604800` — 1 dia fresh + 7 dias stale
+- **HTML**: `max-age=0, must-revalidate` — sempre busca a versão mais recente
+- **Service Worker**: `max-age=0, must-revalidate` — garante atualização imediata
+
+### 4. Headers de segurança no `vercel.json`
+Mover os headers de segurança que hoje estão em meta tags (CSP, X-Frame-Options, etc.) para headers HTTP reais no `vercel.json`. Headers HTTP são mais confiáveis e performáticos que meta tags.
+
+### 5. Compressão automática
+A Vercel já aplica Brotli e Gzip automaticamente no CDN. Isso significa que os plugins `vite-plugin-compression` no `vite.config.ts` são **redundantes** para deploys na Vercel — geram arquivos `.br` e `.gz` que a Vercel ignora. Podemos removê-los para acelerar o build.
+
+---
+
+## Detalhes técnicos
+
+### Arquivos modificados
+
+**`package.json`** — adicionar dependências:
+```
+@vercel/speed-insights
+@vercel/analytics
 ```
 
-O padrão já existente no projeto (ex: FlashcardsHub, QuestoesEscolha, Dicionario) é:
-- `useDeviceType()` → `if (isDesktop)` retorna layout dedicado
-- `height: calc(100vh - 4.5rem)` para ocupar tela inteira
-- Grid de 3-5 colunas no conteúdo
-- Sidebar opcional com dicas/filtros
+**`src/App.tsx`** — adicionar componentes:
+```tsx
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from '@vercel/analytics/react';
+// No JSX, junto aos outros componentes globais:
+<SpeedInsights />
+<Analytics />
+```
 
-## Páginas a Adaptar (por prioridade)
+**`vercel.json`** — expandir com headers:
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(.*\\.(?:png|jpg|jpeg|webp|svg|gif|ico|woff|woff2))",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}
+```
 
-### Fase 1 — Páginas de Hub/Navegação (mais impacto visual)
+**`vite.config.ts`** — remover os dois plugins `viteCompression` (Brotli + Gzip) e o import de `vite-plugin-compression`, já que a Vercel comprime automaticamente no edge.
 
-| Página | Arquivo | O que fazer |
-|--------|---------|-------------|
-| Jogos Jurídicos | `JogosJuridicos.tsx` | Grid 3-4 cols, remover PageHero, título inline |
-| Meu Brasil | `MeuBrasil.tsx` | Grid 3 cols com cards, busca no topo |
-| Política | `Politica.tsx` | Layout 2 colunas: conteúdo + sidebar notícias |
-| Carreiras | `CarreirasJuridicas.tsx` | Já tem `isDesktop` mas layout básico — melhorar com header compacto |
-| Advogado | `Advogado.tsx` | Grid 3 cols com sidebar de blog |
-| Cursos | `Cursos.tsx` | Grid de áreas em 3-4 cols, header compacto |
-| Leitura Dinâmica | `LeituraDinamica.tsx` | Grid 4 cols de livros, busca no topo |
-
-### Fase 2 — Páginas de Conteúdo
-
-| Página | Arquivo | O que fazer |
-|--------|---------|-------------|
-| Evelyn | `Evelyn.tsx` | Card central flutuante (igual ChatProfessora) |
-| Três Poderes (3 pgs) | `TresPoderes*.tsx` | Grid responsivo de membros/itens |
-| Boletins Jurídicos | `BoletinsJuridicos.tsx` | Grid 3 cols |
-| Posts Jurídicos | `PostsJuridicos.tsx` | Grid 2-3 cols |
-| Novidades | `Novidades.tsx` | Timeline central com max-width |
-| Estagios | `Estagios.tsx` | Grid 3 cols + filtros laterais |
-
-### Fase 3 — Páginas Secundárias
-
-| Página | Arquivo | O que fazer |
-|--------|---------|-------------|
-| Politica Blog | `PoliticaBlog.tsx` | Grid de artigos |
-| DicionarioLetra | `DicionarioLetra.tsx` | Lista expandida com sidebar |
-| Simulação Jurídica | `SimulacaoJuridica.tsx` | Grid de opções |
-| Gamificação | `Gamificacao.tsx` | Grid de jogos |
-
-## Abordagem Técnica
-
-Para cada página, o padrão será:
-
-1. Importar `useDeviceType`
-2. Adicionar bloco `if (isDesktop)` no início do render
-3. No desktop:
-   - Remover `PageHero` / `StandardPageHeader` (substituir por título inline compacto)
-   - Remover `pb-20` (não há bottom nav no desktop)
-   - Usar `height: calc(100vh - 4.5rem)` com `overflow-y-auto`
-   - Grids de 3-5 colunas dependendo do conteúdo
-   - Background mais sutil (`bg-background` ao invés de gradientes escuros)
-4. Manter o layout mobile intacto (é o fallback)
-
-## Resultado Esperado
-
-Todas as ~20 páginas identificadas passarão a ter layout desktop dedicado que:
-- Ocupa a tela inteira sem desperdício de espaço
-- Usa grids responsivos (3-5 colunas)
-- Remove elementos mobile-only (PageHero, bottom padding)
-- Mantém consistência visual com as páginas que já têm desktop layout
-
+### Impacto esperado
+- **Build mais rápido**: sem gerar arquivos `.br`/`.gz` desnecessários
+- **Cache CDN agressivo**: assets com hash nunca são re-baixados
+- **Visibilidade**: Core Web Vitals reais no dashboard Vercel
+- **Segurança**: headers HTTP reais em vez de meta tags
