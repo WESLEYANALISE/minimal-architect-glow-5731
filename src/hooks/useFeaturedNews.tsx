@@ -538,6 +538,10 @@ export const useFeaturedNews = () => {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [loadFreshData]);
 
+  // Ref estável para o callback de realtime (evita re-subscribe)
+  const handleNewNoticiaRef = useRef(handleNewNoticia);
+  useEffect(() => { handleNewNoticiaRef.current = handleNewNoticia; }, [handleNewNoticia]);
+
   // REALTIME: Escuta novas notícias inseridas no banco
   useEffect(() => {
     const channel = supabase
@@ -549,7 +553,7 @@ export const useFeaturedNews = () => {
       }, (payload) => {
         const data = payload.new as any;
         if (data.imagem) {
-          handleNewNoticia(data, 'Direito', data.imagem);
+          handleNewNoticiaRef.current(data, 'Direito', data.imagem);
         }
       })
       .on('postgres_changes', {
@@ -559,7 +563,7 @@ export const useFeaturedNews = () => {
       }, (payload) => {
         const data = payload.new as any;
         if (data.imagem) {
-          handleNewNoticia(data, 'Concurso Público', data.imagem);
+          handleNewNoticiaRef.current(data, 'Concurso Público', data.imagem);
         }
       })
       .on('postgres_changes', {
@@ -569,7 +573,7 @@ export const useFeaturedNews = () => {
       }, (payload) => {
         const data = payload.new as any;
         if (data.processado && (data.imagem_url_webp || data.imagem_url)) {
-          handleNewNoticia(data, 'Política', data.imagem_url_webp || data.imagem_url);
+          handleNewNoticiaRef.current(data, 'Política', data.imagem_url_webp || data.imagem_url);
         }
       })
       .subscribe();
@@ -577,7 +581,7 @@ export const useFeaturedNews = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [handleNewNoticia]);
+  }, []);
 
   return { 
     featuredNews, 
