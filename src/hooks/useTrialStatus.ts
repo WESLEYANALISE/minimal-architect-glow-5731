@@ -67,6 +67,8 @@ export const useTrialStatus = (): TrialStatus => {
     setOverrideLoaded(true);
   }, []);
 
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+
   useEffect(() => {
     if (!user?.id) {
       setOverride(null);
@@ -75,10 +77,14 @@ export const useTrialStatus = (): TrialStatus => {
     }
     fetchOverride(user.id);
 
-    // Realtime subscription - use unique channel name to avoid StrictMode conflicts
-    const channelName = `trial_override_${user.id}_${Date.now()}`;
+    // Clean up any existing channel before creating a new one
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
     const channel = supabase
-      .channel(channelName)
+      .channel(`trial_override_${user.id}_${Math.random().toString(36).slice(2)}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'trial_overrides', filter: `user_id=eq.${user.id}` },
@@ -86,7 +92,12 @@ export const useTrialStatus = (): TrialStatus => {
       )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    channelRef.current = channel;
+
+    return () => {
+      supabase.removeChannel(channel);
+      channelRef.current = null;
+    };
   }, [user?.id, fetchOverride]);
 
   const subscriptionNotReady = !!user?.id && checkedUserId !== user.id;
