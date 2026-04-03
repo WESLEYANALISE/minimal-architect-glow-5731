@@ -75,9 +75,10 @@ export const useTrialStatus = (): TrialStatus => {
     }
     fetchOverride(user.id);
 
-    // Realtime subscription
+    // Realtime subscription - use unique channel name to avoid StrictMode conflicts
+    const channelName = `trial_override_${user.id}_${Date.now()}`;
     const channel = supabase
-      .channel(`trial_override_${user.id}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'trial_overrides', filter: `user_id=eq.${user.id}` },
