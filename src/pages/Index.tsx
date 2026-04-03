@@ -533,7 +533,7 @@ const Index = () => {
 
       {/* Conteúdo principal - Mobile */}
       {!isDesktop && (
-      <div className="relative flex-1 pb-20 rounded-t-[32px] bg-muted" style={{ zIndex: 2 }}>
+      <div className="relative flex-1 pb-20 rounded-t-[32px] bg-[hsl(0,0%,8%)]" style={{ zIndex: 2 }}>
 
         {/* Tabs dentro do container principal */}
         <div className="px-3 sm:px-4 md:px-6 pt-3 sm:pt-4 pb-2">
