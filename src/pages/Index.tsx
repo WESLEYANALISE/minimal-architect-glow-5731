@@ -688,8 +688,6 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Estudos no Computador — Funções Web + Estudo em Mídia */}
-          <DesktopEstudosComputador navigate={gatedNavigate} />
 
           {/* Conteúdo da tab ativa — CSS transitions (sem AnimatePresence) */}
           <div>
