@@ -543,9 +543,10 @@ export const useFeaturedNews = () => {
   useEffect(() => { handleNewNoticiaRef.current = handleNewNoticia; }, [handleNewNoticia]);
 
   // REALTIME: Escuta novas notícias inseridas no banco
+  const channelIdRef = useRef(`featured-news-realtime-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`);
   useEffect(() => {
     const channel = supabase
-      .channel('featured-news-realtime')
+      .channel(channelIdRef.current)
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
