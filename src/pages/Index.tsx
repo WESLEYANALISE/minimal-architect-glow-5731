@@ -686,8 +686,12 @@ const Index = () => {
                 );
               })}
             </div>
-          </div>
+            </div>
 
+            {/* Estudos no Computador — Funções Web + Estudo em Mídia */}
+            <div className="px-3">
+              <DesktopEstudosComputador navigate={gatedNavigate} />
+            </div>
 
           {/* Conteúdo da tab ativa — CSS transitions (sem AnimatePresence) */}
           <div>
