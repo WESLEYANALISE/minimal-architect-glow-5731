@@ -105,7 +105,6 @@
     "use-sound": "^5.0.0",
     "vaul": "^0.9.3",
     "vite-imagetools": "^9.0.3",
-    "vite-plugin-compression": "^0.5.1",
     "vite-plugin-pwa": "^0.20.5",
     "zod": "^3.23.8"
   },
