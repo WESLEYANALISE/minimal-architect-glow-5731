@@ -1,4 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { CountdownOverlay } from "@/components/CountdownOverlay";
 import { Scale, Loader2, Brain, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef, useCallback } from "react";
