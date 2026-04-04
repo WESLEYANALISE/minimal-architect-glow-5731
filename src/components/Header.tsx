@@ -726,6 +726,7 @@ export const Header = () => {
   const isQuestoesCorrespPage = location.pathname.startsWith("/ferramentas/questoes/correspondencia");
   const isQuestoesCasoPraticoPage = location.pathname.startsWith("/ferramentas/questoes/caso-pratico");
   const isQuestoesHubPage = location.pathname === "/ferramentas/questoes";
+  const isQuestoesV2Page = location.pathname.startsWith("/ferramentas/questoes-v2");
   const isFlashcardsAreasPage = location.pathname === "/flashcards/areas";
   const isMetodologiasAreas = /^\/metodologias\/[^/]+$/.test(location.pathname);
   const isMetodologiasTemas = /^\/metodologias\/[^/]+\/area\//.test(location.pathname);
