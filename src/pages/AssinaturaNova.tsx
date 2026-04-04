@@ -116,6 +116,8 @@ const PlanCard = ({ planKey, plan, selected, onSelect }: {
 
 const AssinaturaNova = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAdminPreview = location.pathname.includes('/admin/');
   const { user } = useAuth();
   const { isPremium, loading: subscriptionLoading } = useSubscription();
   const { trackEvent } = useFacebookPixel();
