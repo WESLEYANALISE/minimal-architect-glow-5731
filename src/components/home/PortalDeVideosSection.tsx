@@ -72,6 +72,7 @@ export const PortalDeVideosSection = memo(({ navigate }: PortalDeVideosSectionPr
             <button
               key={item.id}
               onClick={() => navigate(item.route)}
+              onTouchStart={() => onTouchStart(item.route)}
               className="group rounded-xl text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] flex flex-col overflow-hidden animate-fade-in border border-white/[0.08]"
               style={{
                 animationDelay: `${index * 0.06}s`,
