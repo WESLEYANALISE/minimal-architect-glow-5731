@@ -292,7 +292,7 @@ const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => 
                     />
                   </button>
 
-                  <ChevronRight className="w-4 h-4 shrink-0" style={{ color: "hsla(0, 0%, 100%, 0.15)" }} />
+                  <ChevronRight className="w-4 h-4 shrink-0 text-white/70" />
                 </motion.button>
               );
             })
