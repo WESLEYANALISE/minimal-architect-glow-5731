@@ -21,10 +21,10 @@ import newLogo from '@/assets/logo-direito-premium-new.png?format=webp&quality=8
 import heroBackground from '@/assets/assinatura-bg.webp';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const PLANS: Record<string, { price: number; label: string; days: number; badge: string | null; featured?: boolean; installments: number }> = {
-  mensal: { price: 21.90, label: 'Mensal', days: 30, badge: null, installments: 1 },
-  anual: { price: 149.90, label: 'Anual', days: 365, badge: 'Mais popular', featured: true, installments: 12 },
-  vitalicio: { price: 249.90, label: 'Vitalício', days: 36500, badge: 'Para sempre', installments: 12 },
+const PLANS: Record<string, { price: number; label: string; days: number; badge: string | null; featured?: boolean; installments: number; sub: string }> = {
+  mensal: { price: 21.90, label: 'Mensal', days: 30, badge: null, installments: 1, sub: 'Cobrado todo mês' },
+  anual: { price: 149.90, label: 'Anual', days: 365, badge: 'Mais popular', featured: true, installments: 12, sub: 'Economia de 43%' },
+  vitalicio: { price: 249.90, label: 'Vitalício', days: 36500, badge: 'Melhor custo', installments: 12, sub: 'Pague uma vez só' },
 };
 
 const BENEFITS = [
