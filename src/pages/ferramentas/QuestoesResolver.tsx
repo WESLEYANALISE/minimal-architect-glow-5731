@@ -1,4 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { CountdownOverlay } from "@/components/CountdownOverlay";
 import { Scale, Loader2, ArrowLeft, Settings, RotateCcw, Shuffle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -103,7 +104,7 @@ const QuestoesResolver = ({
   const autoplayAudio = inlineAutoplayAudio ?? (autoplayParam !== null ? autoplayParam === "true" : true);
   const isModoTodas = modo === "todas";
   const [isGenerating, setIsGenerating] = useState(false);
-  const countdownDone = true; // Skip countdown — start instantly
+  const [countdownDone, setCountdownDone] = useState(false);
   const [questoes, setQuestoes] = useState<Questao[]>([]);
   const [geracaoStatus, setGeracaoStatus] = useState<GeracaoStatus | null>(null);
   const [progressMessage, setProgressMessage] = useState("");
@@ -428,6 +429,15 @@ const QuestoesResolver = ({
 
   const progressKey = `questoes_progress_${area}_${modo || tema}`;
   const shouldShowCountdown = !countdownDone && questoes.length > 0;
+
+  if (shouldShowCountdown) {
+    return (
+      <CountdownOverlay
+        onComplete={() => setCountdownDone(true)}
+        label="Preparando questões..."
+      />
+    );
+  }
 
   return (
     <>

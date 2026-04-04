@@ -1,4 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { CountdownOverlay } from "@/components/CountdownOverlay";
 import { Scale, Loader2, Brain, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -61,6 +62,7 @@ const FlashcardsEstudar = ({ inlineArea, inlineTema, onExit, onComplete }: Flash
   const [settings, setSettings] = useState<FlashcardSettings>({ autoNarration: false, showExamples: true, studyMode: 'leitura' });
   const fraseIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [flashcardsCount, setFlashcardsCount] = useState<number | null>(null);
+  const [countdownDone, setCountdownDone] = useState(false);
   
   // Background generation state
   const [bgGenerating, setBgGenerating] = useState(false);
@@ -358,6 +360,16 @@ const FlashcardsEstudar = ({ inlineArea, inlineTema, onExit, onComplete }: Flash
     if (isInline && onExit) { onExit(); return null; }
     navigate("/flashcards");
     return null;
+  }
+
+  // Countdown antes de iniciar
+  if (!countdownDone && !isLoadingInitial && !isGenerating && flashcards.length > 0) {
+    return (
+      <CountdownOverlay
+        onComplete={() => setCountdownDone(true)}
+        label="Preparando flashcards..."
+      />
+    );
   }
 
   // Mostrar tela de geração
