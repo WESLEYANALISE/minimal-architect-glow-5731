@@ -1,79 +1,60 @@
 
 
-## Analise de Performance GTmetrix — Direito Prime
+## Plano: Modo Realeza para Resumos Juridicos
 
-### Resultados Atuais
+### Objetivo
+Recriar o modulo de Resumos Juridicos com a estetica "Realeza" (mesma paleta dourada/escura do QuestoesHubNovo), mantendo todas as funcionalidades existentes mas com design premium unificado.
 
-| Metrica | Valor | Status |
-|---------|-------|--------|
-| GTmetrix Grade | **D** | Ruim |
-| Performance | **56%** | Ruim |
-| Structure | **77%** | Razoavel |
-| LCP (Largest Contentful Paint) | **5.0s** | Ruim (meta: < 2.5s) |
-| TBT (Total Blocking Time) | **557ms** | Ruim (meta: < 200ms) |
-| CLS (Cumulative Layout Shift) | **0.02** | Bom |
+### Paginas afetadas (5 paginas principais)
 
-### Diagnostico: Por que esta lento?
+1. **ResumosJuridicosLanding** (`/resumos-juridicos`) — Hub principal com carousel, tabs (Metodos/Grade/Raio-X/Sobre)
+2. **ResumosJuridicosEscolha** (`/resumos-juridicos/prontos`) — Lista de areas do Direito
+3. **ResumosJuridicosTemas** (`/resumos-juridicos/temas`) — Temas dentro de uma area
+4. **ResumosProntos** (`/resumos-juridicos/prontos/:area`) — Subtemas dentro de um tema
+5. **ResumosProntosView** (`/resumos-juridicos/prontos/:area/:tema`) — Visualizacao do resumo
 
-**1. LCP de 5.0s — O maior problema**
-O elemento LCP (provavelmente o hero banner ou imagem principal) demora muito para aparecer. Causas:
-- **8 fontes Google Fonts** carregadas no index.html (Inter, Source Sans, Source Serif, Cinzel, Oswald, Crimson Text, Playfair Display, Merriweather) — mesmo com `media="print"`, o browser ainda precisa parsear e eventualmente carregar todas
-- **Scripts bloqueantes no head**: GTM carrega sincronamente antes do conteudo
-- **SDK Mercado Pago e PagBank** carregam no head de TODAS as paginas, mesmo que so sejam usados na tela de pagamento
+### Mudancas de design (aplicadas em todas as paginas)
 
-**2. TBT de 557ms — JavaScript pesado**
-O browser fica bloqueado processando JS por mais de meio segundo:
-- Bundle grande com muitas dependencias (Recharts, Framer Motion, muitos componentes Radix)
-- `AggressivePreloader` dispara imports de ~22 chunks logo apos o carregamento
-- `useHomePreloader` faz multiplas queries ao Supabase simultaneamente no load
-- Facebook Pixel SDK carrega no body e executa JS
+- **Fundo escuro**: `hsl(0 0% 10%)` com `DotPattern` sutil (igual Questoes)
+- **Cards**: fundo `hsla(0, 0%, 100%, 0.04)`, borda `hsla(40, 60%, 50%, 0.12)`, sombra multicamada com brilho interno dourado
+- **Shimmer hover**: reflexo dourado diagonal nos cards
+- **Acentos dourados**: titulos brancos, subtitulos em `hsl(40, 80%, 55%)`, contagens em dourado
+- **Icones de area**: badges com fundo `hsla(40, 60%, 50%, 0.12)` e icone dourado
+- **Tabs**: fundo escuro com tab ativa em dourado
+- **Animacoes**: fade-in escalonado (30ms delay), slide transitions com framer-motion
+- **Coroa dourada**: areas bloqueadas para usuarios gratuitos
+- **Header**: gradiente escuro com tipografia branca, sem StandardPageHeader
 
-**3. Scripts de terceiros competindo por recursos**
-- GTM (sincrono no head)
-- Facebook Pixel (no body, mas ainda bloqueia)
-- Google Analytics (adiado, mas carrega apos 5s)
-- Mercado Pago SDK + PagBank SDK (no head, `async` mas ainda baixa e parseia)
+### Navegacao inline (igual Questoes)
 
-### Plano de Otimizacao (por impacto)
+- Transicoes entre subviews (areas → temas → subtemas) via `AnimatePresence` + `motion.div` com slide lateral, sem recarregar pagina
+- Unificar Landing + Escolha + Temas numa unica pagina `ResumosHubRealeza.tsx`
 
-**A. Reduzir fontes (impacto alto no LCP)**
-- Manter apenas **Inter** (usada em 95% do app) e **Cinzel** (usada no Vade Mecum)
-- Remover Source Sans, Source Serif, Oswald, Crimson Text, Playfair Display, Merriweather do carregamento inicial
-- Carregar fontes decorativas sob demanda apenas nas paginas que as utilizam
+### Arquivos a criar/modificar
 
-**B. Mover SDKs de pagamento para lazy load (impacto alto no TBT)**
-- Remover `<script src="sdk.mercadopago.com">` e `<script src="pagseguro">` do index.html
-- Carregar dinamicamente apenas quando o usuario acessa a tela de assinatura/pagamento
+| Arquivo | Acao |
+|---------|------|
+| `src/pages/ResumosHubRealeza.tsx` | Novo — hub unificado com subviews inline |
+| `src/routes/estudosRoutes.tsx` | Apontar `/resumos-juridicos` e `/resumos-juridicos/prontos` para o novo hub |
+| `src/pages/ResumosProntos.tsx` | Aplicar paleta Realeza |
+| `src/pages/ResumosProntosView.tsx` | Aplicar paleta Realeza |
 
-**C. Adiar GTM (impacto medio no LCP)**
-- Trocar o GTM sincrono no `<head>` por carregamento adiado (apos 3s ou primeira interacao), similar ao que ja e feito com GA
+### Estrutura do Hub unificado
 
-**D. Reduzir preload agressivo (impacto medio no TBT)**
-- Aumentar delay da Fase 1 do `AggressiveChunkPreloader` para 15s+ no mobile
-- Reduzir queries simultaneas do `useHomePreloader` ou adia-las mais
-
-**E. Otimizar hero/LCP element (impacto alto no LCP)**
-- Garantir que a imagem hero tenha `fetchpriority="high"` e `<link rel="preload">` efetivo
-- Considerar inline SVG ou CSS gradient como placeholder ate a imagem real carregar
-
-**F. Reduzir CSS critico**
-- O `<style>` inline no head esta bom, mas as fontes competem com ele
-
-### Resumo de Impacto Esperado
-
-| Acao | LCP | TBT | Esforco |
-|------|-----|-----|---------|
-| Reduzir fontes de 8 para 2 | -1.0s | -50ms | Baixo |
-| Lazy load SDKs pagamento | — | -100ms | Baixo |
-| Adiar GTM | -0.5s | -80ms | Baixo |
-| Reduzir preloaders | — | -150ms | Medio |
-| Otimizar hero LCP | -1.0s | — | Medio |
-
-Com essas mudancas, o LCP pode cair para ~2.5-3.0s e o TBT para ~200ms, elevando a nota para B/C (70-80%).
+```text
+ResumosHubRealeza
+├── SubView: "landing" (metodos, carousel, tabs)
+├── SubView: "areas" (lista de areas com favoritos/recentes)
+├── SubView: "temas" (temas da area selecionada)
+└── Navegacao: slide direita→esquerda via AnimatePresence
+```
 
 ### Detalhes tecnicos
 
-- Arquivos modificados: `index.html`, `src/hooks/useAggressiveChunkPreloader.ts`, `src/hooks/useHomePreloader.ts`
-- Novos arquivos: possivel hook `usePaymentSDK.ts` para lazy load dos SDKs
-- Sem impacto visual — todas as mudancas sao de carregamento/performance
+- Reutiliza `DotPattern`, `NumberTicker` e `DisciplinaCardRealeza` como referencia de estilo
+- Reutiliza hooks existentes: `useResumosCount`, `useResumosTemas`, `useResumosAreasCache`
+- Reutiliza dados do Supabase (tabela `RESUMO`, `METODOLOGIAS_GERADAS`)
+- Paleta HSL: dourado `hsl(40, 80%, 55%)`, fundo `hsl(0, 0%, 10%)`, bordas `hsla(40, 60%, 50%, 0.12)`
+- Paginas antigas permanecem como fallback, rotas redirecionam para o novo hub
+- Responsivo: layout desktop com grid multi-colunas, mobile lista vertical
 
