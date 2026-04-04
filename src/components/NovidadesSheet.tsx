@@ -127,11 +127,6 @@ export const NovidadesSheet = ({ open, onClose }: NovidadesSheetProps) => {
               })
             )}
           </div>
-
-          {/* Novidades / Melhorias history */}
-          <div className="mt-6">
-            <NovidadesContent />
-          </div>
         </div>
       </div>
     </div>
