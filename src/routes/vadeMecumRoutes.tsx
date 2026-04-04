@@ -1,10 +1,16 @@
 import { lazyWithRetry as lazy } from "../utils/lazyWithRetry";
-import { Route, Navigate } from "react-router-dom";
+import { Route, Navigate, useParams } from "react-router-dom";
 import ContextualSuspense from "../components/ContextualSuspense";
 
 const L = ({ children }: { children: React.ReactNode }) => (
   <ContextualSuspense>{children}</ContextualSuspense>
 );
+
+/** Redireciona /lei/:slug → /codigo/lei-:slug */
+const LeiRedirect = () => {
+  const { slug } = useParams();
+  return <Navigate to={`/codigo/lei-${slug}`} replace />;
+};
 
 // Vade Mecum
 const VadeMecumTodas = lazy(() => import("../pages/VadeMecumTodas"));
