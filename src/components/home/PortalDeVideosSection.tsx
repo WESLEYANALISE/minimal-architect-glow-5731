@@ -22,7 +22,7 @@ const itens = [
   },
   {
     id: "videoaulas",
-    title: "Videoaulas",
+    title: "Categorias",
     description: "Aulas completas por professores",
     icon: Video,
     route: "/videoaulas",
