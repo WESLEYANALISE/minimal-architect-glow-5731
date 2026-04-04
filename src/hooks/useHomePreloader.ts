@@ -235,15 +235,29 @@ async function runPreload() {
     // Apenas garantir que o cache de preloadImages está sincronizado
     preloadImages(LOCAL_HERO_IMAGES);
 
-    // 2. Buscar dados em paralelo
+    // 2. Buscar dados em lotes de 3 para não sobrecarregar
     const allImageUrls: string[] = [];
-    const results = await Promise.all([
-      ...PRELOAD_CONFIGS.map(config => preloadTableData(config)),
+    
+    // Lote 1: tabelas mais críticas (notícias, capas, resumos)
+    const batch1 = PRELOAD_CONFIGS.slice(0, 3);
+    const results1 = await Promise.all(batch1.map(config => preloadTableData(config)));
+    results1.forEach(urls => allImageUrls.push(...urls));
+
+    // Lote 2: tabelas secundárias
+    const batch2 = PRELOAD_CONFIGS.slice(3, 6);
+    const results2 = await Promise.all(batch2.map(config => preloadTableData(config)));
+    results2.forEach(urls => allImageUrls.push(...urls));
+
+    // Lote 3: tabelas terciárias + caches de áreas
+    const batch3 = PRELOAD_CONFIGS.slice(6);
+    const results3 = await Promise.all([
+      ...batch3.map(config => preloadTableData(config)),
       preloadQuestoesAreas().then(() => [] as string[]),
       preloadFlashcardsAreas().then(() => [] as string[]),
       preloadResumosAreas().then(() => [] as string[]),
       preloadConceitosTopicosCount().then(() => [] as string[]),
     ]);
+    results3.forEach(urls => allImageUrls.push(...urls));
 
     results.forEach(urls => {
       allImageUrls.push(...urls);
