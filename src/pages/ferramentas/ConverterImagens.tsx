@@ -148,6 +148,7 @@ const ConverterImagens = () => {
   const [loading, setLoading] = useState(false);
   const [tabelaSelecionada, setTabelaSelecionada] = useState<string | null>(null);
   const [categoriaAtiva, setCategoriaAtiva] = useState("todas");
+  const [filtroStatus, setFiltroStatus] = useState<"todas" | "pendentes" | "finalizadas">("todas");
   const [dadosTabelas, setDadosTabelas] = useState<TabelaImagens[]>([]);
   const [convertendo, setConvertendo] = useState(false);
   const [pausado, setPausado] = useState(false);
