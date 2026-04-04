@@ -209,110 +209,190 @@ const VadeMecumTodas = () => {
     ]
   };
 
-  // Função de busca rápida
-  const executarBuscaRapida = async () => {
-    if (!searchQuery.trim()) return;
+  // Tags invisíveis para busca por palavra-chave
+  const KEYWORD_TAGS: Record<string, { tags: string[]; name: string; route: string; color: string; description: string }> = {
+    "cf": { tags: ["constituição", "federal", "cf", "cf88", "direitos fundamentais", "garantias", "cidadania", "soberania", "república", "democracia", "habeas corpus", "mandado de segurança", "emendas", "cláusulas pétreas"], name: "Constituição Federal", route: "/constituicao", color: "#f59e0b", description: "CF/88 — Lei Fundamental do Brasil" },
+    "cc": { tags: ["civil", "código civil", "cc", "obrigações", "contratos", "família", "sucessões", "propriedade", "posse", "herança", "casamento", "divórcio", "responsabilidade civil", "pessoa jurídica", "capacidade", "negócio jurídico", "prescrição", "usucapião"], name: "Código Civil", route: "/codigo/cc", color: "#ef4444", description: "Lei 10.406/2002" },
+    "cp": { tags: ["penal", "código penal", "cp", "crime", "pena", "homicídio", "furto", "roubo", "estelionato", "lesão corporal", "injúria", "calúnia", "difamação", "estupro", "corrupção", "peculato", "prevaricação", "concussão", "receptação"], name: "Código Penal", route: "/codigo/cp", color: "#f43f5e", description: "Decreto-Lei 2.848/1940" },
+    "cpc": { tags: ["processo civil", "cpc", "processual civil", "petição", "recurso", "apelação", "agravo", "embargos", "cumprimento de sentença", "execução", "tutela", "antecipação", "citação", "intimação", "audiência", "contestação", "réplica"], name: "CPC", route: "/codigo/cpc", color: "#e11d48", description: "Lei 13.105/2015" },
+    "cpp": { tags: ["processo penal", "cpp", "processual penal", "inquérito", "denúncia", "prisão", "flagrante", "fiança", "habeas corpus", "interceptação", "busca e apreensão", "júri", "tribunal do júri", "pronúncia"], name: "CPP", route: "/codigo/cpp", color: "#fb7185", description: "Decreto-Lei 3.689/1941" },
+    "clt": { tags: ["trabalho", "trabalhista", "clt", "empregado", "empregador", "férias", "salário", "jornada", "hora extra", "fgts", "rescisão", "aviso prévio", "insalubridade", "periculosidade", "sindicato", "greve", "terceirização"], name: "CLT", route: "/codigo/clt", color: "#f97316", description: "Decreto-Lei 5.452/1943" },
+    "ctn": { tags: ["tributário", "tributo", "imposto", "taxa", "contribuição", "ctn", "fato gerador", "obrigação tributária", "crédito tributário", "lançamento", "isenção", "imunidade", "prescrição tributária", "decadência", "icms", "iss", "ir"], name: "CTN", route: "/codigo/ctn", color: "#fb923c", description: "Lei 5.172/1966" },
+    "cdc": { tags: ["consumidor", "cdc", "fornecedor", "produto", "serviço", "propaganda enganosa", "vício", "defeito", "recall", "garantia", "troca", "devolução", "procon"], name: "CDC", route: "/codigo/cdc", color: "#f472b6", description: "Lei 8.078/1990" },
+    "ctb": { tags: ["trânsito", "ctb", "multa", "cnh", "habilitação", "infração", "veículo", "condutor", "acidente", "embriaguez", "radar", "velocidade", "sinalização"], name: "Código de Trânsito", route: "/codigo/ctb", color: "#f59e0b", description: "Lei 9.503/1997" },
+    "ce": { tags: ["eleitoral", "eleição", "voto", "candidato", "partido", "propaganda", "urna", "ce", "inelegibilidade", "filiação", "coligação", "campanha"], name: "Código Eleitoral", route: "/codigo/ce", color: "#fbbf24", description: "Lei 4.737/1965" },
+    "drogas": { tags: ["drogas", "entorpecentes", "tráfico", "dependente", "crack", "maconha", "cocaína", "tóxico", "substância", "sisnad"], name: "Lei de Drogas", route: "/lei/drogas", color: "#f43f5e", description: "Lei 11.343/2006" },
+    "maria-penha": { tags: ["maria da penha", "violência doméstica", "violência contra a mulher", "medida protetiva", "agressão", "mulher", "doméstica", "familiar"], name: "Maria da Penha", route: "/lei/maria-penha", color: "#ec4899", description: "Lei 11.340/2006" },
+    "hediondos": { tags: ["hediondo", "hediondos", "crimes hediondos", "latrocínio", "extorsão mediante sequestro", "estupro", "genocídio", "inafiançável"], name: "Crimes Hediondos", route: "/lei/hediondos", color: "#dc2626", description: "Lei 8.072/1990" },
+    "lep": { tags: ["execução penal", "preso", "detento", "penitenciária", "regime", "progressão", "livramento condicional", "remição", "saída temporária", "indulto"], name: "Lei de Execução Penal", route: "/lei/lep", color: "#e11d48", description: "Lei 7.210/1984" },
+    "org-criminosas": { tags: ["organização criminosa", "organização", "orcrim", "delação", "colaboração premiada", "infiltração", "milícia", "facção"], name: "Organizações Criminosas", route: "/lei/org-criminosas", color: "#ef4444", description: "Lei 12.850/2013" },
+    "eca": { tags: ["criança", "adolescente", "eca", "menor", "infância", "juventude", "adoção", "guarda", "tutela", "conselho tutelar", "ato infracional", "medida socioeducativa"], name: "ECA", route: "/estatuto/eca", color: "#10b981", description: "Lei 8.069/1990" },
+    "idoso": { tags: ["idoso", "terceira idade", "envelhecimento", "60 anos", "aposentado", "estatuto do idoso"], name: "Estatuto do Idoso", route: "/estatuto/idoso", color: "#34d399", description: "Lei 10.741/2003" },
+    "oab": { tags: ["oab", "advogado", "advocacia", "ordem dos advogados", "inscrição", "ética", "honorários", "procuração"], name: "Estatuto da OAB", route: "/estatuto/oab", color: "#14b8a6", description: "Lei 8.906/1994" },
+    "deficiencia": { tags: ["deficiência", "pessoa com deficiência", "acessibilidade", "inclusão", "pcd", "barreira", "capacidade legal"], name: "Pessoa com Deficiência", route: "/estatuto/deficiencia", color: "#2dd4bf", description: "Lei 13.146/2015" },
+    "igualdade-racial": { tags: ["igualdade racial", "racismo", "discriminação racial", "cotas", "quilombo", "afrodescendente"], name: "Igualdade Racial", route: "/estatuto/igualdade-racial", color: "#06b6d4", description: "Lei 12.288/2010" },
+    "desarmamento": { tags: ["arma", "desarmamento", "porte", "posse de arma", "arma de fogo", "munição", "sinarm", "colecionador", "caçador", "atirador"], name: "Desarmamento", route: "/estatuto/desarmamento", color: "#22d3ee", description: "Lei 10.826/2003" },
+    "cidade": { tags: ["cidade", "urbanismo", "plano diretor", "usucapião urbana", "solo", "parcelamento", "estatuto da cidade", "iptu progressivo"], name: "Estatuto da Cidade", route: "/estatuto/cidade", color: "#0ea5e9", description: "Lei 10.257/2001" },
+    "torcedor": { tags: ["torcedor", "esporte", "estádio", "futebol", "ingresso", "torcida", "violência no esporte"], name: "Estatuto do Torcedor", route: "/estatuto/torcedor", color: "#38bdf8", description: "Lei 10.671/2003" },
+    "juizados": { tags: ["juizados especiais", "pequenas causas", "conciliação", "juizado", "9099", "jecrim", "termo circunstanciado"], name: "Juizados Especiais", route: "/lei/juizados", color: "#3b82f6", description: "Lei 9.099/1995" },
+    "interceptacao": { tags: ["interceptação", "escuta", "telefônica", "grampo", "sigilo telefônico", "9296"], name: "Interceptação Telefônica", route: "/lei/interceptacao", color: "#60a5fa", description: "Lei 9.296/1996" },
+    "custeio": { tags: ["custeio", "seguridade social", "previdência", "inss", "contribuição previdenciária", "8212"], name: "Custeio da Seguridade", route: "/lei/custeio", color: "#34d399", description: "Lei 8.212/1991" },
+    "beneficios": { tags: ["benefícios", "aposentadoria", "auxílio doença", "pensão por morte", "salário maternidade", "bpc", "loas", "8213", "previdenciário"], name: "Benefícios Previdenciários", route: "/lei/beneficios", color: "#10b981", description: "Lei 8.213/1991" },
+    "mpu": { tags: ["ministério público", "mpu", "procurador", "promotor", "lc 75", "mp da união"], name: "Estatuto do MPU", route: "/lei/mpu", color: "#818cf8", description: "LC 75/1993" },
+    "defensoria": { tags: ["defensoria", "defensor público", "defensoria pública", "lc 80", "assistência jurídica"], name: "Defensoria Pública", route: "/lei/defensoria", color: "#a78bfa", description: "LC 80/1994" },
+    "tortura": { tags: ["tortura", "lei de tortura", "9455", "crime de tortura"], name: "Lei de Tortura", route: "/lei/tortura", color: "#dc2626", description: "Lei 9.455/1997" },
+    "improbidade": { tags: ["improbidade", "improbidade administrativa", "enriquecimento ilícito", "ato de improbidade", "8429", "agente público"], name: "Improbidade Administrativa", route: "/lei/improbidade", color: "#ef4444", description: "Lei 8.429/1992" },
+    "abuso-autoridade": { tags: ["abuso de autoridade", "abuso", "autoridade", "13869", "agente público"], name: "Abuso de Autoridade", route: "/lei/abuso-autoridade", color: "#f97316", description: "Lei 13.869/2019" },
+    "lavagem": { tags: ["lavagem de dinheiro", "lavagem", "branqueamento", "9613", "coaf", "patrimônio ilícito"], name: "Lavagem de Dinheiro", route: "/lei/lavagem", color: "#f43f5e", description: "Lei 9.613/1998" },
+  };
+
+  // Mapeamento de números de lei para rotas
+  const LEI_NUMBER_MAP: Record<string, { name: string; route: string; color: string }> = {
+    "10406": { name: "Código Civil", route: "/codigo/cc", color: "#ef4444" },
+    "2848": { name: "Código Penal", route: "/codigo/cp", color: "#f43f5e" },
+    "13105": { name: "CPC", route: "/codigo/cpc", color: "#e11d48" },
+    "3689": { name: "CPP", route: "/codigo/cpp", color: "#fb7185" },
+    "5452": { name: "CLT", route: "/codigo/clt", color: "#f97316" },
+    "5172": { name: "CTN", route: "/codigo/ctn", color: "#fb923c" },
+    "8078": { name: "CDC", route: "/codigo/cdc", color: "#f472b6" },
+    "9503": { name: "Código de Trânsito", route: "/codigo/ctb", color: "#f59e0b" },
+    "4737": { name: "Código Eleitoral", route: "/codigo/ce", color: "#fbbf24" },
+    "11343": { name: "Lei de Drogas", route: "/lei/drogas", color: "#f43f5e" },
+    "11340": { name: "Maria da Penha", route: "/lei/maria-penha", color: "#ec4899" },
+    "8072": { name: "Crimes Hediondos", route: "/lei/hediondos", color: "#dc2626" },
+    "7210": { name: "Lei de Execução Penal", route: "/lei/lep", color: "#e11d48" },
+    "12850": { name: "Organizações Criminosas", route: "/lei/org-criminosas", color: "#ef4444" },
+    "8069": { name: "ECA", route: "/estatuto/eca", color: "#10b981" },
+    "10741": { name: "Estatuto do Idoso", route: "/estatuto/idoso", color: "#34d399" },
+    "8906": { name: "Estatuto da OAB", route: "/estatuto/oab", color: "#14b8a6" },
+    "13146": { name: "Pessoa com Deficiência", route: "/estatuto/deficiencia", color: "#2dd4bf" },
+    "12288": { name: "Igualdade Racial", route: "/estatuto/igualdade-racial", color: "#06b6d4" },
+    "10826": { name: "Desarmamento", route: "/estatuto/desarmamento", color: "#22d3ee" },
+    "10257": { name: "Estatuto da Cidade", route: "/estatuto/cidade", color: "#0ea5e9" },
+    "10671": { name: "Estatuto do Torcedor", route: "/estatuto/torcedor", color: "#38bdf8" },
+    "9099": { name: "Juizados Especiais", route: "/lei/juizados", color: "#3b82f6" },
+    "9296": { name: "Interceptação Telefônica", route: "/lei/interceptacao", color: "#60a5fa" },
+    "8212": { name: "Custeio da Seguridade", route: "/lei/custeio", color: "#34d399" },
+    "8213": { name: "Benefícios Previdenciários", route: "/lei/beneficios", color: "#10b981" },
+    "9455": { name: "Lei de Tortura", route: "/lei/tortura", color: "#dc2626" },
+    "8429": { name: "Improbidade Administrativa", route: "/lei/improbidade", color: "#ef4444" },
+    "13869": { name: "Abuso de Autoridade", route: "/lei/abuso-autoridade", color: "#f97316" },
+    "9613": { name: "Lavagem de Dinheiro", route: "/lei/lavagem", color: "#f43f5e" },
+  };
+
+  // Busca por palavra-chave usando tags
+  const buscarPorPalavraChave = () => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return;
     
-    const numeroArtigo = searchQuery.trim();
-    
-    // Se categoria específica (não "todos"), navega direto
-    if (selectedCategory === "constituicao") {
-      navigate(`/constituicao?artigo=${numeroArtigo}`);
-      return;
-    }
-    
-    // Para "todos" ou "codigos" ou "sumulas", buscar e mostrar lista
     setIsSearching(true);
     setShowResults(false);
     setSearchResults([]);
-    
-    try {
-      const results: SearchResult[] = [];
-      
-      // Determinar quais tabelas buscar
-      let tabelasParaBuscar: typeof tabelasBusca.constituicao = [];
-      
-      if (selectedCategory === "todos") {
-        tabelasParaBuscar = [
-          ...tabelasBusca.constituicao,
-          ...tabelasBusca.codigos,
-          ...tabelasBusca.penal,
-          ...tabelasBusca.estatutos,
-          ...tabelasBusca.leis,
-          ...tabelasBusca.sumulas,
-          ...tabelasBusca.previdenciario,
-          ...tabelasBusca.complementares
-        ];
-        // Remover duplicatas
-        const seen = new Set<string>();
-        tabelasParaBuscar = tabelasParaBuscar.filter(t => {
-          if (seen.has(t.table)) return false;
-          seen.add(t.table);
-          return true;
-        });
-      } else if (selectedCategory === "codigos") {
-        tabelasParaBuscar = tabelasBusca.codigos;
-      } else if (selectedCategory === "penal") {
-        tabelasParaBuscar = tabelasBusca.penal;
-      } else if (selectedCategory === "estatutos") {
-        tabelasParaBuscar = tabelasBusca.estatutos;
-      } else if (selectedCategory === "leis") {
-        tabelasParaBuscar = tabelasBusca.leis;
-      } else if (selectedCategory === "sumulas") {
-        tabelasParaBuscar = tabelasBusca.sumulas;
-      } else if (selectedCategory === "previdenciario") {
-        tabelasParaBuscar = tabelasBusca.previdenciario;
-      } else if (selectedCategory === "complementares") {
-        tabelasParaBuscar = tabelasBusca.complementares;
-      }
-      
-      // Buscar em todas as tabelas em paralelo
-      const promises = tabelasParaBuscar.map(async (tabela) => {
-        try {
-          // Busca exata pelo número do artigo e variantes com sufixo (5-A, 5-B, 5º-A)
-          const num = numeroArtigo;
-          const orFilter = [
-            `"Número do Artigo".eq.${num}`,
-            `"Número do Artigo".eq.${num}º`,
-            `"Número do Artigo".eq.${num}°`,
-            `"Número do Artigo".eq.Art. ${num}`,
-            `"Número do Artigo".eq.Art. ${num}º`,
-            `"Número do Artigo".ilike.${num}-%`,
-            `"Número do Artigo".ilike.${num}º-%`,
-            `"Número do Artigo".ilike.${num}°-%`,
-          ].join(',');
 
-          const { data, error } = await supabase
-            .from(tabela.table as any)
-            .select('"Número do Artigo", Artigo')
-            .or(orFilter);
-          
-          if (!error && data && (data as any[]).length > 0) {
-            return (data as any[]).map(artigo => ({
-              tableName: tabela.table,
-              displayName: tabela.name,
-              articleNumber: artigo["Número do Artigo"] || `Art. ${num}`,
-              content: artigo.Artigo?.substring(0, 150) + "..." || "",
-              route: `${tabela.route}?artigo=${artigo["Número do Artigo"] || num}`,
-              color: tabela.color
-            } as SearchResult));
-          }
-          return null;
-        } catch (err) {
-          console.log(`Tabela ${tabela.table} não encontrada ou erro:`, err);
-          return null;
+    const results: SearchResult[] = [];
+    const queryWords = query.split(/\s+/);
+
+    Object.entries(KEYWORD_TAGS).forEach(([, entry]) => {
+      // Check if any tag matches any query word
+      const score = entry.tags.reduce((acc, tag) => {
+        const tagLower = tag.toLowerCase();
+        // Exact match scores highest
+        if (tagLower === query) return acc + 10;
+        // Tag contains full query
+        if (tagLower.includes(query)) return acc + 5;
+        // Query contains tag
+        if (query.includes(tagLower)) return acc + 4;
+        // Individual word matches
+        const wordMatches = queryWords.filter(w => tagLower.includes(w) || w.includes(tagLower)).length;
+        return acc + wordMatches * 2;
+      }, 0);
+
+      if (score > 0) {
+        results.push({
+          tableName: entry.name,
+          displayName: entry.name,
+          articleNumber: entry.description,
+          content: entry.description,
+          route: entry.route,
+          color: entry.color,
+          _score: score,
+        } as SearchResult & { _score: number });
+      }
+    });
+
+    // Sort by relevance score
+    results.sort((a, b) => ((b as any)._score || 0) - ((a as any)._score || 0));
+
+    setSearchResults(results);
+    setShowResults(true);
+    setIsSearching(false);
+  };
+
+  // Busca por número de lei — normaliza pontos, barras, espaços
+  const buscarPorNumeroLei = () => {
+    const raw = searchQuery.trim();
+    if (!raw) return;
+
+    setIsSearching(true);
+    setShowResults(false);
+    setSearchResults([]);
+
+    // Normalize: remove dots, slashes, spaces, dashes to get pure number
+    const normalized = raw.replace(/[\.\-\/\s]/g, '');
+    
+    // Try to extract just the law number (before any year)
+    // e.g., "11.343/2006" → "11343", "8.078" → "8078"
+    const justNumber = normalized.replace(/(\d+)\d{4}$/, '$1') || normalized;
+    
+    const results: SearchResult[] = [];
+
+    // Try exact match first, then partial
+    const candidates = Object.entries(LEI_NUMBER_MAP);
+    
+    for (const [num, info] of candidates) {
+      if (num === normalized || num === justNumber || normalized.includes(num) || num.includes(normalized)) {
+        results.push({
+          tableName: info.name,
+          displayName: info.name,
+          articleNumber: `Lei ${raw}`,
+          content: info.name,
+          route: info.route,
+          color: info.color,
+        });
+      }
+    }
+
+    // Also check keyword tags for number-based tags (e.g., "9099", "8213")
+    if (results.length === 0) {
+      Object.entries(KEYWORD_TAGS).forEach(([, entry]) => {
+        const hasMatch = entry.tags.some(tag => {
+          const tagNorm = tag.replace(/[\.\-\/\s]/g, '');
+          return tagNorm === normalized || tagNorm === justNumber;
+        });
+        if (hasMatch) {
+          results.push({
+            tableName: entry.name,
+            displayName: entry.name,
+            articleNumber: entry.description,
+            content: entry.description,
+            route: entry.route,
+            color: entry.color,
+          });
         }
       });
-      
-      const allResults = await Promise.all(promises);
-      allResults.forEach(r => { if (r) results.push(...r); });
-      
-      setSearchResults(results);
-      setShowResults(true);
-    } catch (error) {
-      console.error("Erro na busca rápida:", error);
-    } finally {
-      setIsSearching(false);
+    }
+
+    setSearchResults(results);
+    setShowResults(true);
+    setIsSearching(false);
+  };
+
+  // Função de busca unificada
+  const executarBuscaRapida = () => {
+    if (searchMode === "palavra") {
+      buscarPorPalavraChave();
+    } else {
+      buscarPorNumeroLei();
     }
   };
 
