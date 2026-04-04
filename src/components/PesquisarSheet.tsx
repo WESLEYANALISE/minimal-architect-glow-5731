@@ -1,5 +1,5 @@
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Search, X, Sparkles, ChevronDown, Bot, Filter } from "lucide-react";
+import { Search, X, Sparkles, ChevronDown, Bot, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,6 @@ import { useBuscaGlobal } from "@/hooks/useBuscaGlobal";
 import { CategoriaCard } from "@/components/pesquisa/CategoriaCard";
 import { BuscaGlobalSkeleton } from "@/components/pesquisa/BuscaGlobalSkeleton";
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const categoriasFiltro = [
   { id: "todas", termo: "Todas", icon: "🔍" },
@@ -38,26 +37,47 @@ interface PesquisarSheetProps {
 
 export const PesquisarSheet = ({ open, onClose }: PesquisarSheetProps) => {
   const [query, setQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState<string>("todas");
+  const [selectedFilters, setSelectedFilters] = useState<Set<string>>(new Set(["todas"]));
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Always search with the query (no category prerequisite)
   const { resultados, isSearching, totalResults, error } = useBuscaGlobal(
     query.length >= 3 ? query : "",
     open && query.length >= 3
   );
 
-  // Filter results by selected category
+  const toggleFilter = (id: string) => {
+    setSelectedFilters(prev => {
+      const next = new Set(prev);
+      if (id === "todas") {
+        return new Set(["todas"]);
+      }
+      next.delete("todas");
+      if (next.has(id)) {
+        next.delete(id);
+        if (next.size === 0) return new Set(["todas"]);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const isAllSelected = selectedFilters.has("todas");
+
   const filteredResultados = useMemo(() => {
-    if (selectedFilter === "todas") return resultados;
-    const cat = categoriasFiltro.find(c => c.id === selectedFilter);
-    if (!cat) return resultados;
+    if (isAllSelected) return resultados;
+    const selectedTerms = categoriasFiltro
+      .filter(c => selectedFilters.has(c.id))
+      .map(c => c.termo.toLowerCase());
+    if (selectedTerms.length === 0) return resultados;
     return resultados.filter(r =>
-      r.nome.toLowerCase().includes(cat.termo.toLowerCase()) ||
-      cat.termo.toLowerCase().includes(r.nome.toLowerCase())
+      selectedTerms.some(term =>
+        r.nome.toLowerCase().includes(term) ||
+        term.includes(r.nome.toLowerCase())
+      )
     );
-  }, [resultados, selectedFilter]);
+  }, [resultados, selectedFilters, isAllSelected]);
 
   const hasSearched = query.length >= 3;
   const showResults = hasSearched && !isSearching && filteredResultados.length > 0;
@@ -67,15 +87,13 @@ export const PesquisarSheet = ({ open, onClose }: PesquisarSheetProps) => {
     return filteredResultados.reduce((acc, r) => acc + r.count, 0);
   }, [filteredResultados]);
 
-  // Reset on close
   useEffect(() => {
     if (!open) {
       setQuery("");
-      setSelectedFilter("todas");
+      setSelectedFilters(new Set(["todas"]));
     }
   }, [open]);
 
-  // Autofocus input on open
   useEffect(() => {
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 300);
@@ -107,7 +125,7 @@ export const PesquisarSheet = ({ open, onClose }: PesquisarSheetProps) => {
               </button>
             </div>
 
-            {/* Campo de busca - sempre visível */}
+            {/* Campo de busca */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
@@ -127,45 +145,52 @@ export const PesquisarSheet = ({ open, onClose }: PesquisarSheetProps) => {
               )}
             </div>
 
-            {/* Filtros horizontais - aparecem quando há busca */}
+            {/* Filtros multi-select */}
             {hasSearched && (
-              <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
-                {categoriasFiltro.map((cat) => {
-                  const isActive = selectedFilter === cat.id;
-                  // Count for this category
-                  const catCount = cat.id === "todas"
-                    ? resultados.reduce((a, r) => a + r.count, 0)
-                    : resultados.filter(r =>
-                        r.nome.toLowerCase().includes(cat.termo.toLowerCase()) ||
-                        cat.termo.toLowerCase().includes(r.nome.toLowerCase())
-                      ).reduce((a, r) => a + r.count, 0);
+              <div className="space-y-2">
+                <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+                  Filtrar por categoria {!isAllSelected && `(${selectedFilters.size})`}
+                </p>
+                <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
+                  {categoriasFiltro.map((cat) => {
+                    const isActive = cat.id === "todas" ? isAllSelected : selectedFilters.has(cat.id);
+                    const catCount = cat.id === "todas"
+                      ? resultados.reduce((a, r) => a + r.count, 0)
+                      : resultados.filter(r =>
+                          r.nome.toLowerCase().includes(cat.termo.toLowerCase()) ||
+                          cat.termo.toLowerCase().includes(r.nome.toLowerCase())
+                        ).reduce((a, r) => a + r.count, 0);
 
-                  if (cat.id !== "todas" && catCount === 0) return null;
+                    if (cat.id !== "todas" && catCount === 0) return null;
 
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => setSelectedFilter(cat.id)}
-                      className={cn(
-                        "flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 border whitespace-nowrap",
-                        isActive
-                          ? "bg-primary/20 border-primary/50 text-foreground ring-1 ring-primary/30"
-                          : "bg-secondary/60 border-border/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                      )}
-                    >
-                      <span className="text-sm">{cat.icon}</span>
-                      <span>{cat.termo}</span>
-                      {catCount > 0 && (
-                        <span className={cn(
-                          "text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center",
-                          isActive ? "bg-primary/30 text-foreground" : "bg-muted text-muted-foreground"
-                        )}>
-                          {catCount}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => toggleFilter(cat.id)}
+                        className={cn(
+                          "flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 border whitespace-nowrap",
+                          isActive
+                            ? "bg-primary/20 border-primary/50 text-foreground ring-1 ring-primary/30"
+                            : "bg-secondary/60 border-border/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        )}
+                      >
+                        {isActive && cat.id !== "todas" && (
+                          <Check className="w-3 h-3 text-primary" />
+                        )}
+                        <span className="text-sm">{cat.icon}</span>
+                        <span>{cat.termo}</span>
+                        {catCount > 0 && (
+                          <span className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center",
+                            isActive ? "bg-primary/30 text-foreground" : "bg-muted text-muted-foreground"
+                          )}>
+                            {catCount}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             )}
 
@@ -183,7 +208,7 @@ export const PesquisarSheet = ({ open, onClose }: PesquisarSheetProps) => {
 
         {/* Conteúdo */}
         <div className="overflow-y-auto h-[calc(92vh-180px)] px-4 py-4 max-w-4xl mx-auto">
-          {/* Estado inicial - sem busca */}
+          {/* Estado inicial */}
           {!hasSearched && query.length === 0 && (
             <div className="space-y-6">
               <div className="text-center py-8">
@@ -196,7 +221,6 @@ export const PesquisarSheet = ({ open, onClose }: PesquisarSheetProps) => {
                 </p>
               </div>
 
-              {/* Busca Avançada com a Professora */}
               <button
                 onClick={() => { onClose(); navigate('/chat-professora'); }}
                 className="w-full p-4 rounded-2xl bg-gradient-to-r from-primary/20 to-primary/5 border border-primary/20 hover:border-primary/40 transition-all text-left flex items-start gap-3"
@@ -237,7 +261,6 @@ export const PesquisarSheet = ({ open, onClose }: PesquisarSheetProps) => {
               <p className="text-sm text-muted-foreground">
                 Tente buscar por outros termos
               </p>
-              {/* Sugestão da IA */}
               <button
                 onClick={() => { onClose(); navigate('/chat-professora'); }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition-colors"
