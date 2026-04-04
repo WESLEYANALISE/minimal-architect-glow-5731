@@ -63,6 +63,7 @@ const QuestoesFaculdade = lazy(() => import("../pages/QuestoesFaculdade"));
 const QuizFaculdade = lazy(() => import("../pages/QuizFaculdade"));
 
 // Resumos
+const ResumosHubRealeza = lazy(() => import("../pages/ResumosHubRealeza"));
 const ResumosJuridicosEscolha = lazy(() => import("../pages/ResumosJuridicosEscolha"));
 const ResumosJuridicosLanding = lazy(() => import("../pages/ResumosJuridicosLanding"));
 const ResumosJuridicosTrilhas = lazy(() => import("../pages/ResumosJuridicosTrilhas"));
