@@ -429,6 +429,15 @@ const QuestoesResolver = ({
   const progressKey = `questoes_progress_${area}_${modo || tema}`;
   const shouldShowCountdown = !countdownDone && questoes.length > 0;
 
+  if (shouldShowCountdown) {
+    return (
+      <CountdownOverlay
+        onComplete={() => setCountdownDone(true)}
+        label="Preparando questões..."
+      />
+    );
+  }
+
   return (
     <>
       <div className="flex flex-col min-h-screen bg-background">
