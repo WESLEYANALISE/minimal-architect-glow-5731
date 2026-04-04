@@ -45,7 +45,7 @@ const AcompanhamentoAulas = lazy(() => import("../pages/Admin/AcompanhamentoAula
 
 const AdminVerificarOcr = lazy(() => import("../pages/AdminVerificarOcr"));
 const AdminGerarTutoriais = lazy(() => import("../pages/AdminGerarTutoriais"));
-
+const AdminTemas = lazy(() => import("../pages/Admin/AdminTemas"));
 
 const AdminBaseConhecimentoOAB = lazy(() => import("../pages/Admin/AdminBaseConhecimentoOAB"));
 
