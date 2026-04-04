@@ -45,6 +45,7 @@ const itens = [
 
 export const PortalDeVideosSection = memo(({ navigate }: PortalDeVideosSectionProps) => {
   const { isDesktop } = useDeviceType();
+  const { onTouchStart } = usePrefetchRoute();
   const visibleItens = isDesktop ? itens : itens.filter(i => i.id !== 'audioaulas');
   return (
     <div className="space-y-3">
