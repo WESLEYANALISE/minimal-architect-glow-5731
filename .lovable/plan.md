@@ -1,73 +1,80 @@
 
 
-## Plano: Modo Realeza para as categorias do Vade Mecum
+## Plano: Melhorar Reação ao Toque em Todo o App
 
-### Objetivo
-Aplicar a paleta dourada/escura premium nas 5 paginas de categorias de leis do Vade Mecum, unificando com o design "Realeza" ja aplicado em Questoes e Flashcards.
+### Diagnóstico
 
-### Paginas afetadas
+Três problemas principais causam lentidão ao tocar:
 
-| Pagina | Arquivo | Linhas |
-|--------|---------|--------|
-| Codigos | `src/pages/Codigos.tsx` | 285 |
-| Estatutos | `src/pages/Estatutos.tsx` | 162 |
-| Legislacao Penal Especial | `src/pages/LegislacaoPenalEspecial.tsx` | 160 |
-| Sumulas | `src/pages/Sumulas.tsx` | 201 |
-| Previdenciario | `src/pages/Previdenciario.tsx` | 229 |
+| Problema | Impacto |
+|----------|---------|
+| **`usePrefetchRoute` existe mas NUNCA é usado** — nenhum componente chama o hook | Chunks só carregam quando o usuário já clicou, causando delay de 200-800ms |
+| **Preloader muito lento** — Fase 1 espera 8-12s, Fase 2 espera 20-35s | Se tocar antes disso, chunk não está pronto |
+| **Sem feedback visual imediato no toque** — maioria dos cards não tem `active:scale` | Usuário não sente que o toque foi registrado |
 
-### O que muda em cada pagina (mesmo padrao)
+### Solução em 4 frentes
 
-**Header**
-- Fundo: gradiente escuro `hsl(0 0% 7%)` → `hsl(0 0% 12%)` com `DotPattern` sutil dourado
-- Brasao: manter, adicionar anel dourado sutil ao redor
-- Titulo: fonte serif `Playfair Display`, cor branca
-- Subtitulo: cor dourada `hsl(40, 70%, 60%)` em vez de `text-amber-400`
+**1. Prefetch no toque (`onTouchStart`) — os maiores ganhos**
 
-**Barra de busca**
-- Fundo: `hsl(0 0% 10%)` com borda dourada `hsla(40, 60%, 50%, 0.12)`
-- Input: fundo escuro com borda dourada sutil
-- Botao buscar: gradiente dourado
+Adicionar `onTouchStart` nos principais componentes de navegação para iniciar o download do chunk **no momento do toque**, antes do `onClick` disparar (~100-200ms antes):
 
-**Cards de lei/codigo/estatuto**
-- Fundo: `hsla(0, 0%, 100%, 0.04)` em vez de `bg-card`
-- Borda esquerda: manter a cor original da lei
-- Borda geral: `hsla(40, 60%, 50%, 0.08)`
-- Hover: brilho dourado sutil `hsla(40, 60%, 50%, 0.06)`
-- Shimmer overlay dourado no hover
-- CheckCircle: manter dourado (ja esta)
+- `HomeAtalhosSection.tsx` — atalhos da home
+- `EstudosViewCarousel.tsx` — cards de estudos
+- `LegislacaoHomeSection.tsx` — cards de legislação
+- `BibliotecaHomeSection.tsx` — cards da biblioteca
+- `PortalDeVideosSection.tsx` — cards de vídeos
+- `BottomNav.tsx` — barra inferior
+- `Ferramentas.tsx` — lista de ferramentas
+- `QuestoesMenuRealeza.tsx` — menu de questões
+- `FlashcardsMenuPrincipal.tsx` — menu de flashcards
 
-**LeisToggleMenu tabs**
-- Tab ativo: borda dourada em vez de primary
+Técnica: importar `usePrefetchRoute` e adicionar `onTouchStart={() => onTouchStart(rota)}` em cada botão/card de navegação.
 
-**Fundo geral da pagina**
-- `hsl(0 0% 7%)` com `DotPattern` em `hsla(40, 50%, 40%, 0.12)`
+**2. Preloader mais agressivo**
 
-**Empty state**
-- Icone com tom dourado
+Reduzir delays no `useAggressiveChunkPreloader.ts`:
+- Fase 1 (4 rotas críticas): **8s → 2s** mobile, **12s → 4s** desktop
+- Fase 2 (rotas populares): **20s → 6s** mobile, **35s → 12s** desktop
+- Batch size: **1 → 2** para carregar mais rápido
+- Batch delay: **300ms → 100ms**
 
-### Paleta Realeza (referencia)
-- Fundo: `hsl(0 0% 7%)` a `hsl(0 0% 12%)`
-- Dourado: `hsl(40, 80%, 55%)`
-- Bordas: `hsla(40, 60%, 50%, 0.12)`
-- Texto destaque: `hsl(40, 70%, 60%)`
+**3. Feedback visual instantâneo global**
 
-### Tambem atualizar: VadeMecumTodas.tsx (hub principal)
-- Grid de categorias (mobile e desktop): adicionar bordas douradas sutis nos cards
-- Tabs mobile (Legislacao/Leis do Dia/Explicacoes): tab ativo com acento dourado
-- Header desktop: gradiente com `DotPattern` dourado
-- Barra de busca: borda dourada
+Adicionar no `index.css` uma classe utilitária e regras globais:
+```css
+/* Feedback tátil instantâneo em todos os botões/cards clicáveis */
+button:active, [role="button"]:active, .touch-feedback:active {
+  transform: scale(0.97);
+  transition: transform 0.08s ease;
+}
+```
 
-### Arquivos a modificar (6)
-1. `src/pages/Codigos.tsx`
-2. `src/pages/Estatutos.tsx`
-3. `src/pages/LegislacaoPenalEspecial.tsx`
-4. `src/pages/Sumulas.tsx`
-5. `src/pages/Previdenciario.tsx`
-6. `src/pages/VadeMecumTodas.tsx`
+**4. Navegação via `onPointerDown` nos cards principais**
 
-### O que NAO muda
-- Funcionalidades (favoritos, recentes, premium gate, prefetch, busca)
-- Cores individuais de cada lei/codigo (border-left mantida)
-- Rotas e hooks
-- Componentes internos (LegislacaoBackground, LeisToggleMenu — apenas estilos inline)
+Para os cards de navegação mais usados (home shortcuts, bottom nav), trocar `onClick` por `onPointerDown` para eliminar o delay de 50-100ms entre toque e evento click em mobile. O `pointerdown` dispara imediatamente no contato.
+
+### Arquivos a modificar
+
+1. `src/hooks/useAggressiveChunkPreloader.ts` — reduzir delays
+2. `src/hooks/usePrefetchRoute.ts` — adicionar mais rotas ao mapa
+3. `src/index.css` — feedback visual global
+4. `src/components/home/HomeAtalhosSection.tsx` — prefetch + pointerdown
+5. `src/components/home/EstudosViewCarousel.tsx` — prefetch no toque
+6. `src/components/home/LegislacaoHomeSection.tsx` — prefetch no toque
+7. `src/components/home/BibliotecaHomeSection.tsx` — prefetch no toque
+8. `src/components/home/PortalDeVideosSection.tsx` — prefetch no toque
+9. `src/components/BottomNav.tsx` — prefetch + pointerdown
+10. `src/pages/Ferramentas.tsx` — prefetch no toque
+11. `src/components/questoes/QuestoesMenuRealeza.tsx` — prefetch no toque
+12. `src/components/flashcards/FlashcardsMenuPrincipal.tsx` — prefetch no toque
+
+### O que NÃO muda
+- Funcionalidades, rotas, dados
+- `useTransitionNavigate` continua para evitar erro React #426
+- `ContextualSuspense` com delay de 180ms continua (evita flash de skeleton)
+
+### Impacto esperado
+- Toque → abertura: **~300-800ms mais rápido** (chunk já carregado via prefetch)
+- Feedback visual: **instantâneo** (scale no `:active`)
+- Sensação de app nativo fluido
 
