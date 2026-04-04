@@ -28,6 +28,15 @@ import {
   PanelLeftOpen,
   MessageCircle,
   ChevronRight,
+  ScrollText,
+  Scale,
+  Headphones,
+  Clapperboard,
+  GraduationCap,
+  Mic,
+  BookMarked,
+  Gavel,
+  CalendarDays,
 } from "lucide-react";
 
 const FRASES_PERSUASIVAS = [
