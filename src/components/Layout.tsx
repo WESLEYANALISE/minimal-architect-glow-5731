@@ -529,6 +529,20 @@ export const Layout = ({ children }: LayoutProps) => {
         <AtualizacaoBibliotecaNotification />
         {!hideDesktopTopNav && <MemoizedDesktopTopNav />}
         
+        {/* Barra de navegação compacta no desktop quando sidebar e topnav estão ocultos */}
+        {hideDesktopTopNav && hideMainSidebar && !isSimuladoResolverRoute(location.pathname) && !isEscreventeRoute(location.pathname) && (
+          <div className="sticky top-0 z-30 flex items-center gap-3 px-4 h-12 border-b border-border/50 bg-background/95 backdrop-blur-sm">
+            <button
+              onClick={() => window.history.back()}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors active:scale-95"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-sm font-medium">Voltar</span>
+            </button>
+            <span className="text-sm font-semibold text-foreground">{pageTitle}</span>
+          </div>
+        )}
+
         {/* Breadcrumb global — visível fora da home, sempre no topo */}
         {!hideBreadcrumb && !hideMainSidebar && <MemoizedPageBreadcrumb />}
 
