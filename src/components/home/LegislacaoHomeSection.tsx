@@ -357,7 +357,7 @@ export const LegislacaoHomeSection = memo(() => {
                         src={item.url_capa}
                         alt={item.titulo}
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        loading="lazy"
+                        loading="eager"
                       />
                     ) : (
                       <div className="absolute inset-0 bg-gradient-to-br from-amber-700 to-amber-900 flex items-center justify-center">

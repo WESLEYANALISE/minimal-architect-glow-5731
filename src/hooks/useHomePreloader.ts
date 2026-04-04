@@ -234,33 +234,33 @@ async function runPreload() {
     // Apenas garantir que o cache de preloadImages está sincronizado
     preloadImages(LOCAL_HERO_IMAGES);
 
-    // 2. Buscar dados em lotes de 3 para não sobrecarregar
+    // 2. Buscar TODAS as tabelas em paralelo (sem batching)
     const allImageUrls: string[] = [];
     
-    // Lote 1: tabelas mais críticas (notícias, capas, resumos)
-    const batch1 = PRELOAD_CONFIGS.slice(0, 3);
-    const results1 = await Promise.all(batch1.map(config => preloadTableData(config)));
-    results1.forEach(urls => allImageUrls.push(...urls));
-
-    // Lote 2: tabelas secundárias
-    const batch2 = PRELOAD_CONFIGS.slice(3, 6);
-    const results2 = await Promise.all(batch2.map(config => preloadTableData(config)));
-    results2.forEach(urls => allImageUrls.push(...urls));
-
-    // Lote 3: tabelas terciárias + caches de áreas
-    const batch3 = PRELOAD_CONFIGS.slice(6);
-    const results3 = await Promise.all([
-      ...batch3.map(config => preloadTableData(config)),
+    const allResults = await Promise.all([
+      ...PRELOAD_CONFIGS.map(config => preloadTableData(config)),
       preloadQuestoesAreas().then(() => [] as string[]),
       preloadFlashcardsAreas().then(() => [] as string[]),
       preloadResumosAreas().then(() => [] as string[]),
       preloadConceitosTopicosCount().then(() => [] as string[]),
     ]);
-    results3.forEach(urls => allImageUrls.push(...urls));
+    allResults.forEach(urls => allImageUrls.push(...urls));
 
-
-    // 3. Pré-carregar até 50 imagens do Supabase (agressivo)
-    const uniqueUrls = [...new Set(allImageUrls)].slice(0, 50);
+    // 3. Pré-carregar TODAS as imagens do Supabase de uma vez
+    const uniqueUrls = [...new Set(allImageUrls)];
+    
+    // Injetar <link rel="preload"> para as primeiras 6 URLs (above the fold)
+    uniqueUrls.slice(0, 6).forEach(url => {
+      if (typeof document !== 'undefined' && !document.querySelector(`link[rel="preload"][href="${CSS.escape(url)}"]`)) {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = url;
+        link.setAttribute('fetchpriority', 'high');
+        document.head.appendChild(link);
+      }
+    });
+    
     if (uniqueUrls.length > 0) {
       await preloadImages(uniqueUrls);
     }
@@ -393,8 +393,8 @@ export const useHomePreloader = () => {
     if (hasStarted.current) return;
     hasStarted.current = true;
 
-    // Preload agressivo — inicia após 300ms para não competir com LCP
-    setTimeout(runPreload, 300);
+    // Preload agressivo — inicia imediatamente
+    runPreload();
 
     // Fase 2: Pré-carregar legislação após 5s
     setTimeout(preloadLegislation, 5000);
