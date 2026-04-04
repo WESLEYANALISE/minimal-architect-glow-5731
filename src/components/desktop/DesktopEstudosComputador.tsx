@@ -21,17 +21,17 @@ export const DesktopEstudosComputador = memo(({ navigate, onEvelyn }: DesktopEst
         {/* Card 1: Modo Desktop */}
         <button
           onClick={() => navigate("/funcoes")}
-          className="group relative rounded-xl overflow-hidden border border-white/[0.06] hover:border-rose-500/30 transition-all duration-500 text-left cursor-pointer"
+          className="group relative rounded-xl overflow-hidden border border-red-800/30 hover:border-red-700/50 transition-all duration-500 text-left cursor-pointer shadow-lg"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(350,50%,12%)] via-[hsl(345,45%,9%)] to-[hsl(340,40%,7%)]" />
-          <div className="absolute -top-6 -right-6 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl group-hover:bg-rose-500/20 transition-all duration-700" />
+          <div className="absolute inset-0 bg-gradient-to-br from-red-950 via-red-900 to-red-950/95" />
+          <div className="absolute -top-6 -right-6 w-24 h-24 bg-red-500/10 rounded-full blur-2xl group-hover:bg-red-500/20 transition-all duration-700" />
 
           <div className="relative p-3.5 flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <div className="p-2 rounded-lg bg-rose-500/15 border border-rose-500/20">
-                <Monitor className="w-5 h-5 text-rose-400" />
+              <div className="p-2 rounded-lg bg-white/10 border border-white/10">
+                <Monitor className="w-5 h-5 text-red-300" />
               </div>
-              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/15 text-[9px] font-medium text-rose-400/80">
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 border border-white/10 text-[9px] font-medium text-red-300/80">
                 <Sparkles className="w-2.5 h-2.5" />
                 Exclusivo
               </span>
@@ -42,7 +42,7 @@ export const DesktopEstudosComputador = memo(({ navigate, onEvelyn }: DesktopEst
               <p className="text-[11px] text-white/45 leading-snug">Estude pelo computador</p>
             </div>
 
-            <div className="flex items-center gap-1 text-rose-400/80 text-[11px] font-medium">
+            <div className="flex items-center gap-1 text-red-300/80 text-[11px] font-medium">
               Acessar
               <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" />
             </div>
