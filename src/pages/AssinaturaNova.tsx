@@ -28,19 +28,20 @@ const PLANS: Record<string, { price: number; label: string; days: number; badge:
 };
 
 const BENEFITS = [
-  { Icon: Scale, title: 'Vade Mecum completo', desc: 'Atualizado 2026', value: '2026' },
-  { Icon: BookOpen, title: 'Cursos interativos', desc: 'Todas as áreas', value: '+36' },
-  { Icon: FileText, title: 'Resumos inteligentes', desc: 'Prontos para revisão', value: '+13 mil' },
-  { Icon: Layers, title: 'Biblioteca jurídica', desc: 'Acervo completo', value: '+1.200' },
-  { Icon: Brain, title: 'Flashcards', desc: 'Memorização espaçada', value: '+101 mil' },
-  { Icon: Target, title: 'Questões comentadas', desc: 'Por banca e concurso', value: '+136 mil' },
-  { Icon: Headphones, title: 'Audioaulas completas', desc: 'Estude em qualquer lugar' },
-  { Icon: Sparkles, title: 'IA jurídica ilimitada', desc: 'Sua assistente 24h', value: 'Evelyn' },
-  { Icon: Map, title: 'Mapas mentais', desc: 'Revisão visual', value: '+500' },
-  { Icon: Video, title: 'Videoaulas exclusivas', desc: 'Conteúdo premium', value: '+80' },
-  { Icon: Gavel, title: 'Audiências dos tribunais', desc: 'Prática forense' },
-  { Icon: MessageCircle, title: 'Assistente 24h', desc: 'Tire dúvidas na hora', value: 'Evelyn' },
-  { Icon: ScrollText, title: 'Legislação atualizada', desc: 'Códigos e estatutos' },
+  { Icon: Scale, title: 'Vade Mecum', value: '2026' },
+  { Icon: BookOpen, title: 'Cursos', value: '+36' },
+  { Icon: FileText, title: 'Resumos', value: '+13 mil' },
+  { Icon: Layers, title: 'Biblioteca', value: '+1.200' },
+  { Icon: Brain, title: 'Flashcards', value: '+101 mil' },
+  { Icon: Target, title: 'Questões', value: '+136 mil' },
+  { Icon: Headphones, title: 'Audioaulas', value: '' },
+  { Icon: Sparkles, title: 'IA Evelyn', value: '24h' },
+  { Icon: Map, title: 'Mapas mentais', value: '+500' },
+  { Icon: Video, title: 'Videoaulas', value: '+80' },
+  { Icon: Gavel, title: 'Audiências', value: '' },
+  { Icon: ScrollText, title: 'Legislação', value: '' },
+  { Icon: MessageCircle, title: 'Assistente', value: '' },
+  { Icon: CheckCircle, title: 'Simulados', value: '' },
 ];
 
 const FRASES = [
@@ -279,35 +280,30 @@ const AssinaturaNova = () => {
             </p>
           </motion.div>
 
-          {/* ===== BENEFITS ===== */}
-          <div className="space-y-1.5 px-1 mb-8">
+          {/* ===== BENEFITS GRID ===== */}
+          <div className="grid grid-cols-2 gap-2 px-1 mb-8">
             {BENEFITS.map((item, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: -15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.06, duration: 0.4 }}
-                className="flex items-center gap-3.5 rounded-2xl px-5 py-4 border relative overflow-hidden"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.08 + i * 0.04, duration: 0.35 }}
+                className="flex items-center gap-2.5 rounded-xl px-3 py-3 border relative overflow-hidden"
                 style={{
                   background: 'linear-gradient(145deg, hsl(38 8% 10%), hsl(0 0% 6%))',
                   borderColor: 'hsl(38 10% 16%)',
                 }}
               >
-                <div
-                  className="absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.08)_50%,transparent_75%)] bg-[length:250%_100%] pointer-events-none"
-                  style={{ animation: `shimmer 3s ease-in-out ${i * 0.4}s infinite` }}
-                />
-                <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 relative z-10"
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{ background: 'hsl(43 70% 50% / 0.1)' }}>
-                  <item.Icon className="w-4.5 h-4.5 text-amber-400" />
+                  <item.Icon className="w-4 h-4 text-amber-400" />
                 </div>
-                <div className="flex-1 min-w-0 relative z-10">
-                  <p className="text-[13px] text-white font-semibold leading-tight">{item.title}</p>
-                  <p className="text-[11px] text-zinc-500 leading-tight mt-0.5">{item.desc}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] text-white font-semibold leading-tight truncate">{item.title}</p>
+                  {item.value && (
+                    <p className="text-[10px] font-bold text-amber-400/80 leading-tight mt-0.5">{item.value}</p>
+                  )}
                 </div>
-                {item.value && (
-                  <span className="text-[12px] font-bold text-amber-400 flex-shrink-0 relative z-10">{item.value}</span>
-                )}
               </motion.div>
             ))}
           </div>
