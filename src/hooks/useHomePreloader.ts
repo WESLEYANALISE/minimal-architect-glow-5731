@@ -385,13 +385,14 @@ export const useHomePreloader = () => {
 
     const startPreload = () => {
       if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => runPreload(), { timeout: 5000 });
+        requestIdleCallback(() => runPreload(), { timeout: 8000 });
       } else {
-        setTimeout(runPreload, 2500);
+        setTimeout(runPreload, 4000);
       }
     };
 
-    startPreload();
+    // Delay initial preload to not compete with LCP
+    setTimeout(startPreload, 2000);
 
     // Fase 2: Pré-carregar legislação após 10s
     setTimeout(() => {

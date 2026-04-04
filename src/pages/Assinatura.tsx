@@ -1,4 +1,5 @@
 import { useState, useEffect, memo, useRef } from "react";
+import { usePaymentSDK } from "@/hooks/usePaymentSDK";
 import { PaymentMethodModal } from "@/components/assinatura/PaymentMethodModal";
 import { CheckoutCartaoModal } from "@/components/assinatura/CheckoutCartaoModal";
 import PixPaymentScreen from "@/components/assinatura/PixPaymentScreen";
