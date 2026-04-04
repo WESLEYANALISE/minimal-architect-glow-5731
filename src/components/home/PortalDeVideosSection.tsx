@@ -46,7 +46,7 @@ export const PortalDeVideosSection = memo(({ navigate }: PortalDeVideosSectionPr
   const { isDesktop } = useDeviceType();
   const visibleItens = isDesktop ? itens : itens.filter(i => i.id !== 'audioaulas');
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 pb-4">
       {/* Header */}
       <div className="flex items-center gap-2 sm:gap-3">
         <div className="p-1.5 sm:p-2 bg-amber-500/20 rounded-xl">
