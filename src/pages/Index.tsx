@@ -596,7 +596,7 @@ const Index = () => {
 
             {/* Estudos no Computador — Funções Web + Estudo em Mídia (mobile only) */}
             <div className="px-3 pt-2">
-              <DesktopEstudosComputador navigate={gatedNavigate} />
+              <DesktopEstudosComputador navigate={gatedNavigate} onEvelyn={() => setProfessoraOpen(true)} />
             </div>
 
             {/* Estudos / Leis do Dia / Vade Mecum - Carousel com setas */}
