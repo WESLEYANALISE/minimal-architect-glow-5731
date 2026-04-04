@@ -45,7 +45,7 @@ export const BottomNav = () => {
       data-footer="main"
       data-bottom-nav
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-40 border-t border-red-900/30 bg-gradient-to-t from-red-950/95 via-red-950/80 to-red-950/70 backdrop-blur-md rounded-t-2xl transition-all duration-400 shadow-[0_-8px_30px_rgba(0,0,0,0.6),0_-2px_10px_rgba(0,0,0,0.4)]",
+        "fixed bottom-0 left-0 right-0 z-40 border-t border-rose-900/30 bg-gradient-to-t from-[hsl(345,45%,5%)] via-[hsl(348,42%,7%)]/90 to-[hsl(350,40%,8%)]/80 backdrop-blur-md rounded-t-2xl transition-all duration-400 shadow-[0_-8px_30px_rgba(0,0,0,0.6),0_-2px_10px_rgba(0,0,0,0.4)]",
         isNative && "pb-safe"
       )}
       style={isNative ? { paddingBottom: 'env(safe-area-inset-bottom, 0px)' } : undefined}
