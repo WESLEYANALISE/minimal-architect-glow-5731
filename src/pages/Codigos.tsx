@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { DotPattern } from "@/components/ui/dot-pattern";
 import { supabase } from "@/integrations/supabase/client";
 import { Scale, Gavel, FileText, Sword, Briefcase, Shield, DollarSign, Droplets, Plane, Radio, Building2, Mountain, Car, Search, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
