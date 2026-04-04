@@ -105,8 +105,7 @@ const LOCAL_HERO_IMAGES = [
   heroVadeMecumPlanalto,
 ];
 
-// Preload hero images IMMEDIATELY at module level (no idle callback)
-preloadImages(LOCAL_HERO_IMAGES);
+// Hero images preloaded lazily inside runPreload() instead of module-level
 
 let hasPreloaded = false;
 
