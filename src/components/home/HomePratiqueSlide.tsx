@@ -92,7 +92,7 @@ export function HomePratiqueSlide() {
     navigate(route);
   };
   return (
-    <div className="bg-gradient-to-b from-red-950 via-red-900/95 to-red-950 backdrop-blur-sm overflow-hidden flex flex-col">
+    <div className="bg-gradient-to-b from-[hsl(350,50%,10%)] via-[hsl(345,45%,9%)] to-[hsl(350,50%,10%)] backdrop-blur-sm overflow-hidden flex flex-col">
 
       <div className="px-3 pb-3 pt-3 flex-1 flex flex-col">
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5">
