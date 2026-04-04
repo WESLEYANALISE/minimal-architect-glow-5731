@@ -23,7 +23,7 @@ const ROUTE_IMPORTS: Record<string, () => Promise<any>> = {
   '/modo-desktop': () => import('../pages/ModoDesktop'),
   '/audioaulas': () => import('../pages/AudioaulasSpotify'),
   '/aulas': () => import('../pages/AulasPage'),
-  '/aulas-em-tela': () => import('../pages/AulasEmTelaPage'),
+  '/aulas-em-tela': () => import('../pages/AulasEmTela'),
 };
 
 const prefetchedRoutes = new Set<string>();
