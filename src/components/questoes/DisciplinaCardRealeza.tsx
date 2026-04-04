@@ -10,6 +10,7 @@ interface DisciplinaCardRealezaProps {
   respondidas?: number;
   isLocked?: boolean;
   onLockedClick?: () => void;
+  onSelect?: (area: string) => void;
   delay?: number;
 }
 
