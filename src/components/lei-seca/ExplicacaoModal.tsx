@@ -480,7 +480,7 @@ const ExplicacaoModal = ({ open, onOpenChange, explicacao }: Props) => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={gerarAudio}
+                  onClick={gerarNarracoes}
                   disabled={isGeneratingAudio}
                 >
                   {isGeneratingAudio ? (
