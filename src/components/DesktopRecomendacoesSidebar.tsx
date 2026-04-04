@@ -217,25 +217,27 @@ export const DesktopRecomendacoesSidebar = memo(() => {
 
             {/* Filme selecionado */}
             {filmeSelecionado ? (
-              <div className="rounded-xl overflow-hidden border border-blue-800/30 bg-gradient-to-b from-blue-950/80 to-neutral-900/90">
+              <div className="rounded-xl overflow-hidden border border-blue-800/30 bg-gradient-to-b from-blue-950/80 to-neutral-900/90 p-3 space-y-3">
                 {(filmeSelecionado as any).poster_url && (
-                  <div className="relative w-full aspect-[3/4] max-h-[200px] overflow-hidden">
+                  <div className="flex justify-center">
                     <img
                       src={(filmeSelecionado as any).poster_url}
                       alt={(filmeSelecionado as any).titulo}
-                      className="w-full h-full object-cover"
+                      className="h-36 w-auto rounded-lg shadow-lg object-contain"
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                   </div>
                 )}
-                <div className="p-3 space-y-2">
+                <div className="space-y-2">
                   <h4 className="text-xs font-bold text-white leading-tight line-clamp-2">
                     {(filmeSelecionado as any).titulo}
                   </h4>
                   {(filmeSelecionado as any).sinopse && (
                     <p className="text-[10px] text-white/60 leading-relaxed line-clamp-4">
-                      {(filmeSelecionado as any).sinopse}
+                      {((filmeSelecionado as any).sinopse || '')
+                        .replace(/<!--.*?-->/g, '')
+                        .replace(/\*\*/g, '')
+                        .trim()}
                     </p>
                   )}
                   {(filmeSelecionado as any).porque_assistir && (
