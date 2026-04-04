@@ -218,10 +218,10 @@ export const DesktopRecomendacoesSidebar = memo(() => {
             {/* Filme selecionado */}
             {filmeSelecionado ? (
               <div className="rounded-xl overflow-hidden border border-blue-800/30 bg-gradient-to-b from-blue-950/80 to-neutral-900/90 p-3 space-y-3">
-                {(filmeSelecionado as any).poster_url && (
+                {(filmeSelecionado as any).poster_path && (
                   <div className="flex justify-center">
                     <img
-                      src={(filmeSelecionado as any).poster_url}
+                      src={`https://image.tmdb.org/t/p/w300${(filmeSelecionado as any).poster_path}`}
                       alt={(filmeSelecionado as any).titulo}
                       className="h-36 w-auto rounded-lg shadow-lg object-contain"
                       loading="lazy"
@@ -236,16 +236,31 @@ export const DesktopRecomendacoesSidebar = memo(() => {
                     <p className="text-[10px] text-white/60 leading-relaxed line-clamp-4">
                       {((filmeSelecionado as any).sinopse || '')
                         .replace(/<!--.*?-->/g, '')
+                        .replace(/#{1,6}\s*/g, '')
                         .replace(/\*\*/g, '')
+                        .replace(/"/g, '')
                         .trim()}
                     </p>
                   )}
                   {(filmeSelecionado as any).porque_assistir && (
                     <div className="border-l-2 border-blue-500/50 pl-2">
                       <p className="text-[10px] text-blue-200/80 italic line-clamp-3">
-                        "{(filmeSelecionado as any).porque_assistir}"
+                        {((filmeSelecionado as any).porque_assistir || '')
+                          .replace(/<!--.*?-->/g, '')
+                          .replace(/#{1,6}\s*/g, '')
+                          .replace(/\*\*/g, '')
+                          .replace(/"/g, '')
+                          .trim()}
                       </p>
                     </div>
+                  )}
+                  {(filmeSelecionado as any).trailer_url && (
+                    <button
+                      onClick={() => window.open((filmeSelecionado as any).trailer_url, '_blank')}
+                      className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 text-blue-200 text-[10px] font-medium transition-colors"
+                    >
+                      Ver Trailer <ArrowRight className="w-3 h-3" />
+                    </button>
                   )}
                 </div>
               </div>
