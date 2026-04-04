@@ -222,7 +222,7 @@ const AudioaulasSpotify = () => {
     const ActiveIcon = activeConfig.icon;
 
     return (
-      <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden bg-background">
+      <div className="flex h-[calc(100vh-3rem)] overflow-hidden bg-background">
         {/* ─── Sidebar esquerda: lista de áreas ─── */}
         <div className="w-80 border-r border-border flex flex-col shrink-0">
           {/* Header da sidebar */}
