@@ -471,11 +471,7 @@ export const Layout = ({ children }: LayoutProps) => {
     return HIDE_HEADER_ROUTES.has(path) || matchesPrefixes(path, HIDE_HEADER_PREFIXES);
   }, [location.pathname]);
 
-  // Esconder DesktopTopNav em todas as páginas exceto home, chat-professora e vade-mecum
   const isHomePage = location.pathname === '/inicio' || location.pathname === '/';
-  const isChatProfessora = location.pathname === '/chat-professora' || location.pathname === '/professora';
-  const isVadeMecum = location.pathname === '/vade-mecum';
-  const hideDesktopTopNav = (!isHomePage && !isChatProfessora && !isVadeMecum) || location.pathname.startsWith('/novas-leis');
 
   // Flag para esconder sidebar principal em todas as páginas exceto home
   const hideMainSidebar = !isHomePage;
