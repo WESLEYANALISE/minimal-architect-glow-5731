@@ -653,47 +653,53 @@ const Index = () => {
             />
           </div>
 
-          {/* Estudos: Aulas, Resumos, Flashcards, Questões — sempre visível abaixo de Legislação */}
+          {/* Estudos: mesmos cards do mobile */}
           <div className="relative z-10 mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 bg-amber-500/20 rounded-xl">
-                <GraduationCap className="w-5 h-5 text-amber-100" />
+              <div className="p-1.5 bg-accent/20 rounded-xl">
+                <GraduationCap className="w-5 h-5 text-white/90" />
               </div>
               <div>
                 <h2 className="text-base xl:text-lg font-bold text-foreground tracking-tight">Estudos</h2>
                 <p className="text-xs text-muted-foreground">Aulas, revisões e prática</p>
               </div>
             </div>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 xl:grid-cols-6 gap-3">
               {[
-                { titulo: "Aulas", subtitulo: "Aulas interativas", icon: GraduationCap, route: "/aulas", capa: capaEstudosAulas },
-                { titulo: "Resumos", subtitulo: "Resumos práticos", icon: BookOpenIcon, route: "/audioaulas/categoria/resumos", capa: capaEstudosResumos },
-                { titulo: "Flashcards", subtitulo: "Cards de revisão", icon: Brain, route: "/audioaulas/categoria/flashcards", capa: capaEstudosFlashcards },
-                { titulo: "Questões", subtitulo: "Pratique questões", icon: Target, route: "/questoes", capa: capaEstudosQuestoes },
+                { titulo: "Aulas", subtitulo: "Estudos", icon: GraduationCap, route: "/aulas", capa: coverAulas },
+                { titulo: "Resumos", subtitulo: "Jurídicos", icon: FileText, route: "/resumos-juridicos", capa: coverResumos },
+                { titulo: "Flashcards", subtitulo: "Cards", icon: Brain, route: "/flashcards", capa: coverFlashcards },
+                { titulo: "Questões", subtitulo: "Prática", icon: Target, route: "/questoes", capa: coverQuestoes },
+                { titulo: "Biblioteca", subtitulo: "Livros", icon: BookOpenIcon, route: "/bibliotecas", capa: coverBiblioteca },
+                { titulo: "Audioaulas", subtitulo: "Áudio", icon: Headphones, route: "/audioaulas", capa: coverAudioaulas },
               ].map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={item.titulo}
                     onClick={() => gatedNavigate(item.route)}
-                    className="group relative rounded-xl overflow-hidden border border-border/30 hover:border-primary/30 transition-all duration-200 text-left cursor-pointer aspect-[16/9]"
+                    className="group relative rounded-xl overflow-hidden border border-white/[0.08] hover:border-primary/30 transition-all duration-200 text-left cursor-pointer min-h-[120px]"
+                    style={{ boxShadow: '0 8px 24px -6px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)' }}
                   >
                     <img src={item.capa} alt={item.titulo} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                    <div className="relative h-full flex items-end justify-start px-3 pb-2.5 gap-2.5">
-                      <div className="p-1.5 rounded-lg bg-white/15 backdrop-blur-sm">
-                        <Icon className="w-4 h-4 text-white" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-xl">
+                      <div className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/[0.08] to-transparent skew-x-[-20deg]" style={{ animation: 'shinePratique 4s ease-in-out infinite' }} />
+                    </div>
+                    <div className="relative z-[1] h-full flex flex-col items-start justify-end p-3">
+                      <div className="bg-white/15 backdrop-blur-sm p-2 rounded-xl mb-2">
+                        <Icon className="w-5 h-5 text-white" />
                       </div>
-                      <div>
-                        <h4 className="text-base font-bold text-white leading-tight">{item.titulo}</h4>
-                        <p className="text-[11px] text-white/50 leading-tight">{item.subtitulo}</p>
+                      <div className="text-left">
+                        <h4 className="text-sm font-bold text-white leading-tight drop-shadow-md">{item.titulo}</h4>
+                        <p className="text-[11px] text-white/70 leading-tight">{item.subtitulo}</p>
                       </div>
                     </div>
                   </button>
                 );
               })}
             </div>
-            </div>
+          </div>
 
           {/* Conteúdo da tab ativa — CSS transitions (sem AnimatePresence) */}
           <div>
