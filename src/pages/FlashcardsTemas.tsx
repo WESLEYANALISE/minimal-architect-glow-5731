@@ -3,6 +3,7 @@ import { Brain, BookOpen, FileText, Loader2, Zap, Heart, ListOrdered, Search, Ar
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import FlashcardsEstudar from "@/pages/FlashcardsEstudar";
 import { useFlashcardsAutoGeneration } from "@/hooks/useFlashcardsAutoGeneration";
 import { getAreaGradient, getAreaHex } from "@/lib/flashcardsAreaColors";
 // Vertical list replaces serpentine trail
