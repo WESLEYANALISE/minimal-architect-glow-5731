@@ -421,7 +421,7 @@ const VadeMecumTodas = () => {
 
   return (
     <div className="h-dvh bg-background relative overflow-hidden overscroll-contain" style={{ contain: 'layout style' }}>
-      {/* Background image - full screen on desktop */}
+      {/* Background image - full screen covering everything */}
       <div className="fixed inset-0 z-0">
         <img
           src={heroVadeMecumMenu}
@@ -433,7 +433,7 @@ const VadeMecumTodas = () => {
         <div 
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(to bottom, hsl(var(--background) / 0.6) 0%, hsl(var(--background) / 0.8) 40%, hsl(var(--background) / 0.92) 100%)`
+            background: `linear-gradient(to bottom, hsl(var(--background) / 0.35) 0%, hsl(var(--background) / 0.55) 40%, hsl(var(--background) / 0.8) 100%)`
           }}
         />
       </div>
