@@ -1,115 +1,85 @@
 
 
-# Plugins e Melhorias para Compatibilidade Cross-Device, iframe e Mobile
+# Sistema de Temas Visuais com Seletor no Admin
 
 ## Resumo
 
-Depois de investigar o projeto, a internet e repositorios no GitHub, identifiquei **4 melhorias concretas** que faltam no seu projeto para funcionar melhor em todos os dispositivos, iframes e modelos de celular.
+Criar **4 presets de tema** baseados na paleta vermelho/rose dos cards "Estudos no Computador", com um seletor no painel Admin para alternar entre eles em tempo real. Cada tema modifica as CSS variables do design system (`--card`, `--background`, `--primary`, `--accent`, `--border`, etc.).
 
 ---
 
-## 1. `tailwindcss-safe-area` — Safe Area para todos os celulares
+## Os 4 Temas
 
-**Problema atual**: Vocè usa `env(safe-area-inset-bottom)` manualmente em 31+ arquivos com `style={{ paddingBottom: 'env(...)' }}`. Isso e fragil, inconsistente e nao funciona sem `viewport-fit=cover` no meta tag (que esta faltando!).
-
-**Solucao**: Instalar o plugin `tailwindcss-safe-area@0.8.0` (compativel com Tailwind v3) que adiciona classes utilitarias como `pb-safe`, `pt-safe`, `min-h-screen-safe`, etc.
-
-**O que muda**:
-- Adicionar `viewport-fit=cover` na meta tag viewport do `index.html`
-- Instalar e configurar o plugin no `tailwind.config.ts`
-- Substituir gradualmente os `style={{ paddingBottom: 'env(...)' }}` inline por classes `pb-safe`
-- Funciona automaticamente em iPhones com notch, Dynamic Island, e Android com barra de navegacao gestual
+| Tema | Descrição | Estilo base |
+|------|-----------|-------------|
+| **Neutro** (atual) | Cinza puro + vermelho accent | `--card: 0 0% 11%`, `--primary: 0 72% 42%` |
+| **Cards & Botões** | Cards com gradiente vermelho escuro, botões rose/red | `--card: 0 30% 11%`, bordas com tint vermelho |
+| **Fundos de Seção** | Containers e seções com fundo vermelho profundo | `--muted: 0 25% 10%`, `--secondary: 0 20% 12%` |
+| **Full Red** | Tudo com tint vermelho — cards, fundos, borders, badges | Combina os dois acima + `--border: 0 15% 18%` |
 
 ---
 
-## 2. `@vitejs/plugin-legacy` — Compatibilidade com navegadores antigos
+## Arquitetura
 
-**Problema atual**: O build usa `target: 'es2020'`, que exclui Safari < 14, Chrome < 80, e navegadores antigos de Android. Usuarios com celulares mais antigos veem tela branca.
+### 1. CSS Variables por tema (`src/index.css`)
+Definir 4 classes de tema (`:root`, `.theme-cards`, `.theme-sections`, `.theme-full-red`) com variações das CSS variables. A troca aplica a classe no `<html>`.
 
-**Solucao**: Instalar `@vitejs/plugin-legacy` que gera automaticamente polyfills e bundles alternativos para navegadores antigos.
+### 2. Context de Tema (`src/contexts/ThemeContext.tsx`)
+- Estado do tema ativo (salvo no `localStorage` + tabela Supabase `app_settings`)
+- Função `setTheme(preset)` que aplica a classe CSS e persiste
+- Provider no `App.tsx`
 
-**O que muda**:
-- Instalar `@vitejs/plugin-legacy` e `terser` (dependencia)
-- Configurar no `vite.config.ts` com targets: `['defaults', 'not IE 11', 'safari >= 13', 'chrome >= 64', 'iOS >= 13']`
-- Gera automaticamente bundles legacy com polyfills so para quem precisa
-- Usuarios modernos nao sao afetados (carregam o bundle otimizado normal)
+### 3. Página Admin — Seletor de Tema (`src/pages/Admin/AdminTemas.tsx`)
+- 4 cards de preview com miniatura visual de cada tema
+- Ao clicar, aplica o tema instantaneamente
+- Botão "Salvar como padrão" grava no Supabase para todos os usuários
 
----
-
-## 3. CSS de Estabilidade de Viewport para iframe e Mobile
-
-**Problema atual**: Quando o site roda em iframe (ex: preview do Lovable, webviews, redes sociais), o viewport pode se comportar de forma erratica, especialmente com teclado virtual no mobile.
-
-**Solucao**: Adicionar regras CSS globais no `index.css`:
-
-- `overscroll-behavior: none` no `html` e `body` — evita o "bounce" e pull-to-refresh acidental dentro de iframes
-- `touch-action: manipulation` nos elementos interativos — remove o delay de 300ms de tap no mobile e evita zoom acidental em double-tap
-- `@supports (height: 100dvh)` para usar `dvh` (dynamic viewport height) que se ajusta quando o teclado virtual abre/fecha no mobile
+### 4. Rota + Link no AdminHub
+- Nova rota `/admin/temas`
+- Card no `AdminHub.tsx` com ícone `Palette`
 
 ---
 
-## 4. Meta tags extras para iframe e PWA
+## Detalhes Técnicos
 
-**O que falta no `index.html`**:
-- `viewport-fit=cover` na meta viewport (necessario para safe areas)
-- `<meta name="mobile-web-app-capable" content="yes">` (Chrome/Android PWA)
-- `<meta name="format-detection" content="telephone=no">` — evita que o Safari transforme numeros em links de telefone automaticamente
+### CSS Variables por tema (adições no `index.css`)
 
----
-
-## Detalhes Tecnicos
-
-### Arquivos modificados
-
-**`package.json`** — novas dependencias:
-```
-tailwindcss-safe-area@0.8.0
-@vitejs/plugin-legacy
-terser
-```
-
-**`tailwind.config.ts`** — adicionar plugin:
-```ts
-plugins: [
-  require("tailwindcss-safe-area"),
-  // ... plugins existentes
-]
-```
-
-**`index.html`** — viewport meta atualizada:
-```html
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="format-detection" content="telephone=no">
-```
-
-**`vite.config.ts`** — plugin legacy:
-```ts
-import legacy from '@vitejs/plugin-legacy';
-// No array de plugins:
-legacy({
-  targets: ['defaults', 'not IE 11', 'safari >= 13', 'chrome >= 64', 'iOS >= 13'],
-})
-```
-
-**`src/index.css`** — regras globais:
 ```css
-html {
-  overscroll-behavior: none;
+/* Tema atual = padrão (sem classe extra) */
+
+.theme-cards {
+  --card: 0 30% 11%;
+  --border: 0 20% 16%;
+  --input: 0 20% 13%;
+  --popover: 0 28% 10%;
 }
-body {
-  overscroll-behavior: none;
-  -webkit-text-size-adjust: 100%;
+
+.theme-sections {
+  --muted: 0 25% 10%;
+  --secondary: 0 20% 12%;
+  --background: 0 8% 7%;
 }
-button, a, input, select, textarea, [role="button"] {
-  touch-action: manipulation;
+
+.theme-full-red {
+  --card: 0 30% 11%;
+  --border: 0 15% 18%;
+  --muted: 0 25% 10%;
+  --secondary: 0 20% 12%;
+  --background: 0 8% 7%;
+  --input: 0 20% 13%;
+  --popover: 0 28% 10%;
 }
 ```
 
-### Impacto esperado
-- Safe areas funcionando corretamente em todos os iPhones e Androids com gestos
-- Compatibilidade com Safari 13+, Chrome 64+, iOS 13+ (cobre 99%+ dos usuarios)
-- Sem bounce/pull-to-refresh acidental em iframes
-- Tap mais responsivo no mobile (sem delay de 300ms)
-- Viewport estavel quando teclado virtual abre/fecha
+### Persistência
+- `localStorage.setItem('app_theme', preset)`
+- Supabase `app_settings` table (chave `active_theme`) para sincronizar entre dispositivos
+
+### Arquivos modificados/criados
+1. **Criar** `src/contexts/ThemeContext.tsx` — Provider + hook `useTheme()`
+2. **Criar** `src/pages/Admin/AdminTemas.tsx` — Página de seleção visual
+3. **Editar** `src/index.css` — 3 classes de tema adicionais
+4. **Editar** `src/App.tsx` — Envolver com `ThemeProvider`
+5. **Editar** `src/pages/Admin/AdminHub.tsx` — Adicionar card "Temas"
+6. **Editar** roteamento para `/admin/temas`
 
