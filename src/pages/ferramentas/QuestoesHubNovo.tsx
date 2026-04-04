@@ -72,22 +72,44 @@ const slideVariants = {
   exit: { x: "-30%", opacity: 0 },
 };
 
-// Inline Temas component
+// Inline Temas component with tabs (Ordem/Favoritos/Estatística/Pesquisar)
 const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => {
   const navigate = useNavigate();
   const { temas, isLoading } = useQuestoesTemas(area);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<"ordem" | "favoritos" | "estatistica" | "pesquisar">("ordem");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [favoritos, setFavoritos] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem("questoes-temas-favoritos") || "[]"); }
+    catch { return []; }
+  });
+
+  const toggleFavorito = (tema: string) => {
+    const novos = favoritos.includes(tema) ? favoritos.filter(f => f !== tema) : [...favoritos, tema];
+    setFavoritos(novos);
+    localStorage.setItem("questoes-temas-favoritos", JSON.stringify(novos));
+  };
 
   const shortArea = area
     .replace(/^Direito\s+(do\s+|da\s+|de\s+|dos\s+|das\s+)?/i, '')
     .replace(/^Direitos\s+/i, '');
 
-  const filtered = searchQuery
-    ? temas.filter(t => norm(t.tema).includes(norm(searchQuery)))
-    : temas;
+  const totalQuestoes = temas?.reduce((acc, t) => acc + t.totalQuestoes, 0) || 0;
+  const totalTemas = temas?.length || 0;
+
+  const temasFiltered = useMemo(() => {
+    if (!temas) return [];
+    if (activeTab === "favoritos") return temas.filter(t => favoritos.includes(t.tema));
+    if (activeTab === "pesquisar" && searchTerm.trim()) {
+      const term = norm(searchTerm);
+      return temas.filter(t => norm(t.tema).includes(term));
+    }
+    return temas;
+  }, [temas, activeTab, searchTerm, favoritos]);
+
+  const showList = activeTab === "ordem" || activeTab === "pesquisar" || activeTab === "favoritos";
 
   const handleSelect = (tema: string) => {
-    // Ensure resolver chunk is loaded before navigating
     resolverPreload.then(() => {
       startTransition(() => {
         navigate(`/ferramentas/questoes/resolver?area=${encodeURIComponent(area)}&tema=${encodeURIComponent(tema)}`);
@@ -98,6 +120,13 @@ const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => 
       });
     });
   };
+
+  const TABS = [
+    { key: "ordem" as const, label: "Ordem", icon: ListOrdered },
+    { key: "favoritos" as const, label: "Favoritos", icon: Heart },
+    { key: "estatistica" as const, label: "Estatística", icon: BarChart3 },
+    { key: "pesquisar" as const, label: "Pesquisar", icon: Search },
+  ];
 
   return (
     <>
@@ -126,72 +155,155 @@ const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => 
             <div>
               <h1 className="text-lg font-bold text-white tracking-tight">{shortArea}</h1>
               <p className="text-xs" style={{ color: "hsla(40, 60%, 70%, 0.7)" }}>
-                {temas.length} temas disponíveis
+                {totalTemas} temas disponíveis
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Search */}
-      <div className="px-4 mb-4">
-        <input
-          type="text"
-          placeholder="Buscar tema..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none"
-          style={{ background: "hsla(0, 0%, 100%, 0.05)", border: "1px solid hsla(40, 60%, 50%, 0.12)" }}
-        />
+      {/* Stats bar */}
+      <div className="px-4 mb-3">
+        <div className="flex items-center justify-center gap-6 text-sm" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4" style={{ color: "hsl(40, 80%, 55%)" }} />
+            <span>{totalTemas} temas</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4" style={{ color: "hsl(40, 80%, 55%)" }} />
+            <span>{totalQuestoes.toLocaleString('pt-BR')} questões</span>
+          </div>
+        </div>
       </div>
 
-      {/* Temas list */}
-      <div className="px-4 pb-8 space-y-2">
-        {isLoading ? (
-          Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "hsla(0, 0%, 100%, 0.04)" }} />
-          ))
-        ) : filtered.length === 0 ? (
-          <p className="text-center py-8 text-sm" style={{ color: "hsla(0, 0%, 100%, 0.4)" }}>Nenhum tema encontrado</p>
-        ) : (
-          filtered.map((tema, i) => (
-            <motion.button
-              key={tema.tema}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.03 }}
-              onClick={() => handleSelect(tema.tema)}
-              className="w-full group flex items-center gap-3 rounded-xl p-3.5 text-left transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
-              style={{ background: "hsla(0, 0%, 100%, 0.04)", border: "1px solid hsla(40, 60%, 50%, 0.08)" }}
-            >
-              <div className="shrink-0">
-                {tema.temQuestoes ? (
-                  <CheckCircle2 className="w-5 h-5" style={{ color: "hsl(145, 60%, 45%)" }} />
-                ) : tema.parcial ? (
-                  <AlertCircle className="w-5 h-5" style={{ color: "hsl(40, 80%, 55%)" }} />
-                ) : (
-                  <div className="w-5 h-5 rounded-full" style={{ border: "2px solid hsla(0, 0%, 100%, 0.15)" }} />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-white truncate">{tema.tema}</h3>
-                <p className="text-[10px] mt-0.5" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>
-                  {tema.totalQuestoes > 0
-                    ? `${tema.totalQuestoes} questões • ${tema.subtemasGerados}/${tema.totalSubtemas} subtemas`
-                    : `${tema.totalSubtemas} subtemas`
-                  }
-                </p>
-              </div>
-              {tema.progressoPercent > 0 && (
-                <span className="text-[11px] font-semibold shrink-0" style={{ color: "hsl(40, 80%, 55%)" }}>
-                  {tema.progressoPercent}%
-                </span>
-              )}
-              <ChevronRight className="w-4 h-4 shrink-0" style={{ color: "hsla(0, 0%, 100%, 0.15)" }} />
-            </motion.button>
-          ))
-        )}
+      {/* Tabs */}
+      <div className="px-4 mb-3">
+        <div className="flex rounded-xl overflow-hidden" style={{ background: "hsla(0, 0%, 100%, 0.04)", border: "1px solid hsla(0, 0%, 100%, 0.08)" }}>
+          {TABS.map(tab => {
+            const isActive = activeTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className="flex-1 flex items-center justify-center gap-1 py-2.5 text-xs font-medium transition-all"
+                style={{
+                  background: isActive ? "hsla(40, 60%, 50%, 0.15)" : "transparent",
+                  color: isActive ? "hsl(40, 80%, 55%)" : "hsla(0, 0%, 100%, 0.4)",
+                }}
+              >
+                <tab.icon className="w-3.5 h-3.5" />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Search input for pesquisar tab */}
+      {activeTab === "pesquisar" && (
+        <div className="px-4 mb-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "hsla(40, 60%, 60%, 0.5)" }} />
+            <input
+              type="text"
+              placeholder="Buscar tema..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              autoFocus
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none"
+              style={{ background: "hsla(0, 0%, 100%, 0.05)", border: "1px solid hsla(40, 60%, 50%, 0.12)" }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Estatística tab */}
+      {activeTab === "estatistica" && (
+        <div className="px-4 pb-8">
+          <QuestoesEstatisticas />
+        </div>
+      )}
+
+      {/* Temas list */}
+      {showList && (
+        <div className="px-4 pb-8 space-y-2">
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "hsla(0, 0%, 100%, 0.04)" }} />
+            ))
+          ) : temasFiltered.length === 0 ? (
+            <p className="text-center py-8 text-sm" style={{ color: "hsla(0, 0%, 100%, 0.4)" }}>
+              {activeTab === "pesquisar" && searchTerm.trim()
+                ? "Nenhum tema encontrado para essa busca."
+                : activeTab === "favoritos"
+                  ? "Nenhum tema favoritado ainda. Toque no ❤️ para salvar."
+                  : "Nenhum tema encontrado"}
+            </p>
+          ) : (
+            temasFiltered.map((tema, i) => {
+              const isFavorited = favoritos.includes(tema.tema);
+              return (
+                <motion.button
+                  key={tema.tema}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03 }}
+                  onClick={() => handleSelect(tema.tema)}
+                  className="w-full group flex items-center gap-3 rounded-xl p-3.5 text-left transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+                  style={{ background: "hsla(0, 0%, 100%, 0.04)", border: "1px solid hsla(40, 60%, 50%, 0.08)" }}
+                >
+                  {/* Number badge */}
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                    style={{
+                      backgroundColor: "hsla(40, 60%, 50%, 0.12)",
+                      color: "hsl(40, 80%, 55%)",
+                      border: "1.5px solid hsla(40, 60%, 50%, 0.2)",
+                    }}
+                  >
+                    {i + 1}
+                  </div>
+
+                  {/* Content — two lines, no bold */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-normal text-white leading-snug line-clamp-2">{tema.tema}</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: "hsl(40, 80%, 55%)" }}>
+                      {tema.totalQuestoes.toLocaleString('pt-BR')} questões • {tema.subtemasGerados}/{tema.totalSubtemas} subtemas
+                    </p>
+                  </div>
+
+                  {/* Progress */}
+                  {tema.progressoPercent > 0 && (
+                    <span className="text-[11px] font-semibold shrink-0" style={{ color: "hsl(40, 80%, 55%)" }}>
+                      {tema.progressoPercent}%
+                    </span>
+                  )}
+
+                  {/* Favorite button */}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleFavorito(tema.tema); }}
+                    className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-colors"
+                    style={{
+                      backgroundColor: isFavorited ? '#dc2626' : 'hsla(0, 0%, 100%, 0.06)',
+                      border: isFavorited ? '1.5px solid #fca5a5' : '1.5px solid hsla(0, 0%, 100%, 0.1)',
+                    }}
+                  >
+                    <Heart
+                      className="w-3.5 h-3.5"
+                      style={{
+                        color: isFavorited ? 'white' : 'hsla(0, 0%, 100%, 0.4)',
+                        fill: isFavorited ? 'white' : 'none',
+                      }}
+                    />
+                  </button>
+
+                  <ChevronRight className="w-4 h-4 shrink-0" style={{ color: "hsla(0, 0%, 100%, 0.15)" }} />
+                </motion.button>
+              );
+            })
+          )}
+        </div>
+      )}
     </>
   );
 };
