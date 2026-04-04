@@ -303,6 +303,7 @@ const QuestoesHubNovo = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [subView, setSubView] = useState<SubView>("menu");
   const [selectedArea, setSelectedArea] = useState("");
+  const [selectedTema, setSelectedTema] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -389,13 +390,24 @@ const QuestoesHubNovo = () => {
 
   const handleSelectArea = (area: string) => {
     setSelectedArea(area);
+    setSelectedTema("");
     setSubView("temas");
   };
 
   const handleBackFromTemas = () => {
+    setSelectedTema("");
     setSubView("praticar");
   };
 
+  const handleSelectTema = (tema: string) => {
+    setSelectedTema(tema);
+    setSubView("resolver");
+  };
+
+  const handleBackFromResolver = () => {
+    setSubView("temas");
+  };
+};
   return (
     <div className="min-h-screen relative overflow-hidden" style={{ background: "hsl(0 0% 10%)" }}>
       <DotPattern className="opacity-[0.03]" />
