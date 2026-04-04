@@ -20,7 +20,6 @@ const iconMap: Record<string, any> = {
 
 export const NovidadesSheet = ({ open, onClose }: NovidadesSheetProps) => {
   const { notificacoes, naoLidas, marcarLida, marcarTodasLidas } = useNotificacoesApp();
-  const { notificacoes, naoLidas, marcarLida, marcarTodasLidas } = useNotificacoesApp();
   const navigate = useNavigate();
 
   if (!open) return null;
