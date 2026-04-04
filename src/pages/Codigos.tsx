@@ -175,16 +175,14 @@ const Codigos = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: 'hsl(0, 0%, 7%)' }}>
       <PremiumFloatingCard isOpen={premiumModalOpen} onClose={() => setPremiumModalOpen(false)} title="Conteúdo Premium" sourceFeature="Códigos" />
 
-      {/* Header com brasão e background */}
-      <LegislacaoBackground 
-        imageUrl={backgroundUrl} 
-        opacity={opacity}
-        className="border-b border-border/30"
-      >
-        <div className="px-4 py-6 flex flex-col items-center text-center bg-gradient-to-b from-card/80 to-background">
+      {/* Header Realeza */}
+      <div className="relative border-b" style={{ borderColor: 'hsla(40, 60%, 50%, 0.12)' }}>
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, hsl(0, 0%, 10%), hsl(0, 0%, 7%))' }} />
+        <DotPattern className="fill-[hsla(40,50%,40%,0.12)]" />
+        <div className="relative z-10 px-4 py-6 flex flex-col items-center text-center">
           <div className="absolute top-3 right-3 z-20">
             <GerenciadorBackgroundModal
               backgroundUrl={backgroundUrl}
@@ -196,27 +194,26 @@ const Codigos = () => {
             />
           </div>
           
-          <img 
-            src={brasaoRepublica} 
-            alt="Brasão da República" 
-            className="w-20 h-20 object-contain mb-3"
-          />
-          <h1 className="text-xl font-bold text-foreground">CÓDIGOS & LEIS</h1>
-          <p className="text-sm text-amber-400 mt-1">Legislação brasileira compilada</p>
+          <div className="rounded-full p-1" style={{ border: '2px solid hsla(40, 60%, 50%, 0.25)', boxShadow: '0 0 20px hsla(40, 60%, 50%, 0.1)' }}>
+            <img src={brasaoRepublica} alt="Brasão da República" className="w-20 h-20 object-contain" />
+          </div>
+          <h1 className="text-xl font-bold text-white mt-3" style={{ fontFamily: "'Playfair Display', serif" }}>CÓDIGOS & LEIS</h1>
+          <p className="text-sm mt-1" style={{ color: 'hsl(40, 70%, 60%)' }}>Legislação brasileira compilada</p>
         </div>
-      </LegislacaoBackground>
+      </div>
 
       {/* Barra de busca */}
-      <div className="px-4 py-4 border-b border-border/30 bg-card/50 space-y-3">
+      <div className="px-4 py-4 space-y-3" style={{ borderBottom: '1px solid hsla(40, 60%, 50%, 0.08)', background: 'hsl(0, 0%, 8%)' }}>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'hsl(40, 50%, 50%)' }} />
           <Input
             placeholder="Buscar código..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-background/50"
+            className="pl-10"
+            style={{ background: 'hsl(0, 0%, 10%)', borderColor: 'hsla(40, 60%, 50%, 0.12)', color: 'white' }}
           />
-          <Button variant="secondary" size="sm" className="absolute right-1 top-1/2 -translate-y-1/2">
+          <Button size="sm" className="absolute right-1 top-1/2 -translate-y-1/2" style={{ background: 'hsl(40, 80%, 55%)', color: 'hsl(0,0%,7%)' }}>
             Buscar
           </Button>
         </div>
