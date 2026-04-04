@@ -541,16 +541,7 @@ const ExplicacaoModal = ({ open, onOpenChange, explicacao }: Props) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md"
-          onClick={() => onOpenChange(false)}
-        />
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="fixed inset-4 lg:inset-x-[10%] lg:inset-y-6 z-[61] bg-background/98 backdrop-blur-xl rounded-2xl shadow-2xl overflow-y-auto border border-border/30"
-          onClick={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[60] bg-background overflow-y-auto"
         >
           {content}
         </motion.div>
