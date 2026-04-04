@@ -137,7 +137,7 @@ export const estudosRoutes = (
     <Route path="/ferramentas/questoes-v2" element={<Navigate to="/ferramentas/questoes" replace />} />
     <Route path="/ferramentas/questoes-v2/temas" element={<L><QuestoesTemasNovo /></L>} />
     <Route path="/ferramentas/questoes/modo" element={<L><QuestoesEscolhaModo /></L>} />
-    <Route path="/ferramentas/questoes/temas" element={<L><QuestoesTemas /></L>} />
+    <Route path="/ferramentas/questoes/temas" element={<Navigate to="/ferramentas/questoes" replace />} />
     <Route path="/ferramentas/questoes/resolver" element={<L><QuestoesResolver /></L>} />
     <Route path="/ferramentas/questoes/sim-nao" element={<L><QuestoesSimNaoAreas /></L>} />
     <Route path="/ferramentas/questoes/sim-nao/temas" element={<L><QuestoesSimNaoTemas /></L>} />
