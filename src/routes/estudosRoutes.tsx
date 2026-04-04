@@ -130,8 +130,9 @@ export const estudosRoutes = (
 
     {/* Questões */}
     <Route path="/questoes" element={<Navigate to="/ferramentas/questoes" replace />} />
-    <Route path="/ferramentas/questoes" element={<L><QuestoesHub /></L>} />
-    <Route path="/ferramentas/questoes-v2" element={<L><QuestoesHubNovo /></L>} />
+    <Route path="/ferramentas/questoes" element={<L><QuestoesHubNovo /></L>} />
+    <Route path="/ferramentas/questoes-v1" element={<L><QuestoesHub /></L>} />
+    <Route path="/ferramentas/questoes-v2" element={<Navigate to="/ferramentas/questoes" replace />} />
     <Route path="/ferramentas/questoes-v2/temas" element={<L><QuestoesTemasNovo /></L>} />
     <Route path="/ferramentas/questoes/modo" element={<L><QuestoesEscolhaModo /></L>} />
     <Route path="/ferramentas/questoes/temas" element={<L><QuestoesTemas /></L>} />
