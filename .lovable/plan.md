@@ -1,66 +1,86 @@
 
 
-## Plano: Biblioteca responsiva para Desktop + abrir livro na mesma pagina
+## Plano: Refazer estrutura completa do JuriFlix (Mobile + Desktop)
 
-### Problemas identificados
+### Problemas atuais
 
-1. **Paginas de detalhe dos livros** (8 arquivos `Biblioteca*Livro.tsx`) usam layout mobile-only — sem `useDeviceType`, sem grid desktop, sem aproveitar o espaco da tela
-2. **Falta o cabeçalho DesktopTopNav** visivel nas paginas de livros (o `StandardPageHeader` mobile aparece por cima)
-3. **O usuario quer que o livro abra "na mesma pagina"** — ou seja, ao clicar num livro no desktop, o detalhe deve abrir inline (painel lateral ou overlay) em vez de navegar para outra rota
+1. **Layout 100% mobile** — JuriFlix.tsx nao usa `useDeviceType` para renderizar layout desktop dedicado
+2. **Cards pequenos no desktop** — w-[140px] fixo, desperdicando espaco em telas grandes
+3. **Hero comprimido** — h-56 mesmo em telas grandes, sem aproveitar backdrop
+4. **Bottom nav propria** — conflita com a nav principal do app no desktop
+5. **Pagina de detalhes** — funcional mas sem layout side-by-side otimizado para desktop
+6. **Sem DesktopTopNav** — falta o cabecalho de navegacao global no desktop
 
 ### Solucao
 
-**Abordagem: Detalhe inline no desktop da Biblioteca**
-
-Ao clicar num livro no desktop (pagina `Bibliotecas.tsx`), em vez de `navigate('/biblioteca-classicos/123')`, abrir um **painel de detalhe lateral** (drawer/sidebar direita) dentro da propria pagina da Biblioteca. O layout fica:
+**Desktop: Layout Netflix de verdade**
 
 ```text
-┌─────────────────────────────────────────────────────┐
-│ DesktopTopNav (Estudos, Biblioteca, Legislação...)  │
-├──────────────────────────┬──────────────────────────┤
-│ Grade de livros          │ Detalhe do livro         │
-│ (coleção selecionada)    │ - Capa + titulo + autor  │
-│                          │ - Botão Ler / Download   │
-│                          │ - Sobre o livro          │
-│                          │ - Videoaula              │
-│                          │ - Favoritar              │
-└──────────────────────────┴──────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│ DesktopTopNav (Estudos, Biblioteca, Legislação...)       │
+├──────────────────────────────────────────────────────────┤
+│ Hero fullwidth (h-[400px]) com backdrop + info overlay   │
+├──────────────────────────────────────────────────────────┤
+│ Tabs filtro (Todos | Filmes | Séries | Docs)             │
+│ + Busca integrada à direita                              │
+├──────────────────────────────────────────────────────────┤
+│ Carrossel: Filmes (cards ~200px, 6-8 visiveis)           │
+│ Carrossel: Séries                                        │
+│ Carrossel: Documentários                                 │
+│ OU grid 5-6 colunas quando filtro ativo                  │
+├──────────────────────────────────────────────────────────┤
+│ Sidebar tabs (Top Notas, Por Ano, Favoritos) inline      │
+└──────────────────────────────────────────────────────────┘
 ```
 
-No mobile, o comportamento continua igual (navega para rota separada).
+**Mobile: Refinamento do layout atual**
+- Manter estrutura de carrossel horizontal + bottom nav
+- Melhorar hero com aspect ratio mais cinematografico
+- Cards um pouco maiores (w-[150px])
+
+**Pagina de Detalhes Desktop:**
+```text
+┌──────────────────────────────────────────────────────────┐
+│ Backdrop fullwidth (h-[450px])                           │
+├──────────────────────────────────────────────────────────┤
+│ Poster (esq) │ Info + Botoes + Streaming (dir, 2 cols)   │
+│              │ Generos, Nota, Ano, Duracao                │
+│              │ [Ver Trailer] [Assistir] [Compartilhar]    │
+│              │ Onde Assistir (providers inline)           │
+├──────────────┴───────────────────────────────────────────┤
+│ Sinopse (60%)              │ Info Tecnica (40%)          │
+│ Beneficios                 │ Elenco grid 4 cols          │
+├────────────────────────────┴─────────────────────────────┤
+│ Trailer (aspect-video)  │  Similares (carrossel)         │
+├─────────────────────────┴────────────────────────────────┤
+│ Comentarios + Avaliacoes (tabs)                          │
+└──────────────────────────────────────────────────────────┘
+```
 
 ### Arquivos a modificar
 
-**1. `src/pages/Bibliotecas.tsx`** (principal)
-- Adicionar estado `selectedBookId` e `selectedBookBiblioteca`
-- No desktop, ao clicar num livro: setar o ID em vez de navegar
-- Renderizar painel lateral direito com dados do livro selecionado (query por ID)
-- Layout: grade de livros ocupa ~60%, detalhe ocupa ~40%
-- Incluir no painel: capa, titulo, autor, sobre, botoes (Ler, Download, Favoritar, Videoaula)
-- No mobile: manter `navigate()` normal
+**1. `src/pages/JuriFlix.tsx`** — Reescrever com layout condicional
+- Desktop: remover bottom nav propria, hero fullwidth h-[400px], cards w-[200px], grid 5-6 colunas no filtro, tabs Top Notas/Por Ano/Favoritos como secoes inline (nao bottom nav), busca no header ao lado das tabs
+- Mobile: refinar hero, cards w-[150px], manter bottom nav, manter carrosseis
 
-**2. `src/pages/BibliotecaClassicosLivro.tsx`** (e os outros 7 arquivos de livro)
-- Adicionar layout desktop responsivo com `useDeviceType`
-- No desktop: layout horizontal (capa a esquerda, info a direita), sem `pb-20`, sem `StandardPageHeader` (o DesktopTopNav global ja aparece)
-- Manter funcionalidade igual (PDF, video, leitura dinamica, favoritos, premium gate)
+**2. `src/pages/JuriFlixDetalhesEnhanced.tsx`** — Layout responsivo
+- Desktop: backdrop maior, layout 2 colunas (poster + info lado a lado com mais espaco), streaming providers em grid 3 cols, sinopse + info tecnica side-by-side, elenco grid 5-6 cols, trailer + similares lado a lado
+- Mobile: manter layout atual com ajustes de spacing
+
+**3. `src/components/JuriFlixCard.tsx`** — Aceitar prop `size` para variar entre mobile/desktop
 
 ### Detalhes tecnicos
 
-- Criar componente `BibliotecaLivroDetalhePanel.tsx` reutilizavel para o painel inline do desktop
-- O painel faz sua propria query ao Supabase (`useQuery` com o ID do livro e tabela)
-- Integrar `BibliotecaFavoritoButton`, `PDFReaderModeSelector`, `PremiumFloatingCard` dentro do painel
-- As 8 paginas de livro individuais ganham layout desktop com `useDeviceType` para quando o usuario acessa diretamente pela URL
-
-### Arquivos a criar/modificar (10)
-
-1. **Criar** `src/components/biblioteca/BibliotecaLivroDetalhePanel.tsx` — painel inline reutilizavel
-2. **Modificar** `src/pages/Bibliotecas.tsx` — integrar painel lateral no desktop
-3-9. **Modificar** os 7 arquivos `Biblioteca*Livro.tsx` — adicionar layout desktop responsivo
-10. Nenhuma rota muda — acesso direto por URL continua funcionando
+- Usar `useDeviceType` para condicionar layouts
+- Desktop: remover header sticky proprio (o DesktopTopNav global ja existe via Layout)
+- Desktop: remover bottom nav (tabs viram inline no conteudo)
+- Cards desktop: hover com scale + shadow mais pronunciado, sinopse visivel no hover
+- Hero desktop: usar `backdrop_path` quando disponivel (imagem landscape), fallback para poster
+- Manter toda a logica de dados, queries, favoritos, cache intacta
 
 ### O que NAO muda
-- Funcionalidades (PDF, video, leitura dinamica, favoritos, premium)
-- Rotas existentes
-- Layout mobile
-- Dados e hooks
+- Queries Supabase, hooks, tipos, rotas
+- Componentes auxiliares (JuriflixComentariosSection, AvaliacaoSection, FavoritoButton, ShareModal)
+- Funcionalidades (favoritos, comentarios, avaliacoes, compartilhar, enriquecer TMDB)
+- JuriflixBottomNav.tsx no mobile (se estiver sendo usado em outra rota)
 
