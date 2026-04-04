@@ -72,7 +72,7 @@ const getHojeSaoPaulo = (): string => {
   return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 };
 
-export default function ResenhaDiariaCarousel() {
+export default function ResenhaDiariaCarousel({ desktopListMode = false }: { desktopListMode?: boolean } = {}) {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showNoDataToast, setShowNoDataToast] = useState(false);
@@ -479,6 +479,35 @@ export default function ResenhaDiariaCarousel() {
                   <Loader2 className="w-5 h-5 animate-spin text-primary" />
                 </div>
               ) : leisRecentes && leisRecentes.length > 0 ? (
+                desktopListMode ? (
+                  <div className="space-y-2">
+                    {leisRecentes.slice(0, 15).map((lei) => {
+                      const tags = gerarTags(lei);
+                      return (
+                        <button
+                          key={lei.id}
+                          onClick={() => navigate(`/vade-mecum/resenha/push-${lei.id}`)}
+                          className="w-full bg-muted/50 border border-border/50 rounded-lg p-2.5 text-left hover:border-primary/50 transition-colors group"
+                        >
+                          <div className="flex gap-1 mb-1 flex-wrap">
+                            {tags.map((tag, i) => (
+                              <span 
+                                key={i}
+                                className={`px-1.5 py-0.5 text-[9px] font-semibold rounded ${
+                                  i === 0 ? 'bg-primary/20 text-primary' : i === 1 ? 'bg-blue-500/20 text-blue-400' : 'bg-amber-500/20 text-amber-500'
+                                }`}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                          <p className="text-[10px] text-muted-foreground font-medium mb-0.5 truncate">{lei.numero}</p>
+                          <p className="text-[11px] text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">{lei.ementa}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
                 <ScrollArea className="w-full">
                   <div className="flex gap-2 pb-2">
                     {leisRecentes.slice(0, 10).map((lei, index) => {
@@ -523,6 +552,7 @@ export default function ResenhaDiariaCarousel() {
                   </div>
                   <ScrollBar orientation="horizontal" />
                 </ScrollArea>
+                )
               ) : (
                 <div className="text-center py-6 text-muted-foreground">
                   <Calendar className="w-6 h-6 mx-auto mb-1.5 opacity-50" />

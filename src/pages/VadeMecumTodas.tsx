@@ -421,7 +421,7 @@ const VadeMecumTodas = () => {
 
   return (
     <div className="h-dvh bg-background relative overflow-hidden overscroll-contain" style={{ contain: 'layout style' }}>
-      {/* Background image - full screen on desktop */}
+      {/* Background image - full screen covering everything */}
       <div className="fixed inset-0 z-0">
         <img
           src={heroVadeMecumMenu}
@@ -433,7 +433,7 @@ const VadeMecumTodas = () => {
         <div 
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(to bottom, hsl(var(--background) / 0.6) 0%, hsl(var(--background) / 0.8) 40%, hsl(var(--background) / 0.92) 100%)`
+            background: `linear-gradient(to bottom, hsl(var(--background) / 0.35) 0%, hsl(var(--background) / 0.55) 40%, hsl(var(--background) / 0.8) 100%)`
           }}
         />
       </div>
@@ -472,7 +472,7 @@ const VadeMecumTodas = () => {
         {/* ===== DESKTOP: 3-column layout ===== */}
         <div className="hidden lg:flex flex-1 min-h-0">
           {/* Left column - Explicações / Leitura */}
-          <aside className="w-72 xl:w-80 border-r border-border/30 bg-background/80 backdrop-blur-sm flex flex-col h-full">
+          <aside className="w-72 xl:w-80 border-r border-white/5 bg-background/40 backdrop-blur-md flex flex-col h-full">
             <div className="p-4 border-b border-border/30">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-orange-500/15 rounded-lg">
@@ -542,8 +542,8 @@ const VadeMecumTodas = () => {
           </div>
 
           {/* Right column - Leis do Dia in list format */}
-          <aside className="w-80 xl:w-96 border-l border-border/30 bg-background/80 backdrop-blur-sm flex flex-col h-full">
-            <div className="p-4 border-b border-border/30">
+          <aside className="w-80 xl:w-96 border-l border-white/5 bg-background/40 backdrop-blur-md flex flex-col h-full">
+            <div className="p-4 border-b border-white/5">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-red-500/15 rounded-lg">
                   <Calendar className="w-4 h-4 text-red-400" />
@@ -551,8 +551,8 @@ const VadeMecumTodas = () => {
                 <h3 className="font-semibold text-sm text-foreground">Leis do Dia</h3>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto">
-              <ResenhaDiariaCarousel />
+            <div className="flex-1 overflow-y-auto p-3">
+              <ResenhaDiariaCarousel desktopListMode />
             </div>
           </aside>
         </div>

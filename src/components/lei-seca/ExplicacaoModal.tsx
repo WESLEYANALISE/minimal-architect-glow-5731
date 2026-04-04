@@ -346,6 +346,217 @@ const ExplicacaoModal = ({ open, onOpenChange, explicacao }: Props) => {
 
   if (!open || !explicacao) return null;
 
+  const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+
+  const content = (
+    <>
+      {/* Header */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50">
+        <div className="flex items-center gap-3 p-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onOpenChange(false)}
+            className="shrink-0"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-amber-500 font-medium">
+              Aula {explicacao.ordem} de 30
+            </p>
+            <h2 className="font-semibold text-foreground truncate">
+              {explicacao.titulo}
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      {/* Conteúdo scrollável */}
+      <div id="explicacao-scroll-container" className={isDesktop ? "pb-24" : "overflow-y-auto h-[calc(100vh-80px)]"}>
+        <div className="max-w-3xl mx-auto p-4 space-y-6 pb-24">
+          {/* Capa - Formato 16:9 (YouTube) */}
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted">
+            {urlCapa ? (
+              <img
+                src={urlCapa}
+                alt={explicacao.titulo}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full min-h-[120px] flex flex-col items-center justify-center gap-3">
+                <Image className="w-12 h-12 text-amber-400/50" />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={gerarCapa}
+                  disabled={isGeneratingCapa}
+                  className="border-amber-500/50 text-amber-500 hover:bg-amber-500/10"
+                >
+                  {isGeneratingCapa ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Gerando...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Gerar Capa com IA
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Toggle Técnico/Descomplicado */}
+          <div className="flex justify-center">
+            <ToggleGroup 
+              type="single" 
+              value={modo} 
+              onValueChange={handleModoChange}
+              className="bg-muted/50 p-1 rounded-lg grid grid-cols-2"
+            >
+              <ToggleGroupItem 
+                value="tecnico" 
+                className="data-[state=on]:bg-amber-500 data-[state=on]:text-white px-4 py-2 rounded-md gap-2 justify-center flex-1"
+              >
+                <GraduationCap className="w-4 h-4 shrink-0" />
+                <span>Técnico</span>
+              </ToggleGroupItem>
+              <ToggleGroupItem 
+                value="descomplicado" 
+                className="data-[state=on]:bg-green-500 data-[state=on]:text-white px-4 py-2 rounded-md gap-2 justify-center flex-1"
+              >
+                <BookOpen className="w-4 h-4 shrink-0" />
+                <span>Descomplicado</span>
+              </ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+
+          {/* Player de Áudio */}
+          <div className="p-3 rounded-lg bg-card border border-border/50 space-y-3">
+            {urlAudioAtual ? (
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="default"
+                    size="icon"
+                    onClick={toggleAudio}
+                    className="shrink-0 rounded-full w-10 h-10"
+                  >
+                    {isPlaying ? (
+                      <Pause className="w-5 h-5" />
+                    ) : (
+                      <Play className="w-5 h-5" />
+                    )}
+                  </Button>
+                  <div className="flex-1">
+                    <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-primary rounded-full transition-all"
+                        style={{
+                          width: `${audioDuration > 0 ? (currentTime / audioDuration) * 100 : 0}%`,
+                        }}
+                      />
+                    </div>
+                    <div className="flex justify-between mt-1">
+                      <span className="text-[10px] text-muted-foreground">
+                        {formatDuration(currentTime)}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {formatDuration(audioDuration)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Volume2 className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Áudio não disponível</span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={gerarNarracoes}
+                  disabled={isGeneratingAudio}
+                >
+                  {isGeneratingAudio ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      {audioProgress.etapa === "tecnico"
+                        ? "Gerando técnico..."
+                        : audioProgress.etapa === "descomplicado"
+                        ? "Gerando descomplicado..."
+                        : "Preparando..."}
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Gerar Áudio
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Markdown Content */}
+          {isLoadingConteudo ? (
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/6" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+          ) : conteudoAtual ? (
+            <article className="prose prose-invert prose-sm max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-li:text-muted-foreground">
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                {conteudoAtual}
+              </ReactMarkdown>
+            </article>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 gap-4">
+              <p className="text-muted-foreground">
+                Conteúdo não disponível
+              </p>
+              <Button onClick={() => gerarConteudo(modo)} disabled={isLoadingConteudo}>
+                <Sparkles className="w-4 h-4 mr-2" />
+                Gerar Conteúdo
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+
+  if (isDesktop) {
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          onClick={() => onOpenChange(false)}
+        />
+        <motion.div
+          initial={{ x: '100%' }}
+          animate={{ x: 0 }}
+          exit={{ x: '100%' }}
+          transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+          className="fixed inset-y-0 right-0 z-50 w-full max-w-2xl bg-background/95 backdrop-blur-md shadow-2xl overflow-y-auto border-l border-border/30"
+        >
+          {content}
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+
   return (
     <AnimatePresence>
       <motion.div
@@ -354,244 +565,7 @@ const ExplicacaoModal = ({ open, onOpenChange, explicacao }: Props) => {
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-50 bg-background overflow-hidden"
       >
-        {/* Header */}
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50">
-          <div className="flex items-center gap-3 p-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onOpenChange(false)}
-              className="shrink-0"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm text-amber-500 font-medium">
-                Aula {explicacao.ordem} de 30
-              </p>
-              <h2 className="font-semibold text-foreground truncate">
-                {explicacao.titulo}
-              </h2>
-            </div>
-          </div>
-        </div>
-
-        {/* Conteúdo scrollável */}
-        <div id="explicacao-scroll-container" className="overflow-y-auto h-[calc(100vh-80px)]">
-          <div className="max-w-3xl mx-auto p-4 space-y-6 pb-24">
-            {/* Capa - Formato 16:9 (YouTube) */}
-            <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted">
-              {urlCapa ? (
-                <img
-                  src={urlCapa}
-                  alt={explicacao.titulo}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full min-h-[120px] flex flex-col items-center justify-center gap-3">
-                  <Image className="w-12 h-12 text-amber-400/50" />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={gerarCapa}
-                    disabled={isGeneratingCapa}
-                    className="border-amber-500/50 text-amber-500 hover:bg-amber-500/10"
-                  >
-                    {isGeneratingCapa ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Gerando...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-4 h-4 mr-2" />
-                        Gerar Capa com IA
-                      </>
-                    )}
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* Toggle Técnico/Descomplicado */}
-            <div className="flex justify-center">
-              <ToggleGroup 
-                type="single" 
-                value={modo} 
-                onValueChange={handleModoChange}
-                className="bg-muted/50 p-1 rounded-lg grid grid-cols-2"
-              >
-                <ToggleGroupItem 
-                  value="tecnico" 
-                  className="data-[state=on]:bg-amber-500 data-[state=on]:text-white px-4 py-2 rounded-md gap-2 justify-center flex-1"
-                >
-                  <GraduationCap className="w-4 h-4 shrink-0" />
-                  <span>Técnico</span>
-                </ToggleGroupItem>
-                <ToggleGroupItem 
-                  value="descomplicado" 
-                  className="data-[state=on]:bg-green-500 data-[state=on]:text-white px-4 py-2 rounded-md gap-2 justify-center flex-1"
-                >
-                  <BookOpen className="w-4 h-4 shrink-0" />
-                  <span>Descomplicado</span>
-                </ToggleGroupItem>
-              </ToggleGroup>
-            </div>
-
-            {/* Player de Áudio */}
-            <div className="p-3 rounded-lg bg-card border border-border/50 space-y-3">
-              {urlAudioAtual ? (
-                <div className="space-y-2">
-                  {/* Controles principais */}
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="default"
-                      size="icon"
-                      onClick={toggleAudio}
-                      className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white"
-                    >
-                      {isPlaying ? (
-                        <Pause className="w-4 h-4" />
-                      ) : (
-                        <Play className="w-4 h-4 ml-0.5" />
-                      )}
-                    </Button>
-                    
-                    {/* Barra de progresso */}
-                    <div className="flex-1 flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground min-w-[35px] text-right">
-                        {formatDuration(currentTime)}
-                      </span>
-                      <input
-                        type="range"
-                        min={0}
-                        max={audioDuration || 0}
-                        value={currentTime}
-                        onChange={handleSeek}
-                        className="flex-1 h-1.5 bg-muted rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-500 [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-amber-500 [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
-                        style={{
-                          background: audioDuration 
-                            ? `linear-gradient(to right, #f59e0b ${(currentTime / audioDuration) * 100}%, hsl(var(--muted)) ${(currentTime / audioDuration) * 100}%)`
-                            : 'hsl(var(--muted))'
-                        }}
-                      />
-                      <span className="text-xs text-muted-foreground min-w-[35px]">
-                        {formatDuration(audioDuration)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-3">
-                  {/* Progresso de geração */}
-                  {isGeneratingAudio && (
-                    <div className="space-y-3 p-3 bg-muted/30 rounded-lg">
-                      {/* Etapa 1: Técnico */}
-                      <div className="flex items-center gap-3">
-                        {audioProgress.tecnicoConcluido ? (
-                          <>
-                            <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                              <span className="text-white text-xs">✓</span>
-                            </div>
-                            <span className="text-sm text-green-500 font-medium">Técnico concluído</span>
-                          </>
-                        ) : audioProgress.etapa === "tecnico" ? (
-                          <>
-                            <Loader2 className="w-5 h-5 animate-spin text-amber-500" />
-                            <span className="text-sm text-amber-500 font-medium">Gerando Técnico...</span>
-                          </>
-                        ) : (
-                          <>
-                            <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
-                              <span className="text-muted-foreground text-xs">1</span>
-                            </div>
-                            <span className="text-sm text-muted-foreground">Técnico</span>
-                          </>
-                        )}
-                      </div>
-
-                      {/* Etapa 2: Descomplicado */}
-                      <div className="flex items-center gap-3">
-                        {audioProgress.etapa === "descomplicado" ? (
-                          <>
-                            <Loader2 className="w-5 h-5 animate-spin text-green-500" />
-                            <span className="text-sm text-green-500 font-medium">Gerando Descomplicado...</span>
-                          </>
-                        ) : audioProgress.tecnicoConcluido && !audioProgress.etapa ? (
-                          <>
-                            <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
-                              <span className="text-muted-foreground text-xs">2</span>
-                            </div>
-                            <span className="text-sm text-muted-foreground">Preparando Descomplicado...</span>
-                          </>
-                        ) : (
-                          <>
-                            <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
-                              <span className="text-muted-foreground text-xs">2</span>
-                            </div>
-                            <span className="text-sm text-muted-foreground">Descomplicado</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Botão de gerar */}
-                  {!isGeneratingAudio && (
-                    <div className="flex items-center gap-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={gerarNarracoes}
-                        disabled={!conteudoTecnico || !conteudoDescomplicado}
-                        className="border-blue-500/50 text-blue-500 hover:bg-blue-500/10"
-                      >
-                        <Volume2 className="w-4 h-4 mr-2" />
-                        Gerar Narrações
-                      </Button>
-                      <span className="text-sm text-muted-foreground">
-                        Gera áudio Técnico + Descomplicado
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Conteúdo */}
-            {isLoadingConteudo ? (
-              <div className="space-y-4">
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-2/3" />
-                <Skeleton className="h-6 w-1/2 mt-6" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-4/5" />
-              </div>
-            ) : conteudoAtual ? (
-              <article className="prose prose-sm dark:prose-invert max-w-none prose-headings:text-foreground prose-headings:mt-8 prose-headings:mb-4 prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:mb-6 [&>p]:mb-6 [&>*+p]:mt-6 prose-strong:text-foreground prose-li:text-muted-foreground prose-ul:my-6 prose-li:my-2 prose-blockquote:border-l-amber-500 prose-blockquote:bg-muted/50 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-muted-foreground">
-                <ReactMarkdown 
-                  remarkPlugins={[remarkGfm]}
-                  components={markdownComponents}
-                >
-                  {conteudoAtual}
-                </ReactMarkdown>
-              </article>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-12 gap-4">
-                <p className="text-muted-foreground">
-                  Conteúdo não disponível
-                </p>
-                <Button onClick={() => gerarConteudo(modo)} disabled={isLoadingConteudo}>
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Gerar Conteúdo
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
+        {content}
       </motion.div>
     </AnimatePresence>
   );
