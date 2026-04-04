@@ -1,5 +1,4 @@
-import { ArrowLeft, Wrench, Bell, BookOpen, Film, Newspaper, CheckCheck } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, Bell, BookOpen, Film, Newspaper, CheckCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import novidadesHeroBackground from '@/assets/novidades-hero-background.webp';
 import NovidadesContent from '@/pages/Novidades';
@@ -13,8 +12,6 @@ interface NovidadesSheetProps {
   onClose: () => void;
 }
 
-type NovidadesTab = "melhorias" | "novidades";
-
 const iconMap: Record<string, any> = {
   livro: BookOpen,
   filme: Film,
@@ -22,7 +19,6 @@ const iconMap: Record<string, any> = {
 };
 
 export const NovidadesSheet = ({ open, onClose }: NovidadesSheetProps) => {
-  const [activeTab, setActiveTab] = useState<NovidadesTab>("melhorias");
   const { notificacoes, naoLidas, marcarLida, marcarTodasLidas } = useNotificacoesApp();
   const navigate = useNavigate();
 
@@ -71,107 +67,71 @@ export const NovidadesSheet = ({ open, onClose }: NovidadesSheetProps) => {
 
         {/* Content */}
         <div className="relative rounded-t-[32px] bg-muted -mt-6 min-h-screen pb-20">
-          {/* Toggle Tabs */}
-          <div className="px-5 pt-6 pb-2">
-            <div className="flex items-center w-full bg-card rounded-full p-1 gap-0.5 border border-border/30">
+          <div className="px-4 pt-6 space-y-3">
+            {/* Mark all as read */}
+            {naoLidas > 0 && (
               <button
-                onClick={() => setActiveTab("melhorias")}
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full text-xs font-medium transition-all",
-                  activeTab === "melhorias"
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
+                onClick={marcarTodasLidas}
+                className="flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors shadow-md"
               >
-                <Wrench className="w-3.5 h-3.5" />
-                Melhorias
+                <CheckCheck className="w-4 h-4" />
+                Marcar todas como lidas
               </button>
-              <button
-                onClick={() => setActiveTab("novidades")}
-                className={cn(
-                  "relative flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full text-xs font-medium transition-all",
-                  activeTab === "novidades"
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <Bell className="w-3.5 h-3.5" />
-                Novidades
-                {naoLidas > 0 && activeTab !== "novidades" && (
-                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold px-1 animate-scale-in">
-                    {naoLidas}
-                  </span>
-                )}
-              </button>
-            </div>
+            )}
+
+            {/* All notifications */}
+            {notificacoes.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">
+                Nenhuma notificação para hoje.
+              </p>
+            ) : (
+              notificacoes.map((n) => {
+                const Icon = iconMap[n.tipo] || Bell;
+                return (
+                  <button
+                    key={n.id}
+                    onClick={() => handleNotifClick(n)}
+                    className={cn(
+                      "w-full flex items-start gap-3 p-4 rounded-xl text-left transition-colors border border-border/20",
+                      n.lida ? "bg-card/40 opacity-50" : "bg-card hover:bg-card/80"
+                    )}
+                  >
+                    {n.imagemUrl ? (
+                      <img
+                        src={n.imagemUrl}
+                        alt={n.descricao}
+                        className="w-12 h-16 rounded-md object-cover shrink-0 shadow-md"
+                      />
+                    ) : (
+                      <div className="w-12 h-16 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                        <Icon className="w-6 h-6 text-primary" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-foreground truncate">
+                          {n.titulo}
+                        </span>
+                        {!n.lida && (
+                          <Badge className="bg-destructive text-destructive-foreground text-[10px] px-1.5 py-0 leading-4 shrink-0">
+                            Nova
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                        {n.descricao}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })
+            )}
           </div>
 
-          {/* Tab Content */}
-          {activeTab === "melhorias" ? (
+          {/* Novidades / Melhorias history */}
+          <div className="mt-6">
             <NovidadesContent />
-          ) : (
-            <div className="px-4 py-2 space-y-3">
-              {/* Mark all as read */}
-              {naoLidas > 0 && (
-                <button
-                  onClick={marcarTodasLidas}
-                  className="flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors shadow-md"
-                >
-                  <CheckCheck className="w-4 h-4" />
-                  Marcar todas como lidas
-                </button>
-              )}
-
-              {/* Notification list */}
-              {notificacoes.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  Nenhuma notificação para hoje.
-                </p>
-              ) : notificacoes.filter(n => !n.lida).length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  Todas as notificações foram lidas! ✅
-                </p>
-              ) : (
-                notificacoes.filter(n => !n.lida).map((n) => {
-                  const Icon = iconMap[n.tipo] || Bell;
-                  return (
-                    <button
-                      key={n.id}
-                      onClick={() => handleNotifClick(n)}
-                      className="w-full flex items-start gap-3 p-4 rounded-xl text-left transition-colors bg-card hover:bg-card/80 border border-border/20"
-                    >
-                      {n.imagemUrl ? (
-                        <img
-                          src={n.imagemUrl}
-                          alt={n.descricao}
-                          className="w-12 h-16 rounded-md object-cover shrink-0 shadow-md"
-                        />
-                      ) : (
-                        <div className="w-12 h-16 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                          <Icon className="w-6 h-6 text-primary" />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold text-foreground truncate">
-                            {n.titulo}
-                          </span>
-                          {!n.lida && (
-                            <Badge className="bg-destructive text-destructive-foreground text-[10px] px-1.5 py-0 leading-4 shrink-0">
-                              Nova
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                          {n.descricao}
-                        </p>
-                      </div>
-                    </button>
-                  );
-                })
-              )}
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
