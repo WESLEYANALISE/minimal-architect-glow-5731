@@ -28,6 +28,15 @@ import {
   PanelLeftOpen,
   MessageCircle,
   ChevronRight,
+  ScrollText,
+  Scale,
+  Headphones,
+  Clapperboard,
+  GraduationCap,
+  Mic,
+  BookMarked,
+  Gavel,
+  CalendarDays,
 } from "lucide-react";
 
 const FRASES_PERSUASIVAS = [
@@ -149,7 +158,10 @@ export const AppSidebar = ({ onClose, collapsed = false, onToggle }: AppSidebarP
   const profileName = profileData?.nome || null;
 
   const isActive = (path: string) => {
-    const [pathname] = path.split('?');
+    const [pathname, query] = path.split('?');
+    if (query) {
+      return location.pathname === pathname && location.search.includes(query);
+    }
     return location.pathname === pathname;
   };
 
@@ -272,6 +284,11 @@ export const AppSidebar = ({ onClose, collapsed = false, onToggle }: AppSidebarP
       path: "/vade-mecum",
     },
     {
+      label: 'Leis do Dia',
+      icon: CalendarDays,
+      path: "/leis-do-dia",
+    },
+    {
       label: 'Simulados',
       icon: Trophy,
       path: "/ferramentas/simulados",
@@ -287,19 +304,60 @@ export const AppSidebar = ({ onClose, collapsed = false, onToggle }: AppSidebarP
       path: "/evelyn",
     },
     {
+      label: 'Juriflix',
+      icon: Clapperboard,
+      path: "/ferramentas/documentarios-juridicos",
+    },
+    // Bibliotecas
+    {
+      label: 'Biblioteca Estudos',
+      icon: GraduationCap,
+      path: "/bibliotecas?tab=estudos",
+    },
+    {
+      label: 'Biblioteca Clássicos',
+      icon: BookMarked,
+      path: "/bibliotecas?tab=classicos",
+    },
+    {
+      label: 'Biblioteca OAB',
+      icon: Gavel,
+      path: "/bibliotecas?tab=oab",
+    },
+    {
+      label: 'Biblioteca Português',
+      icon: BookText,
+      path: "/bibliotecas?tab=portugues",
+    },
+    {
+      label: 'Biblioteca Oratória',
+      icon: Mic,
+      path: "/bibliotecas?tab=oratoria",
+    },
+    {
+      label: 'Biblioteca Pesquisa',
+      icon: Scale,
+      path: "/bibliotecas?tab=pesquisa",
+    },
+    {
+      label: 'Audioaulas',
+      icon: Headphones,
+      path: "/audioaulas",
+    },
+    {
       label: 'Dicionário',
       icon: Search,
       path: "/ferramentas/dicionario-juridico",
     },
     {
-      label: 'Ferramentas',
-      icon: Settings,
-      path: "/ferramentas",
-    },
-    {
       label: 'Boletins',
       icon: Newspaper,
       path: "/ferramentas/boletins",
+    },
+    {
+      label: 'Ferramentas',
+      icon: Settings,
+      path: "/ferramentas",
     },
     ...(isAdmin ? [{
       label: 'Administração',
