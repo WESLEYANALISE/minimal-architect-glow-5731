@@ -19,6 +19,7 @@ import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { AuthRequiredDialog } from "@/components/auth/AuthRequiredDialog";
+import { useRoutePrefetch } from "@/hooks/useRoutePrefetch";
 
 interface CodeCard {
   id: string;
