@@ -102,7 +102,7 @@ const formatParentheses = (text: string, hideAnnotations: boolean = false): stri
     // Expressão suprimida - rosa, menor, ocultável
     { regex: /\(Expressão suprimida[^)]*\)/gi, className: 'text-pink-400 italic text-[0.85em]', hideable: true },
     // Outros parênteses genéricos com referência a Lei/Decreto - amarelo claro, menor, ocultável
-    { regex: /\((?=.*(?:Lei|Decreto|LC|EC|MP|Emenda)[^)]*)[^)]+\)/gi, className: 'text-amber-300/80 italic text-[0.85em]', hideable: true },
+    { regex: /\((?=.*(?:Lei|Decreto|LC|EC|MP|Emenda)[^)]*)[^)]+\)/gi, className: 'text-red-300/80 italic text-[0.85em]', hideable: true },
   ];
 
   let result = text;
@@ -244,15 +244,15 @@ export const formatTextWithUppercase = (text: string, hideAnnotations: boolean =
     }
     
     // É título se: próxima linha é Art. OU (linha curta sem pontuação final típica de conteúdo + entre artigos)
-    const isBeforeArticle = nextNonEmptyLine && /^(<strong class="font-bold text-amber-300">)?Art\./i.test(nextNonEmptyLine);
+    const isBeforeArticle = nextNonEmptyLine && /^(<strong class="font-bold text-red-300">)?Art\./i.test(nextNonEmptyLine);
     const isShortTitle = trimmedLine.length <= 60 && !trimmedLine.endsWith('.') && !trimmedLine.endsWith(';') && !trimmedLine.endsWith(':') && !trimmedLine.endsWith(',');
-    const isAfterContent = prevNonEmptyLine && (/[;.]$/.test(prevNonEmptyLine) || /<\/span>$/.test(prevNonEmptyLine) || /^(<strong class="font-bold text-amber-300">)?Art\./i.test(prevNonEmptyLine));
+    const isAfterContent = prevNonEmptyLine && (/[;.]$/.test(prevNonEmptyLine) || /<\/span>$/.test(prevNonEmptyLine) || /^(<strong class="font-bold text-red-300">)?Art\./i.test(prevNonEmptyLine));
     
     // Linhas que terminam com '.' antes de artigo são provavelmente assinaturas/nomes, não títulos
     const isLikelySignature = trimmedLine.endsWith('.') && trimmedLine.length <= 60;
     
     if ((isBeforeArticle && !isLikelySignature) || (isShortTitle && isAfterContent && nextNonEmptyLine)) {
-      return `<span class="text-amber-300 font-bold">${trimmedLine}</span>`;
+      return `<span class="text-red-300 font-bold">${trimmedLine}</span>`;
     }
     
     // Para títulos principais em CAIXA ALTA
@@ -263,7 +263,7 @@ export const formatTextWithUppercase = (text: string, hideAnnotations: boolean =
     
     if (upperWords.length >= 2 && (upperWords.length / words.length) > 0.7) {
       const titleText = toTitleCase(trimmedLine);
-      return `<span class="text-amber-300 font-bold">${titleText}</span>`;
+      return `<span class="text-red-300 font-bold">${titleText}</span>`;
     }
     
     return line;
