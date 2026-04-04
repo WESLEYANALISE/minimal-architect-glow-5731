@@ -294,13 +294,7 @@ const NoticiasJuridicas = () => {
   return (
     <div className="min-h-screen bg-background pb-8">
       <div className="sticky top-[52px] z-30 bg-background/95 backdrop-blur-md border-b border-border">
-        <div className="px-4 pt-3 pb-3 flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shrink-0">
-            <Newspaper className="w-4 h-4 text-primary-foreground" />
-          </div>
-          <h1 className="text-lg font-bold text-foreground">Notícias</h1>
-        </div>
-        <div className="grid grid-cols-4 gap-1.5 px-4 pb-3">
+        <div className="grid grid-cols-4 gap-1.5 px-4 py-3">
           {FILTROS.map(f => (
             <button key={f.value} onClick={() => setFiltro(f.value)} className={cn("py-2 rounded-xl text-sm font-semibold transition-all text-center", filtro === f.value ? "bg-primary text-primary-foreground shadow-md" : "bg-muted/50 text-muted-foreground hover:bg-muted")}>{f.label}</button>
           ))}
