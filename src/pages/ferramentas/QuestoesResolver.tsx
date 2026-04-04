@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import QuestoesConcurso from "@/components/QuestoesConcurso";
-import CountdownStart from "@/components/CountdownStart";
+
 import { Progress } from "@/components/ui/progress";
 import {
   Drawer,
