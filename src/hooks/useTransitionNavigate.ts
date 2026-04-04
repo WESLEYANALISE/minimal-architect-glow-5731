@@ -9,6 +9,8 @@ export function useTransitionNavigate(): NavigateFunction {
   const navigate = useNavigate();
 
   return useCallback((...args: any[]) => {
+    // Reset scroll before rendering new page
+    window.scrollTo(0, 0);
     startTransition(() => {
       (navigate as any)(...args);
     });
