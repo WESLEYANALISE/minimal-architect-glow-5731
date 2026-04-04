@@ -69,15 +69,14 @@ function injectPreloadLink(href: string) {
 // Only preload the 4 critical hero images synchronously
 CRITICAL_IMAGES.forEach(injectPreloadLink);
 
-// Defer all other images to idle time
-const idleCallback = window.requestIdleCallback || ((cb: IdleRequestCallback) => setTimeout(cb, 200));
-idleCallback(() => {
+// Preload deferred images aggressively after 50ms
+setTimeout(() => {
   DEFERRED_IMAGES.forEach((src, i) => {
     setTimeout(() => {
       const img = new Image();
       img.src = src;
-    }, i * 150);
+    }, i * 30);
   });
-});
+}, 50);
 
 export { CRITICAL_IMAGES, DEFERRED_IMAGES };

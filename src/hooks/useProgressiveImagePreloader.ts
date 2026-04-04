@@ -15,15 +15,9 @@ const SECTION_IMAGE_SOURCES: Record<string, { table: string; columns: string[]; 
 const preloadedSections = new Set<string>();
 
 function preloadImageUrls(urls: string[]) {
-  const idleCallback = window.requestIdleCallback || ((cb: () => void) => setTimeout(cb, 100));
-  
-  idleCallback(() => {
-    urls.forEach((url, i) => {
-      setTimeout(() => {
-        const img = new Image();
-        img.src = url;
-      }, i * 20);
-    });
+  urls.forEach((url) => {
+    const img = new Image();
+    img.src = url;
   });
 }
 

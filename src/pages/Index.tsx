@@ -274,12 +274,11 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    // Atrasar preload de atalhos e carreiras para não competir com conteúdo crítico
-    const idle = window.requestIdleCallback || ((cb: IdleRequestCallback) => setTimeout(cb, 8000));
-    idle(() => {
+    // Preload agressivo — inicia após 200ms
+    setTimeout(() => {
       preloadImages(atalhoImages);
       preloadImages([...CARREIRAS_IMAGES, sidebarThemisBg]);
-    }, { timeout: 8000 });
+    }, 200);
   }, []);
 
   // Atualizar tab quando URL mudar

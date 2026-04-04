@@ -393,25 +393,11 @@ export const useHomePreloader = () => {
     if (hasStarted.current) return;
     hasStarted.current = true;
 
-    const startPreload = () => {
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => runPreload(), { timeout: 8000 });
-      } else {
-        setTimeout(runPreload, 4000);
-      }
-    };
+    // Preload agressivo — inicia após 300ms para não competir com LCP
+    setTimeout(runPreload, 300);
 
-    // Delay initial preload to not compete with LCP
-    setTimeout(startPreload, 2000);
-
-    // Fase 2: Pré-carregar legislação após 10s
-    setTimeout(() => {
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => preloadLegislation(), { timeout: 15000 });
-      } else {
-        preloadLegislation();
-      }
-    }, 10000);
+    // Fase 2: Pré-carregar legislação após 5s
+    setTimeout(preloadLegislation, 5000);
   }, []);
 };
 
