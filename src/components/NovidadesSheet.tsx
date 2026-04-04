@@ -1,7 +1,6 @@
 import { ArrowLeft, Bell, BookOpen, Film, Newspaper, CheckCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import novidadesHeroBackground from '@/assets/novidades-hero-background.webp';
-import NovidadesContent from '@/pages/Novidades';
 import SparkleHeroTitle from '@/components/SparkleHeroTitle';
 import { useNotificacoesApp, NotificacaoItem } from "@/hooks/useNotificacoesApp";
 import { cn } from "@/lib/utils";
