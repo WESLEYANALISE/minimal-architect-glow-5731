@@ -708,8 +708,7 @@ const VadeMecumTodas = () => {
           />
           {/* Painel */}
           <div 
-            className={`absolute bottom-0 left-0 right-0 lg:bottom-auto lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 w-full lg:w-[640px] lg:max-h-[85vh] lg:rounded-2xl bg-background flex flex-col overflow-hidden shadow-2xl ${searchClosing ? 'animate-slide-out-bottom lg:animate-fade-out' : 'animate-slide-in-bottom lg:animate-fade-in'}`}
-            style={{ maxHeight: 'calc(100vh - env(safe-area-inset-top))' }}
+            className={`absolute top-0 right-0 bottom-0 w-full lg:top-auto lg:bottom-auto lg:right-auto lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:w-[640px] lg:max-h-[85vh] lg:rounded-2xl bg-background flex flex-col overflow-hidden shadow-2xl ${searchClosing ? 'animate-slide-out-right lg:animate-fade-out' : 'animate-slide-in-right lg:animate-slide-in-from-bottom'}`}
           >
             {/* Header com gradiente */}
             <div className="relative bg-gradient-to-b from-rose-900/20 to-transparent">
