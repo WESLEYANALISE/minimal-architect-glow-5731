@@ -472,7 +472,7 @@ const VadeMecumTodas = () => {
         {/* ===== DESKTOP: 3-column layout ===== */}
         <div className="hidden lg:flex flex-1 min-h-0">
           {/* Left column - Explicações / Leitura */}
-          <aside className="w-72 xl:w-80 border-r border-border/30 bg-background/80 backdrop-blur-sm flex flex-col h-full">
+          <aside className="w-72 xl:w-80 border-r border-white/5 bg-background/40 backdrop-blur-md flex flex-col h-full">
             <div className="p-4 border-b border-border/30">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-orange-500/15 rounded-lg">
