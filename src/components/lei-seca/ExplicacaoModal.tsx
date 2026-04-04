@@ -462,10 +462,10 @@ const ExplicacaoModal = ({ open, onOpenChange, explicacao }: Props) => {
                     </div>
                     <div className="flex justify-between mt-1">
                       <span className="text-[10px] text-muted-foreground">
-                        {formatTime(currentTime)}
+                        {formatDuration(currentTime)}
                       </span>
                       <span className="text-[10px] text-muted-foreground">
-                        {formatTime(audioDuration)}
+                        {formatDuration(audioDuration)}
                       </span>
                     </div>
                   </div>
