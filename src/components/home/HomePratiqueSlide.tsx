@@ -92,7 +92,7 @@ export function HomePratiqueSlide() {
     navigate(route);
   };
   return (
-    <div className="bg-gradient-to-b from-red-950 via-red-900/95 to-red-950 backdrop-blur-sm overflow-hidden flex flex-col">
+    <div className="bg-gradient-to-b from-[hsl(350,50%,10%)] via-[hsl(345,45%,9%)] to-[hsl(350,50%,10%)] backdrop-blur-sm overflow-hidden flex flex-col">
 
       <div className="px-3 pb-3 pt-3 flex-1 flex flex-col">
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5">
@@ -102,11 +102,11 @@ export function HomePratiqueSlide() {
               <button
                 key={item.id}
                 onClick={() => handleItemClick(item.route)}
-                className="group relative rounded-xl overflow-hidden border border-white/[0.06] animate-fade-in active:scale-95 transition-transform min-h-[110px]"
+                className="group relative rounded-xl overflow-hidden border border-white/[0.08] animate-fade-in active:scale-95 transition-transform min-h-[110px]"
                 style={{
                   animationDelay: `${item.delay}s`,
                   animationFillMode: 'backwards',
-                  boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)',
+                  boxShadow: '0 8px 24px -6px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
                 }}
               >
                 {/* Cover image background */}

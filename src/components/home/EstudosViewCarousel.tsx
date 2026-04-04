@@ -112,7 +112,7 @@ export function EstudosViewCarousel({ children, isDesktop = false }: EstudosView
   return (
     <div className={isDesktop ? "px-0" : "px-2 sm:px-3"}>
       {/* Container unificado */}
-      <div className="rounded-2xl overflow-hidden border border-white/10 shadow-xl">
+      <div className="rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_10px_30px_-8px_rgba(0,0,0,0.7),0_4px_12px_rgba(0,0,0,0.3)]">
         {/* Header - cor dinâmica por view */}
         <div
           className={`px-3 ${isDesktop ? 'px-5 py-4' : 'py-3'} flex items-center justify-between relative overflow-hidden transition-all duration-500`}
