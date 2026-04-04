@@ -53,13 +53,11 @@ export const ALL_ATALHOS: AtalhoItem[] = [
 
 const DEFAULT_KEYS = ["primeiros-passos", "biblioteca", "professora", "audioaulas", "aulas", "flashcards"];
 
-// Defer atalho image preload to idle time (avoid competing with critical LCP resources)
+// Preload agressivo de todas as imagens de atalhos — imediato
 const ATALHO_IMAGES = ALL_ATALHOS.map(a => a.coverImage).filter(Boolean);
-const idleCb = window.requestIdleCallback || ((cb: IdleRequestCallback) => setTimeout(cb, 300));
-idleCb(() => {
-  ATALHO_IMAGES.forEach((src, i) => {
-    setTimeout(() => { const img = new Image(); img.src = src; }, i * 80);
-  });
+ATALHO_IMAGES.forEach((src) => {
+  const img = new Image();
+  img.src = src;
 });
 
 export function getActiveKeys(): string[] {
