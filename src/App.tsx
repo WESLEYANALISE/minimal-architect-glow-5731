@@ -15,6 +15,7 @@ import { TutorialProvider } from "./contexts/TutorialContext";
 import { AmbientSoundProvider } from "./contexts/AmbientSoundContext";
 import { NarrationPlayerProvider } from "./contexts/NarrationPlayerContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import { SubscriptionProvider } from "./contexts/SubscriptionContext";
 import GlobalAudioPlayer from "./components/GlobalAudioPlayer";
 import AmbientSoundPlayer from "./components/AmbientSoundPlayer";
@@ -489,6 +490,7 @@ const App = () => {
         <Sonner />
         <SpeedInsights />
         <Analytics />
+        <ThemeProvider>
         <AuthProvider>
         <SubscriptionProvider>
         <NarrationPlayerProvider>
@@ -980,6 +982,7 @@ const App = () => {
         </NarrationPlayerProvider>
         </SubscriptionProvider>
         </AuthProvider>
+        </ThemeProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

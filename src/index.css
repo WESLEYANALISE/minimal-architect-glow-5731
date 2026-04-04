@@ -654,6 +654,32 @@ All colors MUST be HSL.
     --ring: 0 72% 50%;
 
     --radius: 1rem;
+  }
+
+  /* Tema: Cards & Botões — gradiente vermelho nos cards */
+  .theme-cards {
+    --card: 0 30% 11%;
+    --border: 0 20% 16%;
+    --input: 0 20% 13%;
+    --popover: 0 28% 10%;
+  }
+
+  /* Tema: Fundos de Seção — containers com vermelho profundo */
+  .theme-sections {
+    --muted: 0 25% 10%;
+    --secondary: 0 20% 12%;
+    --background: 0 8% 7%;
+  }
+
+  /* Tema: Full Red — tudo com tint vermelho */
+  .theme-full-red {
+    --card: 0 30% 11%;
+    --border: 0 15% 18%;
+    --muted: 0 25% 10%;
+    --secondary: 0 20% 12%;
+    --background: 0 8% 7%;
+    --input: 0 20% 13%;
+    --popover: 0 28% 10%;
 
     --warning: 45 93% 58%;
     --warning-foreground: 0 0% 0%;

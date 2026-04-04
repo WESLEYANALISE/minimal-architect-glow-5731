@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, FileSearch, Mic, HelpCircle, FileCheck, Settings, Image, History, ImageIcon, ScrollText, FlaskConical, Scale, Sparkles, Instagram, Eye, BookOpen, Bell, FolderSync, ScanText, Users, Activity, MessageCircle, PlayCircle, Search, Briefcase, Newspaper, CreditCard, Database, ClipboardList, Gauge, Brain, BarChart3, CalendarClock, RefreshCw, Star, Film, FileCheck2, Gamepad2, GraduationCap, Crown, Route, Zap, BookText, Wifi, Trophy, Globe, Volume2, Library, ClipboardCheck, FileText } from "lucide-react";
+import { ArrowLeft, FileSearch, Mic, HelpCircle, FileCheck, Settings, Image, History, ImageIcon, ScrollText, FlaskConical, Scale, Sparkles, Instagram, Eye, BookOpen, Bell, FolderSync, ScanText, Users, Activity, MessageCircle, PlayCircle, Search, Briefcase, Newspaper, CreditCard, Database, ClipboardList, Gauge, Brain, BarChart3, CalendarClock, RefreshCw, Star, Film, FileCheck2, Gamepad2, GraduationCap, Crown, Route, Zap, BookText, Wifi, Trophy, Globe, Volume2, Library, ClipboardCheck, FileText, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const AdminHub = () => {
@@ -525,6 +525,14 @@ const AdminHub = () => {
       icon: Volume2,
       route: "/admin/teste-voz",
       color: "text-pink-500",
+    },
+    {
+      id: "temas",
+      title: "Temas Visuais",
+      description: "Alterar paleta de cores do aplicativo em tempo real",
+      icon: Palette,
+      route: "/admin/temas",
+      color: "text-rose-500",
     },
   ];
 

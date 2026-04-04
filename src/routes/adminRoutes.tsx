@@ -45,7 +45,7 @@ const AcompanhamentoAulas = lazy(() => import("../pages/Admin/AcompanhamentoAula
 
 const AdminVerificarOcr = lazy(() => import("../pages/AdminVerificarOcr"));
 const AdminGerarTutoriais = lazy(() => import("../pages/AdminGerarTutoriais"));
-
+const AdminTemas = lazy(() => import("../pages/Admin/AdminTemas"));
 
 const AdminBaseConhecimentoOAB = lazy(() => import("../pages/Admin/AdminBaseConhecimentoOAB"));
 
@@ -131,5 +131,6 @@ export const adminRoutes = (
     <Route path="/admin/teste-voz" element={<L><AdminTesteVoz /></L>} />
     <Route path="/admin/geracao-explicacoes" element={<L><AdminGeracaoExplicacoes /></L>} />
     <Route path="/admin/geracao-vademecum" element={<L><AdminGeracaoVadeMecum /></L>} />
+    <Route path="/admin/temas" element={<L><AdminTemas /></L>} />
   </>
 );
