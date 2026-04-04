@@ -48,9 +48,9 @@ const SearchBarAnimatedText = () => {
   const displayText = PHRASES[phraseIndex].slice(0, charIndex);
 
   return (
-    <span className="text-white text-sm font-bold flex-1 min-w-0 select-none tracking-wide">
+    <span className="text-[hsl(350,50%,25%)] text-sm font-medium flex-1 min-w-0 select-none tracking-wide">
       {displayText}
-      <span className="animate-pulse text-primary/50">|</span>
+      <span className="animate-pulse text-[hsl(350,50%,35%)]/50">|</span>
     </span>
   );
 };
