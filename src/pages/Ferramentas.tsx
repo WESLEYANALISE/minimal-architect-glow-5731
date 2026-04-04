@@ -105,6 +105,7 @@ const CategoryGrid = ({ category, startIndex = 0 }: { category: FerramentaCatego
             <div
               key={card.id}
               onClick={() => navigate(card.route)}
+              onTouchStart={() => onTouchStart(card.route)}
               className="bg-card/90 backdrop-blur-sm rounded-xl p-4 cursor-pointer hover:bg-accent/10 hover:scale-[1.02] transition-all border-l-4 group shadow-lg"
               style={{
                 borderLeftColor: card.color,
