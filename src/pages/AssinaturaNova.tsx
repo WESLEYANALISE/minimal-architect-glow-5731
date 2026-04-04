@@ -28,19 +28,20 @@ const PLANS: Record<string, { price: number; label: string; days: number; badge:
 };
 
 const BENEFITS = [
-  { Icon: Scale, title: 'Vade Mecum completo', desc: 'Atualizado 2026', value: '2026' },
-  { Icon: BookOpen, title: 'Cursos interativos', desc: 'Todas as áreas', value: '+36' },
-  { Icon: FileText, title: 'Resumos inteligentes', desc: 'Prontos para revisão', value: '+13 mil' },
-  { Icon: Layers, title: 'Biblioteca jurídica', desc: 'Acervo completo', value: '+1.200' },
-  { Icon: Brain, title: 'Flashcards', desc: 'Memorização espaçada', value: '+101 mil' },
-  { Icon: Target, title: 'Questões comentadas', desc: 'Por banca e concurso', value: '+136 mil' },
-  { Icon: Headphones, title: 'Audioaulas completas', desc: 'Estude em qualquer lugar' },
-  { Icon: Sparkles, title: 'IA jurídica ilimitada', desc: 'Sua assistente 24h', value: 'Evelyn' },
-  { Icon: Map, title: 'Mapas mentais', desc: 'Revisão visual', value: '+500' },
-  { Icon: Video, title: 'Videoaulas exclusivas', desc: 'Conteúdo premium', value: '+80' },
-  { Icon: Gavel, title: 'Audiências dos tribunais', desc: 'Prática forense' },
-  { Icon: MessageCircle, title: 'Assistente 24h', desc: 'Tire dúvidas na hora', value: 'Evelyn' },
-  { Icon: ScrollText, title: 'Legislação atualizada', desc: 'Códigos e estatutos' },
+  { Icon: Scale, title: 'Vade Mecum', value: '2026' },
+  { Icon: BookOpen, title: 'Cursos', value: '+36' },
+  { Icon: FileText, title: 'Resumos', value: '+13 mil' },
+  { Icon: Layers, title: 'Biblioteca', value: '+1.200' },
+  { Icon: Brain, title: 'Flashcards', value: '+101 mil' },
+  { Icon: Target, title: 'Questões', value: '+136 mil' },
+  { Icon: Headphones, title: 'Audioaulas', value: '' },
+  { Icon: Sparkles, title: 'IA Evelyn', value: '24h' },
+  { Icon: Map, title: 'Mapas mentais', value: '+500' },
+  { Icon: Video, title: 'Videoaulas', value: '+80' },
+  { Icon: Gavel, title: 'Audiências', value: '' },
+  { Icon: ScrollText, title: 'Legislação', value: '' },
+  { Icon: MessageCircle, title: 'Assistente', value: '' },
+  { Icon: CheckCircle, title: 'Simulados', value: '' },
 ];
 
 const FRASES = [
