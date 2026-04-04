@@ -31,6 +31,7 @@ interface Props {
 
 export function HomeAtalhosSection({ onProfessora, gatedNavigate, user, requireAuth, variant = "mobile" }: Props) {
   const navigate = useNavigate();
+  const { onTouchStart } = usePrefetchRoute();
   const [mode, setMode] = useState<HomeAtalhosMode>(getHomeAtalhosMode);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [acessoRapido, setAcessoRapido] = useState<AcessoRapidoItem[]>(loadAcessoRapidoConfig);
