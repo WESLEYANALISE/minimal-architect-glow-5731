@@ -9,6 +9,13 @@ import { FlashcardSettingsModal } from "@/components/FlashcardSettingsModal";
 import { Progress } from "@/components/ui/progress";
 import { useHierarchicalNavigation } from "@/hooks/useHierarchicalNavigation";
 
+interface FlashcardsEstudarProps {
+  inlineArea?: string;
+  inlineTema?: string;
+  onExit?: () => void;
+  onComplete?: () => void;
+}
+
 interface FlashcardGerado {
   id: number;
   pergunta: string;
@@ -34,15 +41,15 @@ const FRASES_GERACAO = [
   "Quase pronto...",
 ];
 
-const FlashcardsEstudar = () => {
+const FlashcardsEstudar = ({ inlineArea, inlineTema, onExit, onComplete }: FlashcardsEstudarProps = {}) => {
   const navigate = useNavigate();
   const { goBack } = useHierarchicalNavigation();
   const [searchParams] = useSearchParams();
-  const area = searchParams.get("area") || "";
-  const tema = searchParams.get("tema") || "";
+  const area = inlineArea || searchParams.get("area") || "";
+  const tema = inlineTema || searchParams.get("tema") || "";
   const temas = searchParams.get("temas") || "";
   const modo = searchParams.get("modo") || "";
-  
+  const isInline = !!inlineArea;
   const isModoTodos = modo === "todos" || (!tema && !temas);
   const temasArray = temas ? temas.split(",").map(t => decodeURIComponent(t)) : [];
 
@@ -348,6 +355,7 @@ const FlashcardsEstudar = () => {
 
   // Redirecionar se não houver área
   if (!area) {
+    if (isInline && onExit) { onExit(); return null; }
     navigate("/flashcards");
     return null;
   }
@@ -397,7 +405,7 @@ const FlashcardsEstudar = () => {
             <p className="text-sm text-white/60 max-w-xs mb-4">
               Não foi possível carregar ou gerar flashcards.
             </p>
-            <Button onClick={goBack}>Voltar</Button>
+            <Button onClick={() => isInline && onExit ? onExit() : goBack()}>Voltar</Button>
           </div>
         </div>
       </div>

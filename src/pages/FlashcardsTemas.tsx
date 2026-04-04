@@ -3,6 +3,7 @@ import { Brain, BookOpen, FileText, Loader2, Zap, Heart, ListOrdered, Search, Ar
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import FlashcardsEstudar from "@/pages/FlashcardsEstudar";
 import { useFlashcardsAutoGeneration } from "@/hooks/useFlashcardsAutoGeneration";
 import { getAreaGradient, getAreaHex } from "@/lib/flashcardsAreaColors";
 // Vertical list replaces serpentine trail
@@ -53,6 +54,7 @@ const FlashcardsTemas = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [estudarTema, setEstudarTema] = useState<string | null>(null);
   const cacheHashRef = useRef('');
 
   const hex = getAreaHex(area);
@@ -152,7 +154,7 @@ const FlashcardsTemas = () => {
   const lockedFromIndex = isPremium ? undefined : 2;
 
   const navegarParaTema = (tema: string) => {
-    navigate(`/flashcards/estudar?area=${encodeURIComponent(area)}&tema=${encodeURIComponent(tema)}`);
+    setEstudarTema(tema);
   };
 
   const handleToggleFavorito = useCallback((tema: string) => {
@@ -174,6 +176,18 @@ const FlashcardsTemas = () => {
     }
     return temas;
   }, [temas, activeTab, favoritos, searchTerm]);
+
+  // If studying a tema inline, render FlashcardsEstudar directly
+  if (estudarTema) {
+    return (
+      <FlashcardsEstudar
+        inlineArea={area}
+        inlineTema={estudarTema}
+        onExit={() => setEstudarTema(null)}
+        onComplete={() => setEstudarTema(null)}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden">
