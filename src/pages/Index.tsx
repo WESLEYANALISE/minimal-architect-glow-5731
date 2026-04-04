@@ -692,7 +692,6 @@ const Index = () => {
                       </div>
                       <div className="text-left">
                         <h4 className="text-sm font-bold text-white leading-tight drop-shadow-md">{item.titulo}</h4>
-                        <p className="text-[11px] text-white/70 leading-tight">{item.subtitulo}</p>
                       </div>
                     </div>
                   </button>
