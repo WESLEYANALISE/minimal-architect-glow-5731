@@ -276,6 +276,7 @@ export const LegislacaoHomeSection = memo(() => {
                 <button
                   key={codigo.id}
                   onClick={() => navigate(codigo.route)}
+                  onTouchStart={() => onTouchStart(codigo.route)}
                   className={`w-[140px] lg:w-[160px] shrink-0 group relative bg-gradient-to-br ${codigo.bg} rounded-xl p-3 h-[120px] lg:h-[130px] flex flex-col items-start justify-between text-left overflow-hidden border border-white/[0.06] active:scale-95 transition-transform`}
                   style={{
                     boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)',
