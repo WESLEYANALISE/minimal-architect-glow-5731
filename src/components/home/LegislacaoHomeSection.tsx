@@ -207,6 +207,7 @@ export const LegislacaoHomeSection = memo(() => {
         {/* Atualizações - Rosa (mesma cor de Cursos) */}
         <button
           onClick={() => navigate("/vade-mecum/resenha-diaria")}
+          onTouchStart={() => onTouchStart("/vade-mecum")}
           className="group relative bg-gradient-to-br from-[#b8334a] to-[#6e1a2c] rounded-xl p-3 h-[120px] flex flex-col items-start justify-between text-left overflow-hidden border border-white/[0.06] active:scale-95 transition-transform"
           style={{ boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)' }}
         >
