@@ -393,8 +393,8 @@ export const useHomePreloader = () => {
     if (hasStarted.current) return;
     hasStarted.current = true;
 
-    // Preload agressivo — inicia após 300ms para não competir com LCP
-    setTimeout(runPreload, 300);
+    // Preload agressivo — inicia imediatamente
+    runPreload();
 
     // Fase 2: Pré-carregar legislação após 5s
     setTimeout(preloadLegislation, 5000);

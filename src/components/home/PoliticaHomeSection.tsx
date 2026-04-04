@@ -265,7 +265,7 @@ export const PoliticaHomeSection = memo(({ isDesktop, navigate, handleLinkHover 
                     <button key={doc.id} onClick={() => navigate(`/politica/documentario/${doc.id}`)} className="flex-shrink-0 w-44 group text-left">
                       <div className="relative w-full h-24 rounded-xl overflow-hidden bg-secondary mb-1.5">
                         {doc.thumbnail ? (
-                          <img src={doc.thumbnail} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                          <img src={doc.thumbnail} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="eager" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-800/50 to-red-950">
                             <Film className="w-6 h-6 text-white/40" />
