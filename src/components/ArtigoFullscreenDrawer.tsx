@@ -946,7 +946,7 @@ export const ArtigoFullscreenDrawer = ({
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent className={`h-[95vh] max-h-[95vh] flex flex-col ${skipInitialAnimation && !hasAnimated ? '[&[data-state=open]]:!duration-0 [&[data-state=open]]:!animate-none' : ''}`}>
+      <DrawerContent className={`h-[82vh] max-h-[82vh] flex flex-col ${skipInitialAnimation && !hasAnimated ? '[&[data-state=open]]:!duration-0 [&[data-state=open]]:!animate-none' : ''}`}>
         {/* Wrapper para centralizar no desktop */}
         <div className="flex flex-col h-full max-w-4xl mx-auto w-full">
           {/* Header com controles de fonte */}
