@@ -439,19 +439,6 @@ const VadeMecumTodas = () => {
       </div>
 
       <div className="relative z-10 h-full min-h-0 flex flex-col">
-        {/* Header sticky — mobile only */}
-        <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/30 lg:hidden">
-          <div className="max-w-4xl mx-auto px-4 pt-4 pb-4">
-            <div className="flex items-center gap-3">
-              <div>
-                <h1 className="text-xl font-bold text-foreground">Vade Mecum 2026</h1>
-                <p className="text-muted-foreground text-sm">
-                  Seu Vade Mecum Jurídico Completo
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Mobile tabs */}
         <div className="lg:hidden max-w-4xl mx-auto w-full px-4 pt-4">
