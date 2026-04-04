@@ -68,6 +68,7 @@ const AdminTesteGamificacao = lazy(() => import("../pages/Admin/AdminTesteGamifi
 const AdminTesteVoz = lazy(() => import("../pages/Admin/AdminTesteVoz"));
 const AdminGeracaoExplicacoes = lazy(() => import("../pages/Admin/AdminGeracaoExplicacoes"));
 const AdminGeracaoVadeMecum = lazy(() => import("../pages/Admin/AdminGeracaoVadeMecum"));
+const AssinaturaNova = lazy(() => import("../pages/AssinaturaNova"));
 
 export const adminRoutes = (
   <>
