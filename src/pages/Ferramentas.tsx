@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import { 
   MonitorSmartphone, GraduationCap, Wrench,
   Scale, ChevronRight, Settings, MapPin, Globe, ExternalLink, Link2, BookOpen,
