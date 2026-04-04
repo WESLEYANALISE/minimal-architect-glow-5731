@@ -16,6 +16,7 @@ import { useQuestoesTemas } from "@/hooks/useQuestoesTemas";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { ADMIN_EMAIL } from "@/lib/adminConfig";
+import QuestoesEstatisticas from "@/components/questoes/QuestoesEstatisticas";
 
 // Eagerly preload QuestoesResolver chunk so navigation is instant
 const resolverPreload = import("./QuestoesResolver");
