@@ -5,7 +5,8 @@ import { BibliotecaSection, type BibliotecaSectionBook } from "@/components/bibl
 import { LivroCarouselCard } from "@/components/LivroCarouselCard";
 import { ORDEM_LEITURA_CLASSICOS } from "@/components/biblioteca/BibliotecaSortToggle";
 import { Input } from "@/components/ui/input";
-import { useState, lazy, Suspense, useMemo } from "react";
+import { useState, lazy, Suspense, useMemo, useCallback } from "react";
+import { BibliotecaLivroDetalhePanel } from "@/components/biblioteca/BibliotecaLivroDetalhePanel";
 import { Heart, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
@@ -307,6 +308,12 @@ const Bibliotecas = () => {
   const selectedBib = bibliotecas.find(b => b.key === selectedCollection) || bibliotecas[0];
   const selectedBooks = livrosMap ? livrosMap[selectedCollection] || [] : [];
   const [desktopRightTab, setDesktopRightTab] = useState<'plano' | 'favoritos' | null>(null);
+  const [selectedBookId, setSelectedBookId] = useState<number | null>(null);
+
+  const handleDesktopBookClick = useCallback((bookId: number) => {
+    setSelectedBookId(bookId);
+    setDesktopRightTab(null);
+  }, []);
 
   // Filter books by search on desktop
   const filteredSelectedBooks = useMemo(() => {
@@ -478,103 +485,117 @@ const Bibliotecas = () => {
             </button>
           </div>
 
-          {/* CONTENT: books or plano/favoritos overlay */}
-          <div className="flex-1 overflow-y-auto scrollbar-hide px-5 py-4">
-            {desktopRightTab === 'plano' || desktopRightTab === 'favoritos' ? (
-              <div className="max-w-3xl mx-auto">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-foreground">
-                    {desktopRightTab === 'plano' ? 'Plano de Leitura' : 'Favoritos'}
-                  </h2>
-                  <button
-                    onClick={() => setDesktopRightTab(null)}
-                    className="text-xs text-muted-foreground hover:text-foreground"
-                  >
-                    ← Voltar ao acervo
-                  </button>
-                </div>
-                <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-amber-500" /></div>}>
-                  {desktopRightTab === 'plano' ? <PlanoLeituraInline /> : <FavoritosInline />}
-                </Suspense>
-              </div>
-            ) : (
-              <>
-                {/* Estudos: show areas as carousels */}
-                {(selectedCollection === 'estudos' || selectedCollection === 'oab') && filteredSelectedBooks.length > 0 ? (
-                  <div className="space-y-2">
-                    <h2 className="text-lg font-bold text-foreground mb-3">
-                      {selectedBib.title} <span className="text-xs text-muted-foreground font-normal">— {selectedBib.subtitle}</span>
+          {/* CONTENT: books grid + optional detail panel */}
+          <div className="flex-1 flex overflow-hidden">
+            {/* Books grid area */}
+            <div className={`flex-1 overflow-y-auto scrollbar-hide px-5 py-4 ${selectedBookId ? 'max-w-[65%]' : ''}`}>
+              {desktopRightTab === 'plano' || desktopRightTab === 'favoritos' ? (
+                <div className="max-w-3xl mx-auto">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-bold text-foreground">
+                      {desktopRightTab === 'plano' ? 'Plano de Leitura' : 'Favoritos'}
                     </h2>
-                    <div className="flex flex-wrap gap-3">
-                      {filteredSelectedBooks.map((book, index) => {
-                        const isLocked = !isPremium && FREE_LIMITS[selectedCollection] !== undefined && index >= (FREE_LIMITS[selectedCollection] || 0);
-                        return (
-                          <div
-                            key={book.id}
-                            onClick={() => {
-                              if (isLocked) return;
-                              navigate(selectedBib.route, { state: { selectedArea: book.titulo } });
-                            }}
-                            className="flex-[0_0_160px] cursor-pointer group"
-                          >
-                            <div className="relative aspect-[2/3] rounded-xl overflow-hidden shadow-lg border border-white/10 hover:border-amber-500/40 transition-all hover:shadow-amber-500/20">
-                              {book.capa ? (
-                                <img src={book.capa} alt={book.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                              ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-amber-500/20 to-amber-700/20 flex items-center justify-center">
-                                  <BookOpen className="w-10 h-10 text-amber-400/60" />
-                                </div>
-                              )}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                              <div className="absolute bottom-0 left-0 right-0 p-3">
-                                <h3 className="text-white font-semibold text-sm leading-tight line-clamp-2">{book.titulo}</h3>
-                              </div>
-                              {isLocked && (
-                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                  <span className="text-amber-400 text-xs font-semibold">Premium</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
+                    <button
+                      onClick={() => setDesktopRightTab(null)}
+                      className="text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      ← Voltar ao acervo
+                    </button>
                   </div>
-                ) : (
-                  <>
-                    <div className="flex items-baseline gap-3 mb-4">
-                      <h2 className="text-lg font-bold text-foreground">{selectedBib.title}</h2>
-                      {selectedBib.subtitle && <span className="text-xs text-muted-foreground">— {selectedBib.subtitle}</span>}
-                    </div>
-                    <div className="grid grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-3 xl:gap-4">
-                      {livrosLoading ? (
-                        Array.from({ length: 16 }).map((_, i) => (
-                          <div key={i} className="aspect-[2/3] rounded-lg bg-white/10 animate-pulse" />
-                        ))
-                      ) : filteredSelectedBooks.length > 0 ? (
-                        filteredSelectedBooks.map((book, index) => {
+                  <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-amber-500" /></div>}>
+                    {desktopRightTab === 'plano' ? <PlanoLeituraInline /> : <FavoritosInline />}
+                  </Suspense>
+                </div>
+              ) : (
+                <>
+                  {(selectedCollection === 'estudos' || selectedCollection === 'oab') && filteredSelectedBooks.length > 0 ? (
+                    <div className="space-y-2">
+                      <h2 className="text-lg font-bold text-foreground mb-3">
+                        {selectedBib.title} <span className="text-xs text-muted-foreground font-normal">— {selectedBib.subtitle}</span>
+                      </h2>
+                      <div className="flex flex-wrap gap-3">
+                        {filteredSelectedBooks.map((book, index) => {
                           const isLocked = !isPremium && FREE_LIMITS[selectedCollection] !== undefined && index >= (FREE_LIMITS[selectedCollection] || 0);
                           return (
-                            <LivroCarouselCard
+                            <div
                               key={book.id}
-                              titulo={book.titulo}
-                              capaUrl={book.capa}
-                              isPremiumLocked={isLocked}
-                              priority={index < 8}
                               onClick={() => {
                                 if (isLocked) return;
-                                navigate(`${selectedBib.livroRoute}/${book.id}`);
+                                navigate(selectedBib.route, { state: { selectedArea: book.titulo } });
                               }}
-                            />
+                              className="flex-[0_0_160px] cursor-pointer group"
+                            >
+                              <div className={`relative aspect-[2/3] rounded-xl overflow-hidden shadow-lg border transition-all hover:shadow-amber-500/20 ${selectedBookId === book.id ? 'border-amber-500/60 ring-2 ring-amber-500/30' : 'border-white/10 hover:border-amber-500/40'}`}>
+                                {book.capa ? (
+                                  <img src={book.capa} alt={book.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                                ) : (
+                                  <div className="w-full h-full bg-gradient-to-br from-amber-500/20 to-amber-700/20 flex items-center justify-center">
+                                    <BookOpen className="w-10 h-10 text-amber-400/60" />
+                                  </div>
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                                <div className="absolute bottom-0 left-0 right-0 p-3">
+                                  <h3 className="text-white font-semibold text-sm leading-tight line-clamp-2">{book.titulo}</h3>
+                                </div>
+                                {isLocked && (
+                                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                    <span className="text-amber-400 text-xs font-semibold">Premium</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                           );
-                        })
-                      ) : (
-                        <p className="text-sm text-muted-foreground col-span-full text-center py-12">Nenhum livro encontrado.</p>
-                      )}
+                        })}
+                      </div>
                     </div>
-                  </>
-                )}
-              </>
+                  ) : (
+                    <>
+                      <div className="flex items-baseline gap-3 mb-4">
+                        <h2 className="text-lg font-bold text-foreground">{selectedBib.title}</h2>
+                        {selectedBib.subtitle && <span className="text-xs text-muted-foreground">— {selectedBib.subtitle}</span>}
+                      </div>
+                      <div className={`grid gap-3 xl:gap-4 ${selectedBookId ? 'grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : 'grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8'}`}>
+                        {livrosLoading ? (
+                          Array.from({ length: 16 }).map((_, i) => (
+                            <div key={i} className="aspect-[2/3] rounded-lg bg-white/10 animate-pulse" />
+                          ))
+                        ) : filteredSelectedBooks.length > 0 ? (
+                          filteredSelectedBooks.map((book, index) => {
+                            const isLocked = !isPremium && FREE_LIMITS[selectedCollection] !== undefined && index >= (FREE_LIMITS[selectedCollection] || 0);
+                            return (
+                              <LivroCarouselCard
+                                key={book.id}
+                                titulo={book.titulo}
+                                capaUrl={book.capa}
+                                isPremiumLocked={isLocked}
+                                priority={index < 8}
+                                isSelected={selectedBookId === book.id}
+                                onClick={() => {
+                                  if (isLocked) return;
+                                  handleDesktopBookClick(book.id);
+                                }}
+                              />
+                            );
+                          })
+                        ) : (
+                          <p className="text-sm text-muted-foreground col-span-full text-center py-12">Nenhum livro encontrado.</p>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Detail panel */}
+            {selectedBookId && (
+              <div className="w-[35%] min-w-[320px] max-w-[400px] flex-shrink-0 h-full">
+                <BibliotecaLivroDetalhePanel
+                  bookId={selectedBookId}
+                  collectionKey={selectedCollection}
+                  onClose={() => setSelectedBookId(null)}
+                />
+              </div>
             )}
           </div>
         </div>
