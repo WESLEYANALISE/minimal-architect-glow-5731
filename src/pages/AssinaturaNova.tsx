@@ -247,25 +247,6 @@ const AssinaturaNova = () => {
           </div>
         </div>
 
-        {/* ===== TRIAL BANNERS ===== */}
-        {!trialLoading && trialExpired && (
-          <div className="w-full py-3 px-4 text-center" style={{ background: 'linear-gradient(90deg, hsl(0 70% 18%), hsl(0 60% 24%), hsl(0 70% 18%))' }}>
-            <div className="flex items-center justify-center gap-2">
-              <Lock className="w-3.5 h-3.5 text-red-300" />
-              <p className="text-red-200 font-bold text-xs tracking-wide">Seu período gratuito expirou</p>
-            </div>
-          </div>
-        )}
-        {!trialLoading && isInTrial && !trialExpired && (
-          <div className="w-full py-2.5 px-4 text-center" style={{ background: 'linear-gradient(90deg, hsl(30 50% 10%), hsl(35 45% 14%), hsl(30 50% 10%))' }}>
-            <div className="flex items-center justify-center gap-3">
-              <Clock className="w-3.5 h-3.5 text-amber-400" />
-              <span className="text-amber-300/80 text-[11px] font-semibold">
-                Trial: {trialDaysLeft > 0 ? `${trialDaysLeft}d ` : ''}{String(trialHoursLeft).padStart(2, '0')}:{String(trialMinutes).padStart(2, '0')}:{String(trialSeconds).padStart(2, '0')}
-              </span>
-            </div>
-          </div>
-        )}
 
         {/* ===== CONTENT ===== */}
         <div className="relative z-10 px-5 sm:px-6 pb-10 pt-6 max-w-md mx-auto">
