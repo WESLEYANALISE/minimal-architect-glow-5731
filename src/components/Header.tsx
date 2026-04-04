@@ -202,6 +202,8 @@ const getHierarchicalDestination = (pathname: string, search: string): string | 
   }
   if (pathname === "/ferramentas/questoes/modo") return "/ferramentas/questoes";
   if (pathname === "/ferramentas/questoes") return "/";
+  if (pathname === "/ferramentas/questoes-v2/temas") return "/ferramentas/questoes-v2";
+  if (pathname === "/ferramentas/questoes-v2") return "/";
   if (pathname.match(/^\/ferramentas\/simulados\/[^/]+\/resultado$/)) {
     const parts = pathname.split("/");
     return `/ferramentas/simulados/${parts[3]}`;
