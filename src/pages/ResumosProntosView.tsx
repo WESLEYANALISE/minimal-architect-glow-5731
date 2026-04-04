@@ -700,17 +700,21 @@ const ResumosProntosView = () => {
   };
 
   if (isLoading) {
-    return <div className="px-3 py-4 max-w-4xl mx-auto pb-24">
-        <Skeleton className="h-8 w-64 mb-4" />
-        <Skeleton className="h-12 w-full mb-4" />
-        <Skeleton className="h-96 w-full" />
+    return <div className="min-h-screen pb-24" style={{ background: "hsl(0 0% 10%)" }}>
+        <div className="px-3 py-4 max-w-4xl mx-auto">
+          <div className="h-8 w-64 mb-4 rounded-lg animate-pulse" style={{ background: "hsla(0,0%,100%,0.06)" }} />
+          <div className="h-12 w-full mb-4 rounded-lg animate-pulse" style={{ background: "hsla(0,0%,100%,0.06)" }} />
+          <div className="h-96 w-full rounded-lg animate-pulse" style={{ background: "hsla(0,0%,100%,0.06)" }} />
+        </div>
       </div>;
   }
   if (!resumos || resumos.length === 0) {
-    return <div className="px-3 py-4 max-w-4xl mx-auto pb-24">
-        <p className="text-center text-muted-foreground">
-          Nenhum resumo encontrado para este tema
-        </p>
+    return <div className="min-h-screen pb-24" style={{ background: "hsl(0 0% 10%)" }}>
+        <div className="px-3 py-4 max-w-4xl mx-auto">
+          <p className="text-center" style={{ color: "hsla(0,0%,100%,0.4)" }}>
+            Nenhum resumo encontrado para este tema
+          </p>
+        </div>
       </div>;
   }
 
