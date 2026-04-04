@@ -222,7 +222,7 @@ const FlashcardsAreas = () => {
         key={item.area}
         onClick={handleClick}
         onMouseEnter={() => prefetchTemaStats(item.area)}
-        onTouchStart={() => prefetchTemaStats(item.area)}
+        onTouchStart={() => { prefetchTemaStats(item.area); prefetchRoute('/flashcards/temas'); }}
         className="group relative overflow-hidden rounded-2xl p-4 text-left transition-all duration-150 hover:scale-[1.03] active:scale-[0.97] shadow-lg h-[100px] animate-fade-in"
         style={{
           animationDelay: `${idx * 30}ms`,
