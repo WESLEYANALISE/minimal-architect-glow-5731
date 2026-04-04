@@ -173,6 +173,7 @@ export const LegislacaoHomeSection = memo(() => {
         {/* Vade Mecum - Verde (mesma cor de Resumos) */}
         <button
           onClick={() => navigate("/vade-mecum")}
+          onTouchStart={() => onTouchStart("/vade-mecum")}
           className="group relative bg-gradient-to-br from-[#0f766e] to-[#064e3b] rounded-xl p-3 h-[120px] flex flex-col items-start justify-between text-left overflow-hidden border border-white/[0.06] active:scale-95 transition-transform"
           style={{ boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)' }}
         >
