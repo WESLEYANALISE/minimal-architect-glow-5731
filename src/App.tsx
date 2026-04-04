@@ -222,6 +222,7 @@ const RankingFaculdadeDetalhes = lazy(() => import("./pages/RankingFaculdadeDeta
 const OABOQueEstudar = lazy(() => import("./pages/OABOQueEstudar"));
 const OABOQueEstudarArea = lazy(() => import("./pages/OABOQueEstudarArea"));
 const OABFuncoes = lazy(() => import("./pages/OABFuncoes"));
+const ModoDesktop = lazy(() => import("./pages/ModoDesktop"));
 const TrilhasAprovacao = lazy(() => import("./pages/oab/TrilhasAprovacao"));
 const TrilhaAreaTemas = lazy(() => import("./pages/oab/TrilhaAreaTemas"));
 const TrilhaTemaSubtemas = lazy(() => import("./pages/oab/TrilhaTemaSubtemas"));
