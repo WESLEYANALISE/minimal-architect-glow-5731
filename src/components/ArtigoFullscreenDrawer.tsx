@@ -1627,7 +1627,6 @@ export const ArtigoFullscreenDrawer = ({
               <div className="flex flex-col items-center -mt-6">
                 <button
                   onClick={handleNarracaoClick}
-                  className="btn-shine relative w-14 h-14 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 shadow-[0_6px_20px_rgba(245,158,11,0.5)] hover:shadow-[0_10px_30px_rgba(245,158,11,0.6)] hover:scale-105 active:scale-90 transition-all duration-300 flex items-center justify-center overflow-hidden"
                   className="btn-shine relative w-14 h-14 rounded-full bg-gradient-to-br from-[hsl(350,50%,35%)] to-[hsl(345,45%,25%)] shadow-[0_6px_20px_rgba(190,50,70,0.4)] hover:shadow-[0_10px_30px_rgba(190,50,70,0.5)] hover:scale-105 active:scale-90 transition-all duration-300 flex items-center justify-center overflow-hidden"
                 >
                   {isPlaying && duration > 0 && (
