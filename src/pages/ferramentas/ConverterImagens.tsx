@@ -159,9 +159,11 @@ const ConverterImagens = () => {
 
   // ── Filtro por categoria ──
   const tabelasFiltradas = useMemo(() => {
-    if (categoriaAtiva === "todas") return dadosTabelas;
-    return dadosTabelas.filter(t => t.categoria === categoriaAtiva);
-  }, [dadosTabelas, categoriaAtiva]);
+    let lista = categoriaAtiva === "todas" ? dadosTabelas : dadosTabelas.filter(t => t.categoria === categoriaAtiva);
+    if (filtroStatus === "pendentes") lista = lista.filter(t => t.totalPendentes > 0);
+    if (filtroStatus === "finalizadas") lista = lista.filter(t => t.totalPendentes === 0);
+    return lista;
+  }, [dadosTabelas, categoriaAtiva, filtroStatus]);
 
   const totalImagens = tabelasFiltradas.reduce((acc, t) => acc + t.imagens.length, 0);
   const totalWebp = tabelasFiltradas.reduce((acc, t) => acc + t.totalWebp, 0);
