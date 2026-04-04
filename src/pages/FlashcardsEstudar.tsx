@@ -362,6 +362,16 @@ const FlashcardsEstudar = ({ inlineArea, inlineTema, onExit, onComplete }: Flash
     return null;
   }
 
+  // Countdown antes de iniciar
+  if (!countdownDone && !isLoadingInitial && !isGenerating && flashcards.length > 0) {
+    return (
+      <CountdownOverlay
+        onComplete={() => setCountdownDone(true)}
+        label="Preparando flashcards..."
+      />
+    );
+  }
+
   // Mostrar tela de geração
   if (isGenerating) {
     return (
