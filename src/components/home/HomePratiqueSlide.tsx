@@ -138,10 +138,7 @@ export function HomePratiqueSlide() {
                   </div>
 
                   <div className="text-left w-full flex items-end justify-between">
-                    <div>
-                      <span className="text-[15px] sm:text-base font-bold text-white block leading-tight drop-shadow-md">{item.label}</span>
-                      <span className="text-[11px] sm:text-xs text-white/70 block drop-shadow-sm">{item.subtitle}</span>
-                    </div>
+                    <span className="text-[15px] sm:text-base font-bold text-white block leading-tight drop-shadow-md">{item.label}</span>
                     <ChevronRight className="w-3.5 h-3.5 text-white/25 group-hover:text-white/60 transition-colors shrink-0 mb-0.5" />
                   </div>
                 </div>
