@@ -108,10 +108,10 @@ export const ArtigoActionsMenu = ({
   const RecursosContent = () => (
     <div className="space-y-2">
       {isBlocked && (
-        <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30 mb-3">
-          <Crown className="w-5 h-5 text-amber-500 flex-shrink-0" />
+        <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-accent/10 border border-accent/30 mb-3">
+          <Crown className="w-5 h-5 text-accent flex-shrink-0" />
           <div className="text-sm">
-            <span className="font-medium text-amber-500">Recursos Premium</span>
+            <span className="font-medium text-accent">Recursos Premium</span>
             <p className="text-xs text-muted-foreground mt-0.5">
               Disponível para artigos 1-10. Assine para acesso completo.
             </p>
@@ -134,7 +134,7 @@ export const ArtigoActionsMenu = ({
             <div className="font-semibold text-sm">Aula Interativa</div>
             <div className="text-xs mt-0.5 opacity-80">Aprenda tudo sobre este artigo</div>
           </div>
-          {showCrown && <Crown className="w-3.5 h-3.5 text-amber-400 absolute top-2 right-2" />}
+          {showCrown && <Crown className="w-3.5 h-3.5 text-accent absolute top-2 right-2" />}
         </button>
       )}
 
@@ -152,7 +152,7 @@ export const ArtigoActionsMenu = ({
             <div className="text-xs text-muted-foreground">3 modos de memorização</div>
           </div>
           <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${expandedSection === "flashcards" ? "rotate-180" : ""}`} />
-          {showCrown && <Crown className="w-3.5 h-3.5 text-amber-400 absolute top-2 right-2" />}
+          {showCrown && <Crown className="w-3.5 h-3.5 text-accent absolute top-2 right-2" />}
         </button>
         <AnimatePresence>
           {expandedSection === "flashcards" && (
@@ -200,7 +200,7 @@ export const ArtigoActionsMenu = ({
             <div className="text-xs text-muted-foreground">3 tipos de exercício</div>
           </div>
           <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${expandedSection === "questoes" ? "rotate-180" : ""}`} />
-          {showCrown && <Crown className="w-3.5 h-3.5 text-amber-400 absolute top-2 right-2" />}
+          {showCrown && <Crown className="w-3.5 h-3.5 text-accent absolute top-2 right-2" />}
         </button>
         <AnimatePresence>
           {expandedSection === "questoes" && (

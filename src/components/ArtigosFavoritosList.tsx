@@ -43,7 +43,7 @@ export const ArtigosFavoritosList = ({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
+        <Loader2 className="w-6 h-6 animate-spin text-accent" />
       </div>
     );
   }
@@ -65,7 +65,7 @@ export const ArtigosFavoritosList = ({
   return (
     <div className="space-y-2 py-2">
       <div className="flex items-center gap-2 px-1 mb-3">
-        <Star className="w-4 h-4 text-amber-500" />
+        <Star className="w-4 h-4 text-accent" />
         <span className="text-sm font-medium text-foreground">
           {favoritos.length} artigo{favoritos.length !== 1 ? 's' : ''} favorito{favoritos.length !== 1 ? 's' : ''}
         </span>
@@ -75,12 +75,12 @@ export const ArtigosFavoritosList = ({
         <Card
           key={favorito.id}
           className="cursor-pointer hover:bg-muted/50 transition-colors border-l-4 group"
-          style={{ borderLeftColor: "hsl(45, 93%, 50%)" }}
+          style={{ borderLeftColor: "hsl(var(--accent))" }}
           onClick={() => onArtigoClick?.(favorito.artigo_id, favorito.numero_artigo)}
         >
           <CardContent className="p-3 flex items-center gap-3">
             <div className="flex-shrink-0">
-              <Scale className="w-5 h-5 text-amber-500" />
+              <Scale className="w-5 h-5 text-accent" />
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-sm">
@@ -93,7 +93,7 @@ export const ArtigosFavoritosList = ({
               )}
             </div>
             <div className="flex-shrink-0 flex items-center gap-2">
-              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+              <Star className="w-4 h-4 text-accent fill-accent" />
               <button
                 onClick={(e) => {
                   e.stopPropagation();

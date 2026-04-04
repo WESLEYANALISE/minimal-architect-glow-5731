@@ -14,7 +14,7 @@ export const VadeMecumTabs = ({ activeTab, onTabChange }: VadeMecumTabsProps) =>
           <TabsList className="w-full grid grid-cols-3 h-auto bg-transparent gap-3 p-3">
             <TabsTrigger 
               value="artigos" 
-              className="flex items-center justify-center gap-2 bg-muted/30 hover:bg-muted/50 data-[state=active]:bg-[hsl(45,93%,58%)]/20 data-[state=active]:text-foreground data-[state=active]:border data-[state=active]:border-[hsl(45,93%,58%)]/30 rounded-lg py-3 px-4 transition-colors"
+              className="flex items-center justify-center gap-2 bg-muted/30 hover:bg-muted/50 data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-foreground data-[state=active]:border data-[state=active]:border-[hsl(var(--accent))]/30 rounded-lg py-3 px-4 transition-colors"
             >
               <Scale className="w-4 h-4" />
               <span>Artigos</span>
@@ -22,7 +22,7 @@ export const VadeMecumTabs = ({ activeTab, onTabChange }: VadeMecumTabsProps) =>
             
             <TabsTrigger 
               value="playlist" 
-              className="flex items-center justify-center gap-2 bg-muted/30 hover:bg-muted/50 data-[state=active]:bg-[hsl(45,93%,58%)]/20 data-[state=active]:text-foreground data-[state=active]:border data-[state=active]:border-[hsl(45,93%,58%)]/30 rounded-lg py-3 px-4 transition-colors"
+              className="flex items-center justify-center gap-2 bg-muted/30 hover:bg-muted/50 data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-foreground data-[state=active]:border data-[state=active]:border-[hsl(var(--accent))]/30 rounded-lg py-3 px-4 transition-colors"
             >
               <Music className="w-4 h-4" />
               <span>Playlist</span>
@@ -30,7 +30,7 @@ export const VadeMecumTabs = ({ activeTab, onTabChange }: VadeMecumTabsProps) =>
             
             <TabsTrigger 
               value="ranking" 
-              className="flex items-center justify-center gap-2 bg-muted/30 hover:bg-muted/50 data-[state=active]:bg-[hsl(45,93%,58%)]/20 data-[state=active]:text-foreground data-[state=active]:border data-[state=active]:border-[hsl(45,93%,58%)]/30 rounded-lg py-3 px-4 transition-colors"
+              className="flex items-center justify-center gap-2 bg-muted/30 hover:bg-muted/50 data-[state=active]:bg-[hsl(var(--accent))]/20 data-[state=active]:text-foreground data-[state=active]:border data-[state=active]:border-[hsl(var(--accent))]/30 rounded-lg py-3 px-4 transition-colors"
             >
               <Flame className="w-4 h-4" />
               <span>Em Alta</span>

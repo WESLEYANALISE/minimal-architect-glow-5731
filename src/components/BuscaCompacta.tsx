@@ -47,8 +47,8 @@ export const BuscaCompacta = ({
             disabled={!value.trim()}
             className={`w-full border text-black transition-all ${
               value.trim()
-                ? 'bg-amber-400 hover:bg-amber-300 border-amber-400/50'
-                : 'bg-amber-500/30 border-amber-500/20 opacity-50 cursor-not-allowed'
+                ? 'bg-accent hover:bg-red-300 border-accent/50'
+                : 'bg-accent/30 border-accent/20 opacity-50 cursor-not-allowed'
             }`}
           >
             <Search className="w-4 h-4 mr-2" />
@@ -90,8 +90,8 @@ export const BuscaCompacta = ({
               disabled={!value.trim()}
               className={`absolute right-1 top-1/2 -translate-y-1/2 h-9 border text-black transition-all ${
                 value.trim()
-                  ? 'bg-amber-400 hover:bg-amber-300 border-amber-400/50'
-                  : 'bg-amber-500/30 border-amber-500/20 opacity-50 cursor-not-allowed'
+                  ? 'bg-accent hover:bg-red-300 border-accent/50'
+                  : 'bg-accent/30 border-accent/20 opacity-50 cursor-not-allowed'
               }`}
             >
               Buscar

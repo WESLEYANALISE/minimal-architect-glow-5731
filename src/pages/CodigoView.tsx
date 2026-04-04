@@ -794,7 +794,7 @@ const CodigoView = () => {
         <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-card border border-border rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-              <h2 className="text-lg font-bold text-[hsl(45,93%,58%)]">Flashcards</h2>
+              <h2 className="text-lg font-bold text-[hsl(var(--accent))]">Flashcards</h2>
               <button onClick={() => setFlashcardsModalOpen(false)} className="p-2 hover:bg-secondary rounded-lg">
                 <MessageSquare className="w-5 h-5" />
               </button>
@@ -983,7 +983,7 @@ const CodigoView = () => {
       {articles.length > 0 && showScrollTop && (
         <button 
           onClick={scrollToTopSmooth} 
-          className="fixed bottom-20 right-4 bg-amber-500 hover:bg-amber-600 text-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg z-30"
+          className="fixed bottom-20 right-4 bg-accent hover:bg-accent text-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg z-30"
         >
           <ArrowUp className="w-5 h-5" />
         </button>

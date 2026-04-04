@@ -95,7 +95,7 @@ export const ResumoArtigoSheet = ({
 
           {loading ? (
             <div className="flex flex-col items-center justify-center py-12 gap-3">
-              <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+              <Loader2 className="w-8 h-8 animate-spin text-accent" />
               <p className="text-sm text-muted-foreground">
                 Gerando resumo {metodoSelecionado === "cornell" ? "Cornell" : "Feynman"}...
               </p>
@@ -109,8 +109,8 @@ export const ResumoArtigoSheet = ({
                   onClick={() => gerarResumo("cornell")}
                   className="flex items-center gap-4 p-4 rounded-2xl border border-border bg-card hover:bg-muted/50 transition-all active:scale-[0.98]"
                 >
-                  <div className="w-12 h-12 rounded-full bg-amber-500/15 flex items-center justify-center shrink-0">
-                    <BookOpen className="w-6 h-6 text-amber-400" />
+                  <div className="w-12 h-12 rounded-full bg-accent/15 flex items-center justify-center shrink-0">
+                    <BookOpen className="w-6 h-6 text-accent" />
                   </div>
                   <div className="text-left">
                     <p className="font-semibold text-sm">Cornell</p>

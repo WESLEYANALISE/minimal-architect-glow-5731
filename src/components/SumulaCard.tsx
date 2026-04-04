@@ -76,8 +76,8 @@ export const SumulaCard = ({
       ref={setRefs}
       className={`bg-card rounded-2xl p-6 mb-6 border transition-all animate-fade-in hover:shadow-lg scroll-mt-4 ${
         isHighlighted 
-          ? 'border-[hsl(45,93%,58%)] shadow-lg shadow-[hsl(45,93%,58%)]/20 ring-2 ring-[hsl(45,93%,58%)]/20' 
-          : 'border-border/50 hover:border-[hsl(45,93%,58%)]/30 hover:shadow-[hsl(45,93%,58%)]/5'
+          ? 'border-[hsl(var(--accent))] shadow-lg shadow-[hsl(var(--accent))]/20 ring-2 ring-[hsl(var(--accent))]/20' 
+          : 'border-border/50 hover:border-[hsl(var(--accent))]/30 hover:shadow-[hsl(var(--accent))]/5'
       }`}
       style={{
         animationDelay: `${index * 0.08}s`,
@@ -86,7 +86,7 @@ export const SumulaCard = ({
     >
       {/* Header com título e botões de ação */}
       <div className="flex items-start justify-between gap-4 mb-3">
-        <h2 className="text-[hsl(45,93%,58%)] font-bold text-xl md:text-2xl animate-scale-in">
+        <h2 className="text-[hsl(var(--accent))] font-bold text-xl md:text-2xl animate-scale-in">
           {isCNMPorCNJ ? 'Enunciado' : 'Súmula'} {sumula.id}
         </h2>
         
@@ -104,9 +104,9 @@ export const SumulaCard = ({
             onClick={() => onShare(sumula)}
             variant="outline"
             size="icon"
-            className="bg-gradient-to-r from-[hsl(45,93%,58%)]/10 to-[hsl(45,93%,58%)]/20 hover:from-[hsl(45,93%,58%)]/20 hover:to-[hsl(45,93%,58%)]/30 border-[hsl(45,93%,58%)]/40 transition-all hover:scale-105"
+            className="bg-gradient-to-r from-[hsl(var(--accent))]/10 to-[hsl(var(--accent))]/20 hover:from-[hsl(var(--accent))]/20 hover:to-[hsl(var(--accent))]/30 border-[hsl(var(--accent))]/40 transition-all hover:scale-105"
           >
-            <Share2 className="w-4 h-4 text-[hsl(45,93%,58%)]" />
+            <Share2 className="w-4 h-4 text-[hsl(var(--accent))]" />
           </Button>
         </div>
       </div>
