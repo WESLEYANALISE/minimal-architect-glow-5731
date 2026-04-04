@@ -123,6 +123,32 @@ serve(async (req) => {
       throw new Error(`Imagem inválida ou inacessível (${tamanhoOriginal} bytes)`);
     }
 
+    // Detectar formato pela magic bytes
+    const isJPEG = imageBytes[0] === 0xFF && imageBytes[1] === 0xD8;
+    const isPNG = imageBytes[0] === 0x89 && imageBytes[1] === 0x50 && imageBytes[2] === 0x4E && imageBytes[3] === 0x47;
+    const isWebP = imageBytes[8] === 0x57 && imageBytes[9] === 0x45 && imageBytes[10] === 0x42 && imageBytes[11] === 0x50;
+    
+    const contentType = imageResponse.headers.get('content-type') || '';
+    console.log('[converter-imagem-webp] Content-Type:', contentType, '| JPEG:', isJPEG, '| PNG:', isPNG, '| WebP:', isWebP);
+
+    // Se já é WebP, retornar a URL original sem processar
+    if (isWebP || contentType.includes('webp')) {
+      console.log('[converter-imagem-webp] Imagem já é WebP, pulando conversão');
+      return new Response(
+        JSON.stringify({ success: true, url: imageUrl, cached: false, jaWebP: true }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // TinyPNG só aceita JPEG, PNG e (limited) GIF
+    if (!isJPEG && !isPNG) {
+      console.log('[converter-imagem-webp] Formato não suportado pelo TinyPNG, pulando');
+      return new Response(
+        JSON.stringify({ success: false, error: 'Formato não suportado (apenas JPEG/PNG)', url: imageUrl }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+      );
+    }
+
     // 3. Converter para WebP
     const webpBytes = await comprimirParaWebP(imageBytes, TINYPNG_API_KEY)
     const tamanhoWebP = webpBytes.length;
