@@ -87,8 +87,15 @@ const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => 
     : temas;
 
   const handleSelect = (tema: string) => {
-    startTransition(() => {
-      navigate(`/ferramentas/questoes/resolver?area=${encodeURIComponent(area)}&tema=${encodeURIComponent(tema)}`);
+    // Ensure resolver chunk is loaded before navigating
+    resolverPreload.then(() => {
+      startTransition(() => {
+        navigate(`/ferramentas/questoes/resolver?area=${encodeURIComponent(area)}&tema=${encodeURIComponent(tema)}`);
+      });
+    }).catch(() => {
+      startTransition(() => {
+        navigate(`/ferramentas/questoes/resolver?area=${encodeURIComponent(area)}&tema=${encodeURIComponent(tema)}`);
+      });
     });
   };
 
