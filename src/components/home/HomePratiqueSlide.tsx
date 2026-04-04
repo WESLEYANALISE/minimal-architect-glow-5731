@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDeviceType } from "@/hooks/useDeviceType";
+import { useDeviceType } from "@/hooks/use-device-type";
 import { useTransitionNavigate } from "@/hooks/useTransitionNavigate";
 import { GraduationCap, Brain, Target, FileText, Headphones, BookOpen, ChevronRight } from "lucide-react";
 import { useTrialStatus } from "@/hooks/useTrialStatus";
