@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import { useNavigate } from "react-router-dom";
 import {
   Brain, ChevronRight, ArrowLeft, Footprints,
@@ -154,6 +155,7 @@ const R = {
 
 const FlashcardsAreas = () => {
   const navigate = useNavigate();
+  const { onTouchStart: prefetchRoute } = usePrefetchRoute();
   const { isPremium } = useSubscription();
   const { user } = useAuth();
   const isAdmin = user?.email === ADMIN_EMAIL;
@@ -220,7 +222,7 @@ const FlashcardsAreas = () => {
         key={item.area}
         onClick={handleClick}
         onMouseEnter={() => prefetchTemaStats(item.area)}
-        onTouchStart={() => prefetchTemaStats(item.area)}
+        onTouchStart={() => { prefetchTemaStats(item.area); prefetchRoute('/flashcards/temas'); }}
         className="group relative overflow-hidden rounded-2xl p-4 text-left transition-all duration-150 hover:scale-[1.03] active:scale-[0.97] shadow-lg h-[100px] animate-fade-in"
         style={{
           animationDelay: `${idx * 30}ms`,
