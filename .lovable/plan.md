@@ -1,42 +1,33 @@
 
 
-## Plano: Melhorar Conversor de Imagens com Categorias e TinyPNG
+## Plano: Remover Limite de 1000 Linhas no Conversor de Imagens
 
-### Situação Atual
-A página `ConverterImagens.tsx` já lista ~60 tabelas/colunas do banco, mas mostra tudo como lista plana de "tabela:coluna" — difícil de entender e navegar. A edge function `converter-imagem-webp` já usa TinyPNG para comprimir e converter para WebP.
+### Problema
+O Supabase limita queries a 1000 linhas por padrão. O conversor mostra 18.299 imagens, mas muitas tabelas com mais de 1000 registros estão sendo truncadas silenciosamente.
 
-### O que muda
+Há dois pontos afetados:
 
-**1. Reorganizar em categorias visuais com nomes amigáveis**
+1. **`carregarImagens()`** (linha 227-231) — busca `id` e coluna de imagem sem `.range()`, recebendo no máximo 1000 por tabela
+2. **`carregarEconomia()`** (linha 189-191) — busca da tabela `cache_imagens_webp` também limitada a 1000
 
-| Categoria | Tabelas incluídas |
-|---|---|
-| **Capas Principais** | CURSOS (capa, capa-modulo, capa-area), JURIFLIX, CAPA-BIBILIOTECA, carreiras_capas, radar_capas_diarias |
-| **Bibliotecas** | Todas as BIBLIOTECA-* (OAB, Estudos, Clássicos, Oratória, Liderança, Fora da Toga) |
-| **Blog e Notícias** | BLOGGER_JURIDICO, blogger_politico, noticias_juridicas_cache, noticias_politicas_cache |
-| **Resumos e Flashcards** | RESUMO, RESUMOS_ARTIGOS_LEI, FLASHCARDS, flashcards_areas_capas |
-| **Simulados e Questões** | SIMULADO-OAB, SIMULADO-ESCREVENTE, SIMULADO-JUIZ, QUESTOES_*, SIMULACAO_* |
-| **Áudio e Vídeo** | AUDIO-AULA, audiencias_*, documentarios_juridicos, CURSOS-APP |
-| **Política** | Todos os rankings de deputados/senadores, tres_poderes, senado_senadores |
-| **Outros** | LEITURA_FORMATADA, leitura_interativa, mapas_mentais, notificacoes_push, meu_brasil_juristas, ESTAGIO-BLOG |
+### Solução
 
-**2. Interface renovada**
+Criar uma função auxiliar `fetchAllRows()` que faz paginação automática em blocos de 1000, iterando com `.range(from, to)` até receber menos que 1000 resultados. Aplicar nos dois pontos.
 
-- Filtro por categoria no topo (chips/tabs horizontais scrolláveis)
-- Ao selecionar categoria, mostra as tabelas daquela categoria com preview de imagens
-- Estatísticas por categoria (total, WebP, pendentes)
-- Botão "Converter" por categoria ou geral
-- Paleta de cores do app (vermelho/accent), sem amber
-
-**3. Melhorias de UX**
-
-- Nomes amigáveis nas tabelas (ex: "JuriFlix — Capas" em vez de "JURIFLIX:capa")
-- Mostrar thumbnail das imagens pendentes diretamente na lista
-- Progresso visual por categoria
-- Indicador de economia total em destaque
+```text
+fetchAllRows(tabela, coluna, filtros)
+  página = 0
+  todos = []
+  loop:
+    data = query.range(página*1000, (página+1)*1000-1)
+    todos += data
+    se data.length < 1000 → break
+    página++
+  retorna todos
+```
 
 ### Arquivos modificados
 | Arquivo | Alteração |
 |---|---|
-| `src/pages/ferramentas/ConverterImagens.tsx` | Reescrever com categorias, filtros, nomes amigáveis e paleta correta |
+| `src/pages/ferramentas/ConverterImagens.tsx` | Adicionar `fetchAllRows()` e usá-la em `carregarImagens()` e `carregarEconomia()` |
 
