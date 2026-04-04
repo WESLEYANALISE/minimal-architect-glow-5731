@@ -133,5 +133,6 @@ export const adminRoutes = (
     <Route path="/admin/geracao-explicacoes" element={<L><AdminGeracaoExplicacoes /></L>} />
     <Route path="/admin/geracao-vademecum" element={<L><AdminGeracaoVadeMecum /></L>} />
     <Route path="/admin/temas" element={<L><AdminTemas /></L>} />
+    <Route path="/admin/assinatura-nova" element={<L><AssinaturaNova /></L>} />
   </>
 );
