@@ -13,39 +13,35 @@ const itens = [
   {
     id: "iniciante",
     title: "Iniciante",
-    subtitle: "Para iniciantes",
+    description: "Aulas de Direito pra iniciantes",
     icon: Video,
     route: "/aulas-em-tela",
-    cover: coverIniciante,
-    accent: "#5eead4",
-    delay: 0.1,
+    gradient: "from-emerald-600 via-emerald-700 to-emerald-800",
+    capa: coverIniciante,
   },
   {
     id: "videoaulas",
     title: "Videoaulas",
-    subtitle: "Aulas completas",
+    description: "Aulas completas por professores",
     icon: Video,
     route: "/videoaulas",
-    cover: coverVideoaulas,
-    accent: "#c084fc",
-    delay: 0.15,
+    gradient: "from-purple-600 via-purple-700 to-purple-800",
+    capa: coverVideoaulas,
   },
   {
     id: "audioaulas",
     title: "Audioaulas",
-    subtitle: "Aprenda ouvindo",
+    description: "Aprenda ouvindo",
     icon: Headphones,
     route: "/audioaulas",
-    cover: coverAudioaulas,
-    accent: "#fdba74",
-    delay: 0.2,
+    gradient: "from-amber-600 via-amber-700 to-amber-800",
+    capa: coverAudioaulas,
   },
 ];
 
 export const PortalDeVideosSection = memo(({ navigate }: PortalDeVideosSectionProps) => {
   const { isDesktop } = useDeviceType();
   const visibleItens = isDesktop ? itens : itens.filter(i => i.id !== 'audioaulas');
-
   return (
     <div className="space-y-3">
       {/* Header */}
@@ -63,62 +59,48 @@ export const PortalDeVideosSection = memo(({ navigate }: PortalDeVideosSectionPr
         </div>
       </div>
 
-      {/* Cards - mesmo estilo dos cards de Estudos */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5">
+      {/* Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 xl:gap-4">
         {visibleItens.map((item) => {
           const Icon = item.icon;
           return (
             <button
               key={item.id}
               onClick={() => navigate(item.route)}
-              className="group relative rounded-xl overflow-hidden border border-white/[0.06] animate-fade-in active:scale-95 transition-transform min-h-[110px] text-left"
-              style={{
-                animationDelay: `${item.delay}s`,
-                animationFillMode: 'backwards',
-                boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)',
-              }}
+              className="group rounded-2xl text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] flex flex-col border border-white/10 hover:border-white/20 overflow-hidden"
+              style={{ boxShadow: '4px 6px 12px rgba(0, 0, 0, 0.4)' }}
             >
-              {/* Cover image background */}
-              <img
-                src={item.cover}
-                alt=""
-                loading="lazy"
-                width={512}
-                height={512}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-
-              {/* Dark gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
-
-              {/* Shine effect */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-xl">
-                <div
-                  className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/[0.08] to-transparent skew-x-[-20deg]"
-                  style={{ animation: `shinePratique 4s ease-in-out infinite ${item.delay + 1}s` }}
+              {/* Capa - parte de cima */}
+              <div className="w-full h-[90px] xl:h-[110px] 2xl:h-[120px] overflow-hidden">
+                <img
+                  src={item.capa}
+                  alt={item.title}
+                  loading="lazy"
+                  width={512}
+                  height={512}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
 
-              {/* Content */}
-              <div className="relative z-[1] p-3 sm:p-4 flex flex-col items-start justify-end h-full min-h-[110px]">
-                <div className="bg-white/15 backdrop-blur-sm p-2.5 rounded-xl mb-2">
-                  <Icon className="w-6 h-6 text-white" />
-                </div>
-
-                <div className="text-left w-full flex items-end justify-between">
-                  <div>
-                    <span className="text-[15px] sm:text-base font-bold text-white block leading-tight drop-shadow-md">{item.title}</span>
-                    <span className="text-[11px] sm:text-xs text-white/70 block drop-shadow-sm">{item.subtitle}</span>
-                  </div>
-                  <ChevronRight className="w-3.5 h-3.5 text-white/25 group-hover:text-white/60 transition-colors shrink-0 mb-0.5" />
+              {/* Info - parte de baixo com gradiente */}
+              <div className={`bg-gradient-to-br ${item.gradient} p-3 flex-1 flex flex-col justify-center relative`}>
+                <h4
+                  className="font-bold text-white text-sm mb-0.5 group-hover:translate-x-0.5 transition-transform tracking-wide"
+                  style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
+                >
+                  {item.title}
+                </h4>
+                <p
+                  className="text-white/80 text-xs line-clamp-2 leading-snug"
+                  style={{ textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}
+                >
+                  {item.description}
+                </p>
+                {/* Ícone no canto inferior direito */}
+                <div className="absolute bottom-2.5 right-2.5 p-1.5 bg-white/20 rounded-lg group-hover:bg-white/30 transition-colors">
+                  <Icon className="w-4 h-4 text-white/80 drop-shadow-md" />
                 </div>
               </div>
-
-              {/* Bottom accent line */}
-              <div
-                className="absolute bottom-0 left-0 right-0 h-[3px] z-[2]"
-                style={{ background: `linear-gradient(90deg, transparent, ${item.accent}80, transparent)` }}
-              />
             </button>
           );
         })}
