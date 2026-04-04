@@ -600,22 +600,22 @@ const Index = () => {
             </div>
 
             {/* Portal de Vídeos (Estudos em Mídia) */}
-            <div className="px-2 pt-4">
+            <div className="px-2 pt-6">
               <PortalDeVideosSection navigate={gatedNavigate} />
             </div>
 
             {/* Estudos / Leis do Dia / Vade Mecum - Carousel com setas */}
-            <div className="pt-4 pb-4">
+            <div className="pt-6 pb-4">
               <EstudosViewCarousel>
                 <HomePratiqueSlide />
               </EstudosViewCarousel>
             </div>
 
             {/* Simulados - apenas admin */}
-            {isAdmin && <div className="pt-2"><SimuladosCarousel /></div>}
+            {isAdmin && <div className="pt-6"><SimuladosCarousel /></div>}
 
             {/* Seções que ficam sempre visíveis abaixo */}
-            <div className="px-2 space-y-6 mt-4">
+            <div className="px-2 space-y-6 mt-6">
               <LivroDoDiaHomeSection userName={userName} />
             </div>
           </div>
