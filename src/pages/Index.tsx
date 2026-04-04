@@ -13,11 +13,6 @@ import { DotPattern } from "@/components/ui/dot-pattern";
 import { DesktopVadeMecumHome } from "@/components/desktop/DesktopVadeMecumHome";
 import { DesktopEstudosComputador } from "@/components/desktop/DesktopEstudosComputador";
 import { ResenhaHojeSection } from "@/components/ResenhaHojeSection";
-import themisEstudosDesktop from "@/assets/themis-estudos-desktop.webp";
-import capaEstudosAulas from "@/assets/capa-estudos-aulas.jpg";
-import capaEstudosResumos from "@/assets/capa-estudos-resumos.jpg";
-import capaEstudosFlashcards from "@/assets/capa-estudos-flashcards.jpg";
-import capaEstudosQuestoes from "@/assets/capa-estudos-questoes.jpg";
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 
 import { Crown, Gavel, FileText, Scale, GraduationCap, BookOpen as BookOpenIcon, Library, Hammer, Target, Search, Headphones, Play, Loader2, Newspaper, ArrowRight, Sparkles, Scroll, Brain, Monitor, Video, BookOpen, Calendar, Settings, Flame, MonitorSmartphone, Users, Landmark, Clapperboard, BarChart3, Film, MessageCircle, Clock, Map, MapPin, Award, Wrench, Baby, BookText, FileCheck, ClipboardList, Layers, Route, Footprints, Briefcase, ChevronRight, ChevronDown, Compass } from "lucide-react";
@@ -651,47 +646,12 @@ const Index = () => {
             />
           </div>
 
-          {/* Estudos: Aulas, Resumos, Flashcards, Questões — sempre visível abaixo de Legislação */}
+          {/* Estudos: Aulas, Resumos, Flashcards, Questões — mesmo layout do mobile */}
           <div className="relative z-10 mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 bg-amber-500/20 rounded-xl">
-                <GraduationCap className="w-5 h-5 text-amber-100" />
-              </div>
-              <div>
-                <h2 className="text-base xl:text-lg font-bold text-foreground tracking-tight">Estudos</h2>
-                <p className="text-xs text-muted-foreground">Aulas, revisões e prática</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-4 gap-3">
-              {[
-                { titulo: "Aulas", subtitulo: "Aulas interativas", icon: GraduationCap, route: "/aulas", capa: capaEstudosAulas },
-                { titulo: "Resumos", subtitulo: "Resumos práticos", icon: BookOpenIcon, route: "/audioaulas/categoria/resumos", capa: capaEstudosResumos },
-                { titulo: "Flashcards", subtitulo: "Cards de revisão", icon: Brain, route: "/audioaulas/categoria/flashcards", capa: capaEstudosFlashcards },
-                { titulo: "Questões", subtitulo: "Pratique questões", icon: Target, route: "/questoes", capa: capaEstudosQuestoes },
-              ].map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.titulo}
-                    onClick={() => gatedNavigate(item.route)}
-                    className="group relative rounded-xl overflow-hidden border border-border/30 hover:border-primary/30 transition-all duration-200 text-left cursor-pointer aspect-[16/9]"
-                  >
-                    <img src={item.capa} alt={item.titulo} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                    <div className="relative h-full flex items-end justify-start px-3 pb-2.5 gap-2.5">
-                      <div className="p-1.5 rounded-lg bg-white/15 backdrop-blur-sm">
-                        <Icon className="w-4 h-4 text-white" />
-                      </div>
-                      <div>
-                        <h4 className="text-base font-bold text-white leading-tight">{item.titulo}</h4>
-                        <p className="text-[11px] text-white/50 leading-tight">{item.subtitulo}</p>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-            </div>
+            <EstudosViewCarousel isDesktop>
+              <HomePratiqueSlide />
+            </EstudosViewCarousel>
+          </div>
 
           {/* Conteúdo da tab ativa — CSS transitions (sem AnimatePresence) */}
           <div>
