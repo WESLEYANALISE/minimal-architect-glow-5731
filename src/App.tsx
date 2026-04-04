@@ -222,6 +222,7 @@ const RankingFaculdadeDetalhes = lazy(() => import("./pages/RankingFaculdadeDeta
 const OABOQueEstudar = lazy(() => import("./pages/OABOQueEstudar"));
 const OABOQueEstudarArea = lazy(() => import("./pages/OABOQueEstudarArea"));
 const OABFuncoes = lazy(() => import("./pages/OABFuncoes"));
+const ModoDesktop = lazy(() => import("./pages/ModoDesktop"));
 const TrilhasAprovacao = lazy(() => import("./pages/oab/TrilhasAprovacao"));
 const TrilhaAreaTemas = lazy(() => import("./pages/oab/TrilhaAreaTemas"));
 const TrilhaTemaSubtemas = lazy(() => import("./pages/oab/TrilhaTemaSubtemas"));
@@ -613,6 +614,9 @@ const App = () => {
               <Route path="/blogger-juridico" element={<Navigate to="/blogger-juridico/artigos" replace />} />
               <Route path="/blogger-juridico/artigos" element={<L><BloggerJuridico /></L>} />
               <Route path="/blogger-juridico/:categoria/:ordem" element={<L><BloggerJuridicoArtigo /></L>} />
+
+              {/* Modo Desktop */}
+              <Route path="/funcoes" element={<L><ModoDesktop /></L>} />
 
               {/* OAB */}
               <Route path="/oab-funcoes" element={<L><OABFuncoes /></L>} />
