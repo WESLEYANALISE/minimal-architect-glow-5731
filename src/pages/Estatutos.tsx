@@ -50,7 +50,7 @@ const Estatutos = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterMode, setFilterMode] = useState<FilterMode>('todos');
-  const { backgroundUrl, opacity, isGenerating, generateNew, deleteImage, setOpacity } = useBackgroundImage('estatutos');
+  
   const { isPremium, loading: loadingSubscription } = useSubscription();
   const [premiumModalOpen, setPremiumModalOpen] = useState(false);
 
