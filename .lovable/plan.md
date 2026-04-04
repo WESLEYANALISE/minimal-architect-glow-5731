@@ -1,46 +1,52 @@
 
 
-## Por que as capas dos simulados carregam instantaneamente e as outras nao
+## Plano: Modo Realeza para Flashcards
 
-### Diagnostico
+### Objetivo
+Transformar o hub de Flashcards (`FlashcardsAreas.tsx`) e a pagina de temas (`FlashcardsTemas.tsx`) para usar a mesma estetica "Realeza" do modulo de Questoes — paleta dourada/escura, `DotPattern`, `NumberTicker`, bordas douradas, e visual premium unificado.
 
-A diferenca esta na **origem das imagens**:
+### O que muda
 
-| Secao | Origem da imagem | Velocidade |
-|-------|-----------------|------------|
-| Simulados | Arquivos `.webp` **bundled no app** (`import capaOab from "@/assets/..."`) | Instantaneo — ja esta no JS |
-| Estudos em Midia | Arquivos `.jpg` **bundled no app** (`import capaIniciante from "@/assets/..."`) | Instantaneo |
-| Biblioteca | URLs remotas do Supabase (`url_capa_gerada`, `Capa-livro`) | Lento — precisa query + download |
-| Legislacao | URLs remotas do Supabase (`url_capa`) | Lento — precisa query + download |
-| Politica | URLs remotas do Supabase (`thumbnail`) | Lento — precisa query + download |
-| Jornada | URLs remotas do Supabase (`capa_url`) | Lento — precisa query + download |
+**1. `FlashcardsAreas.tsx` — Hub principal (menu)**
+- Header: trocar gradiente marrom por gradiente escuro com bordas douradas (`hsla(40, 60%, 50%, 0.12)`) e `DotPattern` de fundo
+- Titulo "Flashcards" com fonte serif (Playfair Display) e contagem usando `NumberTicker`
+- Cards do menu (Praticar, Progresso, Reforco, Decks): manter a estrutura do `FlashcardsMenuPrincipal` mas aplicar bordas douradas sutis e fundo `hsl(0 0% 10%)` consistente
+- Stats (compreendi, revisar, streak): aplicar bordas douradas nos cards de estatistica
+- Fundo geral: `hsl(0 0% 7%)` com `DotPattern` sutil
 
-Os simulados importam imagens WebP direto do codigo (`import capaEscrevente from "@/assets/capa-escrevente.webp"`), entao elas ja vem junto com o JavaScript — nao dependem de nenhuma requisicao extra.
+**2. `FlashcardsAreas.tsx` — SubView "categories" (areas)**
+- Header: mesmo padrao realeza com dourado
+- Cards de area (grid 2x2): adicionar borda dourada sutil (`hsla(40, 60%, 50%, 0.1)`) e sombra dourada
+- Tabs (Principais, Frequentes, Extras): estilizar com borda dourada no tab ativo
+- Trilha serpentina das categorias: manter mas com acentos dourados nos nodes
 
-As outras secoes precisam: (1) fazer uma query ao Supabase para descobrir a URL, (2) depois fazer outro request HTTP para baixar a imagem. Sao 2 etapas de rede vs 0 etapas.
+**3. `FlashcardsTemas.tsx` — Lista de temas**
+- Header: gradiente escuro com acentos dourados em vez do gradiente colorido da area
+- Tabs (Ordem, Favoritos, Pesquisar): bordas douradas no ativo
+- Cards de tema na lista: bordas `hsla(40, 60%, 50%, 0.08)`, fundo `rgba(255,255,255,0.04)`
+- Badge numerico: anel dourado em vez da cor da area
+- Seta/chevron: dourada
+- Badge de flashcards count: cor dourada
 
-### Plano de correcao
+**4. `FlashcardsMenuPrincipal.tsx` — Menu principal**
+- Cards 2x2: adicionar bordas douradas sutis
+- Stats grid (4 colunas): bordas douradas
+- Fundo dos cards: manter gradientes mas com brilho dourado sutil
 
-**Estrategia**: Usar `<link rel="preload">` no `<head>` para as imagens remotas mais visiveis, e carregar todas as URLs de imagem **em paralelo** assim que os dados do Supabase chegarem, sem esperar scroll ou idle.
+### Paleta Realeza (mesma do Questoes)
+- Fundo: `hsl(0, 0%, 7%)` a `hsl(0, 0%, 10%)`
+- Dourado principal: `hsl(40, 80%, 55%)`
+- Bordas: `hsla(40, 60%, 50%, 0.12)`
+- Texto destaque: `hsl(40, 70%, 60%)`
+- DotPattern: `hsla(40, 50%, 40%, 0.15)`
 
-**Arquivos a modificar:**
+### Arquivos a modificar
+1. `src/pages/FlashcardsAreas.tsx` — Header, fundo, subviews
+2. `src/pages/FlashcardsTemas.tsx` — Header, lista, tabs
+3. `src/components/flashcards/FlashcardsMenuPrincipal.tsx` — Stats e grid de menu
 
-1. **`src/hooks/useHomePreloader.ts`** — Ja faz preload de imagens, mas com limite de 50 e delay de 300ms. Vamos:
-   - Priorizar as imagens das secoes visiveis acima do fold (Biblioteca, Legislacao) com `fetchPriority: "high"`
-   - Disparar o preload das URLs assim que a query retornar, sem batch/intervalo
-
-2. **`src/components/home/BibliotecaHomeSection.tsx`** — Adicionar `loading="eager"` nas primeiras 4-6 capas visiveis (em vez de lazy)
-
-3. **`src/components/home/LegislacaoHomeSection.tsx`** — Adicionar `loading="eager"` nas primeiras capas e usar `decoding="async"` para nao bloquear o thread
-
-4. **`src/components/home/PoliticaHomeSection.tsx`** — Trocar `loading="lazy"` por `loading="eager"` nos primeiros 3-4 itens visiveis
-
-5. **`src/components/home/JornadaHomeSection.tsx`** — Mesmo tratamento: eager nas primeiras capas
-
-**Tecnica adicional**: Injetar `<link rel="preload" as="image">` no head para as primeiras 6 URLs de capa assim que o useHomePreloader receber os dados, usando `document.head.appendChild()`. Isso faz o browser comecar o download antes mesmo dos componentes renderizarem.
-
-### Impacto esperado
-- Imagens das primeiras secoes aparecerao **1-3s mais cedo**
-- Secoes abaixo do fold continuam com lazy load normal
-- Nenhuma mudanca visual
+### O que NAO muda
+- Funcionalidades (navegacao, cache, auto-geracao, favoritos, premium gate)
+- Componentes internos (FlashcardsEstudar, FlashcardStack, etc.)
+- Rotas e hooks
 
