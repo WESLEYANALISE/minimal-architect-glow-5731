@@ -9,7 +9,7 @@ import {
   Headphones, FileText, Scale, CheckCircle, Target, MessageCircle,
   Gavel, Map, Video, Layers, ScrollText, Infinity, Calendar, Check
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
