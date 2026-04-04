@@ -59,6 +59,24 @@ const FRASES = [
 
 // ===== PLAN CARD =====
 
+const PLAN_THEMES: Record<string, { border: string; activeBorder: string; glow: string; gradient: string; iconColor: string; badge: string; btnBg: string; checkBg: string }> = {
+  mensal: {
+    border: 'hsl(210 60% 30% / 0.4)', activeBorder: 'hsl(210 80% 55%)', glow: '0 0 35px -8px rgba(59,130,246,0.35)',
+    gradient: 'from-blue-300 via-blue-400 to-blue-500', iconColor: 'text-blue-400',
+    badge: '', btnBg: 'linear-gradient(135deg, #3b82f6, #60a5fa)', checkBg: 'bg-blue-500 shadow-blue-500/30',
+  },
+  anual: {
+    border: 'hsl(43 80% 45% / 0.5)', activeBorder: 'hsl(43 90% 50%)', glow: '0 0 40px -8px rgba(245,158,11,0.4)',
+    gradient: 'from-amber-300 via-amber-400 to-amber-500', iconColor: 'text-amber-400',
+    badge: 'bg-amber-500 text-black', btnBg: 'linear-gradient(135deg, #f59e0b, #fbbf24)', checkBg: 'bg-amber-500 shadow-amber-500/30',
+  },
+  vitalicio: {
+    border: 'hsl(270 50% 35% / 0.4)', activeBorder: 'hsl(270 70% 55%)', glow: '0 0 35px -8px rgba(168,85,247,0.35)',
+    gradient: 'from-purple-300 via-purple-400 to-purple-500', iconColor: 'text-purple-400',
+    badge: 'bg-purple-500 text-white', btnBg: 'linear-gradient(135deg, #a855f7, #c084fc)', checkBg: 'bg-purple-500 shadow-purple-500/30',
+  },
+};
+
 const PlanCard = ({ planKey, plan, selected, onSelect }: {
   planKey: string;
   plan: typeof PLANS[string];
@@ -66,15 +84,8 @@ const PlanCard = ({ planKey, plan, selected, onSelect }: {
   onSelect: () => void;
 }) => {
   const isAnual = planKey === 'anual';
-  const isVitalicio = planKey === 'vitalicio';
-
-  const accent = isAnual
-    ? { border: 'hsl(43 80% 45% / 0.5)', activeBorder: 'hsl(43 90% 50%)', glow: '0 0 40px -8px rgba(245,158,11,0.4)', gradient: 'from-amber-300 via-amber-400 to-amber-500', iconColor: 'text-amber-400', badge: 'bg-amber-500 text-black' }
-    : isVitalicio
-    ? { border: 'hsl(43 60% 35% / 0.3)', activeBorder: 'hsl(43 80% 50%)', glow: '0 0 35px -8px rgba(245,158,11,0.3)', gradient: 'from-amber-200 via-amber-400 to-amber-500', iconColor: 'text-amber-300', badge: 'bg-amber-600 text-black' }
-    : { border: 'hsl(0 0% 20%)', activeBorder: 'hsl(0 0% 50%)', glow: '0 0 30px -8px rgba(255,255,255,0.15)', gradient: 'from-zinc-300 via-zinc-400 to-zinc-500', iconColor: 'text-zinc-400', badge: '' };
-
-  const IconComp = isAnual ? Crown : isVitalicio ? Infinity : Calendar;
+  const theme = PLAN_THEMES[planKey] || PLAN_THEMES.mensal;
+  const IconComp = isAnual ? Crown : planKey === 'vitalicio' ? Infinity : Calendar;
 
   return (
     <button
@@ -84,21 +95,26 @@ const PlanCard = ({ planKey, plan, selected, onSelect }: {
       }`}
       style={{
         background: selected
-          ? `linear-gradient(160deg, hsl(43 30% 12%), hsl(0 0% 7%))`
+          ? `linear-gradient(160deg, hsl(0 0% 10%), hsl(0 0% 5%))`
           : 'hsl(0 0% 7%)',
-        border: `1.5px solid ${selected ? accent.activeBorder : accent.border}`,
-        boxShadow: selected ? accent.glow : 'none',
+        border: `1.5px solid ${selected ? theme.activeBorder : theme.border}`,
+        boxShadow: selected ? theme.glow : 'none',
       }}
     >
-      {/* Badge */}
+      {/* Shimmer overlay */}
+      {selected && (
+        <div className="absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.06)_50%,transparent_75%)] bg-[length:200%_100%] animate-[shimmer_2.5s_ease-in-out_infinite] z-10 pointer-events-none" />
+      )}
+
+      {/* Badge — single line */}
       {plan.badge && (
-        <div className={`absolute -top-[1px] left-1/2 -translate-x-1/2 ${accent.badge} text-[7px] sm:text-[8px] font-bold rounded-b-lg px-2.5 sm:px-3 py-0.5 tracking-wider uppercase z-20`}>
+        <div className={`absolute -top-[1px] left-1/2 -translate-x-1/2 ${theme.badge} text-[7px] sm:text-[8px] font-bold rounded-b-lg px-2.5 sm:px-3 py-0.5 tracking-wider uppercase z-20 whitespace-nowrap`}>
           {plan.badge}
         </div>
       )}
 
       {/* Icon */}
-      <IconComp className={`w-7 h-7 sm:w-8 sm:h-8 ${accent.iconColor} transition-all duration-300 ${selected ? 'scale-110' : 'opacity-50'}`} />
+      <IconComp className={`w-7 h-7 sm:w-8 sm:h-8 ${theme.iconColor} transition-all duration-300 ${selected ? 'scale-110' : 'opacity-50'}`} />
 
       {/* Label */}
       <h3 className={`text-xs sm:text-sm font-bold tracking-wide transition-colors ${selected ? 'text-white' : 'text-zinc-500'}`}>
@@ -108,7 +124,7 @@ const PlanCard = ({ planKey, plan, selected, onSelect }: {
       {/* Price */}
       <div className="flex items-baseline justify-center gap-0.5 mt-0.5">
         <span className={`text-[9px] sm:text-[10px] self-start mt-1.5 ${selected ? 'text-zinc-400' : 'text-zinc-600'}`}>R$</span>
-        <span className={`text-2xl sm:text-3xl font-black bg-gradient-to-b ${accent.gradient} bg-clip-text text-transparent transition-opacity ${selected ? 'opacity-100' : 'opacity-50'}`}>
+        <span className={`text-2xl sm:text-3xl font-black bg-gradient-to-b ${theme.gradient} bg-clip-text text-transparent transition-opacity ${selected ? 'opacity-100' : 'opacity-50'}`}>
           {plan.price.toFixed(2).replace('.', ',')}
         </span>
       </div>
@@ -120,8 +136,8 @@ const PlanCard = ({ planKey, plan, selected, onSelect }: {
 
       {/* Selected indicator */}
       {selected && (
-        <div className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center bg-amber-500 shadow-lg shadow-amber-500/30">
-          <Check className="w-3 h-3 text-black" strokeWidth={3} />
+        <div className={`absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center ${theme.checkBg} shadow-lg z-20`}>
+          <Check className="w-3 h-3 text-white" strokeWidth={3} />
         </div>
       )}
     </button>
@@ -275,6 +291,8 @@ const AssinaturaNova = () => {
                   borderColor: 'hsl(38 10% 16%)',
                 }}
               >
+                {/* Shimmer on benefits */}
+                <div className="absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.04)_50%,transparent_75%)] bg-[length:200%_100%] animate-[shimmer_3s_ease-in-out_infinite] pointer-events-none" style={{ animationDelay: `${i * 0.2}s` }} />
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{ background: 'hsl(43 70% 50% / 0.1)' }}>
                   <item.Icon className="w-4 h-4 text-amber-400" />
@@ -310,11 +328,11 @@ const AssinaturaNova = () => {
             Acesso a <span className="text-amber-400 font-bold">+1.200 livros</span>, <span className="text-amber-400 font-bold">+136 mil questões</span>, <span className="text-amber-400 font-bold">+101 mil flashcards</span>, <span className="text-amber-400 font-bold">+13 mil resumos</span>, IA jurídica ilimitada, Vade Mecum completo, audioaulas e <span className="text-amber-400 font-bold">mais de 137 funções</span>. 🔥⚖️
           </p>
 
-          {/* CTA */}
+          {/* CTA — color matches selected plan */}
           <button
             onClick={handleAssinar}
-            className="w-full relative py-3.5 rounded-xl font-black text-sm tracking-tight overflow-hidden transition-all active:scale-[0.97] text-black shadow-[0_4px_24px_rgba(245,158,11,0.3)] mb-1"
-            style={{ background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' }}
+            className="w-full relative py-3.5 rounded-xl font-black text-sm tracking-tight overflow-hidden transition-all duration-300 active:scale-[0.97] text-white mb-1"
+            style={{ background: PLAN_THEMES[selectedPlan]?.btnBg || PLAN_THEMES.anual.btnBg, boxShadow: PLAN_THEMES[selectedPlan]?.glow || 'none' }}
           >
             <div className="absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.25)_50%,transparent_75%)] bg-[length:200%_100%] animate-[shimmer_2.5s_ease-in-out_infinite]" />
             <span className="relative flex items-center justify-center gap-2">
