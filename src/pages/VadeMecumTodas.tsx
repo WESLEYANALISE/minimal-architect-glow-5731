@@ -135,7 +135,7 @@ const VadeMecumTodas = () => {
 
   const searchCategories = [
     { id: "todos", label: "Todos", icon: ListFilter, color: "#6b7280" },
-    { id: "constituicao", label: "Constituição", icon: Crown, color: "#f97316" },
+    { id: "constituicao", label: "Constituição", icon: Crown, color: "#9f1239" },
     { id: "codigos", label: "Códigos", icon: Scale, color: "#ef4444" },
     { id: "penal", label: "Leis Especiais", icon: Gavel, color: "#dc2626" },
     { id: "estatutos", label: "Estatutos", icon: Shield, color: "#10b981" },
@@ -734,7 +734,7 @@ const VadeMecumTodas = () => {
             className={`absolute top-0 right-0 bottom-0 w-full bg-background flex flex-col overflow-hidden shadow-2xl ${searchClosing ? 'animate-slide-out-right' : 'animate-slide-in-right'}`}
           >
             {/* Header com gradiente */}
-            <div className="relative bg-gradient-to-b from-amber-900/20 to-transparent">
+            <div className="relative bg-gradient-to-b from-rose-900/20 to-transparent">
               <div className="flex items-center gap-3 px-4 pt-5 pb-4">
                 <Button
                   onClick={handleCloseSearch}
@@ -748,8 +748,8 @@ const VadeMecumTodas = () => {
                   <h2 className="text-lg font-bold text-foreground">Buscar Legislação</h2>
                   <p className="text-xs text-muted-foreground">Encontre artigos e leis rapidamente</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-amber-500/15 flex items-center justify-center">
-                  <Search className="w-5 h-5 text-amber-500" />
+                <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center">
+                  <Search className="w-5 h-5 text-primary" />
                 </div>
               </div>
             </div>
@@ -758,14 +758,14 @@ const VadeMecumTodas = () => {
             <div className="flex mx-4 mt-2 mb-4 bg-card/80 rounded-xl p-1 border border-border/30">
               <button
                 onClick={() => { setSearchMode("palavra"); setSearchQuery(""); setShowResults(false); }}
-                className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${searchMode === "palavra" ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25" : "text-muted-foreground hover:text-foreground"}`}
+                className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${searchMode === "palavra" ? "bg-primary text-white shadow-lg shadow-primary/25" : "text-muted-foreground hover:text-foreground"}`}
               >
                 <Search className="w-4 h-4" />
                 Palavra-chave
               </button>
               <button
                 onClick={() => { setSearchMode("lei"); setSearchQuery(""); setShowResults(false); }}
-                className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${searchMode === "lei" ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25" : "text-muted-foreground hover:text-foreground"}`}
+                className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${searchMode === "lei" ? "bg-primary text-white shadow-lg shadow-primary/25" : "text-muted-foreground hover:text-foreground"}`}
               >
                 <FileText className="w-4 h-4" />
                 Nº da Lei
@@ -782,15 +782,15 @@ const VadeMecumTodas = () => {
                   value={searchQuery}
                   onChange={(e) => { setSearchQuery(e.target.value); setShowResults(false); }}
                   onKeyDown={(e) => e.key === 'Enter' && executarBuscaRapida()}
-                  className="h-14 bg-card/90 border-border/30 rounded-xl text-base font-medium pl-5 focus:border-amber-500/50 focus:ring-amber-500/20"
+                  className="h-14 bg-card/90 border-border/30 rounded-xl text-base font-medium pl-5 focus:border-primary/50 focus:ring-primary/20"
                   autoFocus
                 />
               </div>
 
               {/* Dica contextual */}
               {!showResults && searchQuery.length === 0 && (
-                <div className="bg-amber-500/5 border border-amber-500/15 rounded-xl p-3">
-                  <p className="text-xs text-amber-200/80 leading-relaxed">
+                <div className="bg-primary/5 border border-primary/15 rounded-xl p-3">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
                     {searchMode === "palavra" 
                       ? "💡 Digite palavras-chave como \"drogas\", \"violência doméstica\", \"consumidor\", \"trabalho\" para encontrar a legislação relacionada."
                       : "💡 Digite o número da lei com ou sem pontos. Ex: \"11.343\", \"8078\", \"13105\". O sistema identifica automaticamente."
@@ -803,7 +803,7 @@ const VadeMecumTodas = () => {
               <Button
                 onClick={executarBuscaRapida}
                 disabled={!searchQuery.trim() || isSearching}
-                className="w-full h-12 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-semibold text-base shadow-lg shadow-amber-600/20"
+                className="w-full h-12 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold text-base shadow-lg shadow-primary/20"
               >
                 {isSearching ? (
                   <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Buscando...</>
