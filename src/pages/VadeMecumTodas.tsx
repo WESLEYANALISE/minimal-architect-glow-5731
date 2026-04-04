@@ -580,8 +580,8 @@ const VadeMecumTodas = () => {
                   {/* Barra de busca */}
                   <div
                     onClick={() => setSearchOpen(true)}
-                    className="flex items-center gap-3 px-4 py-4 bg-card/90 backdrop-blur-sm rounded-2xl cursor-pointer border border-border/30 hover:border-primary/30 transition-colors mb-4 relative overflow-hidden"
-                    style={{ opacity: 0, animation: 'slideDown 0.4s ease-out forwards' } as React.CSSProperties}
+                    className="flex items-center gap-3 px-4 py-4 rounded-2xl cursor-pointer transition-colors mb-4 relative overflow-hidden"
+                    style={{ background: 'hsla(0, 0%, 100%, 0.04)', border: '1px solid hsla(40, 60%, 50%, 0.12)', opacity: 0, animation: 'slideDown 0.4s ease-out forwards' } as React.CSSProperties}
                   >
                     <div className="absolute inset-0 overflow-hidden pointer-events-none z-[2] rounded-2xl">
                       <div
