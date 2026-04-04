@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Image, Volume2, Loader2, Sparkles, Play, Pause, GraduationCap, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
