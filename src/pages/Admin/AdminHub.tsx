@@ -526,6 +526,14 @@ const AdminHub = () => {
       route: "/admin/teste-voz",
       color: "text-pink-500",
     },
+    {
+      id: "temas",
+      title: "Temas Visuais",
+      description: "Alterar paleta de cores do aplicativo em tempo real",
+      icon: Palette,
+      route: "/admin/temas",
+      color: "text-rose-500",
+    },
   ];
 
   return (
