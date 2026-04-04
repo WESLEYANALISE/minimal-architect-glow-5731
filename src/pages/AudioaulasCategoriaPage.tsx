@@ -1,4 +1,4 @@
-import { useState, useMemo, lazy, Suspense } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,8 +9,7 @@ import AudioaulasAreaCard from "@/components/audioaulas/AudioaulasAreaCard";
 import { useAudioPlayer } from "@/contexts/AudioPlayerContext";
 import { toast } from "sonner";
 import { useDeviceType } from "@/hooks/use-device-type";
-
-const AudioaulasSpotify = lazy(() => import("./AudioaulasSpotify"));
+import AudioaulasSpotify from "./AudioaulasSpotify";
 
 const CATEGORY_CONFIG: Record<string, { title: string; icon: React.ElementType; gradient: string }> = {
   audioaulas: {
@@ -91,11 +90,7 @@ const AudioaulasCategoriaPage = () => {
 
   // No desktop, renderizar o layout Spotify com sidebar
   if (isDesktop) {
-    return (
-      <Suspense fallback={<div className="flex items-center justify-center h-[calc(100vh-3.5rem)] bg-background"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
-        <AudioaulasSpotify />
-      </Suspense>
-    );
+    return <AudioaulasSpotify />;
   }
 
   const handleShuffle = async () => {
