@@ -87,7 +87,6 @@ const QuestoesResolver = () => {
   const autoplayAudio = autoplayParam !== null ? autoplayParam === "true" : true;
   const isModoTodas = modo === "todas";
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showCountdown, setShowCountdown] = useState(false);
   const [countdownDone, setCountdownDone] = useState(false);
   const [questoes, setQuestoes] = useState<Questao[]>([]);
   const [geracaoStatus, setGeracaoStatus] = useState<GeracaoStatus | null>(null);
@@ -406,10 +405,6 @@ const QuestoesResolver = () => {
     );
   }
 
-  if (!countdownDone && questoes.length > 0) {
-    return <CountdownStart onComplete={() => setCountdownDone(true)} />;
-  }
-
   if (questoes.length === 0) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
@@ -430,95 +425,102 @@ const QuestoesResolver = () => {
   }
 
   const progressKey = `questoes_progress_${area}_${modo || tema}`;
+  const shouldShowCountdown = !countdownDone && questoes.length > 0;
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      {/* Header com gradiente da área */}
-      <div className={`sticky top-0 z-10 bg-gradient-to-r ${getAreaGradient(area)} px-4 py-3`}>
-        <div className="h-[env(safe-area-inset-top)]" />
-        <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleBack}
-            className="shrink-0 bg-white/15 hover:bg-white/25 backdrop-blur-sm rounded-full text-white"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div className="text-center flex-1 min-w-0 px-2">
-            <h1 className="font-bold text-base text-white truncate">{area}</h1>
-            <p className="text-xs text-white/80 truncate">
-              {tema ? `${tema} · ${questoes.length} questões` : `${questoes.length} questões`}
-            </p>
+    <>
+      <div className="flex flex-col min-h-screen bg-background">
+        {/* Header com gradiente da área */}
+        <div className={`sticky top-0 z-10 bg-gradient-to-r ${getAreaGradient(area)} px-4 py-3`}>
+          <div className="h-[env(safe-area-inset-top)]" />
+          <div className="flex items-center justify-between">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBack}
+              className="shrink-0 bg-white/15 hover:bg-white/25 backdrop-blur-sm rounded-full text-white"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <div className="text-center flex-1 min-w-0 px-2">
+              <h1 className="font-bold text-base text-white truncate">{area}</h1>
+              <p className="text-xs text-white/80 truncate">
+                {tema ? `${tema} · ${questoes.length} questões` : `${questoes.length} questões`}
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowSettings(true)}
+              className="shrink-0 bg-white/15 hover:bg-white/25 backdrop-blur-sm rounded-full text-white"
+            >
+              <Settings className="w-5 h-5" />
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowSettings(true)}
-            className="shrink-0 bg-white/15 hover:bg-white/25 backdrop-blur-sm rounded-full text-white"
-          >
-            <Settings className="w-5 h-5" />
-          </Button>
         </div>
+
+        {/* Quiz */}
+        <QuestoesConcurso 
+          ref={questoesConcursoRef}
+          questoes={questoes} 
+          onFinish={handleFinish}
+          area={area}
+          tema={tema}
+          autoplayAudio={autoplayAudio}
+          progressKey={progressKey}
+        />
+
+        {/* Settings Drawer */}
+        <Drawer open={showSettings} onOpenChange={setShowSettings}>
+          <DrawerContent>
+            <DrawerHeader className="text-left">
+              <DrawerTitle className="flex items-center gap-2">
+                <Settings className="w-5 h-5 text-primary" />
+                Configurações
+              </DrawerTitle>
+              <DrawerDescription>
+                Gerencie seu progresso e preferências
+              </DrawerDescription>
+            </DrawerHeader>
+            <div className="px-4 pb-2 space-y-2">
+              <button
+                onClick={handleRestart}
+                className="w-full flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:bg-accent transition-colors text-left"
+              >
+                <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                  <RotateCcw className="w-5 h-5 text-destructive" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm text-foreground">Reiniciar questões</p>
+                  <p className="text-xs text-muted-foreground">Zera o progresso e volta para a questão 1</p>
+                </div>
+              </button>
+              <button
+                onClick={handleShuffle}
+                className="w-full flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:bg-accent transition-colors text-left"
+              >
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Shuffle className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm text-foreground">Embaralhar questões</p>
+                  <p className="text-xs text-muted-foreground">Reordena aleatoriamente todas as questões</p>
+                </div>
+              </button>
+            </div>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button variant="outline" className="w-full">Fechar</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
       </div>
 
-      {/* Quiz */}
-      <QuestoesConcurso 
-        ref={questoesConcursoRef}
-        questoes={questoes} 
-        onFinish={handleFinish}
-        area={area}
-        tema={tema}
-        autoplayAudio={autoplayAudio}
-        progressKey={progressKey}
-      />
-
-      {/* Settings Drawer */}
-      <Drawer open={showSettings} onOpenChange={setShowSettings}>
-        <DrawerContent>
-          <DrawerHeader className="text-left">
-            <DrawerTitle className="flex items-center gap-2">
-              <Settings className="w-5 h-5 text-primary" />
-              Configurações
-            </DrawerTitle>
-            <DrawerDescription>
-              Gerencie seu progresso e preferências
-            </DrawerDescription>
-          </DrawerHeader>
-          <div className="px-4 pb-2 space-y-2">
-            <button
-              onClick={handleRestart}
-              className="w-full flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:bg-accent transition-colors text-left"
-            >
-              <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
-                <RotateCcw className="w-5 h-5 text-destructive" />
-              </div>
-              <div>
-                <p className="font-medium text-sm text-foreground">Reiniciar questões</p>
-                <p className="text-xs text-muted-foreground">Zera o progresso e volta para a questão 1</p>
-              </div>
-            </button>
-            <button
-              onClick={handleShuffle}
-              className="w-full flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:bg-accent transition-colors text-left"
-            >
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <Shuffle className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <p className="font-medium text-sm text-foreground">Embaralhar questões</p>
-                <p className="text-xs text-muted-foreground">Reordena aleatoriamente todas as questões</p>
-              </div>
-            </button>
-          </div>
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button variant="outline" className="w-full">Fechar</Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </div>
+      {shouldShowCountdown && (
+        <CountdownStart onComplete={() => setCountdownDone(true)} />
+      )}
+    </>
   );
 };
 
