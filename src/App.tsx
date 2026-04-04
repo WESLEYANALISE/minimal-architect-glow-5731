@@ -981,6 +981,7 @@ const App = () => {
         </NarrationPlayerProvider>
         </SubscriptionProvider>
         </AuthProvider>
+        </ThemeProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
