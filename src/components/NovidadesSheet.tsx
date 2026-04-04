@@ -1,5 +1,4 @@
-import { ArrowLeft, Wrench, Bell, BookOpen, Film, Newspaper, CheckCheck } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, Bell, BookOpen, Film, Newspaper, CheckCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import novidadesHeroBackground from '@/assets/novidades-hero-background.webp';
 import NovidadesContent from '@/pages/Novidades';
@@ -12,8 +11,6 @@ interface NovidadesSheetProps {
   open: boolean;
   onClose: () => void;
 }
-
-type NovidadesTab = "melhorias" | "novidades";
 
 const iconMap: Record<string, any> = {
   livro: BookOpen,
