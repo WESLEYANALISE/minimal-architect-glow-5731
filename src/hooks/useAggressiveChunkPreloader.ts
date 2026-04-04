@@ -63,10 +63,10 @@ export const useAggressiveChunkPreloader = () => {
     hasStarted = true;
 
     const isDesktop = window.innerWidth >= 1024;
-    const phase1Delay = isDesktop ? 8000 : 3000;
-    const phase2Delay = isDesktop ? 25000 : 10000;
-    const batchSize = isDesktop ? 1 : 2;
-    const batchDelay = isDesktop ? 400 : 150;
+    const phase1Delay = isDesktop ? 12000 : 8000;
+    const phase2Delay = isDesktop ? 35000 : 20000;
+    const batchSize = 1;
+    const batchDelay = isDesktop ? 500 : 300;
 
     // Fase 1: chunks críticos
     setTimeout(() => {
