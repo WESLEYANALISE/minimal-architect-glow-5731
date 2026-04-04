@@ -154,7 +154,7 @@ const FlashcardsTemas = () => {
   const lockedFromIndex = isPremium ? undefined : 2;
 
   const navegarParaTema = (tema: string) => {
-    navigate(`/flashcards/estudar?area=${encodeURIComponent(area)}&tema=${encodeURIComponent(tema)}`);
+    setEstudarTema(tema);
   };
 
   const handleToggleFavorito = useCallback((tema: string) => {
