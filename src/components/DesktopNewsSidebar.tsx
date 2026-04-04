@@ -31,7 +31,7 @@ export const DesktopNewsSidebar = () => {
           Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="p-2 rounded-lg animate-pulse">
               <div className="flex gap-2">
-                <div className="w-20 h-14 rounded bg-muted flex-shrink-0" />
+                <div className="w-24 h-16 rounded bg-muted flex-shrink-0" />
                 <div className="flex-1 space-y-1.5">
                   <div className="h-3 bg-muted rounded w-full" />
                   <div className="h-3 bg-muted rounded w-2/3" />
@@ -66,7 +66,7 @@ export const DesktopNewsSidebar = () => {
                 className="w-full text-left p-2 rounded-lg hover:bg-muted/50 transition-colors group"
               >
                 <div className="flex gap-2.5 items-start">
-                  <div className="w-20 h-14 rounded bg-muted flex-shrink-0 overflow-hidden border border-border/50">
+                  <div className="w-24 h-16 rounded bg-muted flex-shrink-0 overflow-hidden border border-border/50">
                     {imagem ? (
                       <img
                         src={imagem}
