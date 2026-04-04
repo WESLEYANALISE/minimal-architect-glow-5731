@@ -735,7 +735,7 @@ export const Header = () => {
   const isPoliticaPage = location.pathname === "/politica";
   const isProposicoesListaPage = location.pathname === "/camara-deputados/proposicoes/lista";
   const isNoticiasLegislativasPage = location.pathname === "/noticias-legislativas";
-  if (isResumosPage || isCategoriasTopicoPage || isGamificacaoPage || isQuestoesResolverPage || isCategoriasQuestoesPage || isAulasEmTelaPage || isAdminMetodologias || isQuestoesSimNaoPage || isQuestoesCorrespPage || isQuestoesCasoPraticoPage || isQuestoesHubPage || isFlashcardsAreasPage || isMetodologiasAreas || isMetodologiasTemas || isVadeMecumBloggerPage || isTermosJuridicosPage || isPoliticaPage || isProposicoesListaPage || isNoticiasLegislativasPage) return null;
+  if (isResumosPage || isCategoriasTopicoPage || isGamificacaoPage || isQuestoesResolverPage || isCategoriasQuestoesPage || isAulasEmTelaPage || isAdminMetodologias || isQuestoesSimNaoPage || isQuestoesCorrespPage || isQuestoesCasoPraticoPage || isQuestoesHubPage || isQuestoesV2Page || isFlashcardsAreasPage || isMetodologiasAreas || isMetodologiasTemas || isVadeMecumBloggerPage || isTermosJuridicosPage || isPoliticaPage || isProposicoesListaPage || isNoticiasLegislativasPage) return null;
 
   // HOME LAYOUT
   if (isHome) {
