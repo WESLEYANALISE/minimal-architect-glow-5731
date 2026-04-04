@@ -437,6 +437,18 @@ const QuestoesResolver = () => {
           </div>
         </div>
 
+        {/* Discrete background generation banner */}
+        {isGenerating && (
+          <div className="px-4 py-2 flex items-center gap-2 bg-primary/10 border-b border-primary/20">
+            <Loader2 className="w-3.5 h-3.5 text-primary animate-spin shrink-0" />
+            <p className="text-xs text-primary truncate">
+              {geracaoStatus
+                ? `Gerando mais questões... ${geracaoStatus.subtemas_processados}/${geracaoStatus.total_subtemas} subtemas`
+                : FRASES_GERACAO[fraseIndex]}
+            </p>
+          </div>
+        )}
+
         {/* Quiz */}
         <QuestoesConcurso 
           ref={questoesConcursoRef}

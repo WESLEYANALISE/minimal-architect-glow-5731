@@ -244,13 +244,16 @@ const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => 
             temasFiltered.map((tema, i) => {
               const isFavorited = favoritos.includes(tema.tema);
               return (
-                <motion.button
+                <motion.div
                   key={tema.tema}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.03 }}
                   onClick={() => handleSelect(tema.tema)}
-                  className="w-full group flex items-center gap-3 rounded-xl p-3.5 text-left transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSelect(tema.tema); }}
+                  className="w-full group flex items-center gap-3 rounded-xl p-3.5 text-left transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
                   style={{ background: "hsla(0, 0%, 100%, 0.04)", border: "1px solid hsla(40, 60%, 50%, 0.08)" }}
                 >
                   {/* Number badge */}
@@ -273,7 +276,6 @@ const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => 
                     </p>
                   </div>
 
-
                   {/* Favorite button */}
                   <button
                     onClick={(e) => { e.stopPropagation(); toggleFavorito(tema.tema); }}
@@ -293,7 +295,7 @@ const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => 
                   </button>
 
                   <ChevronRight className="w-4 h-4 shrink-0 text-white/70" />
-                </motion.button>
+                </motion.div>
               );
             })
           )}
