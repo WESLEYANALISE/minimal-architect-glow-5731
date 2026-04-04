@@ -376,6 +376,7 @@ const QuestoesHubNovo = () => {
               onProgresso={() => setSubView("progresso")}
               onReforco={() => setSubView("reforco")}
               onCadernos={() => setSubView("cadernos")}
+              onDiagnostico={() => setSubView("diagnostico")}
             />
           )}
 
