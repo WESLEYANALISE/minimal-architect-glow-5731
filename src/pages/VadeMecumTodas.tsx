@@ -60,7 +60,7 @@ const VadeMecumTodas = () => {
   const [showResults, setShowResults] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchClosing, setSearchClosing] = useState(false);
-  const [searchMode, setSearchMode] = useState<"artigo" | "lei">("artigo");
+  const [searchMode, setSearchMode] = useState<"palavra" | "lei">("palavra");
   
   const [imagesLoaded, setImagesLoaded] = useState({
     menu: false,
@@ -209,110 +209,190 @@ const VadeMecumTodas = () => {
     ]
   };
 
-  // Função de busca rápida
-  const executarBuscaRapida = async () => {
-    if (!searchQuery.trim()) return;
+  // Tags invisíveis para busca por palavra-chave
+  const KEYWORD_TAGS: Record<string, { tags: string[]; name: string; route: string; color: string; description: string }> = {
+    "cf": { tags: ["constituição", "federal", "cf", "cf88", "direitos fundamentais", "garantias", "cidadania", "soberania", "república", "democracia", "habeas corpus", "mandado de segurança", "emendas", "cláusulas pétreas"], name: "Constituição Federal", route: "/constituicao", color: "#f59e0b", description: "CF/88 — Lei Fundamental do Brasil" },
+    "cc": { tags: ["civil", "código civil", "cc", "obrigações", "contratos", "família", "sucessões", "propriedade", "posse", "herança", "casamento", "divórcio", "responsabilidade civil", "pessoa jurídica", "capacidade", "negócio jurídico", "prescrição", "usucapião"], name: "Código Civil", route: "/codigo/cc", color: "#ef4444", description: "Lei 10.406/2002" },
+    "cp": { tags: ["penal", "código penal", "cp", "crime", "pena", "homicídio", "furto", "roubo", "estelionato", "lesão corporal", "injúria", "calúnia", "difamação", "estupro", "corrupção", "peculato", "prevaricação", "concussão", "receptação"], name: "Código Penal", route: "/codigo/cp", color: "#f43f5e", description: "Decreto-Lei 2.848/1940" },
+    "cpc": { tags: ["processo civil", "cpc", "processual civil", "petição", "recurso", "apelação", "agravo", "embargos", "cumprimento de sentença", "execução", "tutela", "antecipação", "citação", "intimação", "audiência", "contestação", "réplica"], name: "CPC", route: "/codigo/cpc", color: "#e11d48", description: "Lei 13.105/2015" },
+    "cpp": { tags: ["processo penal", "cpp", "processual penal", "inquérito", "denúncia", "prisão", "flagrante", "fiança", "habeas corpus", "interceptação", "busca e apreensão", "júri", "tribunal do júri", "pronúncia"], name: "CPP", route: "/codigo/cpp", color: "#fb7185", description: "Decreto-Lei 3.689/1941" },
+    "clt": { tags: ["trabalho", "trabalhista", "clt", "empregado", "empregador", "férias", "salário", "jornada", "hora extra", "fgts", "rescisão", "aviso prévio", "insalubridade", "periculosidade", "sindicato", "greve", "terceirização"], name: "CLT", route: "/codigo/clt", color: "#f97316", description: "Decreto-Lei 5.452/1943" },
+    "ctn": { tags: ["tributário", "tributo", "imposto", "taxa", "contribuição", "ctn", "fato gerador", "obrigação tributária", "crédito tributário", "lançamento", "isenção", "imunidade", "prescrição tributária", "decadência", "icms", "iss", "ir"], name: "CTN", route: "/codigo/ctn", color: "#fb923c", description: "Lei 5.172/1966" },
+    "cdc": { tags: ["consumidor", "cdc", "fornecedor", "produto", "serviço", "propaganda enganosa", "vício", "defeito", "recall", "garantia", "troca", "devolução", "procon"], name: "CDC", route: "/codigo/cdc", color: "#f472b6", description: "Lei 8.078/1990" },
+    "ctb": { tags: ["trânsito", "ctb", "multa", "cnh", "habilitação", "infração", "veículo", "condutor", "acidente", "embriaguez", "radar", "velocidade", "sinalização"], name: "Código de Trânsito", route: "/codigo/ctb", color: "#f59e0b", description: "Lei 9.503/1997" },
+    "ce": { tags: ["eleitoral", "eleição", "voto", "candidato", "partido", "propaganda", "urna", "ce", "inelegibilidade", "filiação", "coligação", "campanha"], name: "Código Eleitoral", route: "/codigo/ce", color: "#fbbf24", description: "Lei 4.737/1965" },
+    "drogas": { tags: ["drogas", "entorpecentes", "tráfico", "dependente", "crack", "maconha", "cocaína", "tóxico", "substância", "sisnad"], name: "Lei de Drogas", route: "/lei/drogas", color: "#f43f5e", description: "Lei 11.343/2006" },
+    "maria-penha": { tags: ["maria da penha", "violência doméstica", "violência contra a mulher", "medida protetiva", "agressão", "mulher", "doméstica", "familiar"], name: "Maria da Penha", route: "/lei/maria-penha", color: "#ec4899", description: "Lei 11.340/2006" },
+    "hediondos": { tags: ["hediondo", "hediondos", "crimes hediondos", "latrocínio", "extorsão mediante sequestro", "estupro", "genocídio", "inafiançável"], name: "Crimes Hediondos", route: "/lei/hediondos", color: "#dc2626", description: "Lei 8.072/1990" },
+    "lep": { tags: ["execução penal", "preso", "detento", "penitenciária", "regime", "progressão", "livramento condicional", "remição", "saída temporária", "indulto"], name: "Lei de Execução Penal", route: "/lei/lep", color: "#e11d48", description: "Lei 7.210/1984" },
+    "org-criminosas": { tags: ["organização criminosa", "organização", "orcrim", "delação", "colaboração premiada", "infiltração", "milícia", "facção"], name: "Organizações Criminosas", route: "/lei/org-criminosas", color: "#ef4444", description: "Lei 12.850/2013" },
+    "eca": { tags: ["criança", "adolescente", "eca", "menor", "infância", "juventude", "adoção", "guarda", "tutela", "conselho tutelar", "ato infracional", "medida socioeducativa"], name: "ECA", route: "/estatuto/eca", color: "#10b981", description: "Lei 8.069/1990" },
+    "idoso": { tags: ["idoso", "terceira idade", "envelhecimento", "60 anos", "aposentado", "estatuto do idoso"], name: "Estatuto do Idoso", route: "/estatuto/idoso", color: "#34d399", description: "Lei 10.741/2003" },
+    "oab": { tags: ["oab", "advogado", "advocacia", "ordem dos advogados", "inscrição", "ética", "honorários", "procuração"], name: "Estatuto da OAB", route: "/estatuto/oab", color: "#14b8a6", description: "Lei 8.906/1994" },
+    "deficiencia": { tags: ["deficiência", "pessoa com deficiência", "acessibilidade", "inclusão", "pcd", "barreira", "capacidade legal"], name: "Pessoa com Deficiência", route: "/estatuto/deficiencia", color: "#2dd4bf", description: "Lei 13.146/2015" },
+    "igualdade-racial": { tags: ["igualdade racial", "racismo", "discriminação racial", "cotas", "quilombo", "afrodescendente"], name: "Igualdade Racial", route: "/estatuto/igualdade-racial", color: "#06b6d4", description: "Lei 12.288/2010" },
+    "desarmamento": { tags: ["arma", "desarmamento", "porte", "posse de arma", "arma de fogo", "munição", "sinarm", "colecionador", "caçador", "atirador"], name: "Desarmamento", route: "/estatuto/desarmamento", color: "#22d3ee", description: "Lei 10.826/2003" },
+    "cidade": { tags: ["cidade", "urbanismo", "plano diretor", "usucapião urbana", "solo", "parcelamento", "estatuto da cidade", "iptu progressivo"], name: "Estatuto da Cidade", route: "/estatuto/cidade", color: "#0ea5e9", description: "Lei 10.257/2001" },
+    "torcedor": { tags: ["torcedor", "esporte", "estádio", "futebol", "ingresso", "torcida", "violência no esporte"], name: "Estatuto do Torcedor", route: "/estatuto/torcedor", color: "#38bdf8", description: "Lei 10.671/2003" },
+    "juizados": { tags: ["juizados especiais", "pequenas causas", "conciliação", "juizado", "9099", "jecrim", "termo circunstanciado"], name: "Juizados Especiais", route: "/lei/juizados", color: "#3b82f6", description: "Lei 9.099/1995" },
+    "interceptacao": { tags: ["interceptação", "escuta", "telefônica", "grampo", "sigilo telefônico", "9296"], name: "Interceptação Telefônica", route: "/lei/interceptacao", color: "#60a5fa", description: "Lei 9.296/1996" },
+    "custeio": { tags: ["custeio", "seguridade social", "previdência", "inss", "contribuição previdenciária", "8212"], name: "Custeio da Seguridade", route: "/lei/custeio", color: "#34d399", description: "Lei 8.212/1991" },
+    "beneficios": { tags: ["benefícios", "aposentadoria", "auxílio doença", "pensão por morte", "salário maternidade", "bpc", "loas", "8213", "previdenciário"], name: "Benefícios Previdenciários", route: "/lei/beneficios", color: "#10b981", description: "Lei 8.213/1991" },
+    "mpu": { tags: ["ministério público", "mpu", "procurador", "promotor", "lc 75", "mp da união"], name: "Estatuto do MPU", route: "/lei/mpu", color: "#818cf8", description: "LC 75/1993" },
+    "defensoria": { tags: ["defensoria", "defensor público", "defensoria pública", "lc 80", "assistência jurídica"], name: "Defensoria Pública", route: "/lei/defensoria", color: "#a78bfa", description: "LC 80/1994" },
+    "tortura": { tags: ["tortura", "lei de tortura", "9455", "crime de tortura"], name: "Lei de Tortura", route: "/lei/tortura", color: "#dc2626", description: "Lei 9.455/1997" },
+    "improbidade": { tags: ["improbidade", "improbidade administrativa", "enriquecimento ilícito", "ato de improbidade", "8429", "agente público"], name: "Improbidade Administrativa", route: "/lei/improbidade", color: "#ef4444", description: "Lei 8.429/1992" },
+    "abuso-autoridade": { tags: ["abuso de autoridade", "abuso", "autoridade", "13869", "agente público"], name: "Abuso de Autoridade", route: "/lei/abuso-autoridade", color: "#f97316", description: "Lei 13.869/2019" },
+    "lavagem": { tags: ["lavagem de dinheiro", "lavagem", "branqueamento", "9613", "coaf", "patrimônio ilícito"], name: "Lavagem de Dinheiro", route: "/lei/lavagem", color: "#f43f5e", description: "Lei 9.613/1998" },
+  };
+
+  // Mapeamento de números de lei para rotas
+  const LEI_NUMBER_MAP: Record<string, { name: string; route: string; color: string }> = {
+    "10406": { name: "Código Civil", route: "/codigo/cc", color: "#ef4444" },
+    "2848": { name: "Código Penal", route: "/codigo/cp", color: "#f43f5e" },
+    "13105": { name: "CPC", route: "/codigo/cpc", color: "#e11d48" },
+    "3689": { name: "CPP", route: "/codigo/cpp", color: "#fb7185" },
+    "5452": { name: "CLT", route: "/codigo/clt", color: "#f97316" },
+    "5172": { name: "CTN", route: "/codigo/ctn", color: "#fb923c" },
+    "8078": { name: "CDC", route: "/codigo/cdc", color: "#f472b6" },
+    "9503": { name: "Código de Trânsito", route: "/codigo/ctb", color: "#f59e0b" },
+    "4737": { name: "Código Eleitoral", route: "/codigo/ce", color: "#fbbf24" },
+    "11343": { name: "Lei de Drogas", route: "/lei/drogas", color: "#f43f5e" },
+    "11340": { name: "Maria da Penha", route: "/lei/maria-penha", color: "#ec4899" },
+    "8072": { name: "Crimes Hediondos", route: "/lei/hediondos", color: "#dc2626" },
+    "7210": { name: "Lei de Execução Penal", route: "/lei/lep", color: "#e11d48" },
+    "12850": { name: "Organizações Criminosas", route: "/lei/org-criminosas", color: "#ef4444" },
+    "8069": { name: "ECA", route: "/estatuto/eca", color: "#10b981" },
+    "10741": { name: "Estatuto do Idoso", route: "/estatuto/idoso", color: "#34d399" },
+    "8906": { name: "Estatuto da OAB", route: "/estatuto/oab", color: "#14b8a6" },
+    "13146": { name: "Pessoa com Deficiência", route: "/estatuto/deficiencia", color: "#2dd4bf" },
+    "12288": { name: "Igualdade Racial", route: "/estatuto/igualdade-racial", color: "#06b6d4" },
+    "10826": { name: "Desarmamento", route: "/estatuto/desarmamento", color: "#22d3ee" },
+    "10257": { name: "Estatuto da Cidade", route: "/estatuto/cidade", color: "#0ea5e9" },
+    "10671": { name: "Estatuto do Torcedor", route: "/estatuto/torcedor", color: "#38bdf8" },
+    "9099": { name: "Juizados Especiais", route: "/lei/juizados", color: "#3b82f6" },
+    "9296": { name: "Interceptação Telefônica", route: "/lei/interceptacao", color: "#60a5fa" },
+    "8212": { name: "Custeio da Seguridade", route: "/lei/custeio", color: "#34d399" },
+    "8213": { name: "Benefícios Previdenciários", route: "/lei/beneficios", color: "#10b981" },
+    "9455": { name: "Lei de Tortura", route: "/lei/tortura", color: "#dc2626" },
+    "8429": { name: "Improbidade Administrativa", route: "/lei/improbidade", color: "#ef4444" },
+    "13869": { name: "Abuso de Autoridade", route: "/lei/abuso-autoridade", color: "#f97316" },
+    "9613": { name: "Lavagem de Dinheiro", route: "/lei/lavagem", color: "#f43f5e" },
+  };
+
+  // Busca por palavra-chave usando tags
+  const buscarPorPalavraChave = () => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return;
     
-    const numeroArtigo = searchQuery.trim();
-    
-    // Se categoria específica (não "todos"), navega direto
-    if (selectedCategory === "constituicao") {
-      navigate(`/constituicao?artigo=${numeroArtigo}`);
-      return;
-    }
-    
-    // Para "todos" ou "codigos" ou "sumulas", buscar e mostrar lista
     setIsSearching(true);
     setShowResults(false);
     setSearchResults([]);
-    
-    try {
-      const results: SearchResult[] = [];
-      
-      // Determinar quais tabelas buscar
-      let tabelasParaBuscar: typeof tabelasBusca.constituicao = [];
-      
-      if (selectedCategory === "todos") {
-        tabelasParaBuscar = [
-          ...tabelasBusca.constituicao,
-          ...tabelasBusca.codigos,
-          ...tabelasBusca.penal,
-          ...tabelasBusca.estatutos,
-          ...tabelasBusca.leis,
-          ...tabelasBusca.sumulas,
-          ...tabelasBusca.previdenciario,
-          ...tabelasBusca.complementares
-        ];
-        // Remover duplicatas
-        const seen = new Set<string>();
-        tabelasParaBuscar = tabelasParaBuscar.filter(t => {
-          if (seen.has(t.table)) return false;
-          seen.add(t.table);
-          return true;
-        });
-      } else if (selectedCategory === "codigos") {
-        tabelasParaBuscar = tabelasBusca.codigos;
-      } else if (selectedCategory === "penal") {
-        tabelasParaBuscar = tabelasBusca.penal;
-      } else if (selectedCategory === "estatutos") {
-        tabelasParaBuscar = tabelasBusca.estatutos;
-      } else if (selectedCategory === "leis") {
-        tabelasParaBuscar = tabelasBusca.leis;
-      } else if (selectedCategory === "sumulas") {
-        tabelasParaBuscar = tabelasBusca.sumulas;
-      } else if (selectedCategory === "previdenciario") {
-        tabelasParaBuscar = tabelasBusca.previdenciario;
-      } else if (selectedCategory === "complementares") {
-        tabelasParaBuscar = tabelasBusca.complementares;
-      }
-      
-      // Buscar em todas as tabelas em paralelo
-      const promises = tabelasParaBuscar.map(async (tabela) => {
-        try {
-          // Busca exata pelo número do artigo e variantes com sufixo (5-A, 5-B, 5º-A)
-          const num = numeroArtigo;
-          const orFilter = [
-            `"Número do Artigo".eq.${num}`,
-            `"Número do Artigo".eq.${num}º`,
-            `"Número do Artigo".eq.${num}°`,
-            `"Número do Artigo".eq.Art. ${num}`,
-            `"Número do Artigo".eq.Art. ${num}º`,
-            `"Número do Artigo".ilike.${num}-%`,
-            `"Número do Artigo".ilike.${num}º-%`,
-            `"Número do Artigo".ilike.${num}°-%`,
-          ].join(',');
 
-          const { data, error } = await supabase
-            .from(tabela.table as any)
-            .select('"Número do Artigo", Artigo')
-            .or(orFilter);
-          
-          if (!error && data && (data as any[]).length > 0) {
-            return (data as any[]).map(artigo => ({
-              tableName: tabela.table,
-              displayName: tabela.name,
-              articleNumber: artigo["Número do Artigo"] || `Art. ${num}`,
-              content: artigo.Artigo?.substring(0, 150) + "..." || "",
-              route: `${tabela.route}?artigo=${artigo["Número do Artigo"] || num}`,
-              color: tabela.color
-            } as SearchResult));
-          }
-          return null;
-        } catch (err) {
-          console.log(`Tabela ${tabela.table} não encontrada ou erro:`, err);
-          return null;
+    const results: SearchResult[] = [];
+    const queryWords = query.split(/\s+/);
+
+    Object.entries(KEYWORD_TAGS).forEach(([, entry]) => {
+      // Check if any tag matches any query word
+      const score = entry.tags.reduce((acc, tag) => {
+        const tagLower = tag.toLowerCase();
+        // Exact match scores highest
+        if (tagLower === query) return acc + 10;
+        // Tag contains full query
+        if (tagLower.includes(query)) return acc + 5;
+        // Query contains tag
+        if (query.includes(tagLower)) return acc + 4;
+        // Individual word matches
+        const wordMatches = queryWords.filter(w => tagLower.includes(w) || w.includes(tagLower)).length;
+        return acc + wordMatches * 2;
+      }, 0);
+
+      if (score > 0) {
+        results.push({
+          tableName: entry.name,
+          displayName: entry.name,
+          articleNumber: entry.description,
+          content: entry.description,
+          route: entry.route,
+          color: entry.color,
+          _score: score,
+        } as SearchResult & { _score: number });
+      }
+    });
+
+    // Sort by relevance score
+    results.sort((a, b) => ((b as any)._score || 0) - ((a as any)._score || 0));
+
+    setSearchResults(results);
+    setShowResults(true);
+    setIsSearching(false);
+  };
+
+  // Busca por número de lei — normaliza pontos, barras, espaços
+  const buscarPorNumeroLei = () => {
+    const raw = searchQuery.trim();
+    if (!raw) return;
+
+    setIsSearching(true);
+    setShowResults(false);
+    setSearchResults([]);
+
+    // Normalize: remove dots, slashes, spaces, dashes to get pure number
+    const normalized = raw.replace(/[\.\-\/\s]/g, '');
+    
+    // Try to extract just the law number (before any year)
+    // e.g., "11.343/2006" → "11343", "8.078" → "8078"
+    const justNumber = normalized.replace(/(\d+)\d{4}$/, '$1') || normalized;
+    
+    const results: SearchResult[] = [];
+
+    // Try exact match first, then partial
+    const candidates = Object.entries(LEI_NUMBER_MAP);
+    
+    for (const [num, info] of candidates) {
+      if (num === normalized || num === justNumber || normalized.includes(num) || num.includes(normalized)) {
+        results.push({
+          tableName: info.name,
+          displayName: info.name,
+          articleNumber: `Lei ${raw}`,
+          content: info.name,
+          route: info.route,
+          color: info.color,
+        });
+      }
+    }
+
+    // Also check keyword tags for number-based tags (e.g., "9099", "8213")
+    if (results.length === 0) {
+      Object.entries(KEYWORD_TAGS).forEach(([, entry]) => {
+        const hasMatch = entry.tags.some(tag => {
+          const tagNorm = tag.replace(/[\.\-\/\s]/g, '');
+          return tagNorm === normalized || tagNorm === justNumber;
+        });
+        if (hasMatch) {
+          results.push({
+            tableName: entry.name,
+            displayName: entry.name,
+            articleNumber: entry.description,
+            content: entry.description,
+            route: entry.route,
+            color: entry.color,
+          });
         }
       });
-      
-      const allResults = await Promise.all(promises);
-      allResults.forEach(r => { if (r) results.push(...r); });
-      
-      setSearchResults(results);
-      setShowResults(true);
-    } catch (error) {
-      console.error("Erro na busca rápida:", error);
-    } finally {
-      setIsSearching(false);
+    }
+
+    setSearchResults(results);
+    setShowResults(true);
+    setIsSearching(false);
+  };
+
+  // Função de busca unificada
+  const executarBuscaRapida = () => {
+    if (searchMode === "palavra") {
+      buscarPorPalavraChave();
+    } else {
+      buscarPorNumeroLei();
     }
   };
 
@@ -591,21 +671,21 @@ const VadeMecumTodas = () => {
               </div>
             </div>
 
-            {/* Toggle Artigo / Lei */}
+            {/* Toggle Palavra-chave / Lei */}
             <div className="flex mx-4 mt-2 mb-4 bg-card/80 rounded-xl p-1 border border-border/30">
               <button
-                onClick={() => { setSearchMode("artigo"); setSearchQuery(""); setShowResults(false); }}
-                className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${searchMode === "artigo" ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25" : "text-muted-foreground hover:text-foreground"}`}
+                onClick={() => { setSearchMode("palavra"); setSearchQuery(""); setShowResults(false); }}
+                className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${searchMode === "palavra" ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25" : "text-muted-foreground hover:text-foreground"}`}
               >
-                <Scale className="w-4 h-4" />
-                Buscar por Artigo
+                <Search className="w-4 h-4" />
+                Palavra-chave
               </button>
               <button
                 onClick={() => { setSearchMode("lei"); setSearchQuery(""); setShowResults(false); }}
                 className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${searchMode === "lei" ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25" : "text-muted-foreground hover:text-foreground"}`}
               >
                 <FileText className="w-4 h-4" />
-                Buscar por Lei
+                Nº da Lei
               </button>
             </div>
 
@@ -615,36 +695,24 @@ const VadeMecumTodas = () => {
               <div className="relative">
                 <Input
                   type="text"
-                  placeholder={searchMode === "artigo" ? "Nº do artigo (ex: 5)" : "Nº da lei (ex: 11.340)"}
+                  placeholder={searchMode === "palavra" ? "Ex: drogas, consumidor, trabalho..." : "Ex: 11.343, 8078, 13.105/2015"}
                   value={searchQuery}
                   onChange={(e) => { setSearchQuery(e.target.value); setShowResults(false); }}
                   onKeyDown={(e) => e.key === 'Enter' && executarBuscaRapida()}
-                  className="h-14 bg-card/90 border-border/30 rounded-xl text-xl font-bold text-center focus:border-amber-500/50 focus:ring-amber-500/20"
+                  className="h-14 bg-card/90 border-border/30 rounded-xl text-base font-medium pl-5 focus:border-amber-500/50 focus:ring-amber-500/20"
                   autoFocus
                 />
               </div>
 
-              {/* Filtros por categoria - SOMENTE no modo artigo */}
-              {searchMode === "artigo" && (
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2.5 font-medium uppercase tracking-wider">Filtrar por categoria</p>
-                  <div className="flex flex-wrap gap-2">
-                    {searchCategories.map((cat) => {
-                      const Icon = cat.icon;
-                      const isSelected = selectedCategory === cat.id;
-                      return (
-                        <button
-                          key={cat.id}
-                          onClick={() => { setSelectedCategory(cat.id); setShowResults(false); }}
-                          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all border ${isSelected ? 'text-white border-transparent shadow-md scale-105' : 'bg-card/80 text-foreground border-border/30 hover:border-border/60 hover:bg-card'}`}
-                          style={{ backgroundColor: isSelected ? cat.color : undefined, boxShadow: isSelected ? `0 4px 12px ${cat.color}40` : undefined }}
-                        >
-                          <Icon className="w-3.5 h-3.5" />
-                          {cat.label}
-                        </button>
-                      );
-                    })}
-                  </div>
+              {/* Dica contextual */}
+              {!showResults && searchQuery.length === 0 && (
+                <div className="bg-amber-500/5 border border-amber-500/15 rounded-xl p-3">
+                  <p className="text-xs text-amber-200/80 leading-relaxed">
+                    {searchMode === "palavra" 
+                      ? "💡 Digite palavras-chave como \"drogas\", \"violência doméstica\", \"consumidor\", \"trabalho\" para encontrar a legislação relacionada."
+                      : "💡 Digite o número da lei com ou sem pontos. Ex: \"11.343\", \"8078\", \"13105\". O sistema identifica automaticamente."
+                    }
+                  </p>
                 </div>
               )}
 
@@ -657,7 +725,7 @@ const VadeMecumTodas = () => {
                 {isSearching ? (
                   <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Buscando...</>
                 ) : (
-                  <><Search className="w-5 h-5 mr-2" /> Buscar {searchMode === "artigo" ? `Art. ${searchQuery || "..."}` : `Lei ${searchQuery || "..."}`}</>
+                  <><Search className="w-5 h-5 mr-2" /> Buscar {searchMode === "palavra" ? `"${searchQuery || "..."}"` : `Lei ${searchQuery || "..."}`}</>
                 )}
               </Button>
 
@@ -673,14 +741,14 @@ const VadeMecumTodas = () => {
                         <FileSearch className="w-8 h-8 text-muted-foreground" />
                       </div>
                       <p className="text-sm text-muted-foreground font-medium">
-                        {searchMode === "artigo" ? `Art. ${searchQuery}` : `Lei ${searchQuery}`}
+                        {searchMode === "palavra" ? `"${searchQuery}"` : `Lei ${searchQuery}`}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">não encontrado nas leis selecionadas</p>
+                      <p className="text-xs text-muted-foreground mt-1">não encontrado no acervo</p>
                     </div>
                   ) : (
                     searchResults.map((result, index) => (
                       <div
-                        key={`${result.tableName}-${result.articleNumber}-${index}`}
+                        key={`${result.route}-${index}`}
                         onClick={() => navigate(result.route)}
                         className="rounded-2xl p-4 border cursor-pointer transition-all group hover:scale-[1.01] active:scale-[0.98] overflow-hidden relative"
                         style={{ 
@@ -690,37 +758,20 @@ const VadeMecumTodas = () => {
                           animation: `slideDown 0.3s ease-out ${index * 0.08}s forwards` 
                         }}
                       >
-                        <div className="flex items-start gap-3">
-                          {/* Número do artigo em destaque */}
-                          <div className="flex flex-col items-center gap-1 shrink-0">
-                            <div 
-                              className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg shadow-lg"
-                              style={{ 
-                                background: `linear-gradient(135deg, ${result.color}, ${result.color}cc)`,
-                                color: 'white',
-                                boxShadow: `0 4px 14px ${result.color}40`
-                              }}
-                            >
-                              {result.articleNumber?.replace(/[^\d]/g, '') || '?'}
-                            </div>
-                            <span className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase">Art.</span>
+                        <div className="flex items-center gap-3">
+                          <div 
+                            className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg shrink-0"
+                            style={{ 
+                              background: `linear-gradient(135deg, ${result.color}, ${result.color}cc)`,
+                            }}
+                          >
+                            <Scale className="w-5 h-5 text-white" />
                           </div>
-                          
-                          {/* Info da lei */}
-                          <div className="flex-1 min-w-0 pt-0.5">
-                            <div className="flex items-center gap-2 mb-1.5">
-                              <span 
-                                className="text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider"
-                                style={{ backgroundColor: `${result.color}20`, color: result.color }}
-                              >
-                                {result.articleNumber}
-                              </span>
-                            </div>
-                            <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors leading-tight">{result.displayName}</h3>
-                            <p className="text-xs text-muted-foreground line-clamp-2 mt-1 leading-relaxed">{result.content}</p>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-base font-bold text-foreground leading-tight">{result.displayName}</h3>
+                            <p className="text-xs text-muted-foreground mt-0.5">{result.content}</p>
                           </div>
-                          
-                          <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0 mt-4 group-hover:text-foreground group-hover:translate-x-0.5 transition-all" />
+                          <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0 group-hover:text-foreground group-hover:translate-x-0.5 transition-all" />
                         </div>
                       </div>
                     ))
