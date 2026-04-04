@@ -13,11 +13,6 @@ import { DotPattern } from "@/components/ui/dot-pattern";
 import { DesktopVadeMecumHome } from "@/components/desktop/DesktopVadeMecumHome";
 import { DesktopEstudosComputador } from "@/components/desktop/DesktopEstudosComputador";
 import { ResenhaHojeSection } from "@/components/ResenhaHojeSection";
-import themisEstudosDesktop from "@/assets/themis-estudos-desktop.webp";
-import capaEstudosAulas from "@/assets/capa-estudos-aulas.jpg";
-import capaEstudosResumos from "@/assets/capa-estudos-resumos.jpg";
-import capaEstudosFlashcards from "@/assets/capa-estudos-flashcards.jpg";
-import capaEstudosQuestoes from "@/assets/capa-estudos-questoes.jpg";
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 
 import { Crown, Gavel, FileText, Scale, GraduationCap, BookOpen as BookOpenIcon, Library, Hammer, Target, Search, Headphones, Play, Loader2, Newspaper, ArrowRight, Sparkles, Scroll, Brain, Monitor, Video, BookOpen, Calendar, Settings, Flame, MonitorSmartphone, Users, Landmark, Clapperboard, BarChart3, Film, MessageCircle, Clock, Map, MapPin, Award, Wrench, Baby, BookText, FileCheck, ClipboardList, Layers, Route, Footprints, Briefcase, ChevronRight, ChevronDown, Compass } from "lucide-react";
