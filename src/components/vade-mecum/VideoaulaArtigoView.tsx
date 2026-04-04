@@ -262,7 +262,7 @@ export const VideoaulaArtigoView = ({
         <div className="flex-1 overflow-y-auto relative">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-3">
-              <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+              <Loader2 className="w-8 h-8 animate-spin text-accent" />
               <p className="text-sm text-muted-foreground">Buscando videoaula...</p>
             </div>
           ) : selectedVideo ? (
@@ -300,7 +300,7 @@ export const VideoaulaArtigoView = ({
                 <TabsContent value="resumo" className="mt-0 p-4 pb-20">
                   {loadingResumo ? (
                     <div className="flex flex-col items-center justify-center py-12 gap-3">
-                      <Loader2 className="w-7 h-7 animate-spin text-amber-500" />
+                      <Loader2 className="w-7 h-7 animate-spin text-accent" />
                       <p className="text-sm text-muted-foreground">
                         {transcricao ? 'Analisando transcrição da aula...' : 'Gerando resumo...'}
                       </p>
@@ -317,7 +317,7 @@ export const VideoaulaArtigoView = ({
                 <TabsContent value="flashcards" className="mt-0 p-4">
                   {loadingFlashcards ? (
                     <div className="flex flex-col items-center justify-center py-12 gap-3">
-                      <Loader2 className="w-7 h-7 animate-spin text-amber-500" />
+                      <Loader2 className="w-7 h-7 animate-spin text-accent" />
                       <p className="text-sm text-muted-foreground">Gerando flashcards...</p>
                     </div>
                   ) : flashcards.length > 0 ? (
@@ -330,7 +330,7 @@ export const VideoaulaArtigoView = ({
                 <TabsContent value="questoes" className="mt-0 p-4">
                   {loadingQuestoes ? (
                     <div className="flex flex-col items-center justify-center py-12 gap-3">
-                      <Loader2 className="w-7 h-7 animate-spin text-amber-500" />
+                      <Loader2 className="w-7 h-7 animate-spin text-accent" />
                       <p className="text-sm text-muted-foreground">Gerando questões...</p>
                     </div>
                   ) : questoes.length > 0 ? (

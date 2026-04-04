@@ -131,7 +131,7 @@ export const LeiHeader = ({
       )}
       
       {/* Linha decorativa */}
-      <div className="w-24 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mt-4" />
+      <div className="w-24 h-1 bg-gradient-to-r from-transparent via-accent to-transparent mt-4" />
       
       {/* Ementa em vermelho - abaixo da linha */}
       {ementaFinal && (

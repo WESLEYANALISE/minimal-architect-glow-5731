@@ -290,7 +290,7 @@ const ArtigoCard = ({
     <Card
       className={`cursor-pointer hover:bg-muted/50 transition-colors border-l-4 ${
         isHighlighted 
-          ? 'ring-2 ring-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.4)] bg-accent/5' 
+          ? 'ring-2 ring-accent shadow-[0_0_20px_rgba(245,158,11,0.4)] bg-accent/5' 
           : ''
       } ${isLocked ? 'opacity-60' : ''}`}
       style={{
