@@ -532,22 +532,6 @@ export const Layout = ({ children }: LayoutProps) => {
         {/* Breadcrumb global — visível fora da home, sempre no topo */}
         {!hideBreadcrumb && !hideMainSidebar && <MemoizedPageBreadcrumb />}
 
-        {/* Barra de navegação mínima quando sidebar está escondida */}
-        {hideMainSidebar && (
-          <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border/50">
-            <div className="max-w-[1400px] mx-auto flex items-center gap-3 px-6 lg:px-10 h-12">
-              <button
-                onClick={() => navigate(-1)}
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span>Voltar</span>
-              </button>
-              <div className="h-4 w-px bg-border/50" />
-              <span className="text-sm font-medium text-foreground">{pageTitle}</span>
-            </div>
-          </div>
-        )}
 
         <div className="flex w-full">
           {/* Sidebar inline no desktop — escondida em todas as funções */}
