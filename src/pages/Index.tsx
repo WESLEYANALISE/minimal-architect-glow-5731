@@ -96,8 +96,18 @@ import { PhoneMissingBanner } from "@/components/PhoneMissingBanner";
 import { PersuasiveTextCarousel } from "@/components/home/PersuasiveTextCarousel";
 import { useTrialStatus } from "@/hooks/useTrialStatus";
 
-
-
+/**
+ * LazyTab: monta o conteúdo apenas na primeira vez que fica visível,
+ * depois mantém montado (keep alive) para evitar re-fetch.
+ */
+const LazyTab = ({ visible, children, className }: { visible: boolean; children: React.ReactNode; className?: string }) => {
+  const [hasBeenVisible, setHasBeenVisible] = useState(false);
+  useEffect(() => {
+    if (visible && !hasBeenVisible) setHasBeenVisible(true);
+  }, [visible, hasBeenVisible]);
+  if (!hasBeenVisible) return null;
+  return <div className={visible ? (className || '') : 'hidden'}>{children}</div>;
+};
 
 
 // Imagens de carreiras para preload
