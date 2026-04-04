@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, startTransition } from "react";
 import { useNavigate } from "react-router-dom";
-import { Target, ArrowLeft, Search, Scale, BookOpen, Gavel, ChevronRight, CheckCircle2, AlertCircle } from "lucide-react";
+import { Target, ArrowLeft, Search, Scale, BookOpen, Gavel, ChevronRight, CheckCircle2, AlertCircle, ListOrdered, Heart, BarChart3, ArrowUp, FileText, Crown } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQuestoesAreasCache } from "@/hooks/useQuestoesAreasCache";
 import { useAuth } from "@/contexts/AuthContext";
