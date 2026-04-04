@@ -291,6 +291,8 @@ const AssinaturaNova = () => {
                   borderColor: 'hsl(38 10% 16%)',
                 }}
               >
+                {/* Shimmer on benefits */}
+                <div className="absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.04)_50%,transparent_75%)] bg-[length:200%_100%] animate-[shimmer_3s_ease-in-out_infinite] pointer-events-none" style={{ animationDelay: `${i * 0.2}s` }} />
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{ background: 'hsl(43 70% 50% / 0.1)' }}>
                   <item.Icon className="w-4 h-4 text-amber-400" />
@@ -326,11 +328,11 @@ const AssinaturaNova = () => {
             Acesso a <span className="text-amber-400 font-bold">+1.200 livros</span>, <span className="text-amber-400 font-bold">+136 mil questões</span>, <span className="text-amber-400 font-bold">+101 mil flashcards</span>, <span className="text-amber-400 font-bold">+13 mil resumos</span>, IA jurídica ilimitada, Vade Mecum completo, audioaulas e <span className="text-amber-400 font-bold">mais de 137 funções</span>. 🔥⚖️
           </p>
 
-          {/* CTA */}
+          {/* CTA — color matches selected plan */}
           <button
             onClick={handleAssinar}
-            className="w-full relative py-3.5 rounded-xl font-black text-sm tracking-tight overflow-hidden transition-all active:scale-[0.97] text-black shadow-[0_4px_24px_rgba(245,158,11,0.3)] mb-1"
-            style={{ background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' }}
+            className="w-full relative py-3.5 rounded-xl font-black text-sm tracking-tight overflow-hidden transition-all duration-300 active:scale-[0.97] text-white mb-1"
+            style={{ background: PLAN_THEMES[selectedPlan]?.btnBg || PLAN_THEMES.anual.btnBg, boxShadow: PLAN_THEMES[selectedPlan]?.glow || 'none' }}
           >
             <div className="absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.25)_50%,transparent_75%)] bg-[length:200%_100%] animate-[shimmer_2.5s_ease-in-out_infinite]" />
             <span className="relative flex items-center justify-center gap-2">
