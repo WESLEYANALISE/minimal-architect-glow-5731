@@ -50,17 +50,17 @@ export function HomeAtalhosSection({ onProfessora, gatedNavigate, user, requireA
         <div className={`flex items-center ${isDesktop ? "gap-3" : "gap-2 sm:gap-3"}`}>
           <div className={`${isDesktop ? "p-2" : "p-1.5 sm:p-2"} ${mode === "leis" ? "bg-amber-500/20" : "bg-amber-500/20"} rounded-xl`}>
             {mode === "leis" ? (
-              <Scale className={`${isDesktop ? "w-5 h-5" : "w-4 h-4 sm:w-5 sm:h-5"} text-amber-100`} />
+              <Scale className={`${isDesktop ? "w-5 h-5" : "w-5 h-5"} text-amber-100`} />
             ) : (
               <Flame className={`${isDesktop ? "w-5 h-5" : "w-4 h-4 sm:w-5 sm:h-5"} text-amber-100`} />
             )}
           </div>
           <div>
-            <h2 className={`${isDesktop ? "text-base xl:text-lg 2xl:text-xl" : "text-lg sm:text-xl"} font-bold text-foreground tracking-tight`}>
+            <h2 className={`${isDesktop ? "text-base xl:text-lg 2xl:text-xl" : "text-base"} font-bold text-foreground tracking-tight`}>
               {mode === "leis" ? "Legislação" : "Seus Atalhos"}
             </h2>
-            <p className={`${isDesktop ? "text-xs xl:text-sm" : "text-[10px] sm:text-xs"} text-muted-foreground`}>
-              {mode === "leis" ? "Leis e códigos" : "Segundo seu perfil"}
+            <p className={`${isDesktop ? "text-xs xl:text-sm" : "text-xs"} text-muted-foreground`}>
+              {mode === "leis" ? "Acesso rápido à lei seca" : "Segundo seu perfil"}
             </p>
           </div>
         </div>
