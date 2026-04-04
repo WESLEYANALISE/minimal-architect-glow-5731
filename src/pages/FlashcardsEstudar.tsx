@@ -41,15 +41,15 @@ const FRASES_GERACAO = [
   "Quase pronto...",
 ];
 
-const FlashcardsEstudar = () => {
+const FlashcardsEstudar = ({ inlineArea, inlineTema, onExit, onComplete }: FlashcardsEstudarProps = {}) => {
   const navigate = useNavigate();
   const { goBack } = useHierarchicalNavigation();
   const [searchParams] = useSearchParams();
-  const area = searchParams.get("area") || "";
-  const tema = searchParams.get("tema") || "";
+  const area = inlineArea || searchParams.get("area") || "";
+  const tema = inlineTema || searchParams.get("tema") || "";
   const temas = searchParams.get("temas") || "";
   const modo = searchParams.get("modo") || "";
-  
+  const isInline = !!inlineArea;
   const isModoTodos = modo === "todos" || (!tema && !temas);
   const temasArray = temas ? temas.split(",").map(t => decodeURIComponent(t)) : [];
 
