@@ -15,7 +15,7 @@ import { useContentLimit } from "@/hooks/useContentLimit";
 import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
 import { toast } from "@/hooks/use-toast";
 import { useDebounce } from "@/hooks/useDebounce";
-import capaDireitoPenal from "@/assets/capa-direito-penal.jpg?format=webp&quality=75";
+import capaDireitoPenal from "@/assets/capa-direito-penal.webp";
 import { AreaCardEstudos } from "@/components/biblioteca/AreaCardEstudos";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { GripVertical } from "lucide-react";

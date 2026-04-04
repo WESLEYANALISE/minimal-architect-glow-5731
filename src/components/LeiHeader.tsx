@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 import { Star, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 

@@ -47,9 +47,9 @@ export const BLUR_PLACEHOLDERS = {
 // Blur placeholders específicos para assets estáticos importantes
 export const ASSET_BLURS: Record<string, string> = {
   // Cards políticos
-  'politico-esquerda.png': BLUR_PLACEHOLDERS.red,
-  'politico-centro.png': BLUR_PLACEHOLDERS.amber,
-  'politico-direita.png': BLUR_PLACEHOLDERS.blue,
+  'politico-esquerda.webp': BLUR_PLACEHOLDERS.red,
+  'politico-centro.webp': BLUR_PLACEHOLDERS.amber,
+  'politico-direita.webp': BLUR_PLACEHOLDERS.blue,
   
   // Hero banners
   'hero-banner-themis-advogado-v2.webp': BLUR_PLACEHOLDERS.gold,

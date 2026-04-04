@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 
 interface LeiPreview {
   id: string;

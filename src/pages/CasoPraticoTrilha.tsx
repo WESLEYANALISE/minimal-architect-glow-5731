@@ -7,7 +7,7 @@ import { ArrowLeft, BookOpen, Loader2, Trophy, Star, Zap, Target } from "lucide-
 import { Button } from "@/components/ui/button";
 import { ADMIN_EMAIL } from "@/lib/adminConfig";
 import { TrilhaSerpentinaCasoPratico } from "@/components/gamificacao/TrilhaSerpentinaCasoPratico";
-import bgPenal from "@/assets/caso-pratico-bg-penal.jpg?format=webp&quality=75";
+import bgPenal from "@/assets/caso-pratico-bg-penal.webp";
 
 const CasoPraticoTrilha = () => {
   const navigate = useNavigate();

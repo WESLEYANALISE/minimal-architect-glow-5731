@@ -8,7 +8,7 @@ import { getAreaHex } from "@/lib/flashcardsAreaColors";
 import { Progress } from "@/components/ui/progress";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import draArabellaAvatar from "@/assets/dra-jurisia-avatar.png";
+import draArabellaAvatar from "@/assets/dra-jurisia-avatar.webp";
 import {
   RadialBarChart, RadialBar, BarChart, Bar, XAxis, YAxis, Cell, ResponsiveContainer, Tooltip,
 } from "recharts";

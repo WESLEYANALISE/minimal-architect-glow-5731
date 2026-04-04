@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 
 interface RaioXDetalheProps {
   item: any;

@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import { MessageSquare } from "lucide-react";
-import advogadoReuAvatar from "@/assets/advogado-reu-avatar.jpg?format=webp&quality=75";
+import advogadoReuAvatar from "@/assets/advogado-reu-avatar.webp";
 
 interface AdversarioResponseProps {
   texto: string;

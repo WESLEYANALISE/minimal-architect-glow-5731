@@ -4,7 +4,7 @@ import { Shield, Scale, Heart, Skull, Zap, Phone, Users, Search, AlertTriangle, 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 import { LeisToggleMenu, FilterMode } from "@/components/LeisToggleMenu";
 import { useLeisFavoritas, useLeisRecentes, useToggleFavorita, useRegistrarAcesso } from "@/hooks/useLeisFavoritasRecentes";
 import { useSubscription } from "@/contexts/SubscriptionContext";

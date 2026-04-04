@@ -15,12 +15,12 @@ import { MapaLocaisJuridicos } from "@/components/ferramentas/MapaLocaisJuridico
 import { CompartilharLocalModal } from "@/components/ferramentas/CompartilharLocalModal";
 
 // Importar imagens das categorias (otimizadas para WebP)
-import imgTribunais from "@/assets/categoria-tribunais.png?format=webp&quality=75";
-import imgCartorios from "@/assets/categoria-cartorios.png?format=webp&quality=75";
-import imgOab from "@/assets/categoria-oab.png?format=webp&quality=75";
-import imgEscritorios from "@/assets/categoria-escritorios.png?format=webp&quality=75";
-import imgMuseus from "@/assets/categoria-museus.png?format=webp&quality=75";
-import imgTodos from "@/assets/categoria-todos.png?format=webp&quality=75";
+import imgTribunais from "@/assets/categoria-tribunais.webp";
+import imgCartorios from "@/assets/categoria-cartorios.webp";
+import imgOab from "@/assets/categoria-oab.webp";
+import imgEscritorios from "@/assets/categoria-escritorios.webp";
+import imgMuseus from "@/assets/categoria-museus.webp";
+import imgTodos from "@/assets/categoria-todos.webp";
 
 interface LocalJuridico {
   id: string;

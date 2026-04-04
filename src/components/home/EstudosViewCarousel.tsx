@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ResenhaHojeSection } from "@/components/ResenhaHojeSection";
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 
 const VIEWS = [
   { id: "estudos", label: "Estudos", desc: "FACULDADE • OAB • CONCURSOS", icon: GraduationCap, headerBg: "linear-gradient(135deg, hsl(350 50% 12%), hsl(345 45% 15%), hsl(350 50% 12%))", footerBg: "linear-gradient(135deg, hsl(350 45% 10%), hsl(345 40% 12%), hsl(350 45% 10%))" },

@@ -1,7 +1,7 @@
 import { X, Share2, Plus, Minus, Volume2, Pause, Sparkles, ChevronLeft, ChevronRight, Clock, FileText, Lightbulb, BookOpen, BookMarked, AlertCircle, Scale, Loader2, Eye, EyeOff, Star, Highlighter, MoreVertical, Type, StickyNote, Crown, MessageCircle, ExternalLink, Target, GraduationCap } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { motion, AnimatePresence } from "framer-motion";
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {

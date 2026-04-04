@@ -14,16 +14,16 @@ import { DesktopVadeMecumHome } from "@/components/desktop/DesktopVadeMecumHome"
 import { DesktopEstudosComputador } from "@/components/desktop/DesktopEstudosComputador";
 import { ResenhaHojeSection } from "@/components/ResenhaHojeSection";
 import themisEstudosDesktop from "@/assets/themis-estudos-desktop.webp";
-import coverAulas from "@/assets/covers/cover-aulas.jpg";
-import coverResumos from "@/assets/covers/cover-resumos.jpg";
-import coverFlashcards from "@/assets/covers/cover-flashcards.jpg";
-import coverQuestoes from "@/assets/covers/cover-questoes.jpg";
-import coverBiblioteca from "@/assets/covers/cover-biblioteca.jpg";
-import coverAudioaulas from "@/assets/covers/cover-audioaulas.jpg";
+import coverAulas from "@/assets/covers/cover-aulas.webp";
+import coverResumos from "@/assets/covers/cover-resumos.webp";
+import coverFlashcards from "@/assets/covers/cover-flashcards.webp";
+import coverQuestoes from "@/assets/covers/cover-questoes.webp";
+import coverBiblioteca from "@/assets/covers/cover-biblioteca.webp";
+import coverAudioaulas from "@/assets/covers/cover-audioaulas.webp";
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 
 import { Crown, Gavel, FileText, Scale, GraduationCap, BookOpen as BookOpenIcon, Library, Hammer, Target, Search, Headphones, Play, Loader2, Newspaper, ArrowRight, Sparkles, Scroll, Brain, Monitor, Video, BookOpen, Calendar, Settings, Flame, MonitorSmartphone, Users, Landmark, Clapperboard, BarChart3, Film, MessageCircle, Clock, Map, MapPin, Award, Wrench, Baby, BookText, FileCheck, ClipboardList, Layers, Route, Footprints, Briefcase, ChevronRight, ChevronDown, Compass } from "lucide-react";
-import cardAulasThumb from "@/assets/card-aulas-thumb.jpg?format=webp&quality=75";
+import cardAulasThumb from "@/assets/card-aulas-thumb.webp";
 import bibliotecaThumb from "@/assets/biblioteca-office-sunset.webp";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import useEmblaCarousel from 'embla-carousel-react';

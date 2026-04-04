@@ -8,7 +8,7 @@ import { useTrialStatus } from "@/hooks/useTrialStatus";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 
 interface EmAltaSectionProps {
   isDesktop: boolean;

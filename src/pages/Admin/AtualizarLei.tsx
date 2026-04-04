@@ -16,7 +16,7 @@ import {
   Sparkles, ArrowRight, Pencil, Save, RotateCcw, Link, ExternalLink,
   FileCode, Table2, Copy
 } from 'lucide-react';
-import brasaoRepublica from '@/assets/brasao-republica.png?format=webp&quality=80';
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 import { useToast } from '@/hooks/use-toast';
 import { getUrlPlanalto, getNomeAmigavel } from '@/lib/urlsPlanalto';
 import { supabase } from '@/integrations/supabase/client';

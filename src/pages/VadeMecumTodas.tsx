@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Crown, Gavel, FileText, BookText, Scale, Shield, HandCoins, ChevronRight, FileCheck, Users, ShieldCheck, Fingerprint, DollarSign, BookMarked, BadgeCheck, Handshake, User, AlertTriangle, Briefcase, Bell, Calendar, FileSearch, ArrowLeft, Search, Loader2, ListFilter, BookOpen } from "lucide-react";
 import { useState, useEffect } from "react";
 
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 import heroVadeMecumMenu from "@/assets/hero-vademecum-planalto.webp";
 import heroVadeMecumAtualizacoes from "@/assets/vade-mecum-hero.webp";
 

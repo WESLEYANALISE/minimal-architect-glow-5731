@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ADMIN_EMAIL } from "@/lib/adminConfig";
 import { StandardPageHeader } from "@/components/StandardPageHeader";
 import { toast } from "sonner";
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 
 const CATEGORIAS = [
   { id: "constitucional", label: "Constitucional", icon: Crown, color: "bg-amber-500/20", iconColor: "text-amber-400" },

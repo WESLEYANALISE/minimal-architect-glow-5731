@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
 import { motion } from "framer-motion";
 import capaOabEstudos from "@/assets/capa-biblioteca-oab-estudos.webp";
-import capaOabAreas from "@/assets/capa-oab-areas.jpeg?format=webp&quality=75";
-import capaDireitoPenal from "@/assets/capa-direito-penal.jpg?format=webp&quality=75";
+import capaOabAreas from "@/assets/capa-oab-areas.webp";
+import capaDireitoPenal from "@/assets/capa-direito-penal.webp";
 import { StandardPageHeader } from "@/components/StandardPageHeader";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 // PremiumUpgradeModal removed - using PremiumFloatingCard only

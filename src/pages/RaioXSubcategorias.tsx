@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ADMIN_EMAIL } from "@/lib/adminConfig";
 import { StandardPageHeader } from "@/components/StandardPageHeader";
 import HeroBackground from "@/components/HeroBackground";
-import heroImg from "@/assets/hero-raio-x-codigos.jpg";
+import heroImg from "@/assets/hero-raio-x-codigos.webp";
 
 const CODIGOS = [
   { id: "cp", sigla: "CP", nome: "Código Penal", icon: Shield, color: "text-red-400", bg: "bg-red-500/15", desde: "1940" },

@@ -16,7 +16,7 @@ import atalhoQuestoes from "@/assets/atalho-questoes.webp";
 import atalhoVideoaulas from "@/assets/atalho-videoaulas.webp";
 import atalhoJuriflix from "@/assets/juriflix-hero-cover.webp";
 import atalhoCarreiras from "@/assets/atalho-carreiras.webp";
-import atalhoVademecum from "@/assets/atalhos/vade-mecum-cover.jpg";
+import atalhoVademecum from "@/assets/atalhos/vade-mecum-cover.webp";
 import atalhoAudioaulas from "@/assets/atalho-audioaulas.webp";
 import atalhoPrimeirosPassos from "@/assets/atalho-iniciando.webp";
 

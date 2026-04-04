@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ArrowLeft, BookOpen, Check, Loader2, ChevronRight, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { ADMIN_EMAIL } from "@/lib/adminConfig";
-import termosThumb from "@/assets/thumbnails/termos-thumb.jpg?format=webp&quality=75";
+import termosThumb from "@/assets/thumbnails/termos-thumb.webp";
 
 const CAPA_PADRAO = "https://izspjvegxdfgkgibpyst.supabase.co/storage/v1/object/public/imagens/termos-juridicos/jurisprudncia_1771658774532.png";
 

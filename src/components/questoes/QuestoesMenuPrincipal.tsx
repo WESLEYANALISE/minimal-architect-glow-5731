@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Target, BarChart3, GraduationCap, BookMarked, ChevronRight, Flame, BookOpen, Star } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
-import draArabellaAvatar from "@/assets/dra-jurisia-avatar.png";
+import draArabellaAvatar from "@/assets/dra-jurisia-avatar.webp";
 
 // Session key to track if typing animation already played this session
 const SESSION_TYPED_KEY = "arabella_typed_this_session";

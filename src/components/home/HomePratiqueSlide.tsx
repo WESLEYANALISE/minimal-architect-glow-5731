@@ -7,12 +7,12 @@ import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
 
-import coverAulas from "@/assets/covers/cover-aulas.jpg";
-import coverResumos from "@/assets/covers/cover-resumos.jpg";
-import coverFlashcards from "@/assets/covers/cover-flashcards.jpg";
-import coverQuestoes from "@/assets/covers/cover-questoes.jpg";
-import coverBiblioteca from "@/assets/covers/cover-biblioteca.jpg";
-import coverAudioaulas from "@/assets/covers/cover-audioaulas.jpg";
+import coverAulas from "@/assets/covers/cover-aulas.webp";
+import coverResumos from "@/assets/covers/cover-resumos.webp";
+import coverFlashcards from "@/assets/covers/cover-flashcards.webp";
+import coverQuestoes from "@/assets/covers/cover-questoes.webp";
+import coverBiblioteca from "@/assets/covers/cover-biblioteca.webp";
+import coverAudioaulas from "@/assets/covers/cover-audioaulas.webp";
 
 const PRATIQUE_ITEMS = [
   {

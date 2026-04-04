@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Target, TrendingUp, RefreshCw, BookMarked, ChevronRight } from "lucide-react";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { motion } from "framer-motion";
-import draArabellaAvatar from "@/assets/dra-jurisia-avatar.png";
+import draArabellaAvatar from "@/assets/dra-jurisia-avatar.webp";
 
 const SESSION_TYPED_KEY = "arabella_v2_typed";
 

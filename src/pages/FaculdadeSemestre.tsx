@@ -9,27 +9,27 @@ import {
 import { motion } from "framer-motion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-import capaSem1 from "@/assets/capa-semestre-1.jpg";
-import capaSem2 from "@/assets/capa-semestre-2.jpg";
-import capaSem3 from "@/assets/capa-semestre-3.jpg";
-import capaSem4 from "@/assets/capa-semestre-4.jpg";
-import capaSem5 from "@/assets/capa-semestre-5.jpg";
-import capaSem6 from "@/assets/capa-semestre-6.jpg";
-import capaSem7 from "@/assets/capa-semestre-7.jpg";
-import capaSem8 from "@/assets/capa-semestre-8.jpg";
-import capaSem9 from "@/assets/capa-semestre-9.jpg";
-import capaSem10 from "@/assets/capa-semestre-10.jpg";
+import capaSem1 from "@/assets/capa-semestre-1.webp";
+import capaSem2 from "@/assets/capa-semestre-2.webp";
+import capaSem3 from "@/assets/capa-semestre-3.webp";
+import capaSem4 from "@/assets/capa-semestre-4.webp";
+import capaSem5 from "@/assets/capa-semestre-5.webp";
+import capaSem6 from "@/assets/capa-semestre-6.webp";
+import capaSem7 from "@/assets/capa-semestre-7.webp";
+import capaSem8 from "@/assets/capa-semestre-8.webp";
+import capaSem9 from "@/assets/capa-semestre-9.webp";
+import capaSem10 from "@/assets/capa-semestre-10.webp";
 
-import logoUsp from "@/assets/logo-usp.png";
-import logoUnip from "@/assets/logo-unip.png";
-import logoAnhanguera from "@/assets/logo-anhanguera.png";
-import logoEstacio from "@/assets/logo-estacio.png";
-import logoUninove from "@/assets/logo-uninove.png";
-import logoUnopar from "@/assets/logo-unopar.png";
-import logoPucsp from "@/assets/logo-pucsp.png";
-import logoMackenzie from "@/assets/logo-mackenzie.png";
-import logoUfmg from "@/assets/logo-ufmg.png";
-import logoUerj from "@/assets/logo-uerj.png";
+import logoUsp from "@/assets/logo-usp.webp";
+import logoUnip from "@/assets/logo-unip.webp";
+import logoAnhanguera from "@/assets/logo-anhanguera.webp";
+import logoEstacio from "@/assets/logo-estacio.webp";
+import logoUninove from "@/assets/logo-uninove.webp";
+import logoUnopar from "@/assets/logo-unopar.webp";
+import logoPucsp from "@/assets/logo-pucsp.webp";
+import logoMackenzie from "@/assets/logo-mackenzie.webp";
+import logoUfmg from "@/assets/logo-ufmg.webp";
+import logoUerj from "@/assets/logo-uerj.webp";
 
 const CAPAS_SEMESTRE = [capaSem1, capaSem2, capaSem3, capaSem4, capaSem5, capaSem6, capaSem7, capaSem8, capaSem9, capaSem10];
 
@@ -40,12 +40,12 @@ const LOGOS: Record<string, string> = {
   "ufmg": logoUfmg, "uerj": logoUerj,
 };
 
-import capaDiscPrivado from "@/assets/capa-disc-teoria-geral-direito-privado.jpg";
-import capaDiscRomano from "@/assets/capa-disc-direito-romano.jpg";
-import capaDiscEconomia from "@/assets/capa-disc-economia-politica.jpg";
-import capaDiscEstado from "@/assets/capa-disc-teoria-geral-estado.jpg";
-import capaDiscIntro from "@/assets/capa-disc-intro-estudo-direito.jpg";
-import capaDiscMetodologia from "@/assets/capa-disc-metodologia-direito.jpg";
+import capaDiscPrivado from "@/assets/capa-disc-teoria-geral-direito-privado.webp";
+import capaDiscRomano from "@/assets/capa-disc-direito-romano.webp";
+import capaDiscEconomia from "@/assets/capa-disc-economia-politica.webp";
+import capaDiscEstado from "@/assets/capa-disc-teoria-geral-estado.webp";
+import capaDiscIntro from "@/assets/capa-disc-intro-estudo-direito.webp";
+import capaDiscMetodologia from "@/assets/capa-disc-metodologia-direito.webp";
 
 const DISC_CAPAS: Record<string, string> = {
   "teoria geral do direito privado": capaDiscPrivado,

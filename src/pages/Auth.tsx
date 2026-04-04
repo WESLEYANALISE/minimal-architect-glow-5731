@@ -18,7 +18,7 @@ import { useHomePreloader } from '@/hooks/useHomePreloader';
 import { useDeviceType } from '@/hooks/use-device-type';
 import { preloadOnboardingVideo } from '@/hooks/useOnboardingVideoPreloader';
 import DesktopLandingSections from '@/components/landing/DesktopLandingSections';
-import logoDireitoPremium from '@/assets/logo-direito-premium-new.png?format=webp&quality=80';
+import logoDireitoPremium from "@/assets/logo-direito-premium-new.webp";
 
 type AuthMode = 'login' | 'signup' | 'forgot' | 'otp' | 'reset';
 

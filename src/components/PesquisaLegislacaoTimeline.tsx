@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Crown, Gavel, Scale, Shield, HandCoins, BookText, FileText, AlertTriangle, ChevronRight, ArrowLeft } from "lucide-react";
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LegislacaoBackground } from "@/components/LegislacaoBackground";
 import { GerenciadorBackgroundModal } from "@/components/GerenciadorBackgroundModal";

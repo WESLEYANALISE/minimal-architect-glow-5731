@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Swords } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import advogado1Img from "@/assets/advogado1-avatar.jpg?format=webp&quality=75";
-import advogada2Img from "@/assets/advogada2-avatar.jpg?format=webp&quality=75";
+import advogado1Img from "@/assets/advogado1-avatar.webp";
+import advogada2Img from "@/assets/advogada2-avatar.webp";
 
 interface BatalhaVSTransitionProps {
   parte1Nome: string;

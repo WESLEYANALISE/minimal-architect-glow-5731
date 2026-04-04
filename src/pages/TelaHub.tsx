@@ -2,10 +2,10 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Scale, FileText, Play, ArrowLeft } from "lucide-react";
 
-import conceitosThumb from "@/assets/thumbnails/conceitos-thumb.jpg?format=webp&quality=75";
-import areasThumb from "@/assets/thumbnails/areas-thumb.jpg?format=webp&quality=75";
-import oabPrimeiraThumb from "@/assets/thumbnails/oab-primeira-fase-thumb.jpg?format=webp&quality=75";
-import oabSegundaThumb from "@/assets/thumbnails/oab-segunda-fase-thumb.jpg?format=webp&quality=75";
+import conceitosThumb from "@/assets/thumbnails/conceitos-thumb.webp";
+import areasThumb from "@/assets/thumbnails/areas-thumb.webp";
+import oabPrimeiraThumb from "@/assets/thumbnails/oab-primeira-fase-thumb.webp";
+import oabSegundaThumb from "@/assets/thumbnails/oab-segunda-fase-thumb.webp";
 
 const videoaulasThumbnails: Record<string, string> = {
   conceitos: conceitosThumb,

@@ -4,14 +4,14 @@ import { Button } from "@/components/ui/button";
 import useEmblaCarousel from "embla-carousel-react";
 
 // Importar as capas (otimizadas para WebP em build time)
-import introBlogger from "@/assets/intro-blogger-juridico-new.png?format=webp&quality=75";
-import introCursos from "@/assets/intro-iniciando-direito-new.png?format=webp&quality=75";
-import introQuestoes from "@/assets/intro-questoes-new.png?format=webp&quality=75";
-import introFlashcards from "@/assets/intro-flashcards-new.png?format=webp&quality=75";
-import introResumos from "@/assets/intro-resumos-new.png?format=webp&quality=75";
-import introMapaMental from "@/assets/intro-mapa-mental-new.png?format=webp&quality=75";
-import introPlanoEstudos from "@/assets/intro-plano-estudos-new.png?format=webp&quality=75";
-import introVideoaulas from "@/assets/intro-videoaulas-new.png?format=webp&quality=75";
+import introBlogger from "@/assets/intro-blogger-juridico-new.webp";
+import introCursos from "@/assets/intro-iniciando-direito-new.webp";
+import introQuestoes from "@/assets/intro-questoes-new.webp";
+import introFlashcards from "@/assets/intro-flashcards-new.webp";
+import introResumos from "@/assets/intro-resumos-new.webp";
+import introMapaMental from "@/assets/intro-mapa-mental-new.webp";
+import introPlanoEstudos from "@/assets/intro-plano-estudos-new.webp";
+import introVideoaulas from "@/assets/intro-videoaulas-new.webp";
 
 const itensEmAlta = [
   {

@@ -4,7 +4,7 @@ import { Scale, Gavel, Search, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 import { LegislacaoBackground } from "@/components/LegislacaoBackground";
 import { GerenciadorBackgroundModal } from "@/components/GerenciadorBackgroundModal";
 import { useBackgroundImage } from "@/hooks/useBackgroundImage";

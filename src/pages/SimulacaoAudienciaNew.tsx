@@ -8,8 +8,8 @@ import { toast } from "sonner";
 import { PontuacaoBar } from "@/components/simulacao/PontuacaoBar";
 import { TypingIndicator } from "@/components/simulacao/TypingIndicator";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import juizaAvatar from "@/assets/juiza-avatar.jpg?format=webp&quality=75";
-import advogadoReuAvatar from "@/assets/advogado-reu-avatar.jpg?format=webp&quality=75";
+import juizaAvatar from "@/assets/juiza-avatar.webp";
+import advogadoReuAvatar from "@/assets/advogado-reu-avatar.webp";
 
 interface Turno {
   ordem: number;

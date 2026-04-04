@@ -1,9 +1,9 @@
 import { BookOpen, Film as FilmIcon, Search, ChevronRight, Clapperboard } from "lucide-react";
 import { NavigateFunction } from "react-router-dom";
-import capaBiblioteca from "@/assets/capa-biblioteca.jpg";
-import capaDocumentarios from "@/assets/capa-documentarios.jpg";
-import capaDicionario from "@/assets/capa-dicionario.jpg";
-import capaJuriflix from "@/assets/capa-juriflix.jpg";
+import capaBiblioteca from "@/assets/capa-biblioteca.webp";
+import capaDocumentarios from "@/assets/capa-documentarios.webp";
+import capaDicionario from "@/assets/capa-dicionario.webp";
+import capaJuriflix from "@/assets/capa-juriflix.webp";
 import { CardHoverEffect } from "@/components/ui/card-hover-effect";
 import { BorderBeam } from "@/components/ui/border-beam";
 

@@ -3,7 +3,7 @@ import { useTransitionNavigate } from "@/hooks/useTransitionNavigate";
 import { useArabellaMetrics, gerarMensagemArabella, gerarFeedbackCompletoArabella } from "@/hooks/useArabellaMetrics";
 import { ChevronRight, ChevronDown, Flame, Clock, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import draArabellaAvatar from "@/assets/dra-jurisia-avatar.png";
+import draArabellaAvatar from "@/assets/dra-jurisia-avatar.webp";
 
 
 const FEEDBACK_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours

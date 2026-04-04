@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-import slide1 from "@/assets/desktop-slides/slide-dashboard.jpg";
-import slide2 from "@/assets/desktop-slides/slide-vademecum.jpg";
-import slide3 from "@/assets/desktop-slides/slide-flashcards.jpg";
-import slide4 from "@/assets/desktop-slides/slide-ia.jpg";
-import slide5 from "@/assets/desktop-slides/slide-videoaulas.jpg";
-import slide6 from "@/assets/desktop-slides/slide-noticias.jpg";
-import slide7 from "@/assets/desktop-slides/slide-simulados.jpg";
+import slide1 from "@/assets/desktop-slides/slide-dashboard.webp";
+import slide2 from "@/assets/desktop-slides/slide-vademecum.webp";
+import slide3 from "@/assets/desktop-slides/slide-flashcards.webp";
+import slide4 from "@/assets/desktop-slides/slide-ia.webp";
+import slide5 from "@/assets/desktop-slides/slide-videoaulas.webp";
+import slide6 from "@/assets/desktop-slides/slide-noticias.webp";
+import slide7 from "@/assets/desktop-slides/slide-simulados.webp";
 
 const SLIDES = [
   { src: slide1, label: "Dashboard" },
