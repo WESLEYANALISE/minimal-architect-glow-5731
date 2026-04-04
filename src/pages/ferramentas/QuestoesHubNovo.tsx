@@ -412,9 +412,9 @@ const QuestoesHubNovo = () => {
     <div className="min-h-screen relative overflow-hidden" style={{ background: "hsl(0 0% 10%)" }}>
       <DotPattern className="opacity-[0.03]" />
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         <motion.div
-          key={subView + (subView === "temas" ? selectedArea : "")}
+          key={subView + (subView === "temas" ? selectedArea : "") + (subView === "resolver" ? selectedTema : "")}
           variants={slideVariants}
           initial="enter"
           animate="center"
@@ -439,7 +439,7 @@ const QuestoesHubNovo = () => {
           )}
 
           {/* Hero header for menu/praticar */}
-          {!isInternal && subView !== "temas" && (
+          {!isInternal && subView !== "temas" && subView !== "resolver" && (
             <div
               className="relative overflow-hidden rounded-b-3xl mb-4"
               style={{
@@ -479,7 +479,17 @@ const QuestoesHubNovo = () => {
 
           {/* === TEMAS (inline) === */}
           {subView === "temas" && selectedArea && (
-            <TemasInline area={selectedArea} onBack={handleBackFromTemas} />
+            <TemasInline area={selectedArea} onBack={handleBackFromTemas} onSelectTema={handleSelectTema} />
+          )}
+
+          {/* === RESOLVER (inline, sem trocar rota) === */}
+          {subView === "resolver" && selectedArea && selectedTema && (
+            <QuestoesResolver
+              inlineArea={selectedArea}
+              inlineTema={selectedTema}
+              onExit={handleBackFromResolver}
+              onComplete={handleBackFromResolver}
+            />
           )}
 
           {/* Menu principal */}

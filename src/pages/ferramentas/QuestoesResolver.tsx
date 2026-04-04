@@ -352,10 +352,18 @@ const QuestoesResolver = ({
   };
 
   const handleFinish = () => {
+    if (onComplete) {
+      onComplete();
+      return;
+    }
     navigate(`/ferramentas/questoes/temas?area=${encodeURIComponent(area)}`);
   };
 
   const handleBack = () => {
+    if (onExit) {
+      onExit();
+      return;
+    }
     navigate(`/ferramentas/questoes/temas?area=${encodeURIComponent(area)}`);
   };
 
