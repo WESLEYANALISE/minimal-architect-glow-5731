@@ -1,5 +1,4 @@
 import { Target, TrendingUp, RefreshCw, BookMarked } from "lucide-react";
-import { BorderBeam } from "@/components/ui/border-beam";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { motion } from "framer-motion";
 
