@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Monitor, Film, ArrowRight, Sparkles } from "lucide-react";
+import { Monitor, Bot, ArrowRight, Sparkles } from "lucide-react";
 
 interface DesktopEstudosComputadorProps {
   navigate: (path: string) => void;
