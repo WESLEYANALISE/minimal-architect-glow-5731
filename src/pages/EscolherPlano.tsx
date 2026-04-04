@@ -67,6 +67,7 @@ const EscolherPlano: React.FC = () => {
 
   const currentPlan = PLANS[selectedPlan] || PLANS.mensal;
 
+  usePaymentSDK();
   const {
     pixData,
     loading: pixLoading,

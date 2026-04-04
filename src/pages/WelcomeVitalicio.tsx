@@ -65,6 +65,7 @@ const WelcomeVitalicio = () => {
   const [showPixScreen, setShowPixScreen] = useState(false);
   const [showCpfInput, setShowCpfInput] = useState(false);
   const [pixCpf, setPixCpf] = useState('');
+  usePaymentSDK();
   const { pixData, loading: pixLoading, createPix, copyPixCode, reset: resetPix } = useMercadoPagoPix();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { trackEvent } = useFacebookPixel();
