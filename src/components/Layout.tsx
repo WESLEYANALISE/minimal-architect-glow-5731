@@ -585,7 +585,7 @@ export const Layout = ({ children }: LayoutProps) => {
           {/* Painel Direito - FIXO — só na home, com delay de 2s */}
           {!hideMainSidebar && (layout.rightPanelType as string) === 'news' && !professoraModalOpen && !forceHideSidebars && (
             <div className="sticky top-0 h-screen w-72 shrink-0 border-l border-border/50 bg-background">
-              <MemoizedDesktopNewsSidebar />
+              <DesktopRecomendacoesSidebar />
             </div>
           )}
         </div>
