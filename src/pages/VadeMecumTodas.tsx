@@ -541,14 +541,6 @@ const VadeMecumTodas = () => {
 
           {/* Right column - Leis do Dia in list format */}
           <aside className="w-80 xl:w-96 border-l border-border/10 bg-background/40 backdrop-blur-md flex flex-col h-full">
-            <div className="p-4 border-b border-border/10">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-destructive/15 rounded-lg">
-                  <Calendar className="w-4 h-4 text-destructive" />
-                </div>
-                <h3 className="font-semibold text-sm text-foreground">Leis do Dia</h3>
-              </div>
-            </div>
             <div className="flex-1 overflow-y-auto p-3">
               <ResenhaDiariaCarousel desktopListMode />
             </div>
