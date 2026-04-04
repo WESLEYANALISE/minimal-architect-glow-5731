@@ -15,6 +15,7 @@ import { DesktopTopNav } from "./DesktopTopNav";
 import { AppSidebar } from "./AppSidebar";
 import { DesktopChatPanel } from "./DesktopChatPanel";
 import { DesktopNewsSidebar } from "./DesktopNewsSidebar";
+import { DesktopRecomendacoesSidebar } from "./DesktopRecomendacoesSidebar";
 import { VideoPlaylistSidebar } from "./VideoPlaylistSidebar";
 import { VideoaulasInicianteSidebar } from "./VideoaulasInicianteSidebar";
 import { VideoaulasOABSidebar } from "./VideoaulasOABSidebar";
@@ -584,7 +585,7 @@ export const Layout = ({ children }: LayoutProps) => {
           {/* Painel Direito - FIXO — só na home, com delay de 2s */}
           {!hideMainSidebar && (layout.rightPanelType as string) === 'news' && !professoraModalOpen && !forceHideSidebars && (
             <div className="sticky top-0 h-screen w-72 shrink-0 border-l border-border/50 bg-background">
-              <MemoizedDesktopNewsSidebar />
+              <DesktopRecomendacoesSidebar />
             </div>
           )}
         </div>
