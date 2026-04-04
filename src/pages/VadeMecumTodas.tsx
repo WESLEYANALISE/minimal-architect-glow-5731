@@ -116,11 +116,11 @@ const VadeMecumTodas = () => {
   }, {} as Record<string, ResenhaItem[]>);
 
   // Card hero - Constituição Federal
-  const constituicaoCard = { id: "constituicao", title: "Constituição Federal", description: "Lei Fundamental do Estado Brasileiro", icon: Crown, iconBg: "bg-amber-600", color: "#d97706", route: "/constituicao" };
+  const constituicaoCard = { id: "constituicao", title: "Constituição Federal", description: "Lei Fundamental do Estado Brasileiro", icon: Crown, iconBg: "bg-[hsl(345,40%,30%)]", color: "#9f1239", route: "/constituicao" };
 
   // Categorias principais (mais acessadas)
   const categoriasPrincipais = [
-    { id: "constituicao", title: "Constituição", description: "Lei Fundamental e Suprema do Brasil", icon: Crown, iconBg: "bg-amber-600", color: "#d97706", route: "/constituicao" },
+    { id: "constituicao", title: "Constituição", description: "Lei Fundamental e Suprema do Brasil", icon: Crown, iconBg: "bg-[hsl(345,40%,30%)]", color: "#9f1239", route: "/constituicao" },
     { id: "codigos", title: "Códigos", description: "Civil, Penal, CPC, CPP, CLT e mais", icon: Scale, iconBg: "bg-red-500", color: "#ef4444", route: "/codigos" },
     { id: "legislacao-penal", title: "Leis\nEspeciais", description: "Drogas, Armas, Maria da Penha", icon: Shield, iconBg: "bg-red-600", color: "#dc2626", route: "/legislacao-penal-especial" },
     { id: "estatutos", title: "Estatutos", description: "ECA, Idoso, OAB, Cidade e mais", icon: Gavel, iconBg: "bg-purple-500", color: "#a855f7", route: "/estatutos" },
@@ -446,11 +446,6 @@ const VadeMecumTodas = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => navigate('/')}
-                className="shrink-0 bg-black/80 backdrop-blur-sm hover:bg-black border border-white/20 rounded-full"
-              >
-                <ArrowLeft className="w-5 h-5 text-white" />
-              </Button>
               <div>
                 <h1 className="text-xl font-bold text-foreground">Vade Mecum 2026</h1>
                 <p className="text-muted-foreground text-sm">
