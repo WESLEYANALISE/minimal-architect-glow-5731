@@ -177,6 +177,18 @@ const FlashcardsTemas = () => {
     return temas;
   }, [temas, activeTab, favoritos, searchTerm]);
 
+  // If studying a tema inline, render FlashcardsEstudar directly
+  if (estudarTema) {
+    return (
+      <FlashcardsEstudar
+        inlineArea={area}
+        inlineTema={estudarTema}
+        onExit={() => setEstudarTema(null)}
+        onComplete={() => setEstudarTema(null)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       <InstantBackground
