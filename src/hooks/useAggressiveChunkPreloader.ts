@@ -64,10 +64,10 @@ export const useAggressiveChunkPreloader = () => {
 
     // Detect desktop (wider viewport = heavier rendering = more conservative preload)
     const isDesktop = window.innerWidth >= 1024;
-    const phase1Delay = isDesktop ? 15000 : 5000;
-    const phase2Delay = isDesktop ? 45000 : 15000;
+    const phase1Delay = isDesktop ? 8000 : 5000;
+    const phase2Delay = isDesktop ? 25000 : 15000;
     const batchSize = isDesktop ? 1 : 2;
-    const batchDelay = isDesktop ? 600 : 200;
+    const batchDelay = isDesktop ? 400 : 200;
 
     // Fase 1: chunks críticos
     setTimeout(() => {
