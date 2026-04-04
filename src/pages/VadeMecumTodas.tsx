@@ -60,7 +60,7 @@ const VadeMecumTodas = () => {
   const [showResults, setShowResults] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchClosing, setSearchClosing] = useState(false);
-  const [searchMode, setSearchMode] = useState<"artigo" | "lei">("artigo");
+  const [searchMode, setSearchMode] = useState<"palavra" | "lei">("palavra");
   
   const [imagesLoaded, setImagesLoaded] = useState({
     menu: false,
