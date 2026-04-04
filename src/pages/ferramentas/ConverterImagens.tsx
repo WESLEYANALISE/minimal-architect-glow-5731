@@ -426,6 +426,27 @@ const ConverterImagens = () => {
           })}
         </div>
 
+        {/* ── Toggle: Todas / Pendentes / Finalizadas ── */}
+        <div className="flex rounded-lg bg-muted/50 p-0.5">
+          {([
+            { id: "todas" as const, label: "Todas" },
+            { id: "pendentes" as const, label: "Pendentes" },
+            { id: "finalizadas" as const, label: "Finalizadas" },
+          ]).map(opt => (
+            <button
+              key={opt.id}
+              onClick={() => setFiltroStatus(opt.id)}
+              className={`flex-1 text-xs font-medium py-1.5 rounded-md transition-colors ${
+                filtroStatus === opt.id
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
         {/* ── Estatísticas ── */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           <div className="bg-muted/50 rounded-lg p-2 text-center">
