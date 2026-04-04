@@ -231,8 +231,8 @@ const Codigos = () => {
         <div className="px-4 py-4 space-y-3 pb-24">
           {filteredCodes.length === 0 ? (
             <div className="text-center py-12">
-              <Search className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
-              <p className="text-muted-foreground">
+              <Search className="w-12 h-12 mx-auto mb-3" style={{ color: 'hsl(40, 60%, 40%)' }} />
+              <p style={{ color: 'hsl(40, 30%, 50%)' }}>
                 {filterMode === 'favoritos' ? 'Nenhum favorito ainda' : 
                  filterMode === 'recentes' ? 'Nenhum acesso recente' : 
                  'Nenhum código encontrado'}
@@ -248,9 +248,12 @@ const Codigos = () => {
                   onClick={() => handleCardClick(code)}
                   onMouseEnter={() => handleCodeHover(code.id)}
                   onTouchStart={() => handleCodeHover(code.id)}
-                  className="bg-card rounded-xl p-4 cursor-pointer hover:bg-accent/10 hover:scale-[1.02] transition-all border-l-4 group shadow-lg relative"
+                  className="rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-all border-l-4 group relative"
                   style={{ 
                     borderLeftColor: code.color,
+                    background: 'hsla(0, 0%, 100%, 0.04)',
+                    border: '1px solid hsla(40, 60%, 50%, 0.08)',
+                    borderLeft: `4px solid ${code.color}`,
                     opacity: 0,
                     transform: 'translateY(-20px) translateZ(0)',
                     animation: `slideDown 0.5s ease-out ${index * 0.08}s forwards`,
@@ -263,12 +266,12 @@ const Codigos = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-foreground">{code.abbr}</h3>
+                        <h3 className="font-bold text-white">{code.abbr}</h3>
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-1">{code.title}</p>
+                      <p className="text-sm line-clamp-1" style={{ color: 'hsl(0, 0%, 55%)' }}>{code.title}</p>
                     </div>
                     {isLocked && <PremiumBadge position="top-right" size="sm" className="relative top-auto right-auto" />}
-                    {!isLocked && <CheckCircle className="w-5 h-5 text-amber-500 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                    {!isLocked && <CheckCircle className="w-5 h-5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'hsl(40, 80%, 55%)' }} />}
                   </div>
                 </div>
               );
