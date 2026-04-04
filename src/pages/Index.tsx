@@ -600,12 +600,12 @@ const Index = () => {
             </div>
 
             {/* Portal de Vídeos (Estudos em Mídia) */}
-            <div className="px-2 pt-6">
+            <div className="px-2 pt-6 pb-4">
               <PortalDeVideosSection navigate={gatedNavigate} />
             </div>
 
             {/* Estudos / Leis do Dia / Vade Mecum - Carousel com setas */}
-            <div className="pt-6 pb-4">
+            <div className="pt-8 pb-4">
               <EstudosViewCarousel>
                 <HomePratiqueSlide />
               </EstudosViewCarousel>
