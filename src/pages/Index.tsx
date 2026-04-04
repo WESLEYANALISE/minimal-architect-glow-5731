@@ -673,14 +673,13 @@ const Index = () => {
                 <p className="text-xs text-muted-foreground">Aulas, revisões e prática</p>
               </div>
             </div>
-            <div className="grid grid-cols-3 xl:grid-cols-6 gap-3">
+            <div className="grid grid-cols-3 xl:grid-cols-5 gap-3">
               {[
                 { titulo: "Aulas", subtitulo: "Estudos", icon: GraduationCap, route: "/aulas", capa: coverAulas },
                 { titulo: "Resumos", subtitulo: "Jurídicos", icon: FileText, route: "/resumos-juridicos", capa: coverResumos },
                 { titulo: "Flashcards", subtitulo: "Cards", icon: Brain, route: "/flashcards", capa: coverFlashcards },
                 { titulo: "Questões", subtitulo: "Prática", icon: Target, route: "/questoes", capa: coverQuestoes },
                 { titulo: "Biblioteca", subtitulo: "Livros", icon: BookOpenIcon, route: "/bibliotecas", capa: coverBiblioteca },
-                { titulo: "Audioaulas", subtitulo: "Áudio", icon: Headphones, route: "/audioaulas", capa: coverAudioaulas },
               ].map((item) => {
                 const Icon = item.icon;
                 return (
