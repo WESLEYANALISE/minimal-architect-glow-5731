@@ -66,6 +66,8 @@ export const DisciplinaCardRealeza = ({ area, totalQuestoes, progress = 0, respo
   const handleClick = () => {
     if (isLocked) {
       onLockedClick?.();
+    } else if (onSelect) {
+      onSelect(area);
     } else {
       startTransition(() => {
         navigate(`/ferramentas/questoes-v2/temas?area=${encodeURIComponent(area)}`);
