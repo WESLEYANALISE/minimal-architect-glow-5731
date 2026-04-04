@@ -2,65 +2,111 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 const PIXEL_ID = "2069588673817892";
+
+const jsonResponse = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 
 async function hashSHA256(value: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(value.toLowerCase().trim());
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function normalizeAccessToken(token: string | undefined): string | null {
+  const normalized = token?.trim();
+  return normalized ? normalized : null;
 }
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    const ACCESS_TOKEN = Deno.env.get("FACEBOOK_CONVERSIONS_API_TOKEN");
-    if (!ACCESS_TOKEN) {
-      throw new Error("FACEBOOK_CONVERSIONS_API_TOKEN não configurado");
+    const accessToken = normalizeAccessToken(
+      Deno.env.get("FACEBOOK_CONVERSIONS_API_TOKEN"),
+    );
+
+    if (!accessToken) {
+      console.error("FACEBOOK_CONVERSIONS_API_TOKEN não configurado");
+      return jsonResponse({
+        success: false,
+        skipped: true,
+        error: "FACEBOOK_CONVERSIONS_API_TOKEN não configurado",
+      });
     }
 
-    const { event_name, event_id, user_data, custom_data, event_source_url, action_source, test_event_code } = await req.json();
+    let payload: {
+      event_name?: string;
+      event_id?: string;
+      user_data?: Record<string, unknown>;
+      custom_data?: Record<string, unknown>;
+      event_source_url?: string;
+      action_source?: string;
+      test_event_code?: string;
+    };
+
+    try {
+      payload = await req.json();
+    } catch {
+      return jsonResponse({
+        success: false,
+        skipped: true,
+        error: "Payload JSON inválido",
+      });
+    }
+
+    const {
+      event_name,
+      event_id,
+      user_data,
+      custom_data,
+      event_source_url,
+      action_source,
+      test_event_code,
+    } = payload;
 
     if (!event_name) {
-      throw new Error("event_name é obrigatório");
+      return jsonResponse({
+        success: false,
+        skipped: true,
+        error: "event_name é obrigatório",
+      });
     }
 
-    // Get client IP from request headers
-    const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() 
-      || req.headers.get("cf-connecting-ip") 
-      || req.headers.get("x-real-ip")
-      || "unknown";
+    const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("cf-connecting-ip") ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
 
-    // Build user_data with required parameters
     const hashedUserData: Record<string, string> = {};
     const hashableFields = ["em", "ph", "fn", "ln", "ct", "st", "zp", "country", "db", "ge", "external_id"];
-    const noHashFields = ["fbp", "fbc", "client_user_agent", "client_ip_address"];
-    
-    if (user_data) {
+
+    if (user_data && typeof user_data === "object" && !Array.isArray(user_data)) {
       for (const [key, value] of Object.entries(user_data)) {
-        if (value && typeof value === "string") {
-          if (hashableFields.includes(key)) {
-            hashedUserData[key] = await hashSHA256(value);
-          } else {
-            hashedUserData[key] = value;
-          }
+        if (typeof value !== "string" || !value.trim()) continue;
+
+        if (hashableFields.includes(key)) {
+          hashedUserData[key] = await hashSHA256(value);
+        } else {
+          hashedUserData[key] = value;
         }
       }
     }
 
-    // Always include client_ip_address (required by Facebook for better matching)
-    if (clientIp && clientIp !== "unknown") {
+    if (clientIp !== "unknown") {
       hashedUserData.client_ip_address = clientIp;
     }
 
-    // Ensure client_user_agent is present
     if (!hashedUserData.client_user_agent) {
       hashedUserData.client_user_agent = req.headers.get("user-agent") || "unknown";
     }
@@ -77,34 +123,50 @@ serve(async (req) => {
           custom_data: custom_data || undefined,
         },
       ],
-      ...(test_event_code && { test_event_code }),
+      ...(test_event_code ? { test_event_code } : {}),
     };
 
-    const url = `https://graph.facebook.com/v21.0/${PIXEL_ID}/events?access_token=${ACCESS_TOKEN}`;
+    const url = new URL(`https://graph.facebook.com/v21.0/${PIXEL_ID}/events`);
+    url.searchParams.set("access_token", accessToken);
 
-    const response = await fetch(url, {
+    const response = await fetch(url.toString(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(eventData),
     });
 
-    const result = await response.json();
+    const rawResult = await response.text();
+    let result: unknown = {};
 
-    if (!response.ok) {
-      console.error("Facebook API error:", JSON.stringify(result));
-      throw new Error(`Facebook API error [${response.status}]: ${JSON.stringify(result)}`);
+    try {
+      result = rawResult ? JSON.parse(rawResult) : {};
+    } catch {
+      result = { raw: rawResult };
     }
 
-    console.log("Facebook event sent:", event_name, JSON.stringify(result));
+    if (!response.ok) {
+      console.error("Facebook API error:", rawResult);
+      return jsonResponse({
+        success: false,
+        skipped: true,
+        provider: "facebook",
+        status: response.status,
+        error: `Facebook API error [${response.status}]`,
+        details: result,
+      });
+    }
 
-    return new Response(JSON.stringify({ success: true, ...result }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.log("Facebook event sent:", event_name, rawResult);
+
+    return jsonResponse({ success: true, ...(typeof result === "object" && result !== null ? result : { result }) });
   } catch (error) {
-    console.error("Error:", error.message);
-    return new Response(JSON.stringify({ success: false, error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    const message = error instanceof Error ? error.message : "Erro desconhecido";
+    console.error("Unexpected facebook-conversions error:", message);
+
+    return jsonResponse({
+      success: false,
+      skipped: true,
+      error: message,
     });
   }
 });
