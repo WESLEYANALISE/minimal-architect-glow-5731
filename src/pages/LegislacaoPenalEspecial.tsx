@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import brasaoRepublica from "@/assets/brasao-republica.webp";
+import { DotPattern } from "@/components/ui/dot-pattern";
 import { LeisToggleMenu, FilterMode } from "@/components/LeisToggleMenu";
 import { useLeisFavoritas, useLeisRecentes, useToggleFavorita, useRegistrarAcesso } from "@/hooks/useLeisFavoritasRecentes";
 import { useSubscription } from "@/contexts/SubscriptionContext";
