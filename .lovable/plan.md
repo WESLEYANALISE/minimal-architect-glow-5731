@@ -1,69 +1,50 @@
 
 
-## Plano: Paleta Vermelha + Performance no Vade Mecum
+## Plano: Cache Headers Longos para Arquivos Estáticos
 
-### Problema
-1. **Cor amarela/amber** usada em todo o Vade Mecum (cards, ícones, botões, header, drawer) — deve ser a paleta vermelha do app (`accent` = `hsl(0, 68%, 48%)`)
-2. **Carregamento lento** — spinner "Carregando..." aparece porque o `useIndexedDBCache` tem um estado `isLoadingCache` que bloqueia o início do fetch real
-3. **Drawer do artigo sobe demais** — precisa ajustar o `max-h` e scroll
+### Situação Atual
 
----
+O projeto já tem uma boa base de cache, mas há lacunas:
 
-### Etapa 1: Substituir amber/amarelo pela paleta vermelha do app
+**Já funciona bem (1 ano, immutable):**
+- `/assets/*` no `vercel.json` — todos os arquivos processados pelo Vite (JS, CSS, imagens importadas via `src/assets/`) já recebem hash no nome e cache de 1 ano. As **6 capas de Estudos** (`cover-aulas.jpg`, `cover-resumos.jpg`, etc.) e todas as 200+ imagens em `src/assets/` já se beneficiam disso.
 
-Trocar todas as referências em ~12 arquivos do módulo Vade Mecum:
+**Problema — cache fraco (apenas 24h):**
+- Arquivos em `public/` (áudios, sons, vídeos, imagens hero) não passam pelo Vite, não recebem hash, e pegam apenas a regra genérica de 24h. São ~20 arquivos de áudio e ~5 imagens hero que **nunca mudam** mas o navegador re-valida diariamente.
 
-| Padrão antigo | Novo |
-|---|---|
-| `amber-500` | `accent` (via classes Tailwind `text-accent`, `bg-accent`, etc.) |
-| `amber-400` | `accent` ou `text-red-400` |
-| `amber-500/10`, `amber-500/20` | `accent/10`, `accent/20` |
-| `hsl(45,93%,58%)` | `hsl(var(--accent))` |
-| `bg-amber-500` (botões sólidos) | `bg-accent` |
-| `text-amber-500` | `text-accent` |
+**Problema — Supabase Storage:**
+- Imagens de capas de carreiras, deputados, bibliotecas vêm do Supabase Storage. O Service Worker já faz CacheFirst por 60 dias, mas o `vercel.json` não ajuda aqui (domínio externo).
 
-**Arquivos afetados:**
-- `src/components/LeiHeader.tsx` — linha decorativa, glow do brasão, estrela favoritos
-- `src/components/ArtigoListaCompacta.tsx` — ícone Scale, highlight de busca, badge Crown, tabs ativas, CheckCircle
-- `src/components/ArtigoFullscreenDrawer.tsx` — todas as referências amber dentro do drawer
-- `src/components/ArtigoActionsMenu.tsx` — botões de ação
-- `src/components/SumulaCard.tsx` — border, title, botão share
-- `src/components/SumulaActionsMenu.tsx` — dialog, botões de recurso
-- `src/components/VadeMecumTabs.tsx` — tabs ativas
-- `src/components/VadeMecumTabsInline.tsx` — tabs ativas
-- `src/components/ArtigosFavoritosList.tsx` — border-left
-- `src/components/vade-mecum/VadeMecumNavigationSidebar.tsx` — sidebar desktop
-- `src/components/vade-mecum/VadeMecumDetailPanel.tsx` — painel de detalhe
-- `src/components/vade-mecum/AnotacaoDrawer.tsx` — botão salvar
-- `src/components/vade-mecum/ResumoArtigoSheet.tsx` — loading e ícones
-- `src/components/AulaArtigoModal.tsx` — loading e botões
-- `src/pages/CodigoView.tsx` — flashcards modal header, scroll-to-top button
-- `src/components/BuscaCompacta.tsx` — se houver amber
+### O que será feito
 
----
+**1. Expandir `vercel.json` com regras específicas para `public/`**
 
-### Etapa 2: Acelerar carregamento inicial
+Adicionar regras para áudios e vídeos estáticos que nunca mudam:
 
-**2a. Otimizar `useIndexedDBCache`** — O estado `isLoadingCache` começa `true` e só muda para `false` após abrir o IndexedDB e ler o cache. Enquanto isso, `useProgressiveArticles` não inicia o fetch. Solução: iniciar o fetch do Supabase em paralelo com a leitura do cache, usando o que chegar primeiro.
+| Padrão | Cache | Arquivos cobertos |
+|---|---|---|
+| `/audio/*`, `/sounds/*` | 1 ano, immutable | 18 arquivos de áudio/sons |
+| `/videos/*`, `/animations/*` | 1 ano, immutable | Vídeos e animações |
+| `/*.mp4`, `/*.webm` | 1 ano, immutable | splash-intro.mp4, splash-logo.webm |
+| Hero banners na raiz (`/hero-*.webp`) | 1 ano, stale-while-revalidate | 4 imagens hero no root de public |
 
-**2b. Otimizar `useProgressiveArticles`** — Aumentar o `initialChunk` de 100 para 200 e reduzir o delay entre chunks de 100ms para 50ms. Também iniciar o fetch imediatamente sem esperar o cache (usar cache como fallback se o fetch demorar).
+**2. Subir a regra genérica de imagens de 24h para 7 dias + stale 30 dias**
 
-**2c. Preload da rota CodigoView** — Já está no chunk preloader, mas garantir que o módulo é pré-carregado quando o usuário hover nos cards de legislação.
+A regra `(.*\.(?:png|jpg|jpeg|webp...))` atual tem apenas `max-age=86400`. Como a maioria dessas imagens em `public/` raramente muda, aumentar para 7 dias com `stale-while-revalidate` de 30 dias.
 
----
+**3. Supabase Storage — aumentar cache do SW para 90 dias**
 
-### Etapa 3: Ajustar drawer do artigo
+No `vite.config.ts`, aumentar o `maxAgeSeconds` do runtime cache `supabase-images` de 60 para 90 dias, já que capas de carreiras e fotos de deputados são praticamente imutáveis.
 
-- Reduzir o `max-h` do drawer de `88vh` para `82vh` no mobile para não subir tanto
-- Garantir scroll suave ao abrir sem pular para cima
+### Capas que já estão otimizadas (não precisam de mudança)
+- `src/assets/covers/cover-*.jpg` — processadas pelo Vite, recebem hash, já têm 1 ano immutable
+- `src/assets/thumbnails/*` — idem
+- `src/assets/aulas-em-tela/modulo-*.jpg` — idem
+- Todas as ~200+ imagens em `src/assets/` — idem
 
----
-
-### Arquivos criados/modificados
+### Arquivos modificados
 | Arquivo | Alteração |
 |---|---|
-| 12+ componentes acima | Substituir amber → accent/red |
-| `src/hooks/useProgressiveArticles.ts` | Paralelizar cache + fetch |
-| `src/hooks/useIndexedDBCache.ts` | Não bloquear com isLoadingCache |
-| `src/components/ArtigoFullscreenDrawer.tsx` | Ajustar max-h do drawer |
+| `vercel.json` | Adicionar regras de cache 1 ano para audio/sounds/videos e aumentar cache de imagens genéricas |
+| `vite.config.ts` | Aumentar maxAgeSeconds do supabase-images para 90 dias |
 
