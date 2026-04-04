@@ -17,6 +17,9 @@ import { DotPattern } from "@/components/ui/dot-pattern";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { ADMIN_EMAIL } from "@/lib/adminConfig";
 
+// Eagerly preload QuestoesResolver chunk so navigation is instant
+const resolverPreload = import("./QuestoesResolver");
+
 const FREE_AREAS = ["Direito Constitucional", "Direito Administrativo"];
 
 const AREAS_ORDEM = [
