@@ -268,9 +268,16 @@ export const useProgressiveArticles = <T = any>({
   loadInitialRef.current = loadInitial;
 
   useEffect(() => {
-    if (!enabled) return;
-    if (isLoadingCache) return;
+    if (!enabled) {
+      console.log(`🚫 [${tableName}] useProgressiveArticles disabled`);
+      return;
+    }
+    if (isLoadingCache) {
+      console.log(`⏳ [${tableName}] Waiting for IndexedDB cache...`);
+      return;
+    }
 
+    console.log(`🚀 [${tableName}] Cache ready (hasData: ${!!cachedData}, length: ${cachedData?.length || 0}), calling loadInitial`);
     loadInitialRef.current();
 
     return () => {
