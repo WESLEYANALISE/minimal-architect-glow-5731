@@ -514,7 +514,7 @@ const ExplicacaoModal = ({ open, onOpenChange, explicacao }: Props) => {
             </div>
           ) : conteudoAtual ? (
             <article className="prose prose-invert prose-sm max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-li:text-muted-foreground">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                 {conteudoAtual}
               </ReactMarkdown>
             </article>
