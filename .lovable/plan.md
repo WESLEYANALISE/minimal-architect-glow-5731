@@ -1,61 +1,42 @@
 
 
-## Plano: Categorizar Ferramentas + Sugestões de Novas Funções
+## Plano: Melhorar Conversor de Imagens com Categorias e TinyPNG
 
 ### Situação Atual
-O menu Ferramentas (Sheet mobile) lista 8 itens em lista plana, sem agrupamento. A página desktop (`Ferramentas.tsx`) tem apenas 3 itens (Acesso Desktop, Localizador, Ranking).
+A página `ConverterImagens.tsx` já lista ~60 tabelas/colunas do banco, mas mostra tudo como lista plana de "tabela:coluna" — difícil de entender e navegar. A edge function `converter-imagem-webp` já usa TinyPNG para comprimir e converter para WebP.
 
-### Proposta de Categorias
+### O que muda
 
-**1. 🎓 Faculdade** — Ferramentas para o estudante de Direito
-- Simulados *(já existe)*
-- Carreiras Jurídicas *(já existe)*
-- Ranking de Faculdades *(já existe na página, não no Sheet)*
-- **Pesquisar TCC** *(já existe em `/ferramentas/tcc`, mas não aparece no Sheet)*
-- **Plano de Estudos** *(já existe em `/plano-estudos`, não aparece no Sheet)*
+**1. Reorganizar em categorias visuais com nomes amigáveis**
 
-**2. 💼 Advogado** — Ferramentas para o dia a dia profissional
-- Evelyn (Assistente IA) *(já existe)*
-- Dicionário *(já existe)*
-- **Consulta CNPJ** *(já existe em `/advogado/consulta-cnpj`, não aparece no Sheet)*
-- **Calculadora de Prazos** *(já existe em `/advogado/prazos`, não aparece no Sheet)*
-- Localizador Jurídico *(já existe na página desktop)*
+| Categoria | Tabelas incluídas |
+|---|---|
+| **Capas Principais** | CURSOS (capa, capa-modulo, capa-area), JURIFLIX, CAPA-BIBILIOTECA, carreiras_capas, radar_capas_diarias |
+| **Bibliotecas** | Todas as BIBLIOTECA-* (OAB, Estudos, Clássicos, Oratória, Liderança, Fora da Toga) |
+| **Blog e Notícias** | BLOGGER_JURIDICO, blogger_politico, noticias_juridicas_cache, noticias_politicas_cache |
+| **Resumos e Flashcards** | RESUMO, RESUMOS_ARTIGOS_LEI, FLASHCARDS, flashcards_areas_capas |
+| **Simulados e Questões** | SIMULADO-OAB, SIMULADO-ESCREVENTE, SIMULADO-JUIZ, QUESTOES_*, SIMULACAO_* |
+| **Áudio e Vídeo** | AUDIO-AULA, audiencias_*, documentarios_juridicos, CURSOS-APP |
+| **Política** | Todos os rankings de deputados/senadores, tres_poderes, senado_senadores |
+| **Outros** | LEITURA_FORMATADA, leitura_interativa, mapas_mentais, notificacoes_push, meu_brasil_juristas, ESTAGIO-BLOG |
 
-**3. 📰 Informação** — Conteúdo e atualidades jurídicas
-- Boletins *(já existe)*
-- Política *(já existe)*
-- Análises *(já existe)*
-- Documentários *(já existe)*
+**2. Interface renovada**
 
-**4. 🔗 Links Úteis** — Portais jurídicos externos
-- *(manter os links do STF, STJ, CNJ etc. como seção final ou aba separada)*
+- Filtro por categoria no topo (chips/tabs horizontais scrolláveis)
+- Ao selecionar categoria, mostra as tabelas daquela categoria com preview de imagens
+- Estatísticas por categoria (total, WebP, pendentes)
+- Botão "Converter" por categoria ou geral
+- Paleta de cores do app (vermelho/accent), sem amber
 
-### Funções que Faltam (sugestões de novas)
+**3. Melhorias de UX**
 
-| Função | Categoria | Descrição |
-|---|---|---|
-| **Calculadora de Honorários** | Advogado | Calcula honorários com base na tabela da OAB estadual |
-| **Gerador de Procuração** | Advogado | Cria procurações ad judicia e ad negotia com IA |
-| **Cronômetro de Audiência** | Advogado | Timer para controlar tempo de sustentação oral |
-| **Consulta Processual** | Advogado | Busca processos por número nos tribunais |
-| **Mapa Mental** | Faculdade | *(já existe em `/mapa-mental`, colocar no Sheet)* |
-| **Agenda Jurídica** | Advogado | Calendário com feriados forenses e prazos |
-
-### Implementação no Sheet Mobile
-
-- Adicionar um label de seção (texto cinza, tipo "FACULDADE", "ADVOGADO", "INFORMAÇÃO") antes de cada grupo
-- Manter a mesma estética dos cards atuais
-- Adicionar os itens que já existem mas não aparecem no Sheet (CNPJ, Prazos, TCC, Plano de Estudos, Ranking, Localizador, Mapa Mental)
-
-### Implementação na Página Desktop
-
-- Reorganizar `ferramentasLista` em arrays por categoria
-- Renderizar com subtítulo de seção antes de cada grupo
-- Mover os 3 itens atuais para as categorias corretas
+- Nomes amigáveis nas tabelas (ex: "JuriFlix — Capas" em vez de "JURIFLIX:capa")
+- Mostrar thumbnail das imagens pendentes diretamente na lista
+- Progresso visual por categoria
+- Indicador de economia total em destaque
 
 ### Arquivos modificados
 | Arquivo | Alteração |
 |---|---|
-| `src/components/FerramentasSheet.tsx` | Reorganizar itens em categorias com labels de seção |
-| `src/pages/Ferramentas.tsx` | Reorganizar em categorias no desktop também |
+| `src/pages/ferramentas/ConverterImagens.tsx` | Reescrever com categorias, filtros, nomes amigáveis e paleta correta |
 
