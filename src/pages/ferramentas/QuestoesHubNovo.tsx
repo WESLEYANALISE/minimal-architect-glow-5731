@@ -273,12 +273,6 @@ const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => 
                     </p>
                   </div>
 
-                  {/* Progress */}
-                  {tema.progressoPercent > 0 && (
-                    <span className="text-[11px] font-semibold shrink-0" style={{ color: "hsl(40, 80%, 55%)" }}>
-                      {tema.progressoPercent}%
-                    </span>
-                  )}
 
                   {/* Favorite button */}
                   <button
