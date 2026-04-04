@@ -1,33 +1,41 @@
 
 
-## Plano: Remover Limite de 1000 Linhas no Conversor de Imagens
+## Plano: Pré-carregar Leis no Startup do App
 
 ### Problema
-O Supabase limita queries a 1000 linhas por padrão. O conversor mostra 18.299 imagens, mas muitas tabelas com mais de 1000 registros estão sendo truncadas silenciosamente.
+Quando o usuário entra na Constituição ou qualquer código, o `useProgressiveArticles` precisa:
+1. Abrir IndexedDB → verificar cache → se vazio, buscar primeiro chunk (200 artigos) → depois carregar o resto em background
 
-Há dois pontos afetados:
-
-1. **`carregarImagens()`** (linha 227-231) — busca `id` e coluna de imagem sem `.range()`, recebendo no máximo 1000 por tabela
-2. **`carregarEconomia()`** (linha 189-191) — busca da tabela `cache_imagens_webp` também limitada a 1000
+Isso causa delay de 2-5 segundos na primeira visita. O `useHomePreloader` já pré-carrega tabelas da home (notícias, capas, cursos), mas **não pré-carrega nenhuma lei/código**.
 
 ### Solução
+Adicionar uma fase de pré-carregamento de leis no `useHomePreloader` que roda em background após os dados da home, preenchendo o cache IndexedDB que o `useProgressiveArticles` já usa. Quando o usuário entrar na Constituição ou qualquer código, o cache já estará populado e a exibição será instantânea.
 
-Criar uma função auxiliar `fetchAllRows()` que faz paginação automática em blocos de 1000, iterando com `.range(from, to)` até receber menos que 1000 resultados. Aplicar nos dois pontos.
+### Implementação
+
+**Arquivo: `src/hooks/useHomePreloader.ts`**
+
+Adicionar uma nova função `preloadLegislation()` que:
+- Define as tabelas prioritárias de legislação (CF, CP, CC, CPC, CPP, CLT, CDC, CTN, ECA)
+- Para cada tabela, verifica se já existe no IndexedDB (`vade-mecum-db` → store `articles`)
+- Se não existe, busca todos os artigos em chunks de 500 usando `.range()` e salva no IndexedDB com o mesmo formato/chave que o `useProgressiveArticles` usa
+- Roda com `requestIdleCallback` após o preload principal (fase 2, ~10s depois do app abrir)
+- Prioriza CF e CP primeiro (mais acessados), depois os demais
+
+A chave de cache usada pelo `useProgressiveArticles` é: `{tableName}:{idMin}:{idMax}` — para a CF com seções, são duas chaves separadas (cf body e adct). Para os demais códigos sem filtro de ID, a chave é `{tableName}:min:max`.
 
 ```text
-fetchAllRows(tabela, coluna, filtros)
-  página = 0
-  todos = []
-  loop:
-    data = query.range(página*1000, (página+1)*1000-1)
-    todos += data
-    se data.length < 1000 → break
-    página++
-  retorna todos
+Fluxo:
+App abre → useHomePreloader
+  Fase 1 (imediata): dados da home (já existe)
+  Fase 2 (~8s): pré-carregar leis prioritárias em IndexedDB
+    CF body (id < 273)
+    CF adct (id >= 273)  
+    CP, CC, CPC, CPP, CLT, CDC, CTN, ECA
 ```
 
 ### Arquivos modificados
 | Arquivo | Alteração |
 |---|---|
-| `src/pages/ferramentas/ConverterImagens.tsx` | Adicionar `fetchAllRows()` e usá-la em `carregarImagens()` e `carregarEconomia()` |
+| `src/hooks/useHomePreloader.ts` | Adicionar `preloadLegislation()` chamada após preload principal |
 
