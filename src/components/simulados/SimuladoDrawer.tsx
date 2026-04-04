@@ -33,8 +33,8 @@ import slideJuiz1 from "@/assets/slide-juiz-1.webp";
 import capaAgentePF from "@/assets/capa-agente-pf.webp";
 import capaDelegado from "@/assets/capa-delegado-policia.webp";
 import capaOabDrawer from "@/assets/capa-oab-drawer.webp";
-import bandeiraPiaui from "@/assets/bandeira-piaui.png";
-import bandeiraSaoPaulo from "@/assets/bandeira-sao-paulo.png";
+import bandeiraPiaui from "@/assets/bandeira-piaui.webp";
+import bandeiraSaoPaulo from "@/assets/bandeira-sao-paulo.webp";
 const CAPAS: Record<string, { img: string; salario: string }> = {
   "escrevente técnico judiciário": { img: slideEscrevente1, salario: "R$ 6.043" },
   "juiz(a) substituto(a)": { img: slideJuiz1, salario: "R$ 33.689" },

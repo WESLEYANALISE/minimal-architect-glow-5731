@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, PieChart, Pie, Tooltip, CartesianGrid, Legend } from "recharts";
 import { motion } from "framer-motion";
-import draArabellaAvatar from "@/assets/dra-jurisia-avatar.png";
+import draArabellaAvatar from "@/assets/dra-jurisia-avatar.webp";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";

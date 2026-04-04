@@ -1,9 +1,9 @@
 import { memo } from "react";
 import { Video, ChevronRight, MonitorPlay, Headphones, Crown } from "lucide-react";
 import { useDeviceType } from "@/hooks/use-device-type";
-import capaIniciante from "@/assets/portal-videos-iniciante.jpg";
-import capaVideoaulas from "@/assets/portal-videos-videoaulas.jpg";
-import capaAudioaulas from "@/assets/portal-videos-audioaulas.jpg";
+import capaIniciante from "@/assets/portal-videos-iniciante.webp";
+import capaVideoaulas from "@/assets/portal-videos-videoaulas.webp";
+import capaAudioaulas from "@/assets/portal-videos-audioaulas.webp";
 
 interface PortalDeVideosSectionProps {
   navigate: (path: string) => void;

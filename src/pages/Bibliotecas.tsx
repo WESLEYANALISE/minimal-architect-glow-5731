@@ -24,7 +24,7 @@ import capaPesquisaCientifica from "@/assets/capa-pesquisa-cientifica.webp";
 import capaPortugues from "@/assets/capa-portugues.webp";
 import capaOab from "@/assets/capa-biblioteca-oab.webp";
 import capaPolitica from "@/assets/politico-esquerda.webp";
-import capaOabAreas from "@/assets/capa-oab-areas.jpeg?format=webp&quality=75";
+import capaOabAreas from "@/assets/capa-oab-areas.webp";
 import themisFull from "@/assets/themis-full.webp";
 import capaRedacao from "@/assets/capa-redacao-concursos.webp";
 import capaColocacao from "@/assets/capa-colocacao-pronominal.webp";

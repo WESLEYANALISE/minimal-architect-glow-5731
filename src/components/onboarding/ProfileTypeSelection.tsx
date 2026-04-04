@@ -4,8 +4,8 @@ import { GraduationCap, Scale } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
-import onboardingUniversitario from '@/assets/onboarding-universitario.jpg?format=webp&quality=75';
-import onboardingOab from '@/assets/onboarding-oab.jpg?format=webp&quality=75';
+import onboardingUniversitario from "@/assets/onboarding-universitario.webp";
+import onboardingOab from "@/assets/onboarding-oab.webp";
 
 interface ProfileTypeSelectionProps {
   onComplete: () => void;

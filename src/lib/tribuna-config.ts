@@ -1,10 +1,10 @@
 import { Scale, Landmark, Building2, Shield } from "lucide-react";
-import capaStf from "@/assets/tribuna/stf.jpg?format=webp&quality=75";
-import capaStj from "@/assets/tribuna/stj.jpg?format=webp&quality=75";
-import capaTst from "@/assets/tribuna/tst.jpg?format=webp&quality=75";
-import capaCnj from "@/assets/tribuna/cnj.jpg?format=webp&quality=75";
-import capaTcu from "@/assets/tribuna/tcu.jpg?format=webp&quality=75";
-import capaTjsp from "@/assets/tribuna/tjsp.jpg?format=webp&quality=75";
+import capaStf from "@/assets/tribuna/stf.webp";
+import capaStj from "@/assets/tribuna/stj.webp";
+import capaTst from "@/assets/tribuna/tst.webp";
+import capaCnj from "@/assets/tribuna/cnj.webp";
+import capaTcu from "@/assets/tribuna/tcu.webp";
+import capaTjsp from "@/assets/tribuna/tjsp.webp";
 
 export interface TribunaInstituicao {
   slug: string;

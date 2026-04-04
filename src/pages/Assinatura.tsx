@@ -15,7 +15,7 @@ import { useAssinaturaBackgroundAudio } from "@/hooks/useAssinaturaBackgroundAud
 import { useFacebookPixel } from "@/hooks/useFacebookPixel";
 import { useTrialStatus } from "@/hooks/useTrialStatus";
 import { useSubscriptionFunnelTracking } from "@/hooks/useSubscriptionFunnelTracking";
-import newLogo from '@/assets/logo-direito-premium-new.png?format=webp&quality=80';
+import newLogo from "@/assets/logo-direito-premium-new.webp";
 import heroBackground from '@/assets/assinatura-bg.webp';
 
 import PlanoCardNovo from "@/components/assinatura/PlanoCardNovo";

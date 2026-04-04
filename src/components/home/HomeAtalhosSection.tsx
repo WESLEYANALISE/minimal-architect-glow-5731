@@ -5,7 +5,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { EmAltaCarousel } from "@/components/EmAltaCarousel";
 import { loadAcessoRapidoConfig, AcessoRapidoItem } from "@/components/home/PersonalizarAcessoRapidoSheet";
 import { HomeAtalhosPersonalizarSheet } from "@/components/home/HomeAtalhosPersonalizarSheet";
-import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
+import brasaoRepublica from "@/assets/brasao-republica.webp";
 
 const MODE_KEY = "atalhos-home-mode";
 

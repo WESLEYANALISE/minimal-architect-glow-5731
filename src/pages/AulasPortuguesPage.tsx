@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, BookOpen } from "lucide-react";
-import lawyerJusticeBg from "@/assets/lawyer-justice-bg.jpeg";
+import lawyerJusticeBg from "@/assets/lawyer-justice-bg.webp";
 
 const AulasPortuguesPage = () => {
   const navigate = useNavigate();

@@ -81,7 +81,7 @@ import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { AuthRequiredDialog } from "@/components/auth/AuthRequiredDialog";
 import { useTrialStatus } from "@/hooks/useTrialStatus";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import logoDireitoPremium from '@/assets/logo-direito-premium-new.png?format=webp&quality=80';
+import logoDireitoPremium from "@/assets/logo-direito-premium-new.webp";
 import SearchBarAnimatedText from '@/components/SearchBarAnimatedText';
 
 const APP_STORE_URL = "https://apps.apple.com/id/app/direito-conte%C3%BAdo-jur%C3%ADdico/id6450845861";

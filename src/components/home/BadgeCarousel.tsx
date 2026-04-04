@@ -1,9 +1,9 @@
-import carouselPf from "@/assets/carousel-pf.png?format=webp&quality=75&w=128&h=128";
-import carouselPrf from "@/assets/carousel-prf.png?format=webp&quality=75&w=128&h=128";
-import carouselOab from "@/assets/carousel-oab.png?format=webp&quality=75&w=128&h=128";
-import carouselJuiz from "@/assets/carousel-juiz.png?format=webp&quality=75&w=128&h=128";
-import carouselArbitro from "@/assets/carousel-arbitro.png?format=webp&quality=75&w=128&h=128";
-import carouselPcivil from "@/assets/carousel-pcivil.png?format=webp&quality=75&w=128&h=128";
+import carouselPf from "@/assets/carousel-pf.webp";
+import carouselPrf from "@/assets/carousel-prf.webp";
+import carouselOab from "@/assets/carousel-oab.webp";
+import carouselJuiz from "@/assets/carousel-juiz.webp";
+import carouselArbitro from "@/assets/carousel-arbitro.webp";
+import carouselPcivil from "@/assets/carousel-pcivil.webp";
 
 const BADGES = [
   { src: carouselPf, alt: "Polícia Federal" },

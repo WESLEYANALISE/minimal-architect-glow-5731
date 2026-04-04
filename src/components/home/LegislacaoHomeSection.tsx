@@ -7,8 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, Scale, Landmark, BookOpen, Bell, Loader2, Settings, Shield, Newspaper, Users } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import brasaoBrasil from "@/assets/brasao-brasil.png";
-import brasaoBrasilHD from "@/assets/brasao-brasil-hd.png";
+import brasaoBrasil from "@/assets/brasao-brasil.webp";
+import brasaoBrasilHD from "@/assets/brasao-brasil-hd.webp";
 import { useNoticiasLegislativas } from "@/hooks/useNoticiasLegislativas";
 import { PersonalizarAcessoRapidoSheet, loadAcessoRapidoConfig, AcessoRapidoItem } from "./PersonalizarAcessoRapidoSheet";
 

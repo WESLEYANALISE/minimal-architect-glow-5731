@@ -4,7 +4,7 @@ import { X, Play } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import VideoPlayer from "@/components/VideoPlayer";
 
-import logoImg from "@/assets/logo-direito-premium-new.png?format=webp&quality=80";
+import logoImg from "@/assets/logo-direito-premium-new.webp";
 
 interface VideoImersivProps {
   isOpen: boolean;

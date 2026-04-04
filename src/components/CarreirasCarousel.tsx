@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { UniversalImage } from '@/components/ui/universal-image';
 
 // Imagens locais para PRF e PF
-import prfCapa from '@/assets/prf-capa.jpg?format=webp&quality=75';
+import prfCapa from "@/assets/prf-capa.webp";
 import pfCapa from '@/assets/pf-004-opt.webp';
 
 interface Carreira {

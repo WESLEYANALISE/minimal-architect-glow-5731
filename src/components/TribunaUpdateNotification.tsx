@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { X, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import capaStf from "@/assets/tribuna/stf.jpg?format=webp&quality=75";
+import capaStf from "@/assets/tribuna/stf.webp";
 
 const STORAGE_KEY_PREFIX = "tribuna-update-vista-";
 

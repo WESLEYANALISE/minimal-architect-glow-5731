@@ -1,15 +1,15 @@
 import { useRef, useState, useCallback } from "react";
 import { Star } from "lucide-react";
 
-import dep1 from "@/assets/depoimentos/depoimento-1.png";
-import dep2 from "@/assets/depoimentos/depoimento-2.png";
-import dep3 from "@/assets/depoimentos/depoimento-3.png";
-import dep4 from "@/assets/depoimentos/depoimento-4.png";
-import dep5 from "@/assets/depoimentos/depoimento-5.png";
-import dep6 from "@/assets/depoimentos/depoimento-6.png";
-import dep7 from "@/assets/depoimentos/depoimento-7.png";
-import dep8 from "@/assets/depoimentos/depoimento-8.png";
-import dep9 from "@/assets/depoimentos/depoimento-9.png";
+import dep1 from "@/assets/depoimentos/depoimento-1.webp";
+import dep2 from "@/assets/depoimentos/depoimento-2.webp";
+import dep3 from "@/assets/depoimentos/depoimento-3.webp";
+import dep4 from "@/assets/depoimentos/depoimento-4.webp";
+import dep5 from "@/assets/depoimentos/depoimento-5.webp";
+import dep6 from "@/assets/depoimentos/depoimento-6.webp";
+import dep7 from "@/assets/depoimentos/depoimento-7.webp";
+import dep8 from "@/assets/depoimentos/depoimento-8.webp";
+import dep9 from "@/assets/depoimentos/depoimento-9.webp";
 
 const DEPOIMENTOS = [dep1, dep2, dep3, dep4, dep5, dep6, dep7, dep8, dep9];
 

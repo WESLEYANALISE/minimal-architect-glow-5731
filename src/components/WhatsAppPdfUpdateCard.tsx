@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, MessageCircle, FileText, Send, CheckCircle2, BookOpen, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import whatsappResultado from "@/assets/whatsapp-update-resultado.png";
-import whatsappModal from "@/assets/whatsapp-update-modal.png";
+import whatsappResultado from "@/assets/whatsapp-update-resultado.webp";
+import whatsappModal from "@/assets/whatsapp-update-modal.webp";
 
 const STORAGE_KEY = "whatsappPdfUpdateSeen";
 

@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Gavel, Target, Scale } from "lucide-react";
 import { motion } from "framer-motion";
-import lawyerJusticeBg from "@/assets/lawyer-justice-bg.jpeg";
-import oabPrimeiraThumb from "@/assets/thumbnails/oab-primeira-fase-thumb.jpg?format=webp&quality=75";
-import oabSegundaThumb from "@/assets/thumbnails/oab-segunda-fase-thumb.jpg?format=webp&quality=75";
+import lawyerJusticeBg from "@/assets/lawyer-justice-bg.webp";
+import oabPrimeiraThumb from "@/assets/thumbnails/oab-primeira-fase-thumb.webp";
+import oabSegundaThumb from "@/assets/thumbnails/oab-segunda-fase-thumb.webp";
 
 const AulasOabPage = () => {
   const navigate = useNavigate();

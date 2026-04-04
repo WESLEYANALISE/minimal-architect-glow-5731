@@ -8,10 +8,10 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import ImagensCarousel from "@/components/ui/ImagensCarousel";
 
-import capaResumosJuridicos from "@/assets/capa-resumos-juridicos.jpg";
-import capaConceitos from "@/assets/capa-resumo-conceitos.jpg";
-import capaCornell from "@/assets/capa-resumo-cornell.jpg";
-import capaFeynman from "@/assets/capa-resumo-feynman.jpg";
+import capaResumosJuridicos from "@/assets/capa-resumos-juridicos.webp";
+import capaConceitos from "@/assets/capa-resumo-conceitos.webp";
+import capaCornell from "@/assets/capa-resumo-cornell.webp";
+import capaFeynman from "@/assets/capa-resumo-feynman.webp";
 
 const METODOS = [
   {

@@ -5,7 +5,7 @@ import { useProgressoMateria, useRanking, calcularXP } from "@/hooks/useGamifica
 import { TrilhaSerpentina100 } from "@/components/gamificacao/TrilhaSerpentina100";
 import { ArrowLeft, Trophy, Star, Zap, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import bgPenal from "@/assets/gamificacao-bg-penal.jpg?format=webp&quality=75";
+import bgPenal from "@/assets/gamificacao-bg-penal.webp";
 
 const ADMIN_EMAIL = "wn7corporation@gmail.com";
 

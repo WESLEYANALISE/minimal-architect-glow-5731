@@ -33,8 +33,8 @@ import capaRegencia from "@/assets/capa-regencia-verbal.webp";
 import capaOracoes from "@/assets/capa-oracoes-coordenadas.webp";
 import capaSemantica from "@/assets/capa-semantica.webp";
 import capaInterpretacao from "@/assets/capa-interpretacao-textos.webp";
-import capaDireitoPenal from "@/assets/capa-direito-penal.jpg?format=webp&quality=75";
-import capaOabAreas from "@/assets/capa-oab-areas.jpeg?format=webp&quality=75";
+import capaDireitoPenal from "@/assets/capa-direito-penal.webp";
+import capaOabAreas from "@/assets/capa-oab-areas.webp";
 
 const PORTUGUES_FALLBACK_COVERS: Record<string, string> = {
   "Redação para concursos": capaRedacao,

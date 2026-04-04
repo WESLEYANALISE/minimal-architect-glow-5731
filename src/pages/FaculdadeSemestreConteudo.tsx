@@ -11,16 +11,16 @@ import { UniversalImage } from "@/components/ui/universal-image";
 import { LivroCard } from "@/components/LivroCard";
 import { Input } from "@/components/ui/input";
 
-import capaSem1 from "@/assets/capa-semestre-1.jpg";
-import capaSem2 from "@/assets/capa-semestre-2.jpg";
-import capaSem3 from "@/assets/capa-semestre-3.jpg";
-import capaSem4 from "@/assets/capa-semestre-4.jpg";
-import capaSem5 from "@/assets/capa-semestre-5.jpg";
-import capaSem6 from "@/assets/capa-semestre-6.jpg";
-import capaSem7 from "@/assets/capa-semestre-7.jpg";
-import capaSem8 from "@/assets/capa-semestre-8.jpg";
-import capaSem9 from "@/assets/capa-semestre-9.jpg";
-import capaSem10 from "@/assets/capa-semestre-10.jpg";
+import capaSem1 from "@/assets/capa-semestre-1.webp";
+import capaSem2 from "@/assets/capa-semestre-2.webp";
+import capaSem3 from "@/assets/capa-semestre-3.webp";
+import capaSem4 from "@/assets/capa-semestre-4.webp";
+import capaSem5 from "@/assets/capa-semestre-5.webp";
+import capaSem6 from "@/assets/capa-semestre-6.webp";
+import capaSem7 from "@/assets/capa-semestre-7.webp";
+import capaSem8 from "@/assets/capa-semestre-8.webp";
+import capaSem9 from "@/assets/capa-semestre-9.webp";
+import capaSem10 from "@/assets/capa-semestre-10.webp";
 
 const CAPAS_SEMESTRE = [capaSem1, capaSem2, capaSem3, capaSem4, capaSem5, capaSem6, capaSem7, capaSem8, capaSem9, capaSem10];
 

@@ -11,25 +11,25 @@ import {
 import { motion } from "framer-motion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-import logoUsp from "@/assets/logo-usp.png";
-import logoUnip from "@/assets/logo-unip.png";
-import logoAnhanguera from "@/assets/logo-anhanguera.png";
-import logoEstacio from "@/assets/logo-estacio.png";
-import logoUninove from "@/assets/logo-uninove.png";
-import logoUnopar from "@/assets/logo-unopar.png";
-import logoPucsp from "@/assets/logo-pucsp.png";
-import logoMackenzie from "@/assets/logo-mackenzie.png";
-import logoUfmg from "@/assets/logo-ufmg.png";
-import logoUerj from "@/assets/logo-uerj.png";
+import logoUsp from "@/assets/logo-usp.webp";
+import logoUnip from "@/assets/logo-unip.webp";
+import logoAnhanguera from "@/assets/logo-anhanguera.webp";
+import logoEstacio from "@/assets/logo-estacio.webp";
+import logoUninove from "@/assets/logo-uninove.webp";
+import logoUnopar from "@/assets/logo-unopar.webp";
+import logoPucsp from "@/assets/logo-pucsp.webp";
+import logoMackenzie from "@/assets/logo-mackenzie.webp";
+import logoUfmg from "@/assets/logo-ufmg.webp";
+import logoUerj from "@/assets/logo-uerj.webp";
 
-import capaDiscPrivado from "@/assets/capa-disc-teoria-geral-direito-privado.jpg";
-import capaDiscRomano from "@/assets/capa-disc-direito-romano.jpg";
-import capaDiscEconomia from "@/assets/capa-disc-economia-politica.jpg";
-import capaDiscEstado from "@/assets/capa-disc-teoria-geral-estado.jpg";
-import capaDiscIntro from "@/assets/capa-disc-intro-estudo-direito.jpg";
-import capaDiscMetodologia from "@/assets/capa-disc-metodologia-direito.jpg";
+import capaDiscPrivado from "@/assets/capa-disc-teoria-geral-direito-privado.webp";
+import capaDiscRomano from "@/assets/capa-disc-direito-romano.webp";
+import capaDiscEconomia from "@/assets/capa-disc-economia-politica.webp";
+import capaDiscEstado from "@/assets/capa-disc-teoria-geral-estado.webp";
+import capaDiscIntro from "@/assets/capa-disc-intro-estudo-direito.webp";
+import capaDiscMetodologia from "@/assets/capa-disc-metodologia-direito.webp";
 
-import capaSem1 from "@/assets/capa-semestre-1.jpg";
+import capaSem1 from "@/assets/capa-semestre-1.webp";
 
 const LOGOS: Record<string, string> = {
   "usp": logoUsp, "unip": logoUnip, "anhanguera": logoAnhanguera,

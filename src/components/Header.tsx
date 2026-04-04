@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { PesquisarSheet } from "./PesquisarSheet";
 import SearchBarAnimatedText from "./SearchBarAnimatedText";
-import logoDireitoPremium from '@/assets/logo-direito-premium-new.png?format=webp&quality=80';
+import logoDireitoPremium from "@/assets/logo-direito-premium-new.webp";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 

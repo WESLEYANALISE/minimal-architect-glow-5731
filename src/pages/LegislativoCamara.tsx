@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Users, TrendingUp, Receipt, FileText, ChevronRight, Landmark } from "lucide-react";
-import capaDeputados from "@/assets/legislativo/capa-deputados.jpg";
-import capaProjetosLei from "@/assets/legislativo/capa-projetos-lei.jpg";
-import capaRankingGastos from "@/assets/legislativo/capa-ranking-gastos.jpg";
-import capaEmAlta from "@/assets/legislativo/capa-em-alta.jpg";
+import capaDeputados from "@/assets/legislativo/capa-deputados.webp";
+import capaProjetosLei from "@/assets/legislativo/capa-projetos-lei.webp";
+import capaRankingGastos from "@/assets/legislativo/capa-ranking-gastos.webp";
+import capaEmAlta from "@/assets/legislativo/capa-em-alta.webp";
 
 interface CamaraItem {
   id: string;

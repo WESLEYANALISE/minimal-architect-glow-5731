@@ -3,7 +3,7 @@ import { Target, BarChart3, GraduationCap, BookMarked, ChevronRight, Flame, Brai
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import { useFlashcardStats } from "@/hooks/useFlashcardStudyProgress";
-import draArabellaAvatar from "@/assets/dra-jurisia-avatar.png";
+import draArabellaAvatar from "@/assets/dra-jurisia-avatar.webp";
 
 const SESSION_TYPED_KEY = "arabella_flashcards_typed";
 

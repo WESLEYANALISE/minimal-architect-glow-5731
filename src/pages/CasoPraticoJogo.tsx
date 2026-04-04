@@ -12,10 +12,10 @@ import { PointsAnimation } from "@/components/simulacao/PointsAnimation";
 import { useGamificacaoSounds } from "@/hooks/useGamificacaoSounds";
 import { motion, AnimatePresence } from "framer-motion";
 import CasoPraticoAudioPlayer from "@/components/CasoPraticoAudioPlayer";
-import bgPenal from "@/assets/caso-pratico-bg-penal.jpg?format=webp&quality=75";
-import doutor1Img from "@/assets/doutor-1.png";
-import doutor2Img from "@/assets/doutor-2.png";
-import doutora1Img from "@/assets/doutora-1.png";
+import bgPenal from "@/assets/caso-pratico-bg-penal.webp";
+import doutor1Img from "@/assets/doutor-1.webp";
+import doutor2Img from "@/assets/doutor-2.webp";
+import doutora1Img from "@/assets/doutora-1.webp";
 
 const DOUTORES = [
   { nome: "Dr. Rafael Mendes", avatar: doutor1Img, genero: "masculino" as const },

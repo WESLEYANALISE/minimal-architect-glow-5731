@@ -5,12 +5,12 @@
  * já que o storage legado está inacessível.
  */
 
-import modulo1 from '@/assets/aulas-em-tela/modulo-1.jpg';
-import modulo2 from '@/assets/aulas-em-tela/modulo-2.jpg';
-import modulo3 from '@/assets/aulas-em-tela/modulo-3.jpg';
-import modulo4 from '@/assets/aulas-em-tela/modulo-4.jpg';
-import modulo5 from '@/assets/aulas-em-tela/modulo-5.jpg';
-import modulo6 from '@/assets/aulas-em-tela/modulo-6.jpg';
+import modulo1 from "@/assets/aulas-em-tela/modulo-1.webp";
+import modulo2 from "@/assets/aulas-em-tela/modulo-2.webp";
+import modulo3 from "@/assets/aulas-em-tela/modulo-3.webp";
+import modulo4 from "@/assets/aulas-em-tela/modulo-4.webp";
+import modulo5 from "@/assets/aulas-em-tela/modulo-5.webp";
+import modulo6 from "@/assets/aulas-em-tela/modulo-6.webp";
 
 const LEGACY_HOST = 'phzcazcyjhlmdchcjagy.supabase.co';
 

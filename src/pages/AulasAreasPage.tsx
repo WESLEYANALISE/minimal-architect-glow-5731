@@ -4,38 +4,38 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Scale, Gavel, Users, Landmark, FileText, Shield, Building2, HardHat, Coins, Briefcase, Heart, Leaf, Globe2, Trophy, MapPin, Brain, Megaphone, BookOpen, GraduationCap, Footprints, ChevronRight, ZoomIn, ZoomOut, type LucideIcon } from "lucide-react";
 import { motion } from "framer-motion";
-import lawyerJusticeBg from "@/assets/lawyer-justice-bg.jpeg";
+import lawyerJusticeBg from "@/assets/lawyer-justice-bg.webp";
 
 // Thumbnails - Mais Cobradas (WebP + compressed + resized at build time)
-import thumbConstitucional from "@/assets/thumbnails/area-constitucional.jpg?format=webp&quality=70&w=400";
-import thumbCivil from "@/assets/thumbnails/area-civil.jpg?format=webp&quality=70&w=400";
-import thumbPenal from "@/assets/thumbnails/area-penal.jpg?format=webp&quality=70&w=400";
-import thumbProcCivil from "@/assets/thumbnails/area-proc-civil.jpg?format=webp&quality=70&w=400";
-import thumbProcPenal from "@/assets/thumbnails/area-proc-penal.jpg?format=webp&quality=70&w=400";
-import thumbAdministrativo from "@/assets/thumbnails/area-administrativo.jpg?format=webp&quality=70&w=400";
-import thumbTrabalho from "@/assets/thumbnails/area-trabalho.jpg?format=webp&quality=70&w=400";
-import thumbTributario from "@/assets/thumbnails/area-tributario.jpg?format=webp&quality=70&w=400";
+import thumbConstitucional from "@/assets/thumbnails/area-constitucional.webp";
+import thumbCivil from "@/assets/thumbnails/area-civil.webp";
+import thumbPenal from "@/assets/thumbnails/area-penal.webp";
+import thumbProcCivil from "@/assets/thumbnails/area-proc-civil.webp";
+import thumbProcPenal from "@/assets/thumbnails/area-proc-penal.webp";
+import thumbAdministrativo from "@/assets/thumbnails/area-administrativo.webp";
+import thumbTrabalho from "@/assets/thumbnails/area-trabalho.webp";
+import thumbTributario from "@/assets/thumbnails/area-tributario.webp";
 // Alta Incidência
-import thumbEmpresarial from "@/assets/thumbnails/area-empresarial.jpg?format=webp&quality=70&w=400";
-import thumbPrevidenciario from "@/assets/thumbnails/area-previdenciario.jpg?format=webp&quality=70&w=400";
-import thumbAmbiental from "@/assets/thumbnails/area-ambiental.jpg?format=webp&quality=70&w=400";
-import thumbProcTrabalho from "@/assets/thumbnails/area-proc-trabalho.jpg?format=webp&quality=70&w=400";
-import thumbHumanos from "@/assets/thumbnails/area-humanos.jpg?format=webp&quality=70&w=400";
-import thumbFinanceiro from "@/assets/thumbnails/area-financeiro.jpg?format=webp&quality=70&w=400";
+import thumbEmpresarial from "@/assets/thumbnails/area-empresarial.webp";
+import thumbPrevidenciario from "@/assets/thumbnails/area-previdenciario.webp";
+import thumbAmbiental from "@/assets/thumbnails/area-ambiental.webp";
+import thumbProcTrabalho from "@/assets/thumbnails/area-proc-trabalho.webp";
+import thumbHumanos from "@/assets/thumbnails/area-humanos.webp";
+import thumbFinanceiro from "@/assets/thumbnails/area-financeiro.webp";
 // Complementares
-import thumbIntPublico from "@/assets/thumbnails/area-int-publico.jpg?format=webp&quality=70&w=400";
-import thumbIntPrivado from "@/assets/thumbnails/area-int-privado.jpg?format=webp&quality=70&w=400";
-import thumbConcorrencial from "@/assets/thumbnails/area-concorrencial.jpg?format=webp&quality=70&w=400";
-import thumbDesportivo from "@/assets/thumbnails/area-desportivo.jpg?format=webp&quality=70&w=400";
-import thumbUrbanistico from "@/assets/thumbnails/area-urbanistico.jpg?format=webp&quality=70&w=400";
-import thumbLeiPenalEsp from "@/assets/thumbnails/area-lei-penal-esp.jpg?format=webp&quality=70&w=400";
-import thumbFilosofia from "@/assets/thumbnails/area-filosofia.jpg?format=webp&quality=70&w=400";
-import thumbPoliticas from "@/assets/thumbnails/area-politicas.jpg?format=webp&quality=70&w=400";
-import thumbPratica from "@/assets/thumbnails/area-pratica.jpg?format=webp&quality=70&w=400";
-import thumbPortugues from "@/assets/thumbnails/area-portugues-comp.jpg?format=webp&quality=70&w=400";
-import thumbPesquisa from "@/assets/thumbnails/area-pesquisa.jpg?format=webp&quality=70&w=400";
-import thumbFormacao from "@/assets/thumbnails/area-formacao.jpg?format=webp&quality=70&w=400";
-import thumbRevisaoOab from "@/assets/thumbnails/area-revisao-oab.jpg?format=webp&quality=70&w=400";
+import thumbIntPublico from "@/assets/thumbnails/area-int-publico.webp";
+import thumbIntPrivado from "@/assets/thumbnails/area-int-privado.webp";
+import thumbConcorrencial from "@/assets/thumbnails/area-concorrencial.webp";
+import thumbDesportivo from "@/assets/thumbnails/area-desportivo.webp";
+import thumbUrbanistico from "@/assets/thumbnails/area-urbanistico.webp";
+import thumbLeiPenalEsp from "@/assets/thumbnails/area-lei-penal-esp.webp";
+import thumbFilosofia from "@/assets/thumbnails/area-filosofia.webp";
+import thumbPoliticas from "@/assets/thumbnails/area-politicas.webp";
+import thumbPratica from "@/assets/thumbnails/area-pratica.webp";
+import thumbPortugues from "@/assets/thumbnails/area-portugues-comp.webp";
+import thumbPesquisa from "@/assets/thumbnails/area-pesquisa.webp";
+import thumbFormacao from "@/assets/thumbnails/area-formacao.webp";
+import thumbRevisaoOab from "@/assets/thumbnails/area-revisao-oab.webp";
 
 interface AreaItem {
   label: string;

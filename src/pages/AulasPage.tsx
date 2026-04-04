@@ -4,11 +4,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ADMIN_EMAIL } from "@/lib/adminConfig";
 
 
-import conceitosThumb from "@/assets/thumbnails/conceitos-thumb.jpg?format=webp&quality=75";
-import areasThumb from "@/assets/thumbnails/areas-thumb.jpg?format=webp&quality=75";
-import oabThumb from "@/assets/thumbnails/oab-thumb.jpg?format=webp&quality=75";
-import portuguesThumb from "@/assets/thumbnails/portugues-thumb.jpg?format=webp&quality=75";
-import termosThumb from "@/assets/thumbnails/termos-thumb.jpg?format=webp&quality=75";
+import conceitosThumb from "@/assets/thumbnails/conceitos-thumb.webp";
+import areasThumb from "@/assets/thumbnails/areas-thumb.webp";
+import oabThumb from "@/assets/thumbnails/oab-thumb.webp";
+import portuguesThumb from "@/assets/thumbnails/portugues-thumb.webp";
+import termosThumb from "@/assets/thumbnails/termos-thumb.webp";
 
 interface CursoItem {
   id: string;
