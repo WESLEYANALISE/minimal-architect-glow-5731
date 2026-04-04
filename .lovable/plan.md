@@ -1,60 +1,43 @@
 
 
-## Plano: Modo Realeza para Resumos Juridicos
+## Plano: Carregamento Agressivo de Todas as Imagens
 
-### Objetivo
-Recriar o modulo de Resumos Juridicos com a estetica "Realeza" (mesma paleta dourada/escura do QuestoesHubNovo), mantendo todas as funcionalidades existentes mas com design premium unificado.
+### Problema
+Existem **delays empilhados** em 4 arquivos que atrasam o download das imagens em 2-10 segundos:
 
-### Paginas afetadas (5 paginas principais)
+| Local | Delay atual | Problema |
+|-------|------------|----------|
+| `criticalPreload.ts` | `requestIdleCallback` + 150ms entre cada | Deferred images esperam idle + ~2.5s total |
+| `useHomePreloader.ts` | 2s wait + `requestIdleCallback(timeout: 8s)` + limite de 15 imagens | Dados do Supabase demoram 4-10s pra começar |
+| `EmAltaCarousel.tsx` | `requestIdleCallback` + 80ms entre cada | Atalhos esperam idle |
+| `Index.tsx` | `requestIdleCallback(timeout: 8s)` | Atalhos e carreiras esperam até 8s |
 
-1. **ResumosJuridicosLanding** (`/resumos-juridicos`) — Hub principal com carousel, tabs (Metodos/Grade/Raio-X/Sobre)
-2. **ResumosJuridicosEscolha** (`/resumos-juridicos/prontos`) — Lista de areas do Direito
-3. **ResumosJuridicosTemas** (`/resumos-juridicos/temas`) — Temas dentro de uma area
-4. **ResumosProntos** (`/resumos-juridicos/prontos/:area`) — Subtemas dentro de um tema
-5. **ResumosProntosView** (`/resumos-juridicos/prontos/:area/:tema`) — Visualizacao do resumo
+### Mudancas
 
-### Mudancas de design (aplicadas em todas as paginas)
+**1. `src/lib/criticalPreload.ts`**
+- Deferred images: remover `requestIdleCallback`, usar `setTimeout(fn, 50)` direto
+- Intervalo entre imagens: 150ms → 30ms (carrega todas em ~450ms)
 
-- **Fundo escuro**: `hsl(0 0% 10%)` com `DotPattern` sutil (igual Questoes)
-- **Cards**: fundo `hsla(0, 0%, 100%, 0.04)`, borda `hsla(40, 60%, 50%, 0.12)`, sombra multicamada com brilho interno dourado
-- **Shimmer hover**: reflexo dourado diagonal nos cards
-- **Acentos dourados**: titulos brancos, subtitulos em `hsl(40, 80%, 55%)`, contagens em dourado
-- **Icones de area**: badges com fundo `hsla(40, 60%, 50%, 0.12)` e icone dourado
-- **Tabs**: fundo escuro com tab ativa em dourado
-- **Animacoes**: fade-in escalonado (30ms delay), slide transitions com framer-motion
-- **Coroa dourada**: areas bloqueadas para usuarios gratuitos
-- **Header**: gradiente escuro com tipografia branca, sem StandardPageHeader
+**2. `src/hooks/useHomePreloader.ts`**
+- Delay inicial: 2000ms → 300ms
+- Remover `requestIdleCallback` wrapper, usar `setTimeout` direto
+- Limite de imagens preloaded: 15 → 50 (carregar todas)
+- Batches executam em paralelo (Promise.all de todos ao mesmo tempo)
 
-### Navegacao inline (igual Questoes)
+**3. `src/components/EmAltaCarousel.tsx`**
+- Remover `requestIdleCallback`, preload imediato no import
+- Intervalo entre imagens: 80ms → 0ms (carregar todas de uma vez)
 
-- Transicoes entre subviews (areas → temas → subtemas) via `AnimatePresence` + `motion.div` com slide lateral, sem recarregar pagina
-- Unificar Landing + Escolha + Temas numa unica pagina `ResumosHubRealeza.tsx`
+**4. `src/pages/Index.tsx`**
+- Remover `requestIdleCallback(timeout: 8s)` 
+- Usar `setTimeout(fn, 200)` para preload quase imediato
 
-### Arquivos a criar/modificar
+**5. `src/hooks/useProgressiveImagePreloader.ts`**
+- Remover `requestIdleCallback` wrapper
+- Intervalo entre imagens: 20ms → 0ms
 
-| Arquivo | Acao |
-|---------|------|
-| `src/pages/ResumosHubRealeza.tsx` | Novo — hub unificado com subviews inline |
-| `src/routes/estudosRoutes.tsx` | Apontar `/resumos-juridicos` e `/resumos-juridicos/prontos` para o novo hub |
-| `src/pages/ResumosProntos.tsx` | Aplicar paleta Realeza |
-| `src/pages/ResumosProntosView.tsx` | Aplicar paleta Realeza |
-
-### Estrutura do Hub unificado
-
-```text
-ResumosHubRealeza
-├── SubView: "landing" (metodos, carousel, tabs)
-├── SubView: "areas" (lista de areas com favoritos/recentes)
-├── SubView: "temas" (temas da area selecionada)
-└── Navegacao: slide direita→esquerda via AnimatePresence
-```
-
-### Detalhes tecnicos
-
-- Reutiliza `DotPattern`, `NumberTicker` e `DisciplinaCardRealeza` como referencia de estilo
-- Reutiliza hooks existentes: `useResumosCount`, `useResumosTemas`, `useResumosAreasCache`
-- Reutiliza dados do Supabase (tabela `RESUMO`, `METODOLOGIAS_GERADAS`)
-- Paleta HSL: dourado `hsl(40, 80%, 55%)`, fundo `hsl(0, 0%, 10%)`, bordas `hsla(40, 60%, 50%, 0.12)`
-- Paginas antigas permanecem como fallback, rotas redirecionam para o novo hub
-- Responsivo: layout desktop com grid multi-colunas, mobile lista vertical
+### Impacto esperado
+- Imagens de atalhos: aparecem **~5-8s mais cedo**
+- Capas do Supabase: aparecem **~3-5s mais cedo**
+- Todas as imagens da home carregam nos primeiros 2-3s apos mount
 
