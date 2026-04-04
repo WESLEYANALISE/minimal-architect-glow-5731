@@ -72,7 +72,7 @@ const getHojeSaoPaulo = (): string => {
   return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 };
 
-export default function ResenhaDiariaCarousel() {
+export default function ResenhaDiariaCarousel({ desktopListMode = false }: { desktopListMode?: boolean } = {}) {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showNoDataToast, setShowNoDataToast] = useState(false);
