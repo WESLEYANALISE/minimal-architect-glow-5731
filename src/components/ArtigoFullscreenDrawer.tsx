@@ -1602,7 +1602,7 @@ export const ArtigoFullscreenDrawer = ({
 
         {/* Rodapé fixo estilo BottomNav - esconde no modo destaque */}
         {activeTab === 'artigo' && !highlightAlteracao && !isHighlightMode && (
-        <div className="flex-shrink-0 border-t border-border/30 bg-gradient-to-t from-card/95 via-card/80 to-card/70 backdrop-blur-md px-2 py-2 pb-6 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.6),0_-2px_10px_rgba(0,0,0,0.4)] safe-area-bottom">
+        <div className="flex-shrink-0 border-t border-rose-900/30 bg-gradient-to-t from-[hsl(345,45%,5%)] via-[hsl(348,42%,7%)]/90 to-[hsl(350,40%,8%)]/80 backdrop-blur-md px-2 py-2 pb-6 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.6),0_-2px_10px_rgba(0,0,0,0.4)] safe-area-bottom">
           <div className="max-w-2xl mx-auto">
             <div className="grid grid-cols-5 items-end">
               {/* Estudar */}
@@ -1628,6 +1628,7 @@ export const ArtigoFullscreenDrawer = ({
                 <button
                   onClick={handleNarracaoClick}
                   className="btn-shine relative w-14 h-14 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 shadow-[0_6px_20px_rgba(245,158,11,0.5)] hover:shadow-[0_10px_30px_rgba(245,158,11,0.6)] hover:scale-105 active:scale-90 transition-all duration-300 flex items-center justify-center overflow-hidden"
+                  className="btn-shine relative w-14 h-14 rounded-full bg-gradient-to-br from-[hsl(350,50%,35%)] to-[hsl(345,45%,25%)] shadow-[0_6px_20px_rgba(190,50,70,0.4)] hover:shadow-[0_10px_30px_rgba(190,50,70,0.5)] hover:scale-105 active:scale-90 transition-all duration-300 flex items-center justify-center overflow-hidden"
                 >
                   {isPlaying && duration > 0 && (
                     <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 56 56">
