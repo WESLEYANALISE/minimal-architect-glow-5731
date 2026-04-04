@@ -33,10 +33,6 @@ const FlashcardsLacunasEstudar = lazy(() => import("../pages/FlashcardsLacunasEs
 
 // Questões
 const QuestoesHub = lazy(() => import("../pages/ferramentas/QuestoesHub"));
-// QuestoesResolver loaded eagerly for instant navigation from temas
-const QuestoesResolver = lazy(() => import("../pages/ferramentas/QuestoesResolver"));
-// Preload resolver chunk immediately
-import("../pages/ferramentas/QuestoesResolver");
 const QuestoesHubNovo = lazy(() => import("../pages/ferramentas/QuestoesHubNovo"));
 const QuestoesTemasNovo = lazy(() => import("../pages/ferramentas/QuestoesTemasNovo"));
 const QuestoesSimNaoAreas = lazy(() => import("../pages/ferramentas/QuestoesSimNaoAreas"));
