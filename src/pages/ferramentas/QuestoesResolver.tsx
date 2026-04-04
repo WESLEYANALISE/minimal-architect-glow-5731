@@ -366,39 +366,17 @@ const QuestoesResolver = () => {
     ? Math.round((geracaoStatus.subtemas_processados / geracaoStatus.total_subtemas) * 100)
     : 0;
 
-  if (isLoading || isGenerating) {
+  // Full-screen loading ONLY when no questions exist yet
+  if (isLoading && questoes.length === 0) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
         <div className="flex-1 flex flex-col items-center justify-center gap-4 p-6">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
             <Loader2 className="w-8 h-8 text-primary animate-spin" />
           </div>
-          
           <div className="text-center w-full max-w-xs">
-            <h2 className="text-lg font-semibold mb-1">
-              {isGenerating ? "Gerando questões..." : "Carregando..."}
-            </h2>
-            
-            {isGenerating && geracaoStatus && (
-              <>
-                <div className="mt-4 mb-2">
-                  <Progress value={progressPercent} className="h-2" />
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {geracaoStatus.subtemas_processados}/{geracaoStatus.total_subtemas} subtemas
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {questoes.length > 0 && `${questoes.length} questões geradas`}
-                </p>
-              </>
-            )}
-            
-            <p className="text-sm text-muted-foreground max-w-xs mt-2 min-h-[40px] transition-opacity duration-300">
-              {isGenerating 
-                ? FRASES_GERACAO[fraseIndex]
-                : "Verificando questões disponíveis..."
-              }
-            </p>
+            <h2 className="text-lg font-semibold mb-1">Carregando...</h2>
+            <p className="text-sm text-muted-foreground">Verificando questões disponíveis...</p>
           </div>
         </div>
       </div>
@@ -458,6 +436,18 @@ const QuestoesResolver = () => {
             </Button>
           </div>
         </div>
+
+        {/* Discrete background generation banner */}
+        {isGenerating && (
+          <div className="px-4 py-2 flex items-center gap-2 bg-primary/10 border-b border-primary/20">
+            <Loader2 className="w-3.5 h-3.5 text-primary animate-spin shrink-0" />
+            <p className="text-xs text-primary truncate">
+              {geracaoStatus
+                ? `Gerando mais questões... ${geracaoStatus.subtemas_processados}/${geracaoStatus.total_subtemas} subtemas`
+                : FRASES_GERACAO[fraseIndex]}
+            </p>
+          </div>
+        )}
 
         {/* Quiz */}
         <QuestoesConcurso 
