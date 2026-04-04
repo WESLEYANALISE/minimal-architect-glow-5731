@@ -7,6 +7,7 @@ const PHASE1_CRITICAL = [
   () => import('../pages/Cursos'),
   () => import('../pages/FlashcardsAreas'),
   () => import('../pages/FlashcardsTemas'),
+  () => import('../pages/CodigoView'),
 ];
 
 // ========== FASE 2: rotas populares + simulados (após delay) ==========

@@ -8,3 +8,4 @@ export { VideoaulasSkeleton } from './VideoaulasSkeleton';
 export { FerramentasSkeleton } from './FerramentasSkeleton';
 export { PesquisarSkeleton } from './PesquisarSkeleton';
 export { MapaMentalSkeleton } from './MapaMentalSkeleton';
+export { LegislacaoSkeleton } from './LegislacaoSkeleton';

@@ -19,6 +19,7 @@ import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { AuthRequiredDialog } from "@/components/auth/AuthRequiredDialog";
+import { useRoutePrefetch } from "@/hooks/useRoutePrefetch";
 
 interface CodeCard {
   id: string;
@@ -62,6 +63,7 @@ const CATEGORIA = 'codigos' as const;
 const Codigos = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { handleLinkHover } = useRoutePrefetch();
   const { user, loading: authLoading } = useAuth();
   const { isAuthDialogOpen, closeAuthDialog } = useRequireAuth();
   const [searchQuery, setSearchQuery] = useState("");
@@ -122,6 +124,8 @@ const Codigos = () => {
   // Prefetch articles on hover/touch for instant navigation
   const prefetchedCodes = useRef(new Set<string>());
   const handleCodeHover = useCallback((codeId: string) => {
+    handleLinkHover('/codigo');
+
     if (prefetchedCodes.current.has(codeId)) return;
     const tableName = codeTableMap[codeId];
     if (!tableName) return;
@@ -136,9 +140,9 @@ const Codigos = () => {
           .limit(100);
         return data || [];
       },
-      staleTime: 1000 * 60 * 30, // 30 min
+      staleTime: 1000 * 60 * 30,
     });
-  }, [queryClient]);
+  }, [queryClient, handleLinkHover]);
 
   const handleCardClick = (code: CodeCard) => {
     // Se não é Premium e o código não é gratuito, mostrar modal
