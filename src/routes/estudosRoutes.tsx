@@ -162,9 +162,9 @@ export const estudosRoutes = (
     <Route path="/faculdade/questoes/quiz" element={<L><QuizFaculdade /></L>} />
 
     {/* Resumos */}
-    <Route path="/resumos-juridicos" element={<L><ResumosJuridicosLanding /></L>} />
-    <Route path="/resumos-juridicos/prontos" element={<L><ResumosJuridicosEscolha /></L>} />
-    <Route path="/resumos-juridicos/temas" element={<L><ResumosJuridicosTemas /></L>} />
+    <Route path="/resumos-juridicos" element={<L><ResumosHubRealeza /></L>} />
+    <Route path="/resumos-juridicos/prontos" element={<L><ResumosHubRealeza /></L>} />
+    <Route path="/resumos-juridicos/temas" element={<L><ResumosHubRealeza /></L>} />
     <Route path="/resumos-juridicos/prontos/:area" element={<L><ResumosProntos /></L>} />
     <Route path="/resumos-juridicos/prontos/:area/:tema" element={<L><ResumosProntosView /></L>} />
     <Route path="/resumos-juridicos/personalizado" element={<L><ResumosPersonalizados /></L>} />
