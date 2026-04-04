@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDeviceType } from "@/hooks/use-device-type";
 import { useTransitionNavigate } from "@/hooks/useTransitionNavigate";
 import { GraduationCap, Brain, Target, FileText, Headphones, BookOpen, ChevronRight } from "lucide-react";
 import { useTrialStatus } from "@/hooks/useTrialStatus";
@@ -79,6 +80,7 @@ const PRATIQUE_ITEMS = [
 export function HomePratiqueSlide() {
   const navigate = useTransitionNavigate();
   const { user } = useAuth();
+  const { isDesktop } = useDeviceType();
   const { trialExpired, loading: trialLoading } = useTrialStatus();
   const { isPremium } = useSubscription();
   const isBlocked = !!user && !trialLoading && trialExpired && !isPremium;
@@ -91,12 +93,15 @@ export function HomePratiqueSlide() {
     }
     navigate(route);
   };
+
+  const visibleItems = isDesktop ? PRATIQUE_ITEMS.filter(i => i.id !== 'audioaulas') : PRATIQUE_ITEMS;
+
   return (
     <div className="bg-gradient-to-b from-[hsl(350,50%,10%)] via-[hsl(345,45%,9%)] to-[hsl(350,50%,10%)] backdrop-blur-sm overflow-hidden flex flex-col">
 
       <div className="px-3 pb-3 pt-3 flex-1 flex flex-col">
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5">
-          {PRATIQUE_ITEMS.map((item, index) => {
+          {visibleItems.map((item, index) => {
             const Icon = item.icon;
             return (
               <button
