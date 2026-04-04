@@ -443,24 +443,25 @@ const VadeMecumTodas = () => {
         {/* Mobile tabs */}
         <div className="lg:hidden max-w-4xl mx-auto w-full px-4 pt-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 w-full bg-card/80 backdrop-blur-md border border-border/50 h-auto p-1">
+            <TabsList className="grid grid-cols-3 w-full h-auto p-1 rounded-xl" style={{ background: 'hsla(0, 0%, 100%, 0.06)', border: '1px solid hsla(40, 60%, 50%, 0.12)' }}>
               <TabsTrigger 
                 value="legislacao" 
-                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:text-white"
+                style={{ }}
               >
                 <Scale className="w-4 h-4" />
                 <span>Legislação</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="leis-do-dia" 
-                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400"
+                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:text-white"
               >
                 <Calendar className="w-4 h-4" />
                 <span>Leis do Dia</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="explicacoes" 
-                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-400"
+                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:text-white"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Explicações</span>
