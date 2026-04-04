@@ -19,7 +19,7 @@ const iconMap: Record<string, any> = {
 };
 
 export const NovidadesSheet = ({ open, onClose }: NovidadesSheetProps) => {
-  const [activeTab, setActiveTab] = useState<NovidadesTab>("melhorias");
+  const { notificacoes, naoLidas, marcarLida, marcarTodasLidas } = useNotificacoesApp();
   const { notificacoes, naoLidas, marcarLida, marcarTodasLidas } = useNotificacoesApp();
   const navigate = useNavigate();
 
