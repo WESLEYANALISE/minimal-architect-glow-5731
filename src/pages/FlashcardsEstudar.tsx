@@ -9,6 +9,13 @@ import { FlashcardSettingsModal } from "@/components/FlashcardSettingsModal";
 import { Progress } from "@/components/ui/progress";
 import { useHierarchicalNavigation } from "@/hooks/useHierarchicalNavigation";
 
+interface FlashcardsEstudarProps {
+  inlineArea?: string;
+  inlineTema?: string;
+  onExit?: () => void;
+  onComplete?: () => void;
+}
+
 interface FlashcardGerado {
   id: number;
   pergunta: string;
