@@ -227,7 +227,7 @@ const ConverterImagens = () => {
         try {
           const { data, error } = await supabase
             .from(config.tabela as any)
-            .select(`id, ${config.coluna}, created_at`)
+            .select(`id, ${config.coluna}`)
             .not(config.coluna, 'is', null)
             .order('id', { ascending: false });
 
@@ -238,7 +238,6 @@ const ConverterImagens = () => {
             url: item[config.coluna] || '',
             formato: detectarFormato(item[config.coluna] || ''),
             coluna: config.coluna,
-            created_at: item.created_at,
           })).filter((img: ImagemInfo) => img.url);
 
           if (imagens.length === 0) continue;
@@ -255,7 +254,6 @@ const ConverterImagens = () => {
             imagens,
             totalWebp,
             totalPendentes,
-            ultimaData: imagens[0]?.created_at,
           });
         } catch (err) {
           console.warn(`Tabela ${config.tabela} não encontrada:`, err);
