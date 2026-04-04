@@ -161,7 +161,7 @@ const AssinaturaNova = () => {
     );
   }
 
-  if (isPremium) return <AssinaturaGerenciamento />;
+  if (isPremium && !isAdminPreview) return <AssinaturaGerenciamento />;
 
   const handleAssinar = () => {
     if (!user) {
