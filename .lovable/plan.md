@@ -1,122 +1,66 @@
 
 
-## Analise Completa: Paginas SEM o Estilo Realeza
+## Plano: Biblioteca responsiva para Desktop + abrir livro na mesma pagina
 
-### O que e o "Estilo Realeza"
+### Problemas identificados
 
-Padrao visual identificado nas paginas ja convertidas (Questoes, Flashcards, Resumos, Vade Mecum):
+1. **Paginas de detalhe dos livros** (8 arquivos `Biblioteca*Livro.tsx`) usam layout mobile-only — sem `useDeviceType`, sem grid desktop, sem aproveitar o espaco da tela
+2. **Falta o cabeçalho DesktopTopNav** visivel nas paginas de livros (o `StandardPageHeader` mobile aparece por cima)
+3. **O usuario quer que o livro abra "na mesma pagina"** — ou seja, ao clicar num livro no desktop, o detalhe deve abrir inline (painel lateral ou overlay) em vez de navegar para outra rota
 
-- **Fundo escuro bordô**: gradientes `hsl(345, 65%, 30%)` → `hsl(350, 40%, 15%)`
-- **Acentos dourados**: `hsl(40, 80%, 55%)` para titulos, bordas, icones
-- **DotPattern** de fundo com opacidade sutil
-- **NumberTicker** para contadores animados
-- **Cards com borda dourada**: `border-amber/gold` ao inves de cores aleatorias
-- **Tipografia premium**: Playfair Display para titulos hero
-- **Subviews inline** com transicoes de slide (sem recarregar pagina)
+### Solucao
 
-### Paginas que JA tem o estilo
+**Abordagem: Detalhe inline no desktop da Biblioteca**
 
-| Pagina | Componentes Realeza |
-|--------|-------------------|
-| `QuestoesHubNovo.tsx` | DotPattern, NumberTicker, Crown, DisciplinaCardRealeza, QuestoesMenuRealeza |
-| `FlashcardsAreas.tsx` | DotPattern, NumberTicker, Crown, FlashcardsMenuPrincipal |
-| `ResumosHubRealeza.tsx` | DotPattern, NumberTicker, GOLD constants, Crown |
-| `Codigos.tsx` | DotPattern, brasao, fundo escuro |
-| `Estatutos.tsx` | DotPattern, brasao, fundo escuro |
-| `LegislacaoPenalEspecial.tsx` | DotPattern, brasao, fundo escuro |
-| `Sumulas.tsx` | DotPattern, brasao, fundo escuro |
-| `Previdenciario.tsx` | DotPattern, brasao, fundo escuro |
-| `Bibliotecas.tsx` | Themis background, amber/gold accents, Playfair Display |
-
----
-
-### Paginas que FALTAM converter (por prioridade)
-
-#### 1. **Simulados** (3 paginas) — ALTA prioridade
-- `Simulados.tsx` — usa `PageHero` generico, gradientes roxos/rosas avulsos
-- `SimuladosPersonalizado.tsx` — cards brancos genericos, sem identidade visual
-- `SimuladosExames.tsx` — cards basicos sem estilo premium
-
-#### 2. **Audioaulas Hub** — ALTA prioridade
-- `AudioaulasHub.tsx` — usa gradientes avulsos (violet, pink, blue), fundo generico, sem DotPattern nem gold
-
-#### 3. **Cursos / Aulas** — MEDIA prioridade
-- `Cursos.tsx` — usa `HeroBackground` com imagem avulsa, gradientes coloridos por area sem padrao
-- `AulasDashboard.tsx` — pagina totalmente generica, sem identidade visual
-
-#### 4. **Videoaulas** — MEDIA prioridade
-- `VideoaulasAreasLista.tsx` — usa background de imagem avulsa, sem DotPattern nem gold
-
-#### 5. **Ferramentas** — MEDIA prioridade
-- `Ferramentas.tsx` — usa `PageHero` generico, cards com cores aleatorias por categoria
-
-#### 6. **JuriFlix** — BAIXA prioridade (ja tem estilo Netflix proprio, mas nao e Realeza)
-
-#### 7. **OAB** (3 paginas) — MEDIA prioridade
-- `OABFuncoes.tsx` — gradientes vermelhos `hsl(0,75%,55%)`, nao bordô/gold
-- `OABOQueEstudar.tsx` — mesmo gradiente vermelho generico
-- `OABOQueEstudarArea.tsx` — mesmo
-
-#### 8. **Estudos.tsx** — MEDIA prioridade
-- Hub principal de estudos, usa cores genericas e modais basicos
-
-#### 9. **Perfil.tsx** — BAIXA prioridade
-- Pagina utilitaria, pode manter mais simples
-
----
-
-### Plano de implementacao
-
-Converter as **11 paginas** mais impactantes em **4 etapas**:
-
-**Etapa 1 — Simulados (3 arquivos)**
-- `Simulados.tsx`: Remover PageHero, adicionar hero bordô com DotPattern e Crown
-- `SimuladosPersonalizado.tsx`: Cards com borda dourada, fundo escuro, botao gold
-- `SimuladosExames.tsx`: Cards estilizados com bordas douradas
-
-**Etapa 2 — Audioaulas + Cursos (3 arquivos)**
-- `AudioaulasHub.tsx`: Substituir gradientes avulsos por paleta bordô/gold, DotPattern
-- `Cursos.tsx`: Hero bordô, cards com borda gold, DotPattern
-- `AulasDashboard.tsx`: Fundo escuro, progress bars douradas
-
-**Etapa 3 — OAB + Estudos (4 arquivos)**
-- `OABFuncoes.tsx`: Trocar vermelho puro por bordô, acentos gold
-- `OABOQueEstudar.tsx`: Mesmo ajuste de paleta
-- `OABOQueEstudarArea.tsx`: Mesmo
-- `Estudos.tsx`: Hero com paleta Realeza
-
-**Etapa 4 — Ferramentas + Videoaulas (2 arquivos)**
-- `Ferramentas.tsx`: Remover PageHero, hero bordô com DotPattern
-- `VideoaulasAreasLista.tsx`: Fundo escuro, cards com borda gold
-
-### Padrao a aplicar em cada pagina
+Ao clicar num livro no desktop (pagina `Bibliotecas.tsx`), em vez de `navigate('/biblioteca-classicos/123')`, abrir um **painel de detalhe lateral** (drawer/sidebar direita) dentro da propria pagina da Biblioteca. O layout fica:
 
 ```text
-1. HERO: background gradient bordô (345°-350°, 15-30% lightness)
-2. DOTPATTERN: sutil no fundo (opacity 0.15-0.2)
-3. TITULOS: gold gradient text (amber-200 → yellow-100 → amber-300)
-4. CARDS: border border-amber-900/20, bg escuro semi-transparente
-5. ICONES: text-amber-400 ou text-amber-500
-6. CONTADORES: NumberTicker para numeros
-7. BOTOES: bg-gradient dourado ou bordô
+┌─────────────────────────────────────────────────────┐
+│ DesktopTopNav (Estudos, Biblioteca, Legislação...)  │
+├──────────────────────────┬──────────────────────────┤
+│ Grade de livros          │ Detalhe do livro         │
+│ (coleção selecionada)    │ - Capa + titulo + autor  │
+│                          │ - Botão Ler / Download   │
+│                          │ - Sobre o livro          │
+│                          │ - Videoaula              │
+│                          │ - Favoritar              │
+└──────────────────────────┴──────────────────────────┘
 ```
 
-### Arquivos a modificar (11)
-1. `src/pages/Simulados.tsx`
-2. `src/pages/SimuladosPersonalizado.tsx`
-3. `src/pages/SimuladosExames.tsx`
-4. `src/pages/AudioaulasHub.tsx`
-5. `src/pages/Cursos.tsx`
-6. `src/pages/AulasDashboard.tsx`
-7. `src/pages/OABFuncoes.tsx`
-8. `src/pages/OABOQueEstudar.tsx`
-9. `src/pages/OABOQueEstudarArea.tsx`
-10. `src/pages/Ferramentas.tsx`
-11. `src/pages/VideoaulasAreasLista.tsx`
+No mobile, o comportamento continua igual (navega para rota separada).
+
+### Arquivos a modificar
+
+**1. `src/pages/Bibliotecas.tsx`** (principal)
+- Adicionar estado `selectedBookId` e `selectedBookBiblioteca`
+- No desktop, ao clicar num livro: setar o ID em vez de navegar
+- Renderizar painel lateral direito com dados do livro selecionado (query por ID)
+- Layout: grade de livros ocupa ~60%, detalhe ocupa ~40%
+- Incluir no painel: capa, titulo, autor, sobre, botoes (Ler, Download, Favoritar, Videoaula)
+- No mobile: manter `navigate()` normal
+
+**2. `src/pages/BibliotecaClassicosLivro.tsx`** (e os outros 7 arquivos de livro)
+- Adicionar layout desktop responsivo com `useDeviceType`
+- No desktop: layout horizontal (capa a esquerda, info a direita), sem `pb-20`, sem `StandardPageHeader` (o DesktopTopNav global ja aparece)
+- Manter funcionalidade igual (PDF, video, leitura dinamica, favoritos, premium gate)
+
+### Detalhes tecnicos
+
+- Criar componente `BibliotecaLivroDetalhePanel.tsx` reutilizavel para o painel inline do desktop
+- O painel faz sua propria query ao Supabase (`useQuery` com o ID do livro e tabela)
+- Integrar `BibliotecaFavoritoButton`, `PDFReaderModeSelector`, `PremiumFloatingCard` dentro do painel
+- As 8 paginas de livro individuais ganham layout desktop com `useDeviceType` para quando o usuario acessa diretamente pela URL
+
+### Arquivos a criar/modificar (10)
+
+1. **Criar** `src/components/biblioteca/BibliotecaLivroDetalhePanel.tsx` — painel inline reutilizavel
+2. **Modificar** `src/pages/Bibliotecas.tsx` — integrar painel lateral no desktop
+3-9. **Modificar** os 7 arquivos `Biblioteca*Livro.tsx` — adicionar layout desktop responsivo
+10. Nenhuma rota muda — acesso direto por URL continua funcionando
 
 ### O que NAO muda
-- Funcionalidades, rotas, dados, hooks
-- JuriFlix (estilo Netflix intencional)
-- Perfil (pagina utilitaria)
-- Paginas internas de leitura/resolucao (ja tem contexto proprio)
+- Funcionalidades (PDF, video, leitura dinamica, favoritos, premium)
+- Rotas existentes
+- Layout mobile
+- Dados e hooks
 
