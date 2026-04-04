@@ -346,14 +346,35 @@ const ExplicacaoModal = ({ open, onOpenChange, explicacao }: Props) => {
 
   if (!open || !explicacao) return null;
 
+  const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+
   return (
     <AnimatePresence>
+      {/* Desktop: slide from right with backdrop blur */}
+      {isDesktop ? (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+            onClick={() => onOpenChange(false)}
+          />
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            className="fixed inset-y-0 right-0 z-50 w-full max-w-2xl bg-background/95 backdrop-blur-md shadow-2xl overflow-y-auto"
+          >
+      ) : (
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-50 bg-background overflow-hidden"
       >
+      )}
         {/* Header */}
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50">
           <div className="flex items-center gap-3 p-4">
