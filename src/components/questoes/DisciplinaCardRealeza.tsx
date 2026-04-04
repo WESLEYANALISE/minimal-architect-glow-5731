@@ -55,7 +55,7 @@ const ProgressCircle = ({ percent }: { percent: number }) => {
   );
 };
 
-export const DisciplinaCardRealeza = ({ area, totalQuestoes, progress = 0, respondidas, isLocked = false, onLockedClick, delay = 0 }: DisciplinaCardRealezaProps) => {
+export const DisciplinaCardRealeza = ({ area, totalQuestoes, progress = 0, respondidas, isLocked = false, onLockedClick, onSelect, delay = 0 }: DisciplinaCardRealezaProps) => {
   const navigate = useNavigate();
   const IconComponent = AREA_ICONS[area] || Target;
 
