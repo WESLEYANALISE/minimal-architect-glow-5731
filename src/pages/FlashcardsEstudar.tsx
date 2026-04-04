@@ -405,7 +405,7 @@ const FlashcardsEstudar = ({ inlineArea, inlineTema, onExit, onComplete }: Flash
             <p className="text-sm text-white/60 max-w-xs mb-4">
               Não foi possível carregar ou gerar flashcards.
             </p>
-            <Button onClick={goBack}>Voltar</Button>
+            <Button onClick={() => isInline && onExit ? onExit() : goBack()}>Voltar</Button>
           </div>
         </div>
       </div>
