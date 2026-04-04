@@ -1,76 +1,61 @@
 
-Objetivo
 
-Garantir que, no mobile, toda função abra com a mesma sensação de slide da direita para a esquerda e que o usuário não veja loaders/skeletons à toa no primeiro toque.
+## Plano: Categorizar Ferramentas + Sugestões de Novas Funções
 
-Diagnóstico
+### Situação Atual
+O menu Ferramentas (Sheet mobile) lista 8 itens em lista plana, sem agrupamento. A página desktop (`Ferramentas.tsx`) tem apenas 3 itens (Acesso Desktop, Localizador, Ranking).
 
-1. A animação global de rota já existe (`PageTransition` + `page-enter`), então o problema principal não é o efeito visual em si.
-2. Na home mobile, várias “abas” não são rotas; são painéis dentro de `Index.tsx`, então elas não herdam automaticamente a abertura global.
-3. A home mobile está montando painéis pesados mesmo quando estão escondidos (`BibliotecaHomeSection`, `JuriflixHomeSection`, `LegislacaoHomeSection` etc.). Isso dispara queries cedo demais e piora o primeiro clique.
-4. O prefetch atual está mais preparado para hover/desktop. No mobile, quase nenhum card prefetcha no toque.
-5. Há rotas importantes com prefetch incompleto ou incorreto, incluindo `/audioaulas`.
-6. O `ContextualSuspense` mostra fallback imediatamente; quando o chunk demora pouco, o usuário vê loading em vez de perceber a abertura instantânea.
-7. Algumas páginas de entrada ainda bloqueiam com spinner/local loading no primeiro mount, como `AudioaulasCategoriaPage`, `JuriFlix`, `Bibliotecas` e partes do `VadeMecumTodas`.
+### Proposta de Categorias
 
-Plano de implementação
+**1. 🎓 Faculdade** — Ferramentas para o estudante de Direito
+- Simulados *(já existe)*
+- Carreiras Jurídicas *(já existe)*
+- Ranking de Faculdades *(já existe na página, não no Sheet)*
+- **Pesquisar TCC** *(já existe em `/ferramentas/tcc`, mas não aparece no Sheet)*
+- **Plano de Estudos** *(já existe em `/plano-estudos`, não aparece no Sheet)*
 
-1. Aliviar a home mobile
-- Em `src/pages/Index.tsx`, parar de montar todas as abas escondidas ao mesmo tempo.
-- Adotar “mount on first open + keep mounted” para as abas móveis principais.
-- Aplicar um wrapper leve de slide da direita para a esquerda nas trocas internas de aba da home.
+**2. 💼 Advogado** — Ferramentas para o dia a dia profissional
+- Evelyn (Assistente IA) *(já existe)*
+- Dicionário *(já existe)*
+- **Consulta CNPJ** *(já existe em `/advogado/consulta-cnpj`, não aparece no Sheet)*
+- **Calculadora de Prazos** *(já existe em `/advogado/prazos`, não aparece no Sheet)*
+- Localizador Jurídico *(já existe na página desktop)*
 
-2. Fazer prefetch funcionar no mobile de verdade
-- Ajustar `useRoutePrefetch` / `usePrefetchRoute` para responder também a `onTouchStart`, `onPointerDown` e `onFocus`, não só hover.
-- Corrigir e ampliar os mapas para as rotas reais mais usadas no mobile:
-  `/aulas`, `/bibliotecas`, `/videoaulas`, `/audioaulas`, `/vade-mecum`, `/juriflix`, `/blogger-juridico/artigos`, `/ferramentas/simulados`, `/resumos-juridicos`, `/flashcards/areas`.
-- Corrigir o caso de `/audioaulas`, que hoje está pré-carregando o chunk errado.
-- Trazer a fase crítica do preloader para mais cedo no mobile, porque o atraso atual é grande para o primeiro toque.
+**3. 📰 Informação** — Conteúdo e atualidades jurídicas
+- Boletins *(já existe)*
+- Política *(já existe)*
+- Análises *(já existe)*
+- Documentários *(já existe)*
 
-3. Reduzir flashes de loading
-- Em `src/components/ContextualSuspense.tsx`, trocar o fallback imediato por fallback com pequeno atraso.
-- Assim, quando o chunk resolver rápido, o usuário vai direto para a tela animada em vez de ver skeleton.
-- Manter fallback apenas para casos realmente lentos.
+**4. 🔗 Links Úteis** — Portais jurídicos externos
+- *(manter os links do STF, STJ, CNJ etc. como seção final ou aba separada)*
 
-4. Tirar os gargalos das páginas mais abertas
-- `AudioaulasCategoriaPage`: usar cache-first/placeholder e aquecer a lista de áreas antes do clique.
-- `JuriFlix`: evitar tela bloqueada quando já houver cache local.
-- `Bibliotecas` e `BibliotecaHomeSection`: aquecer previews/contagens antes da abertura.
-- `VadeMecumTodas`: pré-carregar dados principais da tela e deixar tarefas secundárias para idle.
-- Onde a navegação mobile principal ainda usa `useNavigate` simples, padronizar para navegação com transição.
+### Funções que Faltam (sugestões de novas)
 
-5. Melhorar a sensação de instantaneidade nas capas
-- Priorizar apenas imagens acima da dobra com `eager`/`fetchPriority="high"`.
-- Manter `lazy` no restante.
-- Focar nas capas visíveis logo na entrada: estudos, portal de vídeos e atalhos principais.
+| Função | Categoria | Descrição |
+|---|---|---|
+| **Calculadora de Honorários** | Advogado | Calcula honorários com base na tabela da OAB estadual |
+| **Gerador de Procuração** | Advogado | Cria procurações ad judicia e ad negotia com IA |
+| **Cronômetro de Audiência** | Advogado | Timer para controlar tempo de sustentação oral |
+| **Consulta Processual** | Advogado | Busca processos por número nos tribunais |
+| **Mapa Mental** | Faculdade | *(já existe em `/mapa-mental`, colocar no Sheet)* |
+| **Agenda Jurídica** | Advogado | Calendário com feriados forenses e prazos |
 
-6. Fazer um sweep nas superfícies mobile de entrada
-- Home: `HomePratiqueSlide`, `PortalDeVideosSection`, `HomeAtalhosSection`, `MobileLeisHome`, `EstudosViewCarousel`, `Index.tsx`
-- Hubs/páginas principais: `TelaHub`, `AulasPage`, `AudioaulasCategoriaPage`, `VadeMecumTodas`, `Bibliotecas`, `JuriFlix`, `BloggerJuridico`
+### Implementação no Sheet Mobile
 
-Arquivos principais
+- Adicionar um label de seção (texto cinza, tipo "FACULDADE", "ADVOGADO", "INFORMAÇÃO") antes de cada grupo
+- Manter a mesma estética dos cards atuais
+- Adicionar os itens que já existem mas não aparecem no Sheet (CNPJ, Prazos, TCC, Plano de Estudos, Ranking, Localizador, Mapa Mental)
 
-- `src/pages/Index.tsx`
-- `src/components/ContextualSuspense.tsx`
-- `src/hooks/useRoutePrefetch.ts`
-- `src/hooks/usePrefetchRoute.ts`
-- `src/hooks/useAggressiveChunkPreloader.ts`
-- `src/components/home/HomePratiqueSlide.tsx`
-- `src/components/home/PortalDeVideosSection.tsx`
-- `src/components/home/HomeAtalhosSection.tsx`
-- `src/components/home/EstudosViewCarousel.tsx`
-- `src/components/mobile/MobileLeisHome.tsx`
-- `src/pages/TelaHub.tsx`
-- `src/pages/AulasPage.tsx`
-- `src/pages/AudioaulasCategoriaPage.tsx`
-- `src/pages/VadeMecumTodas.tsx`
-- `src/pages/Bibliotecas.tsx`
-- `src/pages/JuriFlix.tsx`
-- `src/pages/BloggerJuridico.tsx`
+### Implementação na Página Desktop
 
-Resultado esperado
+- Reorganizar `ferramentasLista` em arrays por categoria
+- Renderizar com subtítulo de seção antes de cada grupo
+- Mover os 3 itens atuais para as categorias corretas
 
-- Todas as funções mobile abrindo com o mesmo slide da direita para a esquerda.
-- Menos telas de “Carregando...”.
-- Primeiro toque mais rápido, principalmente em Biblioteca, Legislação, JuriFlix, Videoaulas e Audioaulas.
-- Experiência mais nativa e consistente no mobile.
+### Arquivos modificados
+| Arquivo | Alteração |
+|---|---|
+| `src/components/FerramentasSheet.tsx` | Reorganizar itens em categorias com labels de seção |
+| `src/pages/Ferramentas.tsx` | Reorganizar em categorias no desktop também |
+
