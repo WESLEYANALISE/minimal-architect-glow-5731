@@ -90,11 +90,7 @@ const AudioaulasCategoriaPage = () => {
 
   // No desktop, renderizar o layout Spotify com sidebar
   if (isDesktop) {
-    return (
-      <Suspense fallback={<div className="flex items-center justify-center h-[calc(100vh-3.5rem)] bg-background"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
-        <AudioaulasSpotify />
-      </Suspense>
-    );
+    return <AudioaulasSpotify />;
   }
 
   const handleShuffle = async () => {
