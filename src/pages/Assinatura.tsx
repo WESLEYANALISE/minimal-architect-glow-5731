@@ -134,6 +134,7 @@ const Assinatura = () => {
   const [showCpfInput, setShowCpfInput] = useState(false);
   const [pixCpf, setPixCpf] = useState('');
 
+  usePaymentSDK();
   const { pixData, loading: pixLoading, createPix, copyPixCode, reset: resetPix } = useMercadoPagoPix();
 
   const [showAllFeatures, setShowAllFeatures] = useState(false);

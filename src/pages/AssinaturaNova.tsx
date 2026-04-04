@@ -167,6 +167,7 @@ const AssinaturaNova = () => {
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('anual');
   const [fraseIndex] = useState(() => Math.floor(Math.random() * FRASES.length));
 
+  usePaymentSDK();
   const { pixData, loading: pixLoading, createPix, copyPixCode, reset: resetPix } = useMercadoPagoPix();
 
   const currentPlan = PLANS[selectedPlan] || PLANS.anual;
