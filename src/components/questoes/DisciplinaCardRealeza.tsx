@@ -10,6 +10,7 @@ interface DisciplinaCardRealezaProps {
   respondidas?: number;
   isLocked?: boolean;
   onLockedClick?: () => void;
+  onSelect?: (area: string) => void;
   delay?: number;
 }
 
@@ -54,7 +55,7 @@ const ProgressCircle = ({ percent }: { percent: number }) => {
   );
 };
 
-export const DisciplinaCardRealeza = ({ area, totalQuestoes, progress = 0, respondidas, isLocked = false, onLockedClick, delay = 0 }: DisciplinaCardRealezaProps) => {
+export const DisciplinaCardRealeza = ({ area, totalQuestoes, progress = 0, respondidas, isLocked = false, onLockedClick, onSelect, delay = 0 }: DisciplinaCardRealezaProps) => {
   const navigate = useNavigate();
   const IconComponent = AREA_ICONS[area] || Target;
 
@@ -65,6 +66,8 @@ export const DisciplinaCardRealeza = ({ area, totalQuestoes, progress = 0, respo
   const handleClick = () => {
     if (isLocked) {
       onLockedClick?.();
+    } else if (onSelect) {
+      onSelect(area);
     } else {
       startTransition(() => {
         navigate(`/ferramentas/questoes-v2/temas?area=${encodeURIComponent(area)}`);
