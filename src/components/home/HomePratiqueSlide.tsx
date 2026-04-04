@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { useTransitionNavigate } from "@/hooks/useTransitionNavigate";
-import { GraduationCap, Brain, Target, FileText, Headphones, BookOpen, ChevronRight, Crown } from "lucide-react";
+import { GraduationCap, Brain, Target, FileText, Headphones, BookOpen, ChevronRight } from "lucide-react";
 import { useTrialStatus } from "@/hooks/useTrialStatus";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
+
+import coverAulas from "@/assets/covers/cover-aulas.jpg";
+import coverResumos from "@/assets/covers/cover-resumos.jpg";
+import coverFlashcards from "@/assets/covers/cover-flashcards.jpg";
+import coverQuestoes from "@/assets/covers/cover-questoes.jpg";
+import coverBiblioteca from "@/assets/covers/cover-biblioteca.jpg";
+import coverAudioaulas from "@/assets/covers/cover-audioaulas.jpg";
 
 const PRATIQUE_ITEMS = [
   {
@@ -13,7 +20,7 @@ const PRATIQUE_ITEMS = [
     subtitle: "Estudos",
     icon: GraduationCap,
     route: "/aulas",
-    bg: "from-[#b8334a] to-[#6e1a2c]",
+    cover: coverAulas,
     accent: "#f9a8d4",
     delay: 0.1,
   },
@@ -23,7 +30,7 @@ const PRATIQUE_ITEMS = [
     subtitle: "Jurídicos",
     icon: FileText,
     route: "/resumos-juridicos",
-    bg: "from-[#0f766e] to-[#064e3b]",
+    cover: coverResumos,
     accent: "#5eead4",
     delay: 0.15,
   },
@@ -33,7 +40,7 @@ const PRATIQUE_ITEMS = [
     subtitle: "Cards",
     icon: Brain,
     route: "/flashcards",
-    bg: "from-[#1d4ed8] to-[#1e3a5f]",
+    cover: coverFlashcards,
     accent: "#93c5fd",
     delay: 0.2,
   },
@@ -43,7 +50,7 @@ const PRATIQUE_ITEMS = [
     subtitle: "Prática",
     icon: Target,
     route: "/questoes",
-    bg: "from-[#c2410c] to-[#7c2d12]",
+    cover: coverQuestoes,
     accent: "#fdba74",
     delay: 0.25,
   },
@@ -53,7 +60,7 @@ const PRATIQUE_ITEMS = [
     subtitle: "Livros",
     icon: BookOpen,
     route: "/bibliotecas",
-    bg: "from-[#92400e] to-[#572508]",
+    cover: coverBiblioteca,
     accent: "#fcd34d",
     delay: 0.3,
   },
@@ -63,7 +70,7 @@ const PRATIQUE_ITEMS = [
     subtitle: "Áudio",
     icon: Headphones,
     route: "/audioaulas",
-    bg: "from-[#7b2d8e] to-[#3d1547]",
+    cover: coverAudioaulas,
     accent: "#c084fc",
     delay: 0.35,
   },
@@ -88,7 +95,6 @@ export function HomePratiqueSlide() {
     <div className="bg-gradient-to-b from-red-950 via-red-900/95 to-red-950 backdrop-blur-sm overflow-hidden flex flex-col">
 
       <div className="px-3 pb-3 pt-3 flex-1 flex flex-col">
-        {/* 6 Cards in 2-col grid, 3-col on desktop */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5">
           {PRATIQUE_ITEMS.map((item, index) => {
             const Icon = item.icon;
@@ -96,13 +102,25 @@ export function HomePratiqueSlide() {
               <button
                 key={item.id}
                 onClick={() => handleItemClick(item.route)}
-                className={`group relative bg-gradient-to-br ${item.bg} rounded-xl p-3 sm:p-4 flex flex-col items-start justify-center gap-2 overflow-hidden border border-white/[0.06] animate-fade-in active:scale-95 transition-transform min-h-[110px]`}
+                className="group relative rounded-xl overflow-hidden border border-white/[0.06] animate-fade-in active:scale-95 transition-transform min-h-[110px]"
                 style={{
                   animationDelay: `${item.delay}s`,
                   animationFillMode: 'backwards',
                   boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)',
                 }}
               >
+                {/* Cover image background */}
+                <img
+                  src={item.cover}
+                  alt=""
+                  loading="lazy"
+                  width={256}
+                  height={256}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+
+                {/* Dark gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
 
                 {/* Ghost icon */}
                 <Icon
@@ -110,8 +128,8 @@ export function HomePratiqueSlide() {
                   strokeWidth={1.2}
                   style={{
                     animation: `ghostGlow 6s ease-in-out infinite ${index * 0.9}s`,
-                    opacity: 0.3,
-                    color: 'rgba(255,255,255,0.35)',
+                    opacity: 0.25,
+                    color: 'rgba(255,255,255,0.3)',
                   }}
                 />
 
@@ -123,23 +141,24 @@ export function HomePratiqueSlide() {
                   />
                 </div>
 
-                {/* Icon */}
-                <div className="bg-white/15 p-2.5 rounded-xl relative z-[1]">
-                  <Icon className="w-6 h-6 text-white" />
-                </div>
-
-                {/* Label */}
-                <div className="text-left relative z-[1] w-full flex items-end justify-between">
-                  <div>
-                    <span className="text-[15px] sm:text-base font-bold text-white block leading-tight">{item.label}</span>
-                    <span className="text-[11px] sm:text-xs text-white/60 block">{item.subtitle}</span>
+                {/* Content */}
+                <div className="relative z-[1] p-3 sm:p-4 flex flex-col items-start justify-end h-full min-h-[110px]">
+                  <div className="bg-white/15 backdrop-blur-sm p-2.5 rounded-xl mb-2">
+                    <Icon className="w-6 h-6 text-white" />
                   </div>
-                  <ChevronRight className="w-3.5 h-3.5 text-white/25 group-hover:text-white/60 transition-colors shrink-0 mb-0.5" />
+
+                  <div className="text-left w-full flex items-end justify-between">
+                    <div>
+                      <span className="text-[15px] sm:text-base font-bold text-white block leading-tight drop-shadow-md">{item.label}</span>
+                      <span className="text-[11px] sm:text-xs text-white/70 block drop-shadow-sm">{item.subtitle}</span>
+                    </div>
+                    <ChevronRight className="w-3.5 h-3.5 text-white/25 group-hover:text-white/60 transition-colors shrink-0 mb-0.5" />
+                  </div>
                 </div>
 
                 {/* Bottom accent line */}
                 <div
-                  className="absolute bottom-0 left-0 right-0 h-[3px]"
+                  className="absolute bottom-0 left-0 right-0 h-[3px] z-[2]"
                   style={{ background: `linear-gradient(90deg, transparent, ${item.accent}80, transparent)` }}
                 />
               </button>
