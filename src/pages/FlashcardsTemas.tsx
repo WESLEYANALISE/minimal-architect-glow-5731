@@ -54,6 +54,7 @@ const FlashcardsTemas = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [estudarTema, setEstudarTema] = useState<string | null>(null);
   const cacheHashRef = useRef('');
 
   const hex = getAreaHex(area);
