@@ -69,30 +69,39 @@ export const useIndexedDBCache = <T = any>(tableName: string) => {
   const [isLoadingCache, setIsLoadingCache] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     const loadCache = async () => {
       try {
         const db = await getDB();
         const cached = await db.get('articles', tableName);
 
+        if (cancelled) return;
+
         if (cached) {
           const age = Date.now() - cached.timestamp;
           
-          // Se cache está válido (menos de 7 dias)
           if (age < CACHE_DURATION) {
             setCachedData(cached.data as T[]);
           } else {
-            // Cache expirado, remove
             await db.delete('articles', tableName);
           }
         }
       } catch (error) {
         console.error('Erro ao carregar cache do IndexedDB:', error);
       } finally {
-        setIsLoadingCache(false);
+        if (!cancelled) setIsLoadingCache(false);
       }
     };
 
-    loadCache();
+    // Start loading immediately, but also set a timeout fallback
+    // so we never block rendering for more than 150ms
+    const timeout = setTimeout(() => {
+      if (!cancelled) setIsLoadingCache(false);
+    }, 150);
+
+    loadCache().finally(() => clearTimeout(timeout));
+
+    return () => { cancelled = true; clearTimeout(timeout); };
   }, [tableName]);
 
   const saveToCache = async (data: T[]) => {
