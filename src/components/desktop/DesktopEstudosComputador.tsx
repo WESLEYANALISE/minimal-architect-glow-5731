@@ -3,22 +3,13 @@ import { Monitor, Bot, ArrowRight, Sparkles } from "lucide-react";
 
 interface DesktopEstudosComputadorProps {
   navigate: (path: string) => void;
-  onEvelyn?: () => void;
 }
 
-export const DesktopEstudosComputador = memo(({ navigate, onEvelyn }: DesktopEstudosComputadorProps) => {
-  const handleEvelynClick = () => {
-    if (onEvelyn) {
-      onEvelyn();
-    } else {
-      navigate("/chat-professora");
-    }
-  };
-
+export const DesktopEstudosComputador = memo(({ navigate }: DesktopEstudosComputadorProps) => {
   return (
     <div className="relative z-10 mb-4">
       <div className="grid grid-cols-2 gap-3">
-        {/* Card 1: Modo Desktop */}
+        {/* Card 1: Funções Web */}
         <button
           onClick={() => navigate("/funcoes")}
           className="group relative rounded-xl overflow-hidden border border-white/[0.06] hover:border-rose-500/30 transition-all duration-500 text-left cursor-pointer"
@@ -49,9 +40,9 @@ export const DesktopEstudosComputador = memo(({ navigate, onEvelyn }: DesktopEst
           </div>
         </button>
 
-        {/* Card 2: Evelyn - Assistente Jurídica */}
+        {/* Card 2: Assistente Jurídica */}
         <button
-          onClick={handleEvelynClick}
+          onClick={() => navigate("/chat-professora")}
           className="group relative rounded-xl overflow-hidden border border-white/[0.06] hover:border-rose-500/30 transition-all duration-500 text-left cursor-pointer"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-[hsl(350,50%,12%)] via-[hsl(345,45%,9%)] to-[hsl(340,40%,7%)]" />

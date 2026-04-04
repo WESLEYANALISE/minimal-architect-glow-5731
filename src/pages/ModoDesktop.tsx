@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Monitor, Mail, ExternalLink, X, GraduationCap, Layout, BookOpen, Scale, Zap, Shield, Sparkles, ChevronRight } from "lucide-react";
+import { Monitor, Mail, ExternalLink, Check, ChevronRight, Layout, BookOpen, Scale, Zap, Shield, Sparkles, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import desktopMockup from "@/assets/desktop-mockup.jpg";
@@ -16,16 +17,16 @@ const FEATURES = [
 
 const ModoDesktop = () => {
   const { user } = useAuth();
-  const [showCard, setShowCard] = useState(false);
-  const userEmail = user?.email || "seu@email.com";
+  const [email, setEmail] = useState(user?.email || "");
+  const [sent, setSent] = useState(false);
 
-  const handleEnviarAcesso = () => {
-    setShowCard(true);
-  };
-
-  const handleConfirmSend = () => {
-    toast.success("Link de acesso enviado para " + userEmail);
-    setShowCard(false);
+  const handleSendLink = () => {
+    if (!email.trim() || !email.includes("@")) {
+      toast.error("Informe um e-mail válido");
+      return;
+    }
+    toast.success("Link enviado para " + email);
+    setSent(true);
   };
 
   return (
@@ -45,32 +46,58 @@ const ModoDesktop = () => {
 
       {/* Mockup Thumbnail */}
       <div className="px-4 mb-4">
-        <div className="relative rounded-xl overflow-hidden border border-white/[0.08]">
+        <div
+          className="relative rounded-xl overflow-hidden border border-white/[0.08] cursor-pointer group"
+          onClick={() => window.open("https://direitoeprimeiro.com.br", "_blank")}
+        >
           <img
             src={desktopMockup}
             alt="Modo Desktop"
-            className="w-full h-[180px] object-cover object-top"
+            className="w-full h-[180px] object-cover object-top group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
             width={1280}
             height={768}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-3">
-            <p className="text-white font-bold text-sm">Plataforma completa no navegador</p>
-            <p className="text-white/50 text-[11px]">Todas as ferramentas em tela ampla</p>
+          <div className="absolute bottom-0 left-0 right-0 p-3 flex items-end justify-between">
+            <div>
+              <p className="text-white font-bold text-sm">direitoeprimeiro.com.br</p>
+              <p className="text-white/50 text-[11px]">Abrir no navegador</p>
+            </div>
+            <div className="p-2 rounded-lg bg-rose-500/20 border border-rose-500/25">
+              <ExternalLink className="w-4 h-4 text-rose-300" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Single CTA Button */}
+      {/* Send link by email */}
       <div className="px-4 mb-5">
-        <Button
-          onClick={handleEnviarAcesso}
-          className="w-full h-12 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold text-sm rounded-xl shadow-lg shadow-rose-900/30 gap-2"
-        >
-          <Mail className="w-4 h-4" />
-          Enviar Acesso
-        </Button>
+        <div className="p-3 rounded-xl bg-card/50 border border-white/[0.06] space-y-2.5">
+          <p className="text-[12px] text-muted-foreground flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-rose-400" />
+            Receba o link no seu e-mail
+          </p>
+          <div className="flex gap-2">
+            <Input
+              type="email"
+              placeholder="seu@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="flex-1 h-9 bg-background border-white/[0.08] text-sm rounded-lg"
+              disabled={sent}
+            />
+            <Button
+              onClick={handleSendLink}
+              disabled={sent}
+              size="sm"
+              className="h-9 px-3 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-[12px] gap-1"
+            >
+              {sent ? <Check className="w-3.5 h-3.5" /> : <Mail className="w-3.5 h-3.5" />}
+              {sent ? "Enviado" : "Enviar"}
+            </Button>
+          </div>
+        </div>
       </div>
 
       {/* Features Grid */}
@@ -79,6 +106,7 @@ const ModoDesktop = () => {
           <GraduationCap className="w-4 h-4 text-rose-400" />
           Funcionalidades Desktop
         </h2>
+
         <div className="grid grid-cols-3 gap-2">
           {FEATURES.map((feat, i) => {
             const Icon = feat.icon;
@@ -108,70 +136,6 @@ const ModoDesktop = () => {
           </p>
         </div>
       </div>
-
-      {/* Floating Card Overlay */}
-      {showCard && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-6 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-sm rounded-2xl bg-card border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden">
-            {/* Close */}
-            <button
-              onClick={() => setShowCard(false)}
-              className="absolute top-3 right-3 p-1.5 rounded-full bg-white/5 hover:bg-white/10 transition-colors z-10"
-            >
-              <X className="w-4 h-4 text-muted-foreground" />
-            </button>
-
-            {/* Content */}
-            <div className="p-5 space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/20">
-                  <Mail className="w-5 h-5 text-rose-400" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-foreground">Enviar acesso</h3>
-                  <p className="text-[11px] text-muted-foreground">Vamos enviar o link para:</p>
-                </div>
-              </div>
-
-              {/* Email display */}
-              <div className="p-3 rounded-xl bg-rose-950/20 border border-rose-500/10">
-                <p className="text-[13px] font-semibold text-rose-300 text-center truncate">{userEmail}</p>
-              </div>
-
-              {/* Send button */}
-              <Button
-                onClick={handleConfirmSend}
-                className="w-full h-11 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold text-sm rounded-xl gap-2"
-              >
-                <Mail className="w-4 h-4" />
-                Confirmar envio
-              </Button>
-
-              {/* Divider */}
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-white/[0.06]" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-card px-3 text-[11px] text-muted-foreground">ou acesse diretamente</span>
-                </div>
-              </div>
-
-              {/* Direct link */}
-              <button
-                onClick={() => window.open("https://direitoeprimeiro.com.br", "_blank")}
-                className="w-full p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] transition-colors flex items-center justify-between group"
-              >
-                <div className="flex items-center gap-2">
-                  <ExternalLink className="w-4 h-4 text-rose-400" />
-                  <span className="text-[13px] font-medium text-foreground">direitoeprimeiro.com.br</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-rose-400 transition-colors" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
