@@ -21,10 +21,10 @@ import newLogo from '@/assets/logo-direito-premium-new.png?format=webp&quality=8
 import heroBackground from '@/assets/assinatura-bg.webp';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const PLANS: Record<string, { price: number; label: string; days: number; badge: string | null; featured?: boolean; installments: number }> = {
-  mensal: { price: 21.90, label: 'Mensal', days: 30, badge: null, installments: 1 },
-  anual: { price: 149.90, label: 'Anual', days: 365, badge: 'Mais popular', featured: true, installments: 12 },
-  vitalicio: { price: 249.90, label: 'Vitalício', days: 36500, badge: 'Para sempre', installments: 12 },
+const PLANS: Record<string, { price: number; label: string; days: number; badge: string | null; featured?: boolean; installments: number; sub: string }> = {
+  mensal: { price: 21.90, label: 'Mensal', days: 30, badge: null, installments: 1, sub: 'Cobrado todo mês' },
+  anual: { price: 149.90, label: 'Anual', days: 365, badge: 'Mais popular', featured: true, installments: 12, sub: 'Economia de 43%' },
+  vitalicio: { price: 249.90, label: 'Vitalício', days: 36500, badge: 'Melhor custo', installments: 12, sub: 'Pague uma vez só' },
 };
 
 const BENEFITS = [
@@ -67,45 +67,60 @@ const PlanCard = ({ planKey, plan, selected, onSelect }: {
   const isAnual = planKey === 'anual';
   const isVitalicio = planKey === 'vitalicio';
 
-  const color = isAnual
-    ? { border: 'border-amber-500/40', activeBorder: 'border-amber-400', glow: 'shadow-[0_0_30px_-5px_rgba(245,158,11,0.35)]', gradient: 'from-amber-300 to-amber-500', iconColor: 'text-amber-400', check: 'bg-amber-500', bg: 'hsl(43 60% 50% / 0.12)', badge: 'bg-gradient-to-r from-amber-500 to-amber-400 text-black' }
+  const accent = isAnual
+    ? { border: 'hsl(43 80% 45% / 0.5)', activeBorder: 'hsl(43 90% 50%)', glow: '0 0 40px -8px rgba(245,158,11,0.4)', gradient: 'from-amber-300 via-amber-400 to-amber-500', iconColor: 'text-amber-400', badge: 'bg-amber-500 text-black' }
     : isVitalicio
-    ? { border: 'border-emerald-500/40', activeBorder: 'border-emerald-400', glow: 'shadow-[0_0_25px_-5px_rgba(16,185,129,0.3)]', gradient: 'from-emerald-300 to-emerald-500', iconColor: 'text-emerald-400', check: 'bg-emerald-500', bg: 'hsl(160 50% 40% / 0.1)', badge: 'bg-gradient-to-r from-emerald-500 to-emerald-400 text-black' }
-    : { border: 'border-zinc-700/50', activeBorder: 'border-blue-400', glow: 'shadow-[0_0_25px_-5px_rgba(59,130,246,0.3)]', gradient: 'from-blue-300 to-blue-500', iconColor: 'text-blue-400', check: 'bg-blue-500', bg: 'hsl(217 60% 50% / 0.1)', badge: 'bg-gradient-to-r from-blue-500 to-blue-400 text-white' };
+    ? { border: 'hsl(43 60% 35% / 0.3)', activeBorder: 'hsl(43 80% 50%)', glow: '0 0 35px -8px rgba(245,158,11,0.3)', gradient: 'from-amber-200 via-amber-400 to-amber-500', iconColor: 'text-amber-300', badge: 'bg-amber-600 text-black' }
+    : { border: 'hsl(0 0% 20%)', activeBorder: 'hsl(0 0% 50%)', glow: '0 0 30px -8px rgba(255,255,255,0.15)', gradient: 'from-zinc-300 via-zinc-400 to-zinc-500', iconColor: 'text-zinc-400', badge: '' };
 
   const IconComp = isAnual ? Crown : isVitalicio ? Infinity : Calendar;
 
   return (
     <button
       onClick={onSelect}
-      className={`relative w-full rounded-2xl text-center transition-all duration-300 cursor-pointer border-2 overflow-hidden active:scale-[0.97] ${
-        selected ? `${color.activeBorder} ${color.glow} scale-[1.02]` : `${color.border} hover:scale-[1.01] opacity-60 hover:opacity-80`
-      } ${isAnual ? 'py-5 px-3' : 'py-4 px-3'}`}
-      style={{ background: selected ? color.bg : 'hsl(0 0% 9%)' }}
+      className={`relative w-full rounded-2xl text-center transition-all duration-300 cursor-pointer overflow-hidden active:scale-[0.98] flex flex-col items-center justify-center gap-1 ${
+        isAnual && selected ? 'py-7 sm:py-8' : 'py-5 sm:py-6'
+      }`}
+      style={{
+        background: selected
+          ? `linear-gradient(160deg, hsl(43 30% 12%), hsl(0 0% 7%))`
+          : 'hsl(0 0% 7%)',
+        border: `1.5px solid ${selected ? accent.activeBorder : accent.border}`,
+        boxShadow: selected ? accent.glow : 'none',
+      }}
     >
+      {/* Badge */}
       {plan.badge && (
-        <div className={`absolute -top-[1px] left-1/2 -translate-x-1/2 ${color.badge} text-[8px] font-bold rounded-b-lg px-3 py-0.5 tracking-wider uppercase z-20`}>
+        <div className={`absolute -top-[1px] left-1/2 -translate-x-1/2 ${accent.badge} text-[7px] sm:text-[8px] font-bold rounded-b-lg px-2.5 sm:px-3 py-0.5 tracking-wider uppercase z-20`}>
           {plan.badge}
         </div>
       )}
-      <div className="relative z-10 mt-1">
-        <div className="flex items-center justify-center mb-2">
-          <IconComp className={`w-9 h-9 ${color.iconColor} ${selected ? 'drop-shadow-[0_0_12px_currentColor]' : ''}`} />
-        </div>
-        <h3 className={`text-sm font-bold mb-1.5 ${selected ? 'text-white' : 'text-zinc-400'}`}>{plan.label}</h3>
-        <div className="flex items-baseline justify-center gap-0.5">
-          <span className={`text-[10px] self-start mt-1 ${selected ? 'text-zinc-400' : 'text-zinc-600'}`}>R$</span>
-          <span className={`text-xl font-extrabold bg-gradient-to-r ${color.gradient} bg-clip-text text-transparent ${selected ? 'opacity-100' : 'opacity-70'}`}>
-            {plan.price.toFixed(2).replace('.', ',')}
-          </span>
-        </div>
-        <p className={`text-[9px] mt-1 uppercase tracking-wider font-medium ${selected ? 'text-zinc-400' : 'text-zinc-600'}`}>
-          {isVitalicio ? 'pagamento único' : isAnual ? 'por ano' : 'mensal'}
-        </p>
+
+      {/* Icon */}
+      <IconComp className={`w-7 h-7 sm:w-8 sm:h-8 ${accent.iconColor} transition-all duration-300 ${selected ? 'scale-110' : 'opacity-50'}`} />
+
+      {/* Label */}
+      <h3 className={`text-xs sm:text-sm font-bold tracking-wide transition-colors ${selected ? 'text-white' : 'text-zinc-500'}`}>
+        {plan.label}
+      </h3>
+
+      {/* Price */}
+      <div className="flex items-baseline justify-center gap-0.5 mt-0.5">
+        <span className={`text-[9px] sm:text-[10px] self-start mt-1.5 ${selected ? 'text-zinc-400' : 'text-zinc-600'}`}>R$</span>
+        <span className={`text-2xl sm:text-3xl font-black bg-gradient-to-b ${accent.gradient} bg-clip-text text-transparent transition-opacity ${selected ? 'opacity-100' : 'opacity-50'}`}>
+          {plan.price.toFixed(2).replace('.', ',')}
+        </span>
       </div>
+
+      {/* Subtitle */}
+      <p className={`text-[9px] sm:text-[10px] font-medium tracking-wide transition-colors ${selected ? 'text-zinc-400' : 'text-zinc-600'}`}>
+        {plan.sub}
+      </p>
+
+      {/* Selected indicator */}
       {selected && (
-        <div className={`absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center ${color.check} shadow-lg`}>
-          <Check className="w-3 h-3 text-white" strokeWidth={3} />
+        <div className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center bg-amber-500 shadow-lg shadow-amber-500/30">
+          <Check className="w-3 h-3 text-black" strokeWidth={3} />
         </div>
       )}
     </button>
