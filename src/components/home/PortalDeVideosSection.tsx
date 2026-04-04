@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { Video, ChevronRight, MonitorPlay, Headphones, Crown } from "lucide-react";
 import { useDeviceType } from "@/hooks/use-device-type";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import capaIniciante from "@/assets/portal-videos-iniciante.webp";
 import capaVideoaulas from "@/assets/portal-videos-videoaulas.webp";
 import capaAudioaulas from "@/assets/portal-videos-audioaulas.webp";
@@ -44,6 +45,7 @@ const itens = [
 
 export const PortalDeVideosSection = memo(({ navigate }: PortalDeVideosSectionProps) => {
   const { isDesktop } = useDeviceType();
+  const { onTouchStart } = usePrefetchRoute();
   const visibleItens = isDesktop ? itens : itens.filter(i => i.id !== 'audioaulas');
   return (
     <div className="space-y-3">
@@ -70,6 +72,7 @@ export const PortalDeVideosSection = memo(({ navigate }: PortalDeVideosSectionPr
             <button
               key={item.id}
               onClick={() => navigate(item.route)}
+              onTouchStart={() => onTouchStart(item.route)}
               className="group rounded-xl text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] flex flex-col overflow-hidden animate-fade-in border border-white/[0.08]"
               style={{
                 animationDelay: `${index * 0.06}s`,

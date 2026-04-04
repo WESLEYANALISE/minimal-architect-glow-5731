@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import { 
   MonitorSmartphone, GraduationCap, Wrench,
   Scale, ChevronRight, Settings, MapPin, Globe, ExternalLink, Link2, BookOpen,
@@ -91,6 +92,7 @@ const linksUteis: LinkUtilCard[] = [
 
 const CategoryGrid = ({ category, startIndex = 0 }: { category: FerramentaCategory; startIndex?: number }) => {
   const navigate = useNavigate();
+  const { onTouchStart } = usePrefetchRoute();
   return (
     <div className="mb-6">
       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">
@@ -103,6 +105,7 @@ const CategoryGrid = ({ category, startIndex = 0 }: { category: FerramentaCatego
             <div
               key={card.id}
               onClick={() => navigate(card.route)}
+              onTouchStart={() => onTouchStart(card.route)}
               className="bg-card/90 backdrop-blur-sm rounded-xl p-4 cursor-pointer hover:bg-accent/10 hover:scale-[1.02] transition-all border-l-4 group shadow-lg"
               style={{
                 borderLeftColor: card.color,

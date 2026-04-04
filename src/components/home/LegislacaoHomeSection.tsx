@@ -3,6 +3,7 @@ import { useSubscription } from "@/contexts/SubscriptionContext";
 import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
 import { UniversalImage } from "@/components/ui/universal-image";
 import { useTransitionNavigate } from "@/hooks/useTransitionNavigate";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, Scale, Landmark, BookOpen, Bell, Loader2, Settings, Shield, Newspaper, Users } from "lucide-react";
@@ -21,6 +22,7 @@ const SECOES_LEGISLACAO = [
 
 export const LegislacaoHomeSection = memo(() => {
   const navigate = useTransitionNavigate();
+  const { onTouchStart } = usePrefetchRoute();
   const { isPremium } = useSubscription();
   const { noticias: noticiasLeg, loading: loadingLeg } = useNoticiasLegislativas(10);
   const [acessoRapido, setAcessoRapido] = useState<AcessoRapidoItem[]>(loadAcessoRapidoConfig);
@@ -171,6 +173,7 @@ export const LegislacaoHomeSection = memo(() => {
         {/* Vade Mecum - Verde (mesma cor de Resumos) */}
         <button
           onClick={() => navigate("/vade-mecum")}
+          onTouchStart={() => onTouchStart("/vade-mecum")}
           className="group relative bg-gradient-to-br from-[#0f766e] to-[#064e3b] rounded-xl p-3 h-[120px] flex flex-col items-start justify-between text-left overflow-hidden border border-white/[0.06] active:scale-95 transition-transform"
           style={{ boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)' }}
         >
@@ -204,6 +207,7 @@ export const LegislacaoHomeSection = memo(() => {
         {/* Atualizações - Rosa (mesma cor de Cursos) */}
         <button
           onClick={() => navigate("/vade-mecum/resenha-diaria")}
+          onTouchStart={() => onTouchStart("/vade-mecum")}
           className="group relative bg-gradient-to-br from-[#b8334a] to-[#6e1a2c] rounded-xl p-3 h-[120px] flex flex-col items-start justify-between text-left overflow-hidden border border-white/[0.06] active:scale-95 transition-transform"
           style={{ boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)' }}
         >
@@ -272,6 +276,7 @@ export const LegislacaoHomeSection = memo(() => {
                 <button
                   key={codigo.id}
                   onClick={() => navigate(codigo.route)}
+                  onTouchStart={() => onTouchStart(codigo.route)}
                   className={`w-[140px] lg:w-[160px] shrink-0 group relative bg-gradient-to-br ${codigo.bg} rounded-xl p-3 h-[120px] lg:h-[130px] flex flex-col items-start justify-between text-left overflow-hidden border border-white/[0.06] active:scale-95 transition-transform`}
                   style={{
                     boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)',

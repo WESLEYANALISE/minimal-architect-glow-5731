@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import { Settings, Flame, Scale, ChevronRight } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { EmAltaCarousel } from "@/components/EmAltaCarousel";
@@ -30,6 +31,7 @@ interface Props {
 
 export function HomeAtalhosSection({ onProfessora, gatedNavigate, user, requireAuth, variant = "mobile" }: Props) {
   const navigate = useNavigate();
+  const { onTouchStart } = usePrefetchRoute();
   const [mode, setMode] = useState<HomeAtalhosMode>(getHomeAtalhosMode);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [acessoRapido, setAcessoRapido] = useState<AcessoRapidoItem[]>(loadAcessoRapidoConfig);
@@ -90,7 +92,8 @@ export function HomeAtalhosSection({ onProfessora, gatedNavigate, user, requireA
             return (
               <button
                 key={codigo.id}
-                onClick={() => navigate(codigo.route)}
+                onPointerDown={() => navigate(codigo.route)}
+                onTouchStart={() => onTouchStart(codigo.route)}
                 className={`group relative bg-gradient-to-br ${codigo.bg} rounded-xl p-3 h-[120px] xl:h-[130px] flex-1 min-w-0 flex flex-col items-start justify-between text-left overflow-hidden border border-white/[0.08] hover:scale-[1.03] active:scale-95 transition-transform cursor-pointer`}
                 style={{ boxShadow: '0 4px 16px -4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)' }}
               >
@@ -138,7 +141,8 @@ export function HomeAtalhosSection({ onProfessora, gatedNavigate, user, requireA
             return (
               <button
                 key={codigo.id}
-                onClick={() => navigate(codigo.route)}
+                onPointerDown={() => navigate(codigo.route)}
+                onTouchStart={() => onTouchStart(codigo.route)}
                 className={`w-[110px] shrink-0 group relative bg-gradient-to-br ${codigo.bg} rounded-xl p-3 h-[120px] flex flex-col items-start justify-between text-left overflow-hidden border border-white/[0.08] hover:scale-[1.03] active:scale-95 transition-transform cursor-pointer`}
                 style={{ boxShadow: '0 4px 16px -4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)' }}
               >

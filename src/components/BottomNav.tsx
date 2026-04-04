@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { startTransition } from "react";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import { Menu, Bell, Newspaper, Scale, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -21,6 +22,7 @@ export const BottomNav = () => {
   const [isNovidadesOpen, setIsNovidadesOpen] = useState(false);
   const [isFerramentasOpen, setIsFerramentasOpen] = useState(false);
   const { naoLidas: notifNaoLidas } = useNotificacoesApp();
+  const { onTouchStart: prefetchOnTouch } = usePrefetchRoute();
   const isActive = (path: string) => location.pathname === path;
   
   if (location.pathname.startsWith('/ferramentas/questoes') || location.pathname === '/assinatura' || (location.pathname === '/' && !isAuthenticated)) {
@@ -67,8 +69,9 @@ export const BottomNav = () => {
           </button>
 
           {/* Notícias */}
-          <button
-            onClick={() => requireAuth(() => startTransition(() => navigate('/noticias-juridicas')))}
+            <button
+              onPointerDown={() => requireAuth(() => startTransition(() => navigate('/noticias-juridicas')))}
+              onTouchStart={() => prefetchOnTouch('/noticias-juridicas')}
             className={cn(
               "flex flex-col items-center justify-center gap-1 py-2 rounded-xl transition-all nav-item-tap",
               location.pathname === '/noticias-juridicas'
@@ -83,7 +86,8 @@ export const BottomNav = () => {
           {/* Botão Central Professora - Elevado */}
           <div className="flex flex-col items-center -mt-6">
             <button
-              onClick={handleProfessoraClick}
+              onPointerDown={handleProfessoraClick}
+              onTouchStart={() => prefetchOnTouch('/chat-professora')}
               className="btn-shine w-14 h-14 rounded-full bg-gradient-to-br from-[hsl(350,50%,35%)] to-[hsl(345,45%,25%)] shadow-[0_6px_20px_rgba(190,50,70,0.4)] hover:shadow-[0_10px_30px_rgba(190,50,70,0.5)] hover:scale-105 active:scale-90 transition-all duration-300 flex items-center justify-center"
             >
               <Scale className="w-7 h-7 text-primary-foreground relative z-10" />

@@ -30,7 +30,7 @@ const PHASE2_IMPORTANT = [
   () => import('../pages/SimuladosRealizar'),
 ];
 
-function loadBatch(loaders: (() => Promise<any>)[], batchSize = 2, delayMs = 200) {
+function loadBatch(loaders: (() => Promise<any>)[], batchSize = 2, delayMs = 100) {
   let index = 0;
   
   function loadNext() {
@@ -51,8 +51,8 @@ let hasStarted = false;
 
 /**
  * Hook que pré-carrega chunks JS críticos de forma progressiva.
- * Mobile: timings mais agressivos (3s / 10s) para toque rápido.
- * Desktop: timings mais conservadores (8s / 25s).
+ * Mobile: timings agressivos (2s / 6s) para toque rápido.
+ * Desktop: timings moderados (4s / 12s).
  */
 export const useAggressiveChunkPreloader = () => {
   const started = useRef(false);
@@ -63,10 +63,10 @@ export const useAggressiveChunkPreloader = () => {
     hasStarted = true;
 
     const isDesktop = window.innerWidth >= 1024;
-    const phase1Delay = isDesktop ? 12000 : 8000;
-    const phase2Delay = isDesktop ? 35000 : 20000;
-    const batchSize = 1;
-    const batchDelay = isDesktop ? 500 : 300;
+    const phase1Delay = isDesktop ? 4000 : 2000;
+    const phase2Delay = isDesktop ? 12000 : 6000;
+    const batchSize = 2;
+    const batchDelay = 100;
 
     // Fase 1: chunks críticos
     setTimeout(() => {
