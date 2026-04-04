@@ -68,6 +68,7 @@ const AdminTesteGamificacao = lazy(() => import("../pages/Admin/AdminTesteGamifi
 const AdminTesteVoz = lazy(() => import("../pages/Admin/AdminTesteVoz"));
 const AdminGeracaoExplicacoes = lazy(() => import("../pages/Admin/AdminGeracaoExplicacoes"));
 const AdminGeracaoVadeMecum = lazy(() => import("../pages/Admin/AdminGeracaoVadeMecum"));
+const AssinaturaNova = lazy(() => import("../pages/AssinaturaNova"));
 
 export const adminRoutes = (
   <>
@@ -132,5 +133,6 @@ export const adminRoutes = (
     <Route path="/admin/geracao-explicacoes" element={<L><AdminGeracaoExplicacoes /></L>} />
     <Route path="/admin/geracao-vademecum" element={<L><AdminGeracaoVadeMecum /></L>} />
     <Route path="/admin/temas" element={<L><AdminTemas /></L>} />
+    <Route path="/admin/assinatura-nova" element={<L><AssinaturaNova /></L>} />
   </>
 );
