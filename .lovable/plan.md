@@ -1,75 +1,79 @@
 
 
-## Plano: Nova Aba de Questões — Modo Realeza
+## Analise de Performance GTmetrix — Direito Prime
 
-### Objetivo
-Criar uma nova versão completa do módulo de Questões (`/ferramentas/questoes-v2`), reconstruída do zero com estética "Realeza" (Royal Rose), usando a mesma mecânica e dados (tabelas `QUESTOES_GERADAS`, `user_questoes_stats`, hooks existentes), mas com design premium e refinado.
+### Resultados Atuais
 
-### Estrutura da Nova Aba
+| Metrica | Valor | Status |
+|---------|-------|--------|
+| GTmetrix Grade | **D** | Ruim |
+| Performance | **56%** | Ruim |
+| Structure | **77%** | Razoavel |
+| LCP (Largest Contentful Paint) | **5.0s** | Ruim (meta: < 2.5s) |
+| TBT (Total Blocking Time) | **557ms** | Ruim (meta: < 200ms) |
+| CLS (Cumulative Layout Shift) | **0.02** | Bom |
 
-```text
-/ferramentas/questoes-v2          → QuestoesHubNovo (Hub principal)
-/ferramentas/questoes-v2/temas    → QuestoesTemasNovo (Lista de temas)
-/ferramentas/questoes-v2/resolver → Reutiliza QuestoesResolver existente
-```
+### Diagnostico: Por que esta lento?
 
-### Telas e Componentes
+**1. LCP de 5.0s — O maior problema**
+O elemento LCP (provavelmente o hero banner ou imagem principal) demora muito para aparecer. Causas:
+- **8 fontes Google Fonts** carregadas no index.html (Inter, Source Sans, Source Serif, Cinzel, Oswald, Crimson Text, Playfair Display, Merriweather) — mesmo com `media="print"`, o browser ainda precisa parsear e eventualmente carregar todas
+- **Scripts bloqueantes no head**: GTM carrega sincronamente antes do conteudo
+- **SDK Mercado Pago e PagBank** carregam no head de TODAS as paginas, mesmo que so sejam usados na tela de pagamento
 
-**1. Hub Principal (`QuestoesHubNovo.tsx`)**
-- Header hero com gradiente Royal Rose (tons burgundy/rosa profundo) e brasão/ícone Target dourado
-- Contagem total animada com NumberTicker
-- 4 stat cards (Respondidas, Acertos%, Erros%, Dias seguidos) com estética dark glass e bordas douradas sutis
-- Grid 2x2 de ações (Praticar, Progresso, Reforço, Cadernos) com cards de vidro escuro, ícones dourados, efeito BorderBeam e shimmer reflection
-- Dra. Arabella com balão de chat (reutiliza lógica existente)
-- Paleta: burgundy (`hsl(345-350)`), dourado (`hsl(40-45)`), fundo escuro (`hsl(0 0% 10-12%)`)
+**2. TBT de 557ms — JavaScript pesado**
+O browser fica bloqueado processando JS por mais de meio segundo:
+- Bundle grande com muitas dependencias (Recharts, Framer Motion, muitos componentes Radix)
+- `AggressivePreloader` dispara imports de ~22 chunks logo apos o carregamento
+- `useHomePreloader` faz multiplas queries ao Supabase simultaneamente no load
+- Facebook Pixel SDK carrega no body e executa JS
 
-**2. Seleção de Disciplinas (dentro do Hub)**
-- Cards de disciplina redesenhados com fundo glass escuro, borda dourada sutil, ícone da área em dourado
-- Barra de progresso circular dourada em vez de branca
-- Tabs (Principais / Frequentes / Extras) com estilo pill dourado
-- Animação de entrada staggered com framer-motion
+**3. Scripts de terceiros competindo por recursos**
+- GTM (sincrono no head)
+- Facebook Pixel (no body, mas ainda bloqueia)
+- Google Analytics (adiado, mas carrega apos 5s)
+- Mercado Pago SDK + PagBank SDK (no head, `async` mas ainda baixa e parseia)
 
-**3. Lista de Temas (`QuestoesTemasNovo.tsx`)**
-- Header com gradiente burgundy e nome da área
-- Lista de temas com cards escuros, contagem de questões em dourado
-- Favoritos com coração dourado
-- Reutiliza navegação para `/ferramentas/questoes-v2/resolver`
+### Plano de Otimizacao (por impacto)
 
-**4. Resolver Questões**
-- Reutiliza `QuestoesResolver` e `QuestoesConcurso` existentes (não recria a mecânica)
-- Apenas ajusta a rota de volta
+**A. Reduzir fontes (impacto alto no LCP)**
+- Manter apenas **Inter** (usada em 95% do app) e **Cinzel** (usada no Vade Mecum)
+- Remover Source Sans, Source Serif, Oswald, Crimson Text, Playfair Display, Merriweather do carregamento inicial
+- Carregar fontes decorativas sob demanda apenas nas paginas que as utilizam
 
-### Arquivos a criar
+**B. Mover SDKs de pagamento para lazy load (impacto alto no TBT)**
+- Remover `<script src="sdk.mercadopago.com">` e `<script src="pagseguro">` do index.html
+- Carregar dinamicamente apenas quando o usuario acessa a tela de assinatura/pagamento
 
-| Arquivo | Descrição |
-|---------|-----------|
-| `src/pages/ferramentas/QuestoesHubNovo.tsx` | Hub principal novo (~500 linhas) |
-| `src/pages/ferramentas/QuestoesTemasNovo.tsx` | Temas da área novo |
-| `src/components/questoes/QuestoesMenuRealeza.tsx` | Menu principal com 4 cards Royal |
-| `src/components/questoes/DisciplinaCardRealeza.tsx` | Card de disciplina estilo Royal |
+**C. Adiar GTM (impacto medio no LCP)**
+- Trocar o GTM sincrono no `<head>` por carregamento adiado (apos 3s ou primeira interacao), similar ao que ja e feito com GA
 
-### Arquivos a modificar
+**D. Reduzir preload agressivo (impacto medio no TBT)**
+- Aumentar delay da Fase 1 do `AggressiveChunkPreloader` para 15s+ no mobile
+- Reduzir queries simultaneas do `useHomePreloader` ou adia-las mais
 
-| Arquivo | Mudança |
-|---------|---------|
-| `src/routes/estudosRoutes.tsx` | Adicionar rotas `/ferramentas/questoes-v2` e `/ferramentas/questoes-v2/temas` |
-| `src/components/Header.tsx` | Ocultar header nas novas rotas |
-| `src/pages/Admin/AdminPanel.tsx` | Adicionar link para preview da nova aba |
+**E. Otimizar hero/LCP element (impacto alto no LCP)**
+- Garantir que a imagem hero tenha `fetchpriority="high"` e `<link rel="preload">` efetivo
+- Considerar inline SVG ou CSS gradient como placeholder ate a imagem real carregar
 
-### Identidade Visual Royal
+**F. Reduzir CSS critico**
+- O `<style>` inline no head esta bom, mas as fontes competem com ele
 
-- Fundo: `hsl(0 0% 10%)` com DotPattern sutil
-- Cards: glass escuro com `backdrop-blur`, bordas `hsl(40 60% 50% / 0.15)`
-- Acentos: dourado `hsl(40 80% 55%)` para ícones, badges, progresso
-- Header: gradiente burgundy `hsl(345 65% 30%)` → `hsl(350 50% 20%)`
-- Shimmer/shine nos cards principais
-- BorderBeam nos cards de ação
-- Tipografia: títulos bold brancos, subtítulos dourados, textos `white/60`
+### Resumo de Impacto Esperado
 
-### Dados e Mecânica
-- Reutiliza `useQuestoesAreasCache` para áreas e contagens
-- Reutiliza `useQuestoesTemas` para temas por área
-- Reutiliza `user_questoes_stats` para estatísticas do usuário
-- Reutiliza `QuestoesConcurso` para resolver questões
-- Reutiliza `gerarFeedbackArabella` para a Dra. Arabella
+| Acao | LCP | TBT | Esforco |
+|------|-----|-----|---------|
+| Reduzir fontes de 8 para 2 | -1.0s | -50ms | Baixo |
+| Lazy load SDKs pagamento | — | -100ms | Baixo |
+| Adiar GTM | -0.5s | -80ms | Baixo |
+| Reduzir preloaders | — | -150ms | Medio |
+| Otimizar hero LCP | -1.0s | — | Medio |
+
+Com essas mudancas, o LCP pode cair para ~2.5-3.0s e o TBT para ~200ms, elevando a nota para B/C (70-80%).
+
+### Detalhes tecnicos
+
+- Arquivos modificados: `index.html`, `src/hooks/useAggressiveChunkPreloader.ts`, `src/hooks/useHomePreloader.ts`
+- Novos arquivos: possivel hook `usePaymentSDK.ts` para lazy load dos SDKs
+- Sem impacto visual — todas as mudancas sao de carregamento/performance
 
