@@ -158,7 +158,10 @@ export const AppSidebar = ({ onClose, collapsed = false, onToggle }: AppSidebarP
   const profileName = profileData?.nome || null;
 
   const isActive = (path: string) => {
-    const [pathname] = path.split('?');
+    const [pathname, query] = path.split('?');
+    if (query) {
+      return location.pathname === pathname && location.search.includes(query);
+    }
     return location.pathname === pathname;
   };
 
