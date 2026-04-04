@@ -12,13 +12,13 @@ interface LivroCarouselCardProps {
   isSelected?: boolean;
 }
 
-export const LivroCarouselCard = memo(({ titulo, capaUrl, onClick, numero, priority, isPremiumLocked, showYear }: LivroCarouselCardProps) => {
+export const LivroCarouselCard = memo(({ titulo, capaUrl, onClick, numero, priority, isPremiumLocked, showYear, isSelected }: LivroCarouselCardProps) => {
   return (
     <div
       onClick={onClick}
       className="cursor-pointer active:scale-95 transition-transform duration-150 flex flex-col gap-1.5"
     >
-      <div className="relative aspect-[2/3] w-full rounded-xl overflow-hidden bg-gradient-to-br from-amber-900/30 via-stone-800/40 to-stone-900/50 cover-reflection">
+      <div className={`relative aspect-[2/3] w-full rounded-xl overflow-hidden bg-gradient-to-br from-amber-900/30 via-stone-800/40 to-stone-900/50 cover-reflection ${isSelected ? 'ring-2 ring-amber-500/60 shadow-lg shadow-amber-500/20' : ''}`}>
         {isPremiumLocked && (
           <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-amber-500/90 text-white text-[9px] font-semibold shadow-lg">
             <Crown className="w-2.5 h-2.5" />
