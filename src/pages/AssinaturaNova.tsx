@@ -9,7 +9,7 @@ import {
   Headphones, FileText, Scale, CheckCircle, Target, MessageCircle,
   Gavel, Map, Video, Layers, ScrollText, Infinity, Calendar, Check
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
@@ -116,6 +116,8 @@ const PlanCard = ({ planKey, plan, selected, onSelect }: {
 
 const AssinaturaNova = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAdminPreview = location.pathname.includes('/admin/');
   const { user } = useAuth();
   const { isPremium, loading: subscriptionLoading } = useSubscription();
   const { trackEvent } = useFacebookPixel();
@@ -159,7 +161,7 @@ const AssinaturaNova = () => {
     );
   }
 
-  if (isPremium) return <AssinaturaGerenciamento />;
+  if (isPremium && !isAdminPreview) return <AssinaturaGerenciamento />;
 
   const handleAssinar = () => {
     if (!user) {
