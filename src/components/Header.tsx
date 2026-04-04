@@ -275,6 +275,7 @@ const getHierarchicalDestination = (pathname: string, search: string): string | 
   if (pathname.match(/^\/oab\/o-que-estudar\/[^/]+$/)) return "/oab/o-que-estudar";
   if (pathname === "/oab/o-que-estudar") return "/?tab=jornada";
   if (pathname === "/oab-funcoes") return "/?tab=jornada";
+  if (pathname === "/funcoes") return "/inicio";
   if (pathname === "/oab/primeira-fase") return "/?tab=jornada";
   if (pathname === "/oab/segunda-fase") return "/?tab=jornada";
   if (pathname.startsWith("/oab/")) return "/?tab=jornada";
