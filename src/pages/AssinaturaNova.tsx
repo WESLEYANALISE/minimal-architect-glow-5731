@@ -7,7 +7,7 @@ import type { PlanType } from "@/hooks/use-mercadopago-pix";
 import {
   Shield, ArrowRight, Crown, Clock, Lock, Sparkles, BookOpen, Brain,
   Headphones, FileText, Scale, CheckCircle, Target, MessageCircle,
-  Gavel, Map, Video, Layers, ScrollText, Infinity, Calendar, Check
+  Monitor, Map, Video, Layers, ScrollText, Infinity, Calendar, Check
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -38,7 +38,7 @@ const BENEFITS = [
   { Icon: Sparkles, title: 'IA Evelyn', value: '24h' },
   { Icon: Map, title: 'Mapas mentais', value: '+500' },
   { Icon: Video, title: 'Videoaulas', value: '+80' },
-  { Icon: Gavel, title: 'Audiências', value: '' },
+  { Icon: Monitor, title: 'Acesso Desktop', value: '' },
   { Icon: ScrollText, title: 'Legislação', value: '' },
   { Icon: MessageCircle, title: 'Assistente', value: '' },
   { Icon: CheckCircle, title: 'Simulados', value: '' },
