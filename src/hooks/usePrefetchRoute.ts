@@ -18,9 +18,6 @@ const ROUTE_IMPORTS: Record<string, () => Promise<any>> = {
   '/codigos': () => import('../pages/Codigos'),
   '/simulados': () => import('../pages/ferramentas/SimuladosHub'),
   '/chat-professora': () => import('../pages/ChatProfessora'),
-  '/funcoes': () => import('../pages/Funcoes'),
-  '/documentarios': () => import('../pages/Documentarios'),
-  '/dicionario-juridico': () => import('../pages/Dicionario'),
   '/modo-desktop': () => import('../pages/ModoDesktop'),
 };
 
