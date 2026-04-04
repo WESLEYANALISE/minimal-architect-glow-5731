@@ -62,8 +62,8 @@ export const AnotacaoDrawer = ({
         <DrawerHeader className="border-b border-border pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-full bg-amber-500/20">
-                <StickyNote className="h-5 w-5 text-amber-500" />
+              <div className="p-2 rounded-full bg-accent/20">
+                <StickyNote className="h-5 w-5 text-accent" />
               </div>
               <div>
                 <DrawerTitle className="text-lg">Anotações</DrawerTitle>
@@ -116,7 +116,7 @@ export const AnotacaoDrawer = ({
             <Button
               onClick={handleSave}
               disabled={isSaving || isDeleting || !hasChanges}
-              className="flex-1 bg-amber-500 hover:bg-amber-600 text-white"
+              className="flex-1 bg-accent hover:bg-accent text-white"
             >
               {isSaving ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />

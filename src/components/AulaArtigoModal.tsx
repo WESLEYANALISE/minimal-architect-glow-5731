@@ -270,7 +270,7 @@ export const AulaArtigoModal = ({
                   transition={{ duration: 0.3 }}
                   className="mb-8"
                 >
-                  <div className="w-24 h-24 mx-auto bg-gradient-to-br from-[hsl(45,93%,58%)] to-[hsl(45,93%,48%)] rounded-full flex items-center justify-center shadow-2xl shadow-[hsl(45,93%,58%)]/30">
+                  <div className="w-24 h-24 mx-auto bg-gradient-to-br from-[hsl(var(--accent))] to-[hsl(var(--accent))] rounded-full flex items-center justify-center shadow-2xl shadow-[hsl(var(--accent))]/30">
                     <GraduationCap className="w-12 h-12 text-black" />
                   </div>
                 </motion.div>
@@ -281,7 +281,7 @@ export const AulaArtigoModal = ({
                 <p className="text-muted-foreground mb-8">{codigoNome}</p>
 
                 <div className="flex items-center justify-center gap-3 mb-6">
-                  <Loader2 className="w-5 h-5 animate-spin text-[hsl(45,93%,58%)]" />
+                  <Loader2 className="w-5 h-5 animate-spin text-[hsl(var(--accent))]" />
                   <motion.span
                     key={loadingIndex}
                     initial={{ opacity: 0, y: 10 }}
@@ -298,7 +298,7 @@ export const AulaArtigoModal = ({
                     <div
                       key={i}
                       className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                        i <= loadingIndex ? 'bg-[hsl(45,93%,58%)]' : 'bg-border'
+                        i <= loadingIndex ? 'bg-[hsl(var(--accent))]' : 'bg-border'
                       }`}
                     />
                   ))}
@@ -336,8 +336,8 @@ export const AulaArtigoModal = ({
               className="p-4 max-w-4xl mx-auto pb-32"
             >
               {isCached && moduloAtual === 1 && (
-                <div className="mb-4 p-3 bg-[hsl(45,93%,58%)]/10 border border-[hsl(45,93%,58%)]/30 rounded-lg flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[hsl(45,93%,58%)]" />
+                <div className="mb-4 p-3 bg-[hsl(var(--accent))]/10 border border-[hsl(var(--accent))]/30 rounded-lg flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-[hsl(var(--accent))]" />
                   <span className="text-sm text-muted-foreground">
                     Aula pré-existente! Criada por outro usuário.
                   </span>
@@ -382,7 +382,7 @@ export const AulaArtigoModal = ({
               className="p-4 max-w-4xl mx-auto pb-32"
             >
               <div className="bg-card border border-border rounded-2xl p-6">
-                <h3 className="text-lg font-bold text-[hsl(45,93%,58%)] mb-4">
+                <h3 className="text-lg font-bold text-[hsl(var(--accent))] mb-4">
                   Flashcards - Módulo {moduloAtual}
                 </h3>
                 <FlashcardViewer
@@ -396,7 +396,7 @@ export const AulaArtigoModal = ({
                 <div className="mt-6 flex justify-center">
                   <Button
                     onClick={proximaEtapa}
-                    className="bg-[hsl(45,93%,58%)] hover:bg-[hsl(45,88%,52%)] text-black font-semibold px-8"
+                    className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))] text-black font-semibold px-8"
                   >
                     Ir para Questões
                   </Button>
@@ -415,7 +415,7 @@ export const AulaArtigoModal = ({
               className="p-4 max-w-4xl mx-auto pb-32"
             >
               <div className="bg-card border border-border rounded-2xl p-6">
-                <h3 className="text-lg font-bold text-[hsl(45,93%,58%)] mb-4">
+                <h3 className="text-lg font-bold text-[hsl(var(--accent))] mb-4">
                   Questões - Módulo {moduloAtual}
                 </h3>
                 <QuizViewerEnhanced
@@ -424,7 +424,7 @@ export const AulaArtigoModal = ({
                 <div className="mt-6 flex justify-center">
                   <Button
                     onClick={proximaEtapa}
-                    className="bg-[hsl(45,93%,58%)] hover:bg-[hsl(45,88%,52%)] text-black font-semibold px-8"
+                    className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))] text-black font-semibold px-8"
                   >
                     {moduloAtual < totalModulos ? 'Próximo Módulo' : 'Prova Final'}
                   </Button>

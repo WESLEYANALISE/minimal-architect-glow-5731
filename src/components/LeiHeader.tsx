@@ -75,7 +75,7 @@ export const LeiHeader = ({
     <div className={`flex flex-col items-center justify-center py-6 px-4 ${className}`}>
       {/* Brasão da República com botão de favoritar */}
       <div className="relative mb-4">
-        <div className="absolute inset-0 bg-amber-500/20 rounded-full blur-xl animate-pulse" />
+        <div className="absolute inset-0 bg-accent/20 rounded-full blur-xl animate-pulse" />
         <img 
           src={brasaoRepublica} 
           alt="Brasão da República Federativa do Brasil" 
@@ -99,8 +99,8 @@ export const LeiHeader = ({
               className={cn(
                 "w-5 h-5 transition-all duration-200",
                 isFavorita 
-                  ? "fill-amber-500 text-amber-500" 
-                  : "text-muted-foreground hover:text-amber-500"
+                  ? "fill-accent text-accent" 
+                  : "text-muted-foreground hover:text-accent"
               )} 
             />
           </button>
@@ -131,7 +131,7 @@ export const LeiHeader = ({
       )}
       
       {/* Linha decorativa */}
-      <div className="w-24 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mt-4" />
+      <div className="w-24 h-1 bg-gradient-to-r from-transparent via-accent to-transparent mt-4" />
       
       {/* Ementa em vermelho - abaixo da linha */}
       {ementaFinal && (

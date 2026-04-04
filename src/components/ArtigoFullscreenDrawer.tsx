@@ -946,13 +946,13 @@ export const ArtigoFullscreenDrawer = ({
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent className={`h-[95vh] max-h-[95vh] flex flex-col ${skipInitialAnimation && !hasAnimated ? '[&[data-state=open]]:!duration-0 [&[data-state=open]]:!animate-none' : ''}`}>
+      <DrawerContent className={`h-[82vh] max-h-[82vh] flex flex-col ${skipInitialAnimation && !hasAnimated ? '[&[data-state=open]]:!duration-0 [&[data-state=open]]:!animate-none' : ''}`}>
         {/* Wrapper para centralizar no desktop */}
         <div className="flex flex-col h-full max-w-4xl mx-auto w-full">
           {/* Header com controles de fonte */}
           <DrawerHeader className="border-b border-border px-4 py-3 flex-shrink-0">
             <div className="flex items-center justify-between">
-              <DrawerTitle className="text-lg font-bold text-amber-500">
+              <DrawerTitle className="text-lg font-bold text-accent">
                 Art. {formatNumeroArtigo(numeroArtigo)}
               </DrawerTitle>
               <div className="flex items-center gap-1 bg-muted/50 rounded-full p-1">
@@ -988,12 +988,12 @@ export const ArtigoFullscreenDrawer = ({
                   disabled={isLoadingFavorito}
                   className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                     isFavorito 
-                      ? 'text-amber-400 bg-amber-500/20' 
-                      : 'text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10'
+                      ? 'text-accent bg-accent/20' 
+                      : 'text-muted-foreground hover:text-accent hover:bg-accent/10'
                   }`}
                   title={isFavorito ? "Remover favorito" : "Favoritar"}
                 >
-                  <Star className={`w-4 h-4 ${isFavorito ? 'fill-amber-400' : ''}`} />
+                  <Star className={`w-4 h-4 ${isFavorito ? 'fill-accent' : ''}`} />
                 </button>
                 
                 {/* Botão Compartilhar */}
@@ -1031,7 +1031,7 @@ export const ArtigoFullscreenDrawer = ({
                 {/* Fechar */}
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 rounded-full flex items-center justify-center bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 hover:text-amber-300 transition-all"
+                  className="w-8 h-8 rounded-full flex items-center justify-center bg-accent/20 text-accent hover:bg-accent/30 hover:text-red-300 transition-all"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1050,8 +1050,8 @@ export const ArtigoFullscreenDrawer = ({
                   disabled={magicLoading}
                   className={`w-11 h-11 rounded-full flex items-center justify-center transition-all active:scale-90 relative overflow-hidden ${
                     magicMode
-                      ? 'bg-amber-300 text-amber-900 shadow-[0_0_14px_rgba(252,211,77,0.6)]'
-                      : 'bg-amber-400 text-amber-900 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50'
+                      ? 'bg-red-300 text-white shadow-[0_0_14px_rgba(252,211,77,0.6)]'
+                      : 'bg-accent text-white shadow-lg shadow-accent/30 hover:shadow-accent/50'
                   }`}
                   title={magicMode ? "Desativar Grifo Mágico" : "Grifo Mágico (IA)"}
                 >
@@ -1080,7 +1080,7 @@ export const ArtigoFullscreenDrawer = ({
                 </button>
                 
                 <div className="w-full flex items-center justify-center border-y border-border/40 py-1">
-                  <span className="text-[10px] font-bold text-amber-500 tabular-nums">{fontSize}</span>
+                  <span className="text-[10px] font-bold text-accent tabular-nums">{fontSize}</span>
                 </div>
                 
                 <button
@@ -1100,7 +1100,7 @@ export const ArtigoFullscreenDrawer = ({
         {sectionInfo && (sectionInfo.titulo || sectionInfo.subtitulo) && (
           <div className="px-4 py-2 border-b border-border/30">
             {sectionInfo.titulo && (
-              <p className="text-xs font-semibold text-amber-400/80 uppercase tracking-wider">{sectionInfo.titulo}</p>
+              <p className="text-xs font-semibold text-accent/80 uppercase tracking-wider">{sectionInfo.titulo}</p>
             )}
             {sectionInfo.subtitulo && (
               <p className="text-[11px] text-muted-foreground italic">{sectionInfo.subtitulo}</p>
@@ -1114,20 +1114,20 @@ export const ArtigoFullscreenDrawer = ({
             <TabsList className={`w-full h-12 bg-muted/30 p-1 grid gap-1 ${highlightAlteracao ? 'grid-cols-2' : 'grid-cols-4'}`}>
               <TabsTrigger 
                 value="artigo" 
-                className="text-sm rounded-md data-[state=active]:bg-amber-500 data-[state=active]:text-white data-[state=active]:shadow-none"
+                className="text-sm rounded-md data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:shadow-none"
               >
                 Artigo
               </TabsTrigger>
               <TabsTrigger 
                 value="explicacao" 
-                className="text-sm rounded-md data-[state=active]:bg-amber-500 data-[state=active]:text-white data-[state=active]:shadow-none"
+                className="text-sm rounded-md data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:shadow-none"
               >
                 {highlightAlteracao ? 'O que mudou?' : 'Explicação'}
               </TabsTrigger>
               {!highlightAlteracao && (
                 <TabsTrigger 
                   value="exemplo" 
-                  className="text-sm rounded-md data-[state=active]:bg-amber-500 data-[state=active]:text-white data-[state=active]:shadow-none"
+                  className="text-sm rounded-md data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:shadow-none"
                 >
                   Exemplo
                 </TabsTrigger>
@@ -1135,7 +1135,7 @@ export const ArtigoFullscreenDrawer = ({
               {!highlightAlteracao && (
                 <TabsTrigger 
                   value="termos" 
-                  className="text-sm rounded-md data-[state=active]:bg-amber-500 data-[state=active]:text-white data-[state=active]:shadow-none"
+                  className="text-sm rounded-md data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:shadow-none"
                 >
                   Termos
                 </TabsTrigger>
@@ -1173,16 +1173,16 @@ export const ArtigoFullscreenDrawer = ({
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
-                            className="mb-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 overflow-hidden"
+                            className="mb-4 p-3 rounded-xl bg-accent/10 border border-accent/30 overflow-hidden"
                           >
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-2">
-                                <Sparkles className="w-4 h-4 text-amber-400" />
-                                <span className="text-xs font-semibold text-amber-400">Grifo Mágico ativo</span>
+                                <Sparkles className="w-4 h-4 text-accent" />
+                                <span className="text-xs font-semibold text-accent">Grifo Mágico ativo</span>
                               </div>
                               <button
                                 onClick={() => setShowMagicLegend(false)}
-                                className="text-amber-400/60 hover:text-amber-400 transition-colors"
+                                className="text-accent/60 hover:text-accent transition-colors"
                               >
                                 <X className="w-3.5 h-3.5" />
                               </button>
@@ -1223,7 +1223,7 @@ export const ArtigoFullscreenDrawer = ({
                       )}
                       {/* Número do artigo inline com o texto */}
                       <div className="article-inline-wrapper" style={{ fontSize: `${fontSize}px`, lineHeight: '1.75' }}>
-                        <span className="text-amber-400 font-bold" style={{ fontSize: `${fontSize + 2}px` }}>
+                        <span className="text-accent font-bold" style={{ fontSize: `${fontSize + 2}px` }}>
                           Art. {formatNumeroArtigo(numeroArtigo)} –{' '}
                         </span>
                         <ArticleHighlighter
@@ -1253,8 +1253,8 @@ export const ArtigoFullscreenDrawer = ({
                             rel="noopener noreferrer"
                             className="mt-6 flex items-center gap-3 p-3 rounded-xl bg-muted/40 border border-border/50 hover:bg-muted/60 transition-colors"
                           >
-                            <div className="w-10 h-10 rounded-lg bg-amber-500/15 flex items-center justify-center flex-shrink-0">
-                              <Scale className="w-5 h-5 text-amber-500" />
+                            <div className="w-10 h-10 rounded-lg bg-accent/15 flex items-center justify-center flex-shrink-0">
+                              <Scale className="w-5 h-5 text-accent" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-semibold text-foreground">Ver no Planalto</p>
@@ -1351,7 +1351,7 @@ export const ArtigoFullscreenDrawer = ({
                         </div>
                       ) : loadingResumo ? (
                         <div className="flex items-center justify-center py-12">
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500" />
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
                         </div>
                       ) : resumoData?.resumo_markdown ? (
                         <div className="resumo-content space-y-2">
@@ -1363,17 +1363,17 @@ export const ArtigoFullscreenDrawer = ({
                               return (
                                 <ReactMarkdown
                                   components={{
-                                    h1: ({ children }) => <h1 className="text-2xl font-bold text-amber-300 mb-4">{children}</h1>,
-                                    h2: ({ children }) => <h2 className="text-xl font-bold text-amber-300 mt-6 mb-3">{children}</h2>,
-                                    h3: ({ children }) => <h3 className="text-lg font-semibold text-amber-300 mt-4 mb-2">{children}</h3>,
+                                    h1: ({ children }) => <h1 className="text-2xl font-bold text-red-300 mb-4">{children}</h1>,
+                                    h2: ({ children }) => <h2 className="text-xl font-bold text-red-300 mt-6 mb-3">{children}</h2>,
+                                    h3: ({ children }) => <h3 className="text-lg font-semibold text-red-300 mt-4 mb-2">{children}</h3>,
                                     p: ({ children }) => <p className="text-foreground/90 leading-relaxed mb-4">{children}</p>,
                                     blockquote: ({ children }) => (
-                                      <blockquote className="border-l-4 border-amber-300/50 pl-4 py-2 my-4 bg-amber-300/5 rounded-r-lg italic text-foreground/80">
+                                      <blockquote className="border-l-4 border-red-300/50 pl-4 py-2 my-4 bg-red-300/5 rounded-r-lg italic text-foreground/80">
                                         {children}
                                       </blockquote>
                                     ),
                                     a: ({ href, children }) => (
-                                      <a href={href} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
+                                      <a href={href} target="_blank" rel="noopener noreferrer" className="text-red-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
                                         {children}<ExternalLink className="w-3 h-3 inline" />
                                       </a>
                                     ),
@@ -1398,20 +1398,20 @@ export const ArtigoFullscreenDrawer = ({
                                   return (
                                     <AccordionItem key={idx} value={`exp-${idx}`} className="border border-border/50 rounded-xl overflow-hidden bg-card/50">
                                       <AccordionTrigger className="px-4 py-3 text-left hover:no-underline hover:bg-muted/30">
-                                        <span className="text-sm font-semibold text-amber-300">{title}</span>
+                                        <span className="text-sm font-semibold text-red-300">{title}</span>
                                       </AccordionTrigger>
                                       <AccordionContent className="px-4 pb-4">
                                         <ReactMarkdown
                                           components={{
-                                            h3: ({ children }) => <h3 className="text-base font-semibold text-amber-300 mt-3 mb-2">{children}</h3>,
+                                            h3: ({ children }) => <h3 className="text-base font-semibold text-red-300 mt-3 mb-2">{children}</h3>,
                                             p: ({ children }) => <p className="text-foreground/90 leading-relaxed mb-3">{children}</p>,
                                             blockquote: ({ children }) => (
-                                              <blockquote className="border-l-4 border-amber-300/50 pl-4 py-2 my-3 bg-amber-300/5 rounded-r-lg italic text-foreground/80">
+                                              <blockquote className="border-l-4 border-red-300/50 pl-4 py-2 my-3 bg-red-300/5 rounded-r-lg italic text-foreground/80">
                                                 {children}
                                               </blockquote>
                                             ),
                                             a: ({ href, children }) => (
-                                              <a href={href} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
+                                              <a href={href} target="_blank" rel="noopener noreferrer" className="text-red-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
                                                 {children}<ExternalLink className="w-3 h-3 inline" />
                                               </a>
                                             ),
@@ -1446,7 +1446,7 @@ export const ArtigoFullscreenDrawer = ({
                     <div style={{ fontSize: `${fontSize}px` }}>
                       {loadingResumo ? (
                         <div className="flex items-center justify-center py-12">
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500" />
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
                         </div>
                       ) : resumoData?.exemplos ? (
                         <div className="resumo-content space-y-2">
@@ -1456,12 +1456,12 @@ export const ArtigoFullscreenDrawer = ({
                               return (
                                 <ReactMarkdown
                                   components={{
-                                    h1: ({ children }) => <h1 className="text-2xl font-bold text-amber-300 mb-4">{children}</h1>,
-                                    h2: ({ children }) => <h2 className="text-xl font-bold text-amber-300 mt-6 mb-3">{children}</h2>,
-                                    h3: ({ children }) => <h3 className="text-lg font-semibold text-amber-300 mt-4 mb-2">{children}</h3>,
+                                    h1: ({ children }) => <h1 className="text-2xl font-bold text-red-300 mb-4">{children}</h1>,
+                                    h2: ({ children }) => <h2 className="text-xl font-bold text-red-300 mt-6 mb-3">{children}</h2>,
+                                    h3: ({ children }) => <h3 className="text-lg font-semibold text-red-300 mt-4 mb-2">{children}</h3>,
                                     p: ({ children }) => <p className="text-foreground/90 leading-relaxed mb-4">{children}</p>,
                                     a: ({ href, children }) => (
-                                      <a href={href} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
+                                      <a href={href} target="_blank" rel="noopener noreferrer" className="text-red-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
                                         {children}<ExternalLink className="w-3 h-3 inline" />
                                       </a>
                                     ),
@@ -1484,15 +1484,15 @@ export const ArtigoFullscreenDrawer = ({
                                   return (
                                     <AccordionItem key={idx} value={`ex-${idx}`} className="border border-border/50 rounded-xl overflow-hidden bg-card/50">
                                       <AccordionTrigger className="px-4 py-3 text-left hover:no-underline hover:bg-muted/30">
-                                        <span className="text-sm font-semibold text-amber-300">📋 {title}</span>
+                                        <span className="text-sm font-semibold text-red-300">📋 {title}</span>
                                       </AccordionTrigger>
                                       <AccordionContent className="px-4 pb-4">
                                         <ReactMarkdown
                                           components={{
-                                            h3: ({ children }) => <h3 className="text-base font-semibold text-amber-300 mt-3 mb-2">{children}</h3>,
+                                            h3: ({ children }) => <h3 className="text-base font-semibold text-red-300 mt-3 mb-2">{children}</h3>,
                                             p: ({ children }) => <p className="text-foreground/90 leading-relaxed mb-3">{children}</p>,
                                             a: ({ href, children }) => (
-                                              <a href={href} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
+                                              <a href={href} target="_blank" rel="noopener noreferrer" className="text-red-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
                                                 {children}<ExternalLink className="w-3 h-3 inline" />
                                               </a>
                                             ),
@@ -1526,7 +1526,7 @@ export const ArtigoFullscreenDrawer = ({
                     <div style={{ fontSize: `${fontSize}px` }}>
                       {loadingResumo ? (
                         <div className="flex items-center justify-center py-12">
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500" />
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
                         </div>
                       ) : resumoData?.termos ? (
                         <div className="resumo-content space-y-2">
@@ -1536,12 +1536,12 @@ export const ArtigoFullscreenDrawer = ({
                               return (
                                 <ReactMarkdown
                                   components={{
-                                    h1: ({ children }) => <h1 className="text-2xl font-bold text-amber-300 mb-4">{children}</h1>,
-                                    h2: ({ children }) => <h2 className="text-xl font-bold text-amber-300 mt-6 mb-3">{children}</h2>,
-                                    h3: ({ children }) => <h3 className="text-lg font-semibold text-amber-300 mt-4 mb-2">{children}</h3>,
+                                    h1: ({ children }) => <h1 className="text-2xl font-bold text-red-300 mb-4">{children}</h1>,
+                                    h2: ({ children }) => <h2 className="text-xl font-bold text-red-300 mt-6 mb-3">{children}</h2>,
+                                    h3: ({ children }) => <h3 className="text-lg font-semibold text-red-300 mt-4 mb-2">{children}</h3>,
                                     p: ({ children }) => <p className="text-foreground/90 leading-relaxed mb-4">{children}</p>,
                                     a: ({ href, children }) => (
-                                      <a href={href} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
+                                      <a href={href} target="_blank" rel="noopener noreferrer" className="text-red-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
                                         {children}<ExternalLink className="w-3 h-3 inline" />
                                       </a>
                                     ),
@@ -1562,15 +1562,15 @@ export const ArtigoFullscreenDrawer = ({
                                   return (
                                     <AccordionItem key={idx} value={`term-${idx}`} className="border border-border/50 rounded-xl overflow-hidden bg-card/50">
                                       <AccordionTrigger className="px-4 py-3 text-left hover:no-underline hover:bg-muted/30">
-                                        <span className="text-sm font-semibold text-amber-300">📖 {title}</span>
+                                        <span className="text-sm font-semibold text-red-300">📖 {title}</span>
                                       </AccordionTrigger>
                                       <AccordionContent className="px-4 pb-4">
                                         <ReactMarkdown
                                           components={{
-                                            h3: ({ children }) => <h3 className="text-base font-semibold text-amber-300 mt-3 mb-2">{children}</h3>,
+                                            h3: ({ children }) => <h3 className="text-base font-semibold text-red-300 mt-3 mb-2">{children}</h3>,
                                             p: ({ children }) => <p className="text-foreground/90 leading-relaxed mb-3">{children}</p>,
                                             a: ({ href, children }) => (
-                                              <a href={href} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
+                                              <a href={href} target="_blank" rel="noopener noreferrer" className="text-red-300 underline underline-offset-2 hover:text-amber-200 inline-flex items-center gap-1">
                                                 {children}<ExternalLink className="w-3 h-3 inline" />
                                               </a>
                                             ),
@@ -1602,7 +1602,7 @@ export const ArtigoFullscreenDrawer = ({
 
         {/* Rodapé fixo estilo BottomNav - esconde no modo destaque */}
         {activeTab === 'artigo' && !highlightAlteracao && !isHighlightMode && (
-        <div className="flex-shrink-0 border-t border-amber-900/30 bg-gradient-to-t from-amber-950/95 via-amber-950/80 to-amber-950/70 backdrop-blur-md px-2 py-2 pb-6 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.6),0_-2px_10px_rgba(0,0,0,0.4)] safe-area-bottom">
+        <div className="flex-shrink-0 border-t border-border/30 bg-gradient-to-t from-card/95 via-card/80 to-card/70 backdrop-blur-md px-2 py-2 pb-6 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.6),0_-2px_10px_rgba(0,0,0,0.4)] safe-area-bottom">
           <div className="max-w-2xl mx-auto">
             <div className="grid grid-cols-5 items-end">
               {/* Estudar */}
@@ -1762,7 +1762,7 @@ export const ArtigoFullscreenDrawer = ({
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-sm border-t border-border safe-area-bottom animate-in slide-in-from-bottom duration-200">
           <div className="max-w-md mx-auto p-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Highlighter className="w-4 h-4 text-amber-500" />
+              <Highlighter className="w-4 h-4 text-accent" />
               <span className="text-xs text-muted-foreground">
                 Selecione o texto para destacar
               </span>
@@ -1778,7 +1778,7 @@ export const ArtigoFullscreenDrawer = ({
               )}
               <button
                 onClick={() => setIsHighlightMode(false)}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 transition-all text-xs font-semibold"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-accent/20 text-accent hover:bg-accent/30 transition-all text-xs font-semibold"
               >
                 Sair
               </button>

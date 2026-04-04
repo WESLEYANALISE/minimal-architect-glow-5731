@@ -37,7 +37,7 @@ export const VadeMecumNavigationSidebar = ({
       {/* Header */}
       <div className="p-4 border-b border-zinc-800 bg-zinc-900">
         <div className="flex items-center gap-3">
-          <Scale className="h-5 w-5 text-amber-500" />
+          <Scale className="h-5 w-5 text-accent" />
           <span className="text-sm font-semibold text-foreground">{codeName}</span>
         </div>
         <div className="text-xs text-muted-foreground mt-1">
@@ -58,7 +58,7 @@ export const VadeMecumNavigationSidebar = ({
                   onClick={() => onSelectChapter(null)}
                   className={cn(
                     "w-full justify-start text-sm h-10 px-3",
-                    selectedChapter === null && "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+                    selectedChapter === null && "bg-accent/10 text-accent border border-accent/30"
                   )}
                 >
                   <FileText className="h-4 w-4 mr-3 flex-shrink-0" />
@@ -84,7 +84,7 @@ export const VadeMecumNavigationSidebar = ({
                       onClick={() => onSelectChapter(item.name)}
                       className={cn(
                         "w-full justify-start text-sm h-9 px-3",
-                        selectedChapter === item.name && "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+                        selectedChapter === item.name && "bg-accent/10 text-accent border border-accent/30"
                       )}
                     >
                       <BookOpen className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground" />

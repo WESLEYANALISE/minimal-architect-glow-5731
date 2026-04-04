@@ -29,9 +29,9 @@ const getOrderColumn = (tableName: string): string => {
 
 interface UseProgressiveArticlesOptions {
   tableName: string;
-  initialChunk?: number;      // Primeiros N artigos (default: 50)
-  backgroundChunk?: number;   // Quantos carregar por vez em background (default: 100)
-  delayBetweenChunks?: number; // Delay entre chunks em ms (default: 200)
+  initialChunk?: number;      // Primeiros N artigos (default: 200)
+  backgroundChunk?: number;   // Quantos carregar por vez em background (default: 200)
+  delayBetweenChunks?: number; // Delay entre chunks em ms (default: 50)
   enabled?: boolean;
   cacheKey?: string;
   idMin?: number;
@@ -62,9 +62,9 @@ interface UseProgressiveArticlesReturn<T> {
  */
 export const useProgressiveArticles = <T = any>({
   tableName,
-  initialChunk = 50,
-  backgroundChunk = 100,
-  delayBetweenChunks = 200,
+  initialChunk = 200,
+  backgroundChunk = 200,
+  delayBetweenChunks = 50,
   enabled = true,
   cacheKey,
   idMin,

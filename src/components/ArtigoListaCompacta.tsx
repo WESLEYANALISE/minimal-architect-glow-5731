@@ -89,7 +89,7 @@ const highlightText = (text: string, query?: string) => {
   
   return parts.map((part, i) => 
     regex.test(part) ? (
-      <mark key={i} className="bg-amber-500/20 text-amber-500 font-medium">
+      <mark key={i} className="bg-accent/20 text-accent font-medium">
         {part}
       </mark>
     ) : (
@@ -290,11 +290,11 @@ const ArtigoCard = ({
     <Card
       className={`cursor-pointer hover:bg-muted/50 transition-colors border-l-4 ${
         isHighlighted 
-          ? 'ring-2 ring-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.4)] bg-amber-500/5' 
+          ? 'ring-2 ring-accent shadow-[0_0_20px_rgba(245,158,11,0.4)] bg-accent/5' 
           : ''
       } ${isLocked ? 'opacity-60' : ''}`}
       style={{
-        borderLeftColor: isLocked ? "hsl(0, 0%, 40%)" : "hsl(38, 92%, 50%)",
+        borderLeftColor: isLocked ? "hsl(0, 0%, 40%)" : "hsl(var(--accent))",
       }}
       onClick={handleClick}
     >
@@ -303,12 +303,12 @@ const ArtigoCard = ({
           {isLocked ? (
             <Lock className="w-5 h-5 text-muted-foreground" />
           ) : (
-            <Scale className={`w-5 h-5 ${isHighlighted ? 'text-amber-400' : 'text-amber-500'}`} />
+            <Scale className={`w-5 h-5 ${isHighlighted ? 'text-accent' : 'text-accent'}`} />
           )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className={`font-semibold text-sm ${isHighlighted ? 'text-amber-500' : ''}`}>
+            <h3 className={`font-semibold text-sm ${isHighlighted ? 'text-accent' : ''}`}>
               {highlightText(`Art. ${numeroArtigo}`, searchQuery)}
             </h3>
           </div>
@@ -318,11 +318,11 @@ const ArtigoCard = ({
         </div>
         {isLocked ? (
           <div className="flex-shrink-0 animate-pulse">
-            <Crown className="w-5 h-5 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
+            <Crown className="w-5 h-5 text-accent drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
           </div>
         ) : hasNarracao ? (
           <div className="flex-shrink-0">
-            <CheckCircle className="w-5 h-5 text-amber-500" />
+            <CheckCircle className="w-5 h-5 text-accent" />
           </div>
         ) : null}
       </CardContent>
@@ -441,7 +441,7 @@ const AlteracoesLista = ({
         <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-500" />
+              <Sparkles className="w-5 h-5 text-accent" />
               Explicação da Alteração
             </DialogTitle>
           </DialogHeader>
@@ -484,7 +484,7 @@ const AlteracoesLista = ({
           <div key={ano}>
             {/* Year header */}
             <div className="flex items-center gap-2 mb-2">
-              <Calendar className="w-4 h-4 text-amber-500" />
+              <Calendar className="w-4 h-4 text-accent" />
               <span className="text-sm font-bold text-foreground">
                 {ano === 0 ? 'Sem data' : ano}
               </span>
@@ -514,7 +514,7 @@ const AlteracoesLista = ({
                   return (
                     <div
                       key={alt.id}
-                      className={`rounded-xl bg-card border border-border/40 overflow-hidden hover:border-amber-500/30 transition-all cursor-pointer border-l-[3px] ${cor.border}`}
+                      className={`rounded-xl bg-card border border-border/40 overflow-hidden hover:border-accent/30 transition-all cursor-pointer border-l-[3px] ${cor.border}`}
                       onClick={() => handleCardClick(alt)}
                     >
                       <div className="p-3">
@@ -908,13 +908,13 @@ export const ArtigoListaCompacta = ({
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 overflow-hidden relative ${item.bg} ${
                   isActive 
-                    ? 'ring-2 ring-white/50 scale-110 shadow-lg shadow-amber-500/30' 
+                    ? 'ring-2 ring-white/50 scale-110 shadow-lg shadow-accent/30' 
                     : 'opacity-80 hover:scale-105'
                 }`}>
                   <Icon className="w-5 h-5 text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.9)] relative z-10" />
                   <div className="absolute inset-0 animate-[shinePratique_3s_ease-in-out_infinite] opacity-60" style={{ background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.4) 50%, transparent 60%)', animationDelay: `${0.4 * (['favoritos','playlist','anotacoes','alteracoes','radar'].indexOf(item.key))}s` }} />
                 </div>
-                <span className={`text-[10px] font-medium ${isActive ? 'text-amber-400' : 'text-muted-foreground'}`}>
+                <span className={`text-[10px] font-medium ${isActive ? 'text-accent' : 'text-muted-foreground'}`}>
                   {item.label}
                 </span>
               </button>
@@ -933,7 +933,7 @@ export const ArtigoListaCompacta = ({
               }}
               className={`rounded-md text-sm font-medium flex items-center gap-1.5 ${
                 modoVisualizacao === 'artigos' && subModoConteudo === 'lista'
-                  ? '!bg-amber-500 !text-black shadow-sm'
+                  ? '!bg-accent !text-black shadow-sm'
                   : 'text-white hover:bg-muted/30'
               }`}
             >
@@ -949,7 +949,7 @@ export const ArtigoListaCompacta = ({
               }}
               className={`rounded-md text-sm font-medium flex items-center gap-1.5 ${
                 modoVisualizacao === 'capitulos' && subModoConteudo === 'lista'
-                  ? '!bg-amber-500 !text-black shadow-sm'
+                  ? '!bg-accent !text-black shadow-sm'
                   : 'text-white hover:bg-muted/30'
               }`}
             >

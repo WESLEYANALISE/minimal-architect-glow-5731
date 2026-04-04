@@ -221,7 +221,7 @@ export const VadeMecumDetailPanel = ({
       onClick: () => handleFeatureClick('anotacao', () => setAnotacaoOpen(true)),
       disabled: false,
       show: true,
-      color: hasAnotacao ? 'text-amber-500' : 'text-muted-foreground',
+      color: hasAnotacao ? 'text-accent' : 'text-muted-foreground',
       blocked: false
     }
   ].filter(btn => btn.show);
@@ -313,7 +313,7 @@ export const VadeMecumDetailPanel = ({
               </span>
             )}
             {!canUseFeatures && (
-              <span className="text-xs px-3 py-1.5 rounded-full bg-amber-500/20 text-amber-400 flex items-center gap-2 font-medium">
+              <span className="text-xs px-3 py-1.5 rounded-full bg-accent/20 text-accent flex items-center gap-2 font-medium">
                 <Crown className="h-4 w-4" /> Recursos Premium
               </span>
             )}
