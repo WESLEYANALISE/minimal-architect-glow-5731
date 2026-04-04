@@ -355,6 +355,7 @@ const FlashcardsEstudar = ({ inlineArea, inlineTema, onExit, onComplete }: Flash
 
   // Redirecionar se não houver área
   if (!area) {
+    if (isInline && onExit) { onExit(); return null; }
     navigate("/flashcards");
     return null;
   }
