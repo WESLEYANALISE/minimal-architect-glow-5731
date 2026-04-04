@@ -20,13 +20,13 @@ button, a, input, select, textarea, [role="button"] {
 }
 
 @keyframes neonPulse {
-  0%, 100% { box-shadow: 0 0 10px rgba(160,40,30,0.4), 0 0 20px rgba(160,40,30,0.2); ring-color: rgba(170,50,35,0.5); }
-  50% { box-shadow: 0 0 20px rgba(160,40,30,0.7), 0 0 40px rgba(160,40,30,0.35), 0 0 60px rgba(160,40,30,0.15); ring-color: rgba(170,50,35,0.8); }
+  0%, 100% { box-shadow: 0 0 10px rgba(190,50,70,0.4), 0 0 20px rgba(190,50,70,0.2); ring-color: rgba(190,50,70,0.5); }
+  50% { box-shadow: 0 0 20px rgba(190,50,70,0.7), 0 0 40px rgba(190,50,70,0.35), 0 0 60px rgba(190,50,70,0.15); ring-color: rgba(190,50,70,0.8); }
 }
 
 @keyframes neonPulseBrown {
-  0%, 100% { box-shadow: 0 0 10px rgba(160,40,30,0.4), 0 0 20px rgba(160,40,30,0.2); ring-color: rgba(160,40,30,0.5); }
-  50% { box-shadow: 0 0 20px rgba(160,40,30,0.7), 0 0 40px rgba(160,40,30,0.35), 0 0 60px rgba(160,40,30,0.15); ring-color: rgba(160,40,30,0.8); }
+  0%, 100% { box-shadow: 0 0 10px rgba(190,50,70,0.4), 0 0 20px rgba(190,50,70,0.2); ring-color: rgba(190,50,70,0.5); }
+  50% { box-shadow: 0 0 20px rgba(190,50,70,0.7), 0 0 40px rgba(190,50,70,0.35), 0 0 60px rgba(190,50,70,0.15); ring-color: rgba(190,50,70,0.8); }
 }
 
 @keyframes neonPulseText {

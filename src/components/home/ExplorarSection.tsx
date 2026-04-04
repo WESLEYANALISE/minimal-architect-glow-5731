@@ -37,7 +37,7 @@ export const ExplorarSection = memo(({ navigate }: ExplorarSectionProps) => {
       </div>
 
       {/* Container — mesma estética de Estudos */}
-      <div className="bg-gradient-to-br from-red-950 via-red-900 to-red-950/95 rounded-3xl p-4 relative overflow-hidden shadow-2xl border border-red-800/30">
+      <div className="bg-gradient-to-br from-[hsl(350,50%,12%)] via-[hsl(345,45%,10%)] to-[hsl(340,40%,8%)] rounded-3xl p-4 relative overflow-hidden shadow-2xl border border-rose-800/30">
         <div className="grid grid-cols-2 gap-3 relative z-10">
           {itensExplorar.map((item) => {
             const Icon = item.icon;
