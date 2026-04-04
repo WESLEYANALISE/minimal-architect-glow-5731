@@ -1,85 +1,60 @@
 
 
-# Sistema de Temas Visuais com Seletor no Admin
+## Plano: Scroll-to-Top Global + Otimização de Performance Desktop
 
-## Resumo
-
-Criar **4 presets de tema** baseados na paleta vermelho/rose dos cards "Estudos no Computador", com um seletor no painel Admin para alternar entre eles em tempo real. Cada tema modifica as CSS variables do design system (`--card`, `--background`, `--primary`, `--accent`, `--border`, etc.).
-
----
-
-## Os 4 Temas
-
-| Tema | Descrição | Estilo base |
-|------|-----------|-------------|
-| **Neutro** (atual) | Cinza puro + vermelho accent | `--card: 0 0% 11%`, `--primary: 0 72% 42%` |
-| **Cards & Botões** | Cards com gradiente vermelho escuro, botões rose/red | `--card: 0 30% 11%`, bordas com tint vermelho |
-| **Fundos de Seção** | Containers e seções com fundo vermelho profundo | `--muted: 0 25% 10%`, `--secondary: 0 20% 12%` |
-| **Full Red** | Tudo com tint vermelho — cards, fundos, borders, badges | Combina os dois acima + `--border: 0 15% 18%` |
+### Problema Identificado
+1. **Sem scroll-to-top global**: O projeto não possui um componente `ScrollToTop` que reseta a posição de scroll ao navegar entre páginas. Cada página implementa seu próprio `scrollToTop` manualmente (35+ arquivos), mas nenhum faz isso automaticamente na navegação.
+2. **Performance de carregamento**: As capas e imagens dependem de preloaders com delays altos no desktop (15s/45s), causando flashes de conteúdo vazio.
 
 ---
 
-## Arquitetura
+### Etapa 1: Componente ScrollToTop Global
 
-### 1. CSS Variables por tema (`src/index.css`)
-Definir 4 classes de tema (`:root`, `.theme-cards`, `.theme-sections`, `.theme-full-red`) com variações das CSS variables. A troca aplica a classe no `<html>`.
+Criar `src/components/ScrollToTop.tsx` que escuta mudanças de rota e faz `window.scrollTo(0, 0)` instantaneamente a cada navegação.
 
-### 2. Context de Tema (`src/contexts/ThemeContext.tsx`)
-- Estado do tema ativo (salvo no `localStorage` + tabela Supabase `app_settings`)
-- Função `setTheme(preset)` que aplica a classe CSS e persiste
-- Provider no `App.tsx`
+- Usar `useLocation()` + `useEffect` para detectar mudanças de pathname
+- Scroll com `behavior: 'instant'` para não ter delay
+- Montar dentro do `BrowserRouter` no `App.tsx`, antes das `Routes`
 
-### 3. Página Admin — Seletor de Tema (`src/pages/Admin/AdminTemas.tsx`)
-- 4 cards de preview com miniatura visual de cada tema
-- Ao clicar, aplica o tema instantaneamente
-- Botão "Salvar como padrão" grava no Supabase para todos os usuários
-
-### 4. Rota + Link no AdminHub
-- Nova rota `/admin/temas`
-- Card no `AdminHub.tsx` com ícone `Palette`
+Padrão usado pelos grandes sites e recomendado pelo React Router (técnica amplamente documentada no GitHub e Stack Overflow).
 
 ---
 
-## Detalhes Técnicos
+### Etapa 2: Otimização de Performance Desktop
 
-### CSS Variables por tema (adições no `index.css`)
+**2a. Reduzir delays do preloader no desktop**
+- No `useAggressiveChunkPreloader.ts`, reduzir os timings desktop de 15s/45s para valores mais agressivos (8s/25s) mantendo batch size conservador para não travar rendering.
 
-```css
-/* Tema atual = padrão (sem classe extra) */
+**2b. Preload de imagens com Intersection Observer**
+- Criar hook `useIntersectionPreload` que usa `IntersectionObserver` com `rootMargin: '200px'` para começar a carregar imagens antes de entrarem na viewport (técnica usada por YouTube, Netflix, etc.).
+- Aplicar nos cards de capas (cursos, bibliotecas, etc.) para que as imagens carreguem antes do scroll chegar nelas.
 
-.theme-cards {
-  --card: 0 30% 11%;
-  --border: 0 20% 16%;
-  --input: 0 20% 13%;
-  --popover: 0 28% 10%;
-}
+**2c. Otimizar `useTransitionNavigate` para scroll**
+- Integrar o scroll-to-top dentro do `useTransitionNavigate` para garantir que mesmo com `startTransition`, o scroll reseta antes da nova página renderizar.
 
-.theme-sections {
-  --muted: 0 25% 10%;
-  --secondary: 0 20% 12%;
-  --background: 0 8% 7%;
-}
+**2d. Prefetch de rotas no hover (desktop)**
+- Adicionar `onMouseEnter` nos links/botões de navegação do desktop para disparar o `import()` do chunk da rota destino antes do clique, garantindo navegação instantânea.
 
-.theme-full-red {
-  --card: 0 30% 11%;
-  --border: 0 15% 18%;
-  --muted: 0 25% 10%;
-  --secondary: 0 20% 12%;
-  --background: 0 8% 7%;
-  --input: 0 20% 13%;
-  --popover: 0 28% 10%;
-}
-```
+---
 
-### Persistência
-- `localStorage.setItem('app_theme', preset)`
-- Supabase `app_settings` table (chave `active_theme`) para sincronizar entre dispositivos
+### Etapa 3: Loading States Otimizados
 
-### Arquivos modificados/criados
-1. **Criar** `src/contexts/ThemeContext.tsx` — Provider + hook `useTheme()`
-2. **Criar** `src/pages/Admin/AdminTemas.tsx` — Página de seleção visual
-3. **Editar** `src/index.css` — 3 classes de tema adicionais
-4. **Editar** `src/App.tsx` — Envolver com `ThemeProvider`
-5. **Editar** `src/pages/Admin/AdminHub.tsx` — Adicionar card "Temas"
-6. **Editar** roteamento para `/admin/temas`
+- Garantir que o `ContextualSuspense` mostra skeletons imediatamente (já implementado) enquanto os chunks carregam.
+- Adicionar `loading="lazy"` e `decoding="async"` nas tags `<img>` que ainda não possuem esses atributos.
+
+---
+
+### Arquivos Modificados
+| Arquivo | Alteração |
+|---|---|
+| `src/components/ScrollToTop.tsx` | **Novo** — componente global de scroll-to-top |
+| `src/App.tsx` | Adicionar `<ScrollToTop />` dentro do router |
+| `src/hooks/useAggressiveChunkPreloader.ts` | Reduzir delays desktop |
+| `src/hooks/useTransitionNavigate.ts` | Integrar scroll reset |
+| `src/hooks/usePrefetchRoute.ts` | **Novo** — prefetch no hover |
+
+### Referências Técnicas
+- React Router `ScrollRestoration` / `ScrollToTop` pattern (documentação oficial)
+- `IntersectionObserver` com `rootMargin` para lazy loading antecipado (padrão YouTube/Netflix)
+- `modulepreload` / dynamic `import()` no hover (padrão usado pelo Astro, Nuxt, Qwik)
 
