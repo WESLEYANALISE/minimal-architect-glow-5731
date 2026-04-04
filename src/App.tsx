@@ -615,6 +615,9 @@ const App = () => {
               <Route path="/blogger-juridico/artigos" element={<L><BloggerJuridico /></L>} />
               <Route path="/blogger-juridico/:categoria/:ordem" element={<L><BloggerJuridicoArtigo /></L>} />
 
+              {/* Modo Desktop */}
+              <Route path="/funcoes" element={<L><ModoDesktop /></L>} />
+
               {/* OAB */}
               <Route path="/oab-funcoes" element={<L><OABFuncoes /></L>} />
               <Route path="/oab/o-que-estudar" element={<L><OABOQueEstudar /></L>} />
