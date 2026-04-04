@@ -308,6 +308,12 @@ const Bibliotecas = () => {
   const selectedBib = bibliotecas.find(b => b.key === selectedCollection) || bibliotecas[0];
   const selectedBooks = livrosMap ? livrosMap[selectedCollection] || [] : [];
   const [desktopRightTab, setDesktopRightTab] = useState<'plano' | 'favoritos' | null>(null);
+  const [selectedBookId, setSelectedBookId] = useState<number | null>(null);
+
+  const handleDesktopBookClick = useCallback((bookId: number) => {
+    setSelectedBookId(bookId);
+    setDesktopRightTab(null);
+  }, []);
 
   // Filter books by search on desktop
   const filteredSelectedBooks = useMemo(() => {
