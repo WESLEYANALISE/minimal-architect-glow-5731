@@ -217,56 +217,26 @@ export const useRoutePrefetch = () => {
     prefetchChunk(route);
   }, [prefetchRouteData, prefetchChunk]);
 
-  // Prefetch inicial - páginas prioritárias
-  useEffect(() => {
-    if (hasPrefetchedInitial.current) return;
-    hasPrefetchedInitial.current = true;
+  // Mobile: prefetch imediato no toque
+  const handleLinkTouch = useCallback((route: string) => {
+    prefetchRouteData(route);
+    prefetchChunk(route);
+  }, [prefetchRouteData, prefetchChunk]);
 
-    const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1000));
-    
-    // Prefetch chunks das páginas mais acessadas primeiro
-    idleCallback(() => {
-      const priorityChunks = ['/bibliotecas', '/estudos', '/vade-mecum', '/cursos', '/flashcards'];
-      priorityChunks.forEach((route, i) => {
-        setTimeout(() => prefetchChunk(route), i * 100);
-      });
-    });
-
-    // Depois prefetch de dados
-    idleCallback(() => {
-      const dataRoutes = Object.keys(ROUTE_DATA_PREFETCH);
-      prefetchBatch(dataRoutes, 200);
-    });
-  }, [prefetchBatch, prefetchChunk]);
-
-  // Prefetch contextual baseado na rota atual
-  useEffect(() => {
-    const currentPath = location.pathname;
-    
-    const contextKey = Object.keys(CONTEXTUAL_PREFETCH).find(key => 
-      currentPath === key || currentPath.startsWith(key + '/')
-    );
-    
-    if (contextKey) {
-      const contextualRoutes = CONTEXTUAL_PREFETCH[contextKey];
-      setTimeout(() => {
-        prefetchBatch(contextualRoutes, 50);
-      }, 500);
-    }
-  }, [location.pathname, prefetchBatch]);
-
-  return { handleLinkHover, prefetchChunk, prefetchBatch, prefetchRouteData };
+  return { handleLinkHover, handleLinkTouch, prefetchChunk, prefetchBatch, prefetchRouteData };
 };
 
 /**
- * Hook para prefetch on hover em links específicos
+ * Hook para prefetch on hover/touch em links específicos
  */
 export const usePrefetchOnHover = (route: string) => {
-  const { handleLinkHover } = useRoutePrefetch();
+  const { handleLinkHover, handleLinkTouch } = useRoutePrefetch();
   
   return {
     onMouseEnter: () => handleLinkHover(route),
-    onFocus: () => handleLinkHover(route)
+    onFocus: () => handleLinkHover(route),
+    onTouchStart: () => handleLinkTouch(route),
+    onPointerDown: () => handleLinkTouch(route),
   };
 };
 

@@ -8,7 +8,7 @@ const PHASE1_CRITICAL = [
   () => import('../pages/FlashcardsAreas'),
 ];
 
-// ========== FASE 2: rotas populares + simulados (após 3s) ==========
+// ========== FASE 2: rotas populares + simulados (após delay) ==========
 const PHASE2_IMPORTANT = [
   () => import('../pages/Ferramentas'),
   () => import('../pages/NoticiasJuridicas'),
@@ -20,7 +20,8 @@ const PHASE2_IMPORTANT = [
   () => import('../pages/JogosJuridicos'),
   () => import('../pages/TelaHub'),
   () => import('../pages/Codigos'),
-  // Simulados — chunks críticos
+  () => import('../pages/AudioaulasSpotify'),
+  () => import('../pages/AulasPage'),
   () => import('../pages/ferramentas/SimuladosHub'),
   () => import('../pages/ferramentas/SimuladosCargolista'),
   () => import('../pages/ferramentas/SimuladoEscreventeResolver'),
@@ -28,8 +29,6 @@ const PHASE2_IMPORTANT = [
   () => import('../pages/ferramentas/SimuladoConcursoResolver'),
   () => import('../pages/SimuladosRealizar'),
 ];
-
-// FASE 3 REMOVIDA — todas as demais rotas carregam sob demanda
 
 function loadBatch(loaders: (() => Promise<any>)[], batchSize = 2, delayMs = 200) {
   let index = 0;
@@ -52,7 +51,8 @@ let hasStarted = false;
 
 /**
  * Hook que pré-carrega chunks JS críticos de forma progressiva.
- * Desktop usa timings mais conservadores para não competir com rendering pesado.
+ * Mobile: timings mais agressivos (3s / 10s) para toque rápido.
+ * Desktop: timings mais conservadores (8s / 25s).
  */
 export const useAggressiveChunkPreloader = () => {
   const started = useRef(false);
@@ -62,12 +62,11 @@ export const useAggressiveChunkPreloader = () => {
     started.current = true;
     hasStarted = true;
 
-    // Detect desktop (wider viewport = heavier rendering = more conservative preload)
     const isDesktop = window.innerWidth >= 1024;
-    const phase1Delay = isDesktop ? 8000 : 5000;
-    const phase2Delay = isDesktop ? 25000 : 15000;
+    const phase1Delay = isDesktop ? 8000 : 3000;
+    const phase2Delay = isDesktop ? 25000 : 10000;
     const batchSize = isDesktop ? 1 : 2;
-    const batchDelay = isDesktop ? 400 : 200;
+    const batchDelay = isDesktop ? 400 : 150;
 
     // Fase 1: chunks críticos
     setTimeout(() => {

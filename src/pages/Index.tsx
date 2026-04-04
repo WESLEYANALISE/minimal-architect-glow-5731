@@ -96,8 +96,18 @@ import { PhoneMissingBanner } from "@/components/PhoneMissingBanner";
 import { PersuasiveTextCarousel } from "@/components/home/PersuasiveTextCarousel";
 import { useTrialStatus } from "@/hooks/useTrialStatus";
 
-
-
+/**
+ * LazyTab: monta o conteúdo apenas na primeira vez que fica visível,
+ * depois mantém montado (keep alive) para evitar re-fetch.
+ */
+const LazyTab = ({ visible, children, className }: { visible: boolean; children: React.ReactNode; className?: string }) => {
+  const [hasBeenVisible, setHasBeenVisible] = useState(false);
+  useEffect(() => {
+    if (visible && !hasBeenVisible) setHasBeenVisible(true);
+  }, [visible, hasBeenVisible]);
+  if (!hasBeenVisible) return null;
+  return <div className={visible ? (className || '') : 'hidden'}>{children}</div>;
+};
 
 
 // Imagens de carreiras para preload
@@ -547,10 +557,10 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Conteúdo das abas mobile — sem AnimatePresence para evitar scroll automático */}
-        <div className={mainTab === 'biblioteca' ? 'px-2 space-y-6' : 'hidden'}>
+        {/* Conteúdo das abas mobile — mount on first open + keep alive */}
+        <LazyTab visible={mainTab === 'biblioteca'} className="px-2 space-y-6">
           <BibliotecaHomeSection navigate={gatedNavigate} />
-        </div>
+        </LazyTab>
 
         <div className={mainTab === 'estudos' ? '' : 'hidden'}>
             <HomeAtalhosSection
@@ -622,17 +632,17 @@ const Index = () => {
             </div>
           </div>
 
-        <div className={mainTab === 'leis' ? 'px-2 space-y-6' : 'hidden'}>
+        <LazyTab visible={mainTab === 'leis'} className="px-2 space-y-6">
           <MobileLeisHome navigate={gatedNavigate} />
-        </div>
+        </LazyTab>
 
-        <div className={mainTab === 'juriflix' ? '' : 'hidden'}>
+        <LazyTab visible={mainTab === 'juriflix'}>
             <JuriflixHomeSection />
-        </div>
+        </LazyTab>
 
-        <div className={mainTab === 'blogger' ? '' : 'hidden'}>
+        <LazyTab visible={mainTab === 'blogger'}>
             <LegislacaoHomeSection />
-        </div>
+        </LazyTab>
       </div>
       )}
 

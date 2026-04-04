@@ -1,4 +1,4 @@
-import { Suspense, ReactNode } from 'react';
+import { Suspense, ReactNode, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { PageLoader } from '@/components/ui/page-loader';
 import {
@@ -20,80 +20,46 @@ interface ContextualSuspenseProps {
 
 // Mapeia rotas para skeletons específicos
 const getSkeletonForRoute = (pathname: string) => {
-  // Flashcards
-  if (pathname.includes('/flashcards')) {
-    return <FlashcardsSkeleton />;
-  }
-  
-  // Cursos
-  if (pathname.includes('/cursos') || pathname.includes('/curso')) {
-    return <CursosSkeleton />;
-  }
-  
-  // Notícias
-  if (pathname.includes('/noticias') || pathname.includes('/noticia')) {
-    return <NoticiasSkeleton />;
-  }
-  
-  // Simulação
-  if (pathname.includes('/simulacao') || pathname.includes('/simulados')) {
-    return <SimulacaoSkeleton />;
-  }
-  
-  // Biblioteca
-  if (pathname.includes('/biblioteca') || pathname.includes('/bibliotecas')) {
-    return <BibliotecaSkeleton />;
-  }
-  
-  // Jogos
-  if (pathname.includes('/jogos') || pathname.includes('/jogo')) {
-    return <JogosSkeleton />;
-  }
-  
-  // Videoaulas
-  if (pathname.includes('/videoaulas') || pathname.includes('/videoaula') || pathname.includes('/juriflix')) {
-    return <VideoaulasSkeleton />;
-  }
-  
-  // Ferramentas
-  if (pathname.includes('/ferramentas') || pathname.includes('/ferramenta')) {
-    return <FerramentasSkeleton />;
-  }
-  
-  // Pesquisar
-  if (pathname.includes('/pesquisar') || pathname.includes('/busca')) {
-    return <PesquisarSkeleton />;
-  }
-  
-  // Mapa Mental
-  if (pathname.includes('/mapa-mental')) {
-    return <MapaMentalSkeleton />;
-  }
-  
-  // Resumos
-  if (pathname.includes('/resumos') || pathname.includes('/resumo')) {
-    return <MapaMentalSkeleton />;
-  }
-  
-  // Audioaulas
-  if (pathname.includes('/audioaulas')) {
-    return <VideoaulasSkeleton />;
-  }
-  
-  // Default - PageLoader genérico
+  if (pathname.includes('/flashcards')) return <FlashcardsSkeleton />;
+  if (pathname.includes('/cursos') || pathname.includes('/curso')) return <CursosSkeleton />;
+  if (pathname.includes('/noticias') || pathname.includes('/noticia')) return <NoticiasSkeleton />;
+  if (pathname.includes('/simulacao') || pathname.includes('/simulados')) return <SimulacaoSkeleton />;
+  if (pathname.includes('/biblioteca') || pathname.includes('/bibliotecas')) return <BibliotecaSkeleton />;
+  if (pathname.includes('/jogos') || pathname.includes('/jogo')) return <JogosSkeleton />;
+  if (pathname.includes('/videoaulas') || pathname.includes('/videoaula') || pathname.includes('/juriflix')) return <VideoaulasSkeleton />;
+  if (pathname.includes('/ferramentas') || pathname.includes('/ferramenta')) return <FerramentasSkeleton />;
+  if (pathname.includes('/pesquisar') || pathname.includes('/busca')) return <PesquisarSkeleton />;
+  if (pathname.includes('/mapa-mental')) return <MapaMentalSkeleton />;
+  if (pathname.includes('/resumos') || pathname.includes('/resumo')) return <MapaMentalSkeleton />;
+  if (pathname.includes('/audioaulas')) return <VideoaulasSkeleton />;
   return <PageLoader />;
 };
 
 /**
+ * Fallback com delay — só mostra skeleton se o chunk demorar mais de 180ms.
+ * Isso evita flash de loading em navegações rápidas.
+ */
+const DelayedFallback = ({ pathname }: { pathname: string }) => {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShow(true), 180);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!show) return <div className="min-h-[60vh]" />;
+  return getSkeletonForRoute(pathname);
+};
+
+/**
  * Componente Suspense que mostra skeletons contextuais
- * baseado na rota atual, em vez de um loader genérico
+ * baseado na rota atual, com delay para evitar flash
  */
 export const ContextualSuspense = ({ children }: ContextualSuspenseProps) => {
   const location = useLocation();
-  const skeleton = getSkeletonForRoute(location.pathname);
   
   return (
-    <Suspense fallback={skeleton}>
+    <Suspense fallback={<DelayedFallback pathname={location.pathname} />}>
       {children}
     </Suspense>
   );
