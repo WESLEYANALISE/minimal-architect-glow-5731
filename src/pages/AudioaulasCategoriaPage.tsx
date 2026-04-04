@@ -36,15 +36,6 @@ const AudioaulasCategoriaPage = () => {
   const { playAudio, setPlaylist } = useAudioPlayer();
   const { isDesktop } = useDeviceType();
 
-  // No desktop, renderizar o layout Spotify com sidebar
-  if (isDesktop) {
-    return (
-      <Suspense fallback={<div className="flex items-center justify-center h-[calc(100vh-3.5rem)] bg-background"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
-        <AudioaulasSpotify />
-      </Suspense>
-    );
-  }
-
   const activeCategoria = categoria || "audioaulas";
   const config = CATEGORY_CONFIG[activeCategoria] || CATEGORY_CONFIG.audioaulas;
   const Icon = config.icon;
@@ -92,10 +83,20 @@ const AudioaulasCategoriaPage = () => {
     },
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
+    enabled: !isDesktop,
   });
   const totalAudios = useMemo(() => {
     return areas?.reduce((sum, item) => sum + item.count, 0) || 0;
   }, [areas]);
+
+  // No desktop, renderizar o layout Spotify com sidebar
+  if (isDesktop) {
+    return (
+      <Suspense fallback={<div className="flex items-center justify-center h-[calc(100vh-3.5rem)] bg-background"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
+        <AudioaulasSpotify />
+      </Suspense>
+    );
+  }
 
   const handleShuffle = async () => {
     toast.info("Carregando áudios aleatórios...");
