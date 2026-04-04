@@ -15,6 +15,7 @@ import { DesktopTopNav } from "./DesktopTopNav";
 import { AppSidebar } from "./AppSidebar";
 import { DesktopChatPanel } from "./DesktopChatPanel";
 import { DesktopNewsSidebar } from "./DesktopNewsSidebar";
+import { DesktopRecomendacoesSidebar } from "./DesktopRecomendacoesSidebar";
 import { VideoPlaylistSidebar } from "./VideoPlaylistSidebar";
 import { VideoaulasInicianteSidebar } from "./VideoaulasInicianteSidebar";
 import { VideoaulasOABSidebar } from "./VideoaulasOABSidebar";
