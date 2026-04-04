@@ -70,11 +70,11 @@ export const PortalDeVideosSection = memo(({ navigate }: PortalDeVideosSectionPr
             <button
               key={item.id}
               onClick={() => navigate(item.route)}
-              className="group rounded-xl text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] flex flex-col overflow-hidden animate-fade-in"
+              className="group rounded-xl text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] flex flex-col overflow-hidden animate-fade-in border border-white/[0.08]"
               style={{
                 animationDelay: `${index * 0.06}s`,
                 animationFillMode: "backwards",
-                boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)',
+                boxShadow: '0 8px 24px -6px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
               }}
             >
               {/* Cover image */}

@@ -52,7 +52,7 @@ export const DesktopEstudosComputador = memo(({ navigate, onEvelyn }: DesktopEst
         {/* Card 2: Evelyn - Assistente Jurídica */}
         <button
           onClick={handleEvelynClick}
-          className="group relative rounded-xl overflow-hidden border border-white/[0.06] hover:border-rose-500/30 transition-all duration-500 text-left cursor-pointer"
+          className="group relative rounded-xl overflow-hidden border border-white/[0.08] hover:border-rose-500/30 transition-all duration-500 text-left cursor-pointer shadow-[0_8px_24px_-6px_rgba(0,0,0,0.6),0_2px_8px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.1)]"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-[hsl(350,50%,12%)] via-[hsl(345,45%,9%)] to-[hsl(340,40%,7%)]" />
           <div className="absolute -top-6 -right-6 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl group-hover:bg-rose-500/20 transition-all duration-700" />

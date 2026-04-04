@@ -102,11 +102,11 @@ export function HomePratiqueSlide() {
               <button
                 key={item.id}
                 onClick={() => handleItemClick(item.route)}
-                className="group relative rounded-xl overflow-hidden border border-white/[0.06] animate-fade-in active:scale-95 transition-transform min-h-[110px]"
+                className="group relative rounded-xl overflow-hidden border border-white/[0.08] animate-fade-in active:scale-95 transition-transform min-h-[110px]"
                 style={{
                   animationDelay: `${item.delay}s`,
                   animationFillMode: 'backwards',
-                  boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)',
+                  boxShadow: '0 8px 24px -6px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
                 }}
               >
                 {/* Cover image background */}
