@@ -417,18 +417,37 @@ const VadeMecumTodas = () => {
     ? heroVadeMecumMenu 
     : heroVadeMecumAtualizacoes;
 
+  const isDesktopView = typeof window !== 'undefined' && window.innerWidth >= 1024;
+
   return (
     <div className="h-dvh bg-background relative overflow-hidden overscroll-contain" style={{ contain: 'layout style' }}>
+      {/* Background image - full screen on desktop */}
+      <div className="hidden lg:block fixed inset-0 z-0">
+        <img
+          src={heroVadeMecumMenu}
+          alt="Vade Mecum"
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${imagesLoaded.menu ? 'opacity-100' : 'opacity-0'}`}
+          loading="eager"
+          fetchPriority="high"
+        />
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(to bottom, hsl(var(--background) / 0.7) 0%, hsl(var(--background) / 0.85) 40%, hsl(var(--background) / 0.95) 100%)`
+          }}
+        />
+      </div>
+
       <div className="relative z-10 h-full min-h-0 flex flex-col">
-        {/* Header sticky — sem botão de voltar duplicado (usa o do Layout no desktop) */}
-        <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/30">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-4">
+        {/* Header sticky — mobile only */}
+        <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border/30 lg:hidden">
+          <div className="max-w-4xl mx-auto px-4 pt-4 pb-4">
             <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => navigate('/')}
-                className="shrink-0 bg-black/80 backdrop-blur-sm hover:bg-black border border-white/20 rounded-full lg:hidden"
+                className="shrink-0 bg-black/80 backdrop-blur-sm hover:bg-black border border-white/20 rounded-full"
               >
                 <ArrowLeft className="w-5 h-5 text-white" />
               </Button>
@@ -442,20 +461,20 @@ const VadeMecumTodas = () => {
           </div>
         </div>
 
-        {/* Tabs simplificadas - 2 abas (3 no mobile, sem Leis do Dia no desktop pois fica na sidebar) */}
-        <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-4">
+        {/* Mobile tabs */}
+        <div className="lg:hidden max-w-4xl mx-auto w-full px-4 pt-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 lg:grid-cols-2 w-full bg-card/80 backdrop-blur-md border border-border/50 h-auto p-1">
+            <TabsList className="grid grid-cols-3 w-full bg-card/80 backdrop-blur-md border border-border/50 h-auto p-1">
               <TabsTrigger 
                 value="legislacao" 
-                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400"
+                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
               >
                 <Scale className="w-4 h-4" />
                 <span>Legislação</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="leis-do-dia" 
-                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400 lg:hidden"
+                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400"
               >
                 <Calendar className="w-4 h-4" />
                 <span>Leis do Dia</span>
@@ -471,13 +490,100 @@ const VadeMecumTodas = () => {
           </Tabs>
         </div>
 
-        {/* Conteúdo principal com sidebar no desktop */}
-        <div className="flex-1 min-h-0 flex">
-          {/* Conteúdo das Abas */}
+        {/* ===== DESKTOP: 3-column layout ===== */}
+        <div className="hidden lg:flex flex-1 min-h-0">
+          {/* Left column - Explicações / Leitura */}
+          <aside className="w-72 xl:w-80 border-r border-border/30 bg-background/80 backdrop-blur-sm flex flex-col h-full">
+            <div className="p-4 border-b border-border/30">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-orange-500/15 rounded-lg">
+                  <BookOpen className="w-4 h-4 text-orange-400" />
+                </div>
+                <h3 className="font-semibold text-sm text-foreground">Explicações de Leis</h3>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-3">
+              <ExplicacoesList />
+            </div>
+          </aside>
+
+          {/* Center column - Vade Mecum categories */}
+          <div className="flex-1 min-w-0 overflow-y-auto">
+            <div className="max-w-3xl mx-auto w-full px-6 xl:px-8 pb-8 pt-6">
+              {/* Desktop header */}
+              <div className="text-center mb-6">
+                <h1 className="text-2xl font-bold text-foreground">Vade Mecum 2026</h1>
+                <p className="text-sm text-muted-foreground mt-1">Legislação brasileira completa e atualizada</p>
+              </div>
+
+              {/* Barra de busca */}
+              <div
+                onClick={() => setSearchOpen(true)}
+                className="flex items-center gap-3 px-4 py-4 bg-card/90 backdrop-blur-sm rounded-2xl cursor-pointer border border-border/30 hover:border-primary/30 transition-colors mb-6 relative overflow-hidden"
+              >
+                <Search className="w-5 h-5 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Buscar artigo, lei ou código...</span>
+              </div>
+
+              {/* Grid principal - 3 colunas no desktop */}
+              <div className="grid grid-cols-3 gap-3">
+                {categoriasPrincipais.map((card, index) => {
+                  const Icon = card.icon;
+                  return (
+                    <button
+                      key={card.id}
+                      onClick={() => handleCategoryClick(card)}
+                      className="group bg-card/90 backdrop-blur-sm rounded-2xl border border-border/30 cursor-pointer hover:scale-[1.02] transition-all overflow-hidden h-[120px] p-3 flex flex-col gap-2 text-left relative"
+                      style={{
+                        boxShadow: '4px 6px 12px rgba(0, 0, 0, 0.4)',
+                      }}
+                    >
+                      <span className="absolute top-2.5 right-2.5 text-[10px] font-semibold text-muted-foreground/70">2026</span>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${card.iconBg} shadow-lg`}>
+                        <Icon className="w-5 h-5 text-white drop-shadow-md" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-sm font-extrabold text-foreground leading-tight tracking-tight whitespace-pre-line">{card.title}</h3>
+                        <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{card.description}</p>
+                      </div>
+                      <ChevronRight className="absolute bottom-2 right-2 w-4 h-4 text-muted-foreground/50 group-hover:text-foreground group-hover:translate-x-0.5 transition-all" />
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Brasão decorativo */}
+              <div className="mt-8 text-center">
+                <img src={brasaoRepublica} alt="Brasão da República" className="w-14 h-14 object-contain mx-auto mb-2 drop-shadow-lg" />
+                <p className="text-xs text-foreground/70 max-w-xs mx-auto">
+                  Legislação brasileira sempre atualizada
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right column - Leis do Dia in list format */}
+          <aside className="w-80 xl:w-96 border-l border-border/30 bg-background/80 backdrop-blur-sm flex flex-col h-full">
+            <div className="p-4 border-b border-border/30">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-red-500/15 rounded-lg">
+                  <Calendar className="w-4 h-4 text-red-400" />
+                </div>
+                <h3 className="font-semibold text-sm text-foreground">Leis do Dia</h3>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <ResenhaDiariaCarousel />
+            </div>
+          </aside>
+        </div>
+
+        {/* ===== MOBILE: content area ===== */}
+        <div className="flex-1 min-h-0 flex lg:hidden">
           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
             {/* Aba Legislação */}
             {activeTab === "legislacao" && (
-              <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-8 pt-6 relative">
+              <div className="max-w-4xl mx-auto w-full px-4 pb-8 pt-6 relative">
                 {/* Hero Background apenas atrás dos cards */}
                 <div className="absolute inset-0 -top-20 overflow-hidden rounded-3xl pointer-events-none z-0">
                   <img
@@ -606,8 +712,8 @@ const VadeMecumTodas = () => {
 
             {/* Aba Leis do Dia (mobile only) */}
             {activeTab === "leis-do-dia" && (
-              <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-8 pt-6">
-                <div className="-mx-4 sm:-mx-6 lg:-mx-8">
+              <div className="max-w-4xl mx-auto w-full px-4 pb-8 pt-6">
+                <div className="-mx-4">
                   <ResenhaDiariaCarousel />
                 </div>
               </div>
@@ -615,26 +721,11 @@ const VadeMecumTodas = () => {
 
             {/* Aba Explicações */}
             {activeTab === "explicacoes" && (
-              <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-8 pt-6">
+              <div className="max-w-4xl mx-auto w-full px-4 pb-8 pt-6">
                 <ExplicacoesList />
               </div>
             )}
           </div>
-
-          {/* Sidebar direita — Leis do Dia (desktop only) */}
-          <aside className="hidden lg:flex flex-col w-80 xl:w-96 border-l border-border/30 bg-background/95 h-full overflow-y-auto">
-            <div className="p-4 border-b border-border/30">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-red-500/15 rounded-lg">
-                  <Calendar className="w-4 h-4 text-red-400" />
-                </div>
-                <h3 className="font-semibold text-sm text-foreground">Leis do Dia</h3>
-              </div>
-            </div>
-            <div className="flex-1 overflow-y-auto">
-              <ResenhaDiariaCarousel />
-            </div>
-          </aside>
         </div>
       </div>
 
