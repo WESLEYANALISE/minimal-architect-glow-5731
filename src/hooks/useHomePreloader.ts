@@ -262,6 +262,120 @@ async function runPreload() {
   }
 }
 
+// ========== PRÉ-CARREGAMENTO DE LEGISLAÇÃO ==========
+
+interface LawPreloadConfig {
+  tableName: string;
+  cacheKey: string;
+  idMin?: number;
+  idMaxExclusive?: number;
+}
+
+const PRIORITY_LAWS: LawPreloadConfig[] = [
+  // CF body (Art. 1-250) e ADCT/EC (273+)
+  { tableName: 'CF - Constituição Federal', cacheKey: 'CF - Constituição Federal:1:273', idMin: 1, idMaxExclusive: 273 },
+  { tableName: 'CF - Constituição Federal', cacheKey: 'CF - Constituição Federal:273:max', idMin: 273 },
+  // Códigos principais
+  { tableName: 'CP - Código Penal', cacheKey: 'CP - Código Penal:min:max' },
+  { tableName: 'CC - Código Civil', cacheKey: 'CC - Código Civil:min:max' },
+  { tableName: 'CPC - Código de Processo Civil', cacheKey: 'CPC - Código de Processo Civil:min:max' },
+  { tableName: 'CPP - Código de Processo Penal', cacheKey: 'CPP - Código de Processo Penal:min:max' },
+  { tableName: 'CLT - Consolidação das Leis do Trabalho', cacheKey: 'CLT - Consolidação das Leis do Trabalho:min:max' },
+  { tableName: 'CDC – Código de Defesa do Consumidor', cacheKey: 'CDC – Código de Defesa do Consumidor:min:max' },
+  { tableName: 'CTN - Código Tributário Nacional', cacheKey: 'CTN - Código Tributário Nacional:min:max' },
+  { tableName: 'ECA - Estatuto da Criança e do Adolescente', cacheKey: 'ECA - Estatuto da Criança e do Adolescente:min:max' },
+];
+
+// Tabelas com ordem_artigo
+const TABELAS_ORDEM_ARTIGO = new Set([
+  'CC - Código Civil', 'CP - Código Penal', 'CPC - Código de Processo Civil',
+  'CPP - Código de Processo Penal', 'CF - Constituição Federal',
+  'CLT - Consolidação das Leis do Trabalho', 'CDC – Código de Defesa do Consumidor',
+  'CTN - Código Tributário Nacional', 'ECA - Estatuto da Criança e do Adolescente',
+]);
+
+let hasPreloadedLaws = false;
+
+async function preloadLegislation() {
+  if (hasPreloadedLaws) return;
+  hasPreloadedLaws = true;
+
+  const { openDB } = await import('idb');
+  
+  const db = await openDB('vade-mecum-db', 12, {
+    upgrade(db) {
+      if (!db.objectStoreNames.contains('articles')) {
+        db.createObjectStore('articles');
+      }
+    },
+  });
+
+  console.log('📜 [LawPreloader] Iniciando pré-carregamento de legislação...');
+  let loaded = 0;
+
+  for (const law of PRIORITY_LAWS) {
+    try {
+      // Verificar se já existe no cache
+      const cached = await db.get('articles', law.cacheKey);
+      if (cached && cached.data && cached.data.length > 0) {
+        const age = Date.now() - cached.timestamp;
+        if (age < 1000 * 60 * 60 * 24 * 7) { // 7 dias
+          loaded++;
+          continue;
+        }
+      }
+
+      // Buscar todos os artigos paginados
+      const orderCol = TABELAS_ORDEM_ARTIGO.has(law.tableName) ? 'ordem_artigo' : 'id';
+      const pageSize = 500;
+      let all: any[] = [];
+      let offset = 0;
+
+      while (true) {
+        let query = supabase
+          .from(law.tableName as any)
+          .select('*')
+          .order(orderCol, { ascending: true })
+          .range(offset, offset + pageSize - 1);
+
+        if (typeof law.idMin === 'number') {
+          query = query.gte('id', law.idMin);
+        }
+        if (typeof law.idMaxExclusive === 'number') {
+          query = query.lt('id', law.idMaxExclusive);
+        }
+
+        const { data, error } = await query;
+        if (error) {
+          console.warn(`⚠️ [LawPreloader] Erro em ${law.tableName}:`, error.message);
+          break;
+        }
+
+        all = all.concat(data || []);
+        if (!data || data.length < pageSize) break;
+        offset += pageSize;
+      }
+
+      if (all.length > 0) {
+        await db.put('articles', {
+          tableName: law.cacheKey,
+          data: all,
+          timestamp: Date.now(),
+        }, law.cacheKey);
+        loaded++;
+        console.log(`📜 [LawPreloader] ${law.tableName} → ${all.length} artigos cached`);
+      }
+
+      // Pequeno delay para não sobrecarregar
+      await new Promise(r => setTimeout(r, 300));
+    } catch (err) {
+      console.warn(`⚠️ [LawPreloader] Falha em ${law.tableName}:`, err);
+    }
+  }
+
+  console.log(`✅ [LawPreloader] ${loaded}/${PRIORITY_LAWS.length} leis pré-carregadas`);
+}
+
 export const useHomePreloader = () => {
   const hasStarted = useRef(false);
 
@@ -278,6 +392,15 @@ export const useHomePreloader = () => {
     };
 
     startPreload();
+
+    // Fase 2: Pré-carregar legislação após 10s
+    setTimeout(() => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => preloadLegislation(), { timeout: 15000 });
+      } else {
+        preloadLegislation();
+      }
+    }, 10000);
   }, []);
 };
 
