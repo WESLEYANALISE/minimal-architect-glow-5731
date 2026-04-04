@@ -287,7 +287,7 @@ const FlashcardsAreas = () => {
           <div>
             <h1 className="text-lg font-bold text-white" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>Flashcards</h1>
             <p className="text-xs" style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>
-              <NumberTicker value={totalFlashcards} className="font-semibold" style={{ color: R.goldMuted }} /> disponíveis
+              <span className="font-semibold" style={{ color: R.goldMuted }}><NumberTicker value={totalFlashcards} /></span> disponíveis
             </p>
           </div>
         </div>
