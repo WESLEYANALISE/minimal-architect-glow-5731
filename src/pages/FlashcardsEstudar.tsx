@@ -62,6 +62,7 @@ const FlashcardsEstudar = ({ inlineArea, inlineTema, onExit, onComplete }: Flash
   const [settings, setSettings] = useState<FlashcardSettings>({ autoNarration: false, showExamples: true, studyMode: 'leitura' });
   const fraseIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [flashcardsCount, setFlashcardsCount] = useState<number | null>(null);
+  const [countdownDone, setCountdownDone] = useState(false);
   
   // Background generation state
   const [bgGenerating, setBgGenerating] = useState(false);
