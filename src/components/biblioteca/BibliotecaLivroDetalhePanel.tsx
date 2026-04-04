@@ -46,7 +46,7 @@ interface BibliotecaLivroDetalhePanelProps {
 export const BibliotecaLivroDetalhePanel = ({ bookId, collectionKey, onClose }: BibliotecaLivroDetalhePanelProps) => {
   const config = BOOK_CONFIGS[collectionKey];
   const { isPremium } = useSubscription();
-  const isBookFree = useIsBookFree(bookId, config?.bibliotecaKey);
+  const isBookFree = useIsBookFree(bookId, config?.bibliotecaKey as any);
   const canAccess = isPremium || isBookFree;
   const { registrarAcesso } = useBibliotecaAcesso();
   const [showPDF, setShowPDF] = useState(false);
