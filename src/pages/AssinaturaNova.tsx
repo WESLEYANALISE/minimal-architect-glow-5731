@@ -331,7 +331,7 @@ const AssinaturaNova = () => {
           {/* CTA — color matches selected plan */}
           <button
             onClick={handleAssinar}
-            className="w-full relative py-3.5 rounded-xl font-black text-sm tracking-tight overflow-hidden transition-all duration-300 active:scale-[0.97] text-white mb-1"
+            className="w-full relative py-3.5 rounded-xl font-black text-sm tracking-tight overflow-hidden transition-all duration-300 active:scale-[0.97] text-black mb-1"
             style={{ background: PLAN_THEMES[selectedPlan]?.btnBg || PLAN_THEMES.anual.btnBg, boxShadow: PLAN_THEMES[selectedPlan]?.glow || 'none' }}
           >
             <div className="absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.25)_50%,transparent_75%)] bg-[length:200%_100%] animate-[shimmer_2.5s_ease-in-out_infinite]" />
