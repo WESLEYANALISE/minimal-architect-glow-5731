@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,9 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import AudioaulasAreaCard from "@/components/audioaulas/AudioaulasAreaCard";
 import { useAudioPlayer } from "@/contexts/AudioPlayerContext";
 import { toast } from "sonner";
+import { useDeviceType } from "@/hooks/use-device-type";
+
+const AudioaulasSpotify = lazy(() => import("./AudioaulasSpotify"));
 
 const CATEGORY_CONFIG: Record<string, { title: string; icon: React.ElementType; gradient: string }> = {
   audioaulas: {
