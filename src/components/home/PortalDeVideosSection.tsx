@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Video, ChevronRight, MonitorPlay, Headphones, Crown } from "lucide-react";
+import { Video, ChevronRight, MonitorPlay, Headphones } from "lucide-react";
 import { useDeviceType } from "@/hooks/use-device-type";
 import capaIniciante from "@/assets/portal-videos-iniciante.jpg";
 import capaVideoaulas from "@/assets/portal-videos-videoaulas.jpg";
@@ -16,18 +16,16 @@ const itens = [
     description: "Aulas de Direito pra iniciantes",
     icon: Video,
     route: "/aulas-em-tela",
-    gradient: "from-[#0d4a3f] to-[#062a24]",
-    accent: "#d4af37",
+    gradient: "from-emerald-600 via-emerald-700 to-emerald-800",
     capa: capaIniciante,
   },
   {
     id: "videoaulas",
-    title: "Categorias",
+    title: "Videoaulas",
     description: "Aulas completas por professores",
     icon: Video,
     route: "/videoaulas",
-    gradient: "from-[#2a1548] to-[#160a2a]",
-    accent: "#c9a0dc",
+    gradient: "from-purple-600 via-purple-700 to-purple-800",
     capa: capaVideoaulas,
   },
   {
@@ -36,8 +34,7 @@ const itens = [
     description: "Aprenda ouvindo",
     icon: Headphones,
     route: "/audioaulas",
-    gradient: "from-[#5e3a1a] to-[#33200e]",
-    accent: "#f5d060",
+    gradient: "from-amber-600 via-amber-700 to-amber-800",
     capa: capaAudioaulas,
   },
 ];
@@ -46,11 +43,11 @@ export const PortalDeVideosSection = memo(({ navigate }: PortalDeVideosSectionPr
   const { isDesktop } = useDeviceType();
   const visibleItens = isDesktop ? itens : itens.filter(i => i.id !== 'audioaulas');
   return (
-    <div className="space-y-3 pb-4">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center gap-2 sm:gap-3">
-        <div className="p-1.5 sm:p-2 bg-amber-500/20 rounded-xl">
-          <Crown className="w-5 h-5 xl:w-6 xl:h-6 text-amber-200" />
+        <div className="p-1.5 sm:p-2 bg-blue-500/20 rounded-xl">
+          <MonitorPlay className="w-5 h-5 xl:w-6 xl:h-6 text-blue-100" />
         </div>
         <div>
           <h3 className="text-base xl:text-lg 2xl:text-xl font-bold text-foreground tracking-tight">
@@ -64,48 +61,45 @@ export const PortalDeVideosSection = memo(({ navigate }: PortalDeVideosSectionPr
 
       {/* Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 xl:gap-4">
-        {visibleItens.map((item, index) => {
+        {visibleItens.map((item) => {
           const Icon = item.icon;
           return (
             <button
               key={item.id}
               onClick={() => navigate(item.route)}
-              className="group rounded-xl text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] flex flex-col overflow-hidden animate-fade-in"
-              style={{
-                animationDelay: `${index * 0.06}s`,
-                animationFillMode: "backwards",
-                boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)',
-              }}
+              className="group rounded-2xl text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] flex flex-col border border-white/10 hover:border-white/20 overflow-hidden"
+              style={{ boxShadow: '4px 6px 12px rgba(0, 0, 0, 0.4)' }}
             >
-              {/* Cover image */}
-              <div className="relative w-full h-[95px] xl:h-[110px] 2xl:h-[120px] overflow-hidden">
+              {/* Capa - parte de cima */}
+              <div className="w-full h-[90px] xl:h-[110px] 2xl:h-[120px] overflow-hidden">
                 <img
                   src={item.capa}
                   alt={item.title}
                   loading="lazy"
                   width={512}
                   height={512}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               </div>
 
-              {/* Info bar */}
-              <div className={`bg-gradient-to-br ${item.gradient} p-3 flex-1 flex items-center gap-2.5 relative border-t border-white/[0.06]`}>
-                <div className="p-1.5 rounded-lg bg-white/10 border border-white/[0.08]">
-                  <Icon className="w-4 h-4 text-white/80" />
+              {/* Info - parte de baixo com gradiente */}
+              <div className={`bg-gradient-to-br ${item.gradient} p-3 flex-1 flex flex-col justify-center relative`}>
+                <h4
+                  className="font-bold text-white text-sm mb-0.5 group-hover:translate-x-0.5 transition-transform tracking-wide"
+                  style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
+                >
+                  {item.title}
+                </h4>
+                <p
+                  className="text-white/80 text-xs line-clamp-2 leading-snug"
+                  style={{ textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}
+                >
+                  {item.description}
+                </p>
+                {/* Ícone no canto inferior direito */}
+                <div className="absolute bottom-2.5 right-2.5 p-1.5 bg-white/20 rounded-lg group-hover:bg-white/30 transition-colors">
+                  <Icon className="w-4 h-4 text-white/80 drop-shadow-md" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-bold text-white text-[13px] leading-tight">{item.title}</h4>
-                  <p className="text-white/50 text-[10px] line-clamp-1">{item.description}</p>
-                </div>
-                <ChevronRight className="w-3.5 h-3.5 text-white/20 group-hover:text-white/50 transition-colors shrink-0" />
-
-                {/* Bottom accent */}
-                <div
-                  className="absolute bottom-0 left-0 right-0 h-[2px]"
-                  style={{ background: `linear-gradient(90deg, transparent, ${item.accent}80, transparent)` }}
-                />
               </div>
             </button>
           );
