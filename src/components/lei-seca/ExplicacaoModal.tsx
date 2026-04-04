@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Image, Volume2, Loader2, Sparkles, Play, Pause, GraduationCap, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -535,17 +536,18 @@ const ExplicacaoModal = ({ open, onOpenChange, explicacao }: Props) => {
   );
 
   if (isDesktop) {
-    return (
+    return createPortal(
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[60] bg-background overflow-y-auto"
+          className="fixed inset-0 z-[9999] bg-background overflow-y-auto"
         >
           {content}
         </motion.div>
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
     );
   }
 
