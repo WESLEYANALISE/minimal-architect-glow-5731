@@ -376,7 +376,7 @@ const Index = () => {
         }}
         className={`flex-1 min-w-0 basis-0 px-2 md:px-4 py-2.5 md:py-3 rounded-full text-xs md:text-base font-bold transition-all flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap ${
           isActive
-            ? 'bg-red-800/90 text-white shadow-[0_0_15px_rgba(160,40,30,0.5),0_0_30px_rgba(160,40,30,0.25)]'
+            ? 'bg-[hsl(350,50%,18%)] text-white shadow-[0_0_15px_rgba(190,50,70,0.4),0_0_30px_rgba(190,50,70,0.2)] border border-rose-500/20'
             : 'bg-white/10 text-white/60 hover:text-white hover:bg-white/15'
         }`}
       >
