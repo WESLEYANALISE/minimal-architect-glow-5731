@@ -33,6 +33,8 @@ const FlashcardsLacunasEstudar = lazy(() => import("../pages/FlashcardsLacunasEs
 
 // Questões
 const QuestoesHub = lazy(() => import("../pages/ferramentas/QuestoesHub"));
+const QuestoesHubNovo = lazy(() => import("../pages/ferramentas/QuestoesHubNovo"));
+const QuestoesTemasNovo = lazy(() => import("../pages/ferramentas/QuestoesTemasNovo"));
 const QuestoesSimNaoAreas = lazy(() => import("../pages/ferramentas/QuestoesSimNaoAreas"));
 const QuestoesSimNaoTemas = lazy(() => import("../pages/ferramentas/QuestoesSimNaoTemas"));
 const QuestoesSimNaoResolver = lazy(() => import("../pages/ferramentas/QuestoesSimNaoResolver"));
