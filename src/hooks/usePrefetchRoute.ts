@@ -10,22 +10,27 @@ const ROUTE_IMPORTS: Record<string, () => Promise<any>> = {
   '/noticias-juridicas': () => import('../pages/NoticiasJuridicas'),
   '/questoes': () => import('../pages/ferramentas/QuestoesHub'),
   '/resumos': () => import('../pages/ResumosJuridicosTrilhas'),
+  '/resumos-juridicos': () => import('../pages/ResumosJuridicosTrilhas'),
   '/juriflix': () => import('../pages/JuriFlix'),
   '/blogger-juridico': () => import('../pages/BloggerJuridico'),
   '/pesquisar': () => import('../pages/Pesquisar'),
   '/jogos-juridicos': () => import('../pages/JogosJuridicos'),
   '/tela-hub': () => import('../pages/TelaHub'),
+  '/videoaulas': () => import('../pages/TelaHub'),
   '/codigos': () => import('../pages/Codigos'),
   '/simulados': () => import('../pages/ferramentas/SimuladosHub'),
   '/chat-professora': () => import('../pages/ChatProfessora'),
   '/modo-desktop': () => import('../pages/ModoDesktop'),
+  '/audioaulas': () => import('../pages/AudioaulasSpotify'),
+  '/aulas': () => import('../pages/AulasPage'),
+  '/aulas-em-tela': () => import('../pages/AulasEmTelaPage'),
 };
 
 const prefetchedRoutes = new Set<string>();
 
 /**
- * Prefetch a route chunk on hover (desktop pattern used by Astro, Nuxt, Qwik).
- * Returns an onMouseEnter handler to attach to navigation elements.
+ * Prefetch a route chunk on hover/touch/focus.
+ * Returns handlers to attach to navigation elements.
  */
 export function usePrefetchRoute() {
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
@@ -33,19 +38,16 @@ export function usePrefetchRoute() {
   const prefetch = useCallback((route: string) => {
     if (prefetchedRoutes.has(route)) return;
 
-    // Find matching import — try exact match first, then prefix match
     const importFn = ROUTE_IMPORTS[route];
     if (!importFn) return;
 
     prefetchedRoutes.add(route);
     importFn().catch(() => {
-      // Remove from set so it can be retried
       prefetchedRoutes.delete(route);
     });
   }, []);
 
   const onHoverStart = useCallback((route: string) => {
-    // Small delay to avoid prefetching on accidental hovers
     timeoutRef.current = setTimeout(() => prefetch(route), 80);
   }, [prefetch]);
 
@@ -55,7 +57,12 @@ export function usePrefetchRoute() {
     }
   }, []);
 
-  return { prefetch, onHoverStart, onHoverEnd };
+  // Mobile: prefetch imediatamente no toque (sem delay)
+  const onTouchStart = useCallback((route: string) => {
+    prefetch(route);
+  }, [prefetch]);
+
+  return { prefetch, onHoverStart, onHoverEnd, onTouchStart };
 }
 
 export default usePrefetchRoute;
