@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, FileSearch, Mic, HelpCircle, FileCheck, Settings, Image, History, ImageIcon, ScrollText, FlaskConical, Scale, Sparkles, Instagram, Eye, BookOpen, Bell, FolderSync, ScanText, Users, Activity, MessageCircle, PlayCircle, Search, Briefcase, Newspaper, CreditCard, Database, ClipboardList, Gauge, Brain, BarChart3, CalendarClock, RefreshCw, Star, Film, FileCheck2, Gamepad2, GraduationCap, Crown, Route, Zap, BookText, Wifi, Trophy, Globe, Volume2, Library, ClipboardCheck, FileText } from "lucide-react";
+import { ArrowLeft, FileSearch, Mic, HelpCircle, FileCheck, Settings, Image, History, ImageIcon, ScrollText, FlaskConical, Scale, Sparkles, Instagram, Eye, BookOpen, Bell, FolderSync, ScanText, Users, Activity, MessageCircle, PlayCircle, Search, Briefcase, Newspaper, CreditCard, Database, ClipboardList, Gauge, Brain, BarChart3, CalendarClock, RefreshCw, Star, Film, FileCheck2, Gamepad2, GraduationCap, Crown, Route, Zap, BookText, Wifi, Trophy, Globe, Volume2, Library, ClipboardCheck, FileText, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const AdminHub = () => {
