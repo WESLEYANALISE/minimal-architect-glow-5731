@@ -87,18 +87,6 @@ const ExplicacoesList = () => {
 
   return (
     <div className="space-y-3 pb-6">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 rounded-lg bg-amber-500/20">
-          <BookOpen className="w-5 h-5 text-amber-400" />
-        </div>
-        <div>
-          <h3 className="font-semibold text-foreground">Aprenda com o Vade Mecum X</h3>
-          <p className="text-sm text-muted-foreground">
-            {explicacoes.length} artigos educativos sobre legislação
-          </p>
-        </div>
-      </div>
 
       {/* Lista de Artigos */}
       <div className="space-y-3">
