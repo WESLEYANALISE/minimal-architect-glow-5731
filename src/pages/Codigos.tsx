@@ -63,6 +63,7 @@ const CATEGORIA = 'codigos' as const;
 const Codigos = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { handleLinkHover } = useRoutePrefetch();
   const { user, loading: authLoading } = useAuth();
   const { isAuthDialogOpen, closeAuthDialog } = useRequireAuth();
   const [searchQuery, setSearchQuery] = useState("");
