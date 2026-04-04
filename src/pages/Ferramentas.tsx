@@ -91,6 +91,7 @@ const linksUteis: LinkUtilCard[] = [
 
 const CategoryGrid = ({ category, startIndex = 0 }: { category: FerramentaCategory; startIndex?: number }) => {
   const navigate = useNavigate();
+  const { onTouchStart } = usePrefetchRoute();
   return (
     <div className="mb-6">
       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">
