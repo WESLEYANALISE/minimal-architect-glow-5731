@@ -671,21 +671,21 @@ const VadeMecumTodas = () => {
               </div>
             </div>
 
-            {/* Toggle Artigo / Lei */}
+            {/* Toggle Palavra-chave / Lei */}
             <div className="flex mx-4 mt-2 mb-4 bg-card/80 rounded-xl p-1 border border-border/30">
               <button
-                onClick={() => { setSearchMode("artigo"); setSearchQuery(""); setShowResults(false); }}
-                className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${searchMode === "artigo" ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25" : "text-muted-foreground hover:text-foreground"}`}
+                onClick={() => { setSearchMode("palavra"); setSearchQuery(""); setShowResults(false); }}
+                className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${searchMode === "palavra" ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25" : "text-muted-foreground hover:text-foreground"}`}
               >
-                <Scale className="w-4 h-4" />
-                Buscar por Artigo
+                <Search className="w-4 h-4" />
+                Palavra-chave
               </button>
               <button
                 onClick={() => { setSearchMode("lei"); setSearchQuery(""); setShowResults(false); }}
                 className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${searchMode === "lei" ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25" : "text-muted-foreground hover:text-foreground"}`}
               >
                 <FileText className="w-4 h-4" />
-                Buscar por Lei
+                Nº da Lei
               </button>
             </div>
 
@@ -695,36 +695,24 @@ const VadeMecumTodas = () => {
               <div className="relative">
                 <Input
                   type="text"
-                  placeholder={searchMode === "artigo" ? "Nº do artigo (ex: 5)" : "Nº da lei (ex: 11.340)"}
+                  placeholder={searchMode === "palavra" ? "Ex: drogas, consumidor, trabalho..." : "Ex: 11.343, 8078, 13.105/2015"}
                   value={searchQuery}
                   onChange={(e) => { setSearchQuery(e.target.value); setShowResults(false); }}
                   onKeyDown={(e) => e.key === 'Enter' && executarBuscaRapida()}
-                  className="h-14 bg-card/90 border-border/30 rounded-xl text-xl font-bold text-center focus:border-amber-500/50 focus:ring-amber-500/20"
+                  className="h-14 bg-card/90 border-border/30 rounded-xl text-base font-medium pl-5 focus:border-amber-500/50 focus:ring-amber-500/20"
                   autoFocus
                 />
               </div>
 
-              {/* Filtros por categoria - SOMENTE no modo artigo */}
-              {searchMode === "artigo" && (
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2.5 font-medium uppercase tracking-wider">Filtrar por categoria</p>
-                  <div className="flex flex-wrap gap-2">
-                    {searchCategories.map((cat) => {
-                      const Icon = cat.icon;
-                      const isSelected = selectedCategory === cat.id;
-                      return (
-                        <button
-                          key={cat.id}
-                          onClick={() => { setSelectedCategory(cat.id); setShowResults(false); }}
-                          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all border ${isSelected ? 'text-white border-transparent shadow-md scale-105' : 'bg-card/80 text-foreground border-border/30 hover:border-border/60 hover:bg-card'}`}
-                          style={{ backgroundColor: isSelected ? cat.color : undefined, boxShadow: isSelected ? `0 4px 12px ${cat.color}40` : undefined }}
-                        >
-                          <Icon className="w-3.5 h-3.5" />
-                          {cat.label}
-                        </button>
-                      );
-                    })}
-                  </div>
+              {/* Dica contextual */}
+              {!showResults && searchQuery.length === 0 && (
+                <div className="bg-amber-500/5 border border-amber-500/15 rounded-xl p-3">
+                  <p className="text-xs text-amber-200/80 leading-relaxed">
+                    {searchMode === "palavra" 
+                      ? "💡 Digite palavras-chave como \"drogas\", \"violência doméstica\", \"consumidor\", \"trabalho\" para encontrar a legislação relacionada."
+                      : "💡 Digite o número da lei com ou sem pontos. Ex: \"11.343\", \"8078\", \"13105\". O sistema identifica automaticamente."
+                    }
+                  </p>
                 </div>
               )}
 
@@ -737,7 +725,7 @@ const VadeMecumTodas = () => {
                 {isSearching ? (
                   <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Buscando...</>
                 ) : (
-                  <><Search className="w-5 h-5 mr-2" /> Buscar {searchMode === "artigo" ? `Art. ${searchQuery || "..."}` : `Lei ${searchQuery || "..."}`}</>
+                  <><Search className="w-5 h-5 mr-2" /> Buscar {searchMode === "palavra" ? `"${searchQuery || "..."}"` : `Lei ${searchQuery || "..."}`}</>
                 )}
               </Button>
 
@@ -753,14 +741,14 @@ const VadeMecumTodas = () => {
                         <FileSearch className="w-8 h-8 text-muted-foreground" />
                       </div>
                       <p className="text-sm text-muted-foreground font-medium">
-                        {searchMode === "artigo" ? `Art. ${searchQuery}` : `Lei ${searchQuery}`}
+                        {searchMode === "palavra" ? `"${searchQuery}"` : `Lei ${searchQuery}`}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">não encontrado nas leis selecionadas</p>
+                      <p className="text-xs text-muted-foreground mt-1">não encontrado no acervo</p>
                     </div>
                   ) : (
                     searchResults.map((result, index) => (
                       <div
-                        key={`${result.tableName}-${result.articleNumber}-${index}`}
+                        key={`${result.route}-${index}`}
                         onClick={() => navigate(result.route)}
                         className="rounded-2xl p-4 border cursor-pointer transition-all group hover:scale-[1.01] active:scale-[0.98] overflow-hidden relative"
                         style={{ 
@@ -770,37 +758,20 @@ const VadeMecumTodas = () => {
                           animation: `slideDown 0.3s ease-out ${index * 0.08}s forwards` 
                         }}
                       >
-                        <div className="flex items-start gap-3">
-                          {/* Número do artigo em destaque */}
-                          <div className="flex flex-col items-center gap-1 shrink-0">
-                            <div 
-                              className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg shadow-lg"
-                              style={{ 
-                                background: `linear-gradient(135deg, ${result.color}, ${result.color}cc)`,
-                                color: 'white',
-                                boxShadow: `0 4px 14px ${result.color}40`
-                              }}
-                            >
-                              {result.articleNumber?.replace(/[^\d]/g, '') || '?'}
-                            </div>
-                            <span className="text-[9px] font-semibold text-muted-foreground tracking-wide uppercase">Art.</span>
+                        <div className="flex items-center gap-3">
+                          <div 
+                            className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg shrink-0"
+                            style={{ 
+                              background: `linear-gradient(135deg, ${result.color}, ${result.color}cc)`,
+                            }}
+                          >
+                            <Scale className="w-5 h-5 text-white" />
                           </div>
-                          
-                          {/* Info da lei */}
-                          <div className="flex-1 min-w-0 pt-0.5">
-                            <div className="flex items-center gap-2 mb-1.5">
-                              <span 
-                                className="text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider"
-                                style={{ backgroundColor: `${result.color}20`, color: result.color }}
-                              >
-                                {result.articleNumber}
-                              </span>
-                            </div>
-                            <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors leading-tight">{result.displayName}</h3>
-                            <p className="text-xs text-muted-foreground line-clamp-2 mt-1 leading-relaxed">{result.content}</p>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-base font-bold text-foreground leading-tight">{result.displayName}</h3>
+                            <p className="text-xs text-muted-foreground mt-0.5">{result.content}</p>
                           </div>
-                          
-                          <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0 mt-4 group-hover:text-foreground group-hover:translate-x-0.5 transition-all" />
+                          <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0 group-hover:text-foreground group-hover:translate-x-0.5 transition-all" />
                         </div>
                       </div>
                     ))
