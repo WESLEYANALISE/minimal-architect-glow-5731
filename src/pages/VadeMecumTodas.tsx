@@ -506,7 +506,8 @@ const VadeMecumTodas = () => {
               {/* Barra de busca */}
               <div
                 onClick={() => setSearchOpen(true)}
-                className="flex items-center gap-3 px-4 py-4 bg-card/90 backdrop-blur-sm rounded-2xl cursor-pointer border border-border/30 hover:border-primary/30 transition-colors mb-6 relative overflow-hidden"
+                className="flex items-center gap-3 px-4 py-4 rounded-2xl cursor-pointer transition-colors mb-6 relative overflow-hidden"
+                style={{ background: 'hsla(0, 0%, 100%, 0.04)', border: '1px solid hsla(40, 60%, 50%, 0.12)' }}
               >
                 <Search className="w-5 h-5 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Buscar artigo, lei ou código...</span>
