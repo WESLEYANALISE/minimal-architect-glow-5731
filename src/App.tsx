@@ -490,6 +490,7 @@ const App = () => {
         <Sonner />
         <SpeedInsights />
         <Analytics />
+        <ThemeProvider>
         <AuthProvider>
         <SubscriptionProvider>
         <NarrationPlayerProvider>
