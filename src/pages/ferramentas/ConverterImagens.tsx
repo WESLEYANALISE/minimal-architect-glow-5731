@@ -243,13 +243,9 @@ const ConverterImagens = () => {
 
       for (const config of TABELAS_IMAGENS) {
         try {
-          const { data, error } = await supabase
-            .from(config.tabela as any)
-            .select(`id, ${config.coluna}`)
-            .not(config.coluna, 'is', null)
-            .order('id', { ascending: false });
+          const data = await fetchAllPaginated(config.tabela, `id, ${config.coluna}`, config.coluna);
 
-          if (error || !data?.length) continue;
+          if (!data.length) continue;
 
           const imagens: ImagemInfo[] = data.map((item: any) => ({
             id: item.id,
