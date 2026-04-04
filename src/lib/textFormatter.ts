@@ -174,32 +174,32 @@ export const formatTextWithUppercase = (text: string, hideAnnotations: boolean =
   
   // Aplicar destaque amarelo e negrito a "Art. X" (artigo + número)
   // IMPORTANTE: Só para "Art." maiúsculo - "art." minúsculo é referência, não artigo
-  result = result.replace(/(Art\.\s*\d+[º°o]?(?:-[A-Z])?)/g, '<strong class="font-bold text-amber-300">$1</strong>');
+  result = result.replace(/(Art\.\s*\d+[º°o]?(?:-[A-Z])?)/g, '<strong class="font-bold text-red-300">$1</strong>');
   
   // Aplicar espaçamento duplo e negrito amarelo a "Parágrafo único"
   // Se não tiver \n\n antes, adiciona
-  result = result.replace(/(?<!\n\n)(^|\n)(Parágrafo único\.?)/gim, '$1\n\n<strong class="font-bold text-amber-300">$2</strong>');
-  // Caso já tenha \n\n antes, só adiciona negrito amarelo
-  result = result.replace(/(\n\n)(Parágrafo único\.?)(?!<)/gi, '$1<strong class="font-bold text-amber-300">$2</strong>');
+  result = result.replace(/(?<!\n\n)(^|\n)(Parágrafo único\.?)/gim, '$1\n\n<strong class="font-bold text-red-300">$2</strong>');
+  // Caso já tenha \n\n antes, só adiciona negrito vermelho
+  result = result.replace(/(\n\n)(Parágrafo único\.?)(?!<)/gi, '$1<strong class="font-bold text-red-300">$2</strong>');
   
   // Aplicar espaçamento duplo e negrito amarelo a parágrafos (§)
   // Usar [ \t]* em vez de \s* para NÃO capturar \n dentro do match
   // Se não tiver \n\n antes, adiciona
-  result = result.replace(/(?<!\n\n)(^|\n)(§[ \t]*\d+[ºo°]?)/gm, '$1\n\n<strong class="font-bold text-amber-300">$2</strong>');
-  // Caso já tenha \n\n antes, só adiciona negrito amarelo
-  result = result.replace(/(\n\n)(§[ \t]*\d+[ºo°]?)(?!<)/g, '$1<strong class="font-bold text-amber-300">$2</strong>');
+  result = result.replace(/(?<!\n\n)(^|\n)(§[ \t]*\d+[ºo°]?)/gm, '$1\n\n<strong class="font-bold text-red-300">$2</strong>');
+  // Caso já tenha \n\n antes, só adiciona negrito vermelho
+  result = result.replace(/(\n\n)(§[ \t]*\d+[ºo°]?)(?!<)/g, '$1<strong class="font-bold text-red-300">$2</strong>');
   
   // Aplicar espaçamento duplo e negrito a incisos romanos (I, II, III, etc) com linha lateral
   // Se não tiver \n\n antes, adiciona
-  result = result.replace(/(?<!\n\n)(^|\n)([IVXLCDM]+)\s*[-–—]\s*/gm, '\n</span><span style="display:block;border-left:2px solid rgba(251,191,36,0.5);padding-left:1rem;margin-left:0.5rem;padding-top:0.15rem;padding-bottom:0.15rem;margin-top:0.1rem;margin-bottom:0.1rem"><strong class="font-bold">$2</strong> - ');
+  result = result.replace(/(?<!\n\n)(^|\n)([IVXLCDM]+)\s*[-–—]\s*/gm, '\n</span><span style="display:block;border-left:2px solid rgba(248,113,113,0.5);padding-left:1rem;margin-left:0.5rem;padding-top:0.15rem;padding-bottom:0.15rem;margin-top:0.1rem;margin-bottom:0.1rem"><strong class="font-bold">$2</strong> - ');
   // Caso já tenha \n\n antes, só adiciona negrito
-  result = result.replace(/(\n\n)([IVXLCDM]+)\s*[-–—](?!\s*<)/g, '\n</span><span style="display:block;border-left:2px solid rgba(251,191,36,0.5);padding-left:1rem;margin-left:0.5rem;padding-top:0.15rem;padding-bottom:0.15rem;margin-top:0.1rem;margin-bottom:0.1rem"><strong class="font-bold">$2</strong> - ');
+  result = result.replace(/(\n\n)([IVXLCDM]+)\s*[-–—](?!\s*<)/g, '\n</span><span style="display:block;border-left:2px solid rgba(248,113,113,0.5);padding-left:1rem;margin-left:0.5rem;padding-top:0.15rem;padding-bottom:0.15rem;margin-top:0.1rem;margin-bottom:0.1rem"><strong class="font-bold">$2</strong> - ');
   
   // Aplicar espaçamento duplo e negrito a alíneas (a), b), c)) com linha lateral mais indentada
   // Se não tiver \n\n antes, adiciona
-  result = result.replace(/(?<!\n\n)(^|\n)\s*([a-z])\)\s*/gm, '\n</span><span style="display:block;border-left:2px solid rgba(251,191,36,0.35);padding-left:1rem;margin-left:1rem;padding-top:0.1rem;padding-bottom:0.1rem;margin-top:0.05rem;margin-bottom:0.05rem"><strong class="font-bold">$2)</strong> ');
+  result = result.replace(/(?<!\n\n)(^|\n)\s*([a-z])\)\s*/gm, '\n</span><span style="display:block;border-left:2px solid rgba(248,113,113,0.35);padding-left:1rem;margin-left:1rem;padding-top:0.1rem;padding-bottom:0.1rem;margin-top:0.05rem;margin-bottom:0.05rem"><strong class="font-bold">$2)</strong> ');
   // Caso já tenha \n\n antes, só adiciona negrito
-  result = result.replace(/(\n\n)\s*([a-z])\)(?!\s*<)/g, '\n</span><span style="display:block;border-left:2px solid rgba(251,191,36,0.35);padding-left:1rem;margin-left:1rem;padding-top:0.1rem;padding-bottom:0.1rem;margin-top:0.05rem;margin-bottom:0.05rem"><strong class="font-bold">$2)</strong> ');
+  result = result.replace(/(\n\n)\s*([a-z])\)(?!\s*<)/g, '\n</span><span style="display:block;border-left:2px solid rgba(248,113,113,0.35);padding-left:1rem;margin-left:1rem;padding-top:0.1rem;padding-bottom:0.1rem;margin-top:0.05rem;margin-bottom:0.05rem"><strong class="font-bold">$2)</strong> ');
   
   // Identificar e marcar títulos (incluindo títulos entre artigos como "Tentativa", "Pena de tentativa")
   const lines = result.split('\n');
