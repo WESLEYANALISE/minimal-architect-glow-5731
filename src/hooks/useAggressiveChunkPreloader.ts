@@ -6,6 +6,7 @@ const PHASE1_CRITICAL = [
   () => import('../pages/VadeMecumTodas'),
   () => import('../pages/Cursos'),
   () => import('../pages/FlashcardsAreas'),
+  () => import('../pages/FlashcardsTemas'),
 ];
 
 // ========== FASE 2: rotas populares + simulados (após delay) ==========

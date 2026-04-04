@@ -6,6 +6,8 @@ const ROUTE_IMPORTS: Record<string, () => Promise<any>> = {
   '/vade-mecum': () => import('../pages/VadeMecumTodas'),
   '/cursos': () => import('../pages/Cursos'),
   '/flashcards': () => import('../pages/FlashcardsAreas'),
+  '/flashcards/temas': () => import('../pages/FlashcardsTemas'),
+  '/flashcards/areas': () => import('../pages/FlashcardsAreas'),
   '/ferramentas': () => import('../pages/Ferramentas'),
   '/noticias-juridicas': () => import('../pages/NoticiasJuridicas'),
   '/questoes': () => import('../pages/ferramentas/QuestoesHubNovo'),
