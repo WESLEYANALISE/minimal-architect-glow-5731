@@ -155,6 +155,7 @@ const R = {
 
 const FlashcardsAreas = () => {
   const navigate = useNavigate();
+  const { onTouchStart: prefetchRoute } = usePrefetchRoute();
   const { isPremium } = useSubscription();
   const { user } = useAuth();
   const isAdmin = user?.email === ADMIN_EMAIL;
