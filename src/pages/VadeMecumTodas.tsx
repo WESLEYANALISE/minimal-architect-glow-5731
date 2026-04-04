@@ -491,8 +491,13 @@ const VadeMecumTodas = () => {
             <div className="max-w-3xl mx-auto w-full px-6 xl:px-8 pb-8 pt-6">
               {/* Desktop header */}
               <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold text-foreground">Vade Mecum 2026</h1>
-                <p className="text-sm text-muted-foreground mt-1">Legislação brasileira completa e atualizada</p>
+                <div className="inline-flex flex-col items-center gap-3 px-8 py-5 rounded-2xl bg-black/30 backdrop-blur-sm">
+                  <img src={brasaoRepublica} alt="Brasão da República" className="w-14 h-14 object-contain drop-shadow-lg" />
+                  <div>
+                    <h1 className="text-2xl font-bold text-white">Vade Mecum 2026</h1>
+                    <p className="text-sm text-white/80 mt-1">Legislação brasileira sempre atualizada</p>
+                  </div>
+                </div>
               </div>
 
               {/* Barra de busca */}
