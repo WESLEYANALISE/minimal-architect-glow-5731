@@ -17,9 +17,7 @@ import { DotPattern } from "@/components/ui/dot-pattern";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { ADMIN_EMAIL } from "@/lib/adminConfig";
 import QuestoesEstatisticas from "@/components/questoes/QuestoesEstatisticas";
-
-// Eagerly preload QuestoesResolver chunk so navigation is instant
-const resolverPreload = import("./QuestoesResolver");
+import QuestoesResolver from "./QuestoesResolver";
 
 const FREE_AREAS = ["Direito Constitucional", "Direito Administrativo"];
 
@@ -51,7 +49,7 @@ const TABS_AREAS = [
 ];
 
 type AreaTabId = typeof TABS_AREAS[number]["id"];
-type SubView = "menu" | "praticar" | "temas" | "progresso" | "reforco" | "cadernos" | "diagnostico";
+type SubView = "menu" | "praticar" | "temas" | "resolver" | "progresso" | "reforco" | "cadernos" | "diagnostico";
 
 const AREAS_OCULTAS = ["Revisão Oab", "Revisao Oab", "Português", "Portugues", "Filosofia do Direito"];
 
@@ -66,16 +64,13 @@ interface UserStat {
   ultima_resposta: string | null;
 }
 
-// Slide variants for subview transitions
 const slideVariants = {
   enter: { x: "100%", opacity: 0 },
   center: { x: 0, opacity: 1 },
   exit: { x: "-30%", opacity: 0 },
 };
 
-// Inline Temas component with tabs (Ordem/Favoritos/Estatística/Pesquisar)
-const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => {
-  const navigate = useNavigate();
+const TemasInline = ({ area, onBack, onSelectTema }: { area: string; onBack: () => void; onSelectTema: (tema: string) => void }) => {
   const { temas, isLoading } = useQuestoesTemas(area);
   const [activeTab, setActiveTab] = useState<"ordem" | "favoritos" | "estatistica" | "pesquisar">("ordem");
   const [searchTerm, setSearchTerm] = useState("");
@@ -111,15 +106,7 @@ const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => 
   const showList = activeTab === "ordem" || activeTab === "pesquisar" || activeTab === "favoritos";
 
   const handleSelect = (tema: string) => {
-    resolverPreload.then(() => {
-      startTransition(() => {
-        navigate(`/ferramentas/questoes/resolver?area=${encodeURIComponent(area)}&tema=${encodeURIComponent(tema)}`);
-      });
-    }).catch(() => {
-      startTransition(() => {
-        navigate(`/ferramentas/questoes/resolver?area=${encodeURIComponent(area)}&tema=${encodeURIComponent(tema)}`);
-      });
-    });
+    onSelectTema(tema);
   };
 
   const TABS = [
@@ -316,6 +303,7 @@ const QuestoesHubNovo = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [subView, setSubView] = useState<SubView>("menu");
   const [selectedArea, setSelectedArea] = useState("");
+  const [selectedTema, setSelectedTema] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -402,20 +390,31 @@ const QuestoesHubNovo = () => {
 
   const handleSelectArea = (area: string) => {
     setSelectedArea(area);
+    setSelectedTema("");
     setSubView("temas");
   };
 
   const handleBackFromTemas = () => {
+    setSelectedTema("");
     setSubView("praticar");
   };
 
+  const handleSelectTema = (tema: string) => {
+    setSelectedTema(tema);
+    setSubView("resolver");
+  };
+
+  const handleBackFromResolver = () => {
+    setSubView("temas");
+  };
+};
   return (
     <div className="min-h-screen relative overflow-hidden" style={{ background: "hsl(0 0% 10%)" }}>
       <DotPattern className="opacity-[0.03]" />
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         <motion.div
-          key={subView + (subView === "temas" ? selectedArea : "")}
+          key={subView + (subView === "temas" ? selectedArea : "") + (subView === "resolver" ? selectedTema : "")}
           variants={slideVariants}
           initial="enter"
           animate="center"
@@ -440,7 +439,7 @@ const QuestoesHubNovo = () => {
           )}
 
           {/* Hero header for menu/praticar */}
-          {!isInternal && subView !== "temas" && (
+          {!isInternal && subView !== "temas" && subView !== "resolver" && (
             <div
               className="relative overflow-hidden rounded-b-3xl mb-4"
               style={{
@@ -480,7 +479,17 @@ const QuestoesHubNovo = () => {
 
           {/* === TEMAS (inline) === */}
           {subView === "temas" && selectedArea && (
-            <TemasInline area={selectedArea} onBack={handleBackFromTemas} />
+            <TemasInline area={selectedArea} onBack={handleBackFromTemas} onSelectTema={handleSelectTema} />
+          )}
+
+          {/* === RESOLVER (inline, sem trocar rota) === */}
+          {subView === "resolver" && selectedArea && selectedTema && (
+            <QuestoesResolver
+              inlineArea={selectedArea}
+              inlineTema={selectedTema}
+              onExit={handleBackFromResolver}
+              onComplete={handleBackFromResolver}
+            />
           )}
 
           {/* Menu principal */}
