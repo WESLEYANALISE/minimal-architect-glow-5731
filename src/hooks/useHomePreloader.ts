@@ -259,8 +259,8 @@ async function runPreload() {
     results3.forEach(urls => allImageUrls.push(...urls));
 
 
-    // 3. Pré-carregar no máximo 15 imagens do Supabase
-    const uniqueUrls = [...new Set(allImageUrls)].slice(0, 15);
+    // 3. Pré-carregar até 50 imagens do Supabase (agressivo)
+    const uniqueUrls = [...new Set(allImageUrls)].slice(0, 50);
     if (uniqueUrls.length > 0) {
       await preloadImages(uniqueUrls);
     }
