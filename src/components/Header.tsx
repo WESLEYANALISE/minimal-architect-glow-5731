@@ -202,6 +202,8 @@ const getHierarchicalDestination = (pathname: string, search: string): string | 
   }
   if (pathname === "/ferramentas/questoes/modo") return "/ferramentas/questoes";
   if (pathname === "/ferramentas/questoes") return "/";
+  if (pathname === "/ferramentas/questoes-v2/temas") return "/ferramentas/questoes-v2";
+  if (pathname === "/ferramentas/questoes-v2") return "/";
   if (pathname.match(/^\/ferramentas\/simulados\/[^/]+\/resultado$/)) {
     const parts = pathname.split("/");
     return `/ferramentas/simulados/${parts[3]}`;
@@ -726,6 +728,7 @@ export const Header = () => {
   const isQuestoesCorrespPage = location.pathname.startsWith("/ferramentas/questoes/correspondencia");
   const isQuestoesCasoPraticoPage = location.pathname.startsWith("/ferramentas/questoes/caso-pratico");
   const isQuestoesHubPage = location.pathname === "/ferramentas/questoes";
+  const isQuestoesV2Page = location.pathname.startsWith("/ferramentas/questoes-v2");
   const isFlashcardsAreasPage = location.pathname === "/flashcards/areas";
   const isMetodologiasAreas = /^\/metodologias\/[^/]+$/.test(location.pathname);
   const isMetodologiasTemas = /^\/metodologias\/[^/]+\/area\//.test(location.pathname);
@@ -734,7 +737,7 @@ export const Header = () => {
   const isPoliticaPage = location.pathname === "/politica";
   const isProposicoesListaPage = location.pathname === "/camara-deputados/proposicoes/lista";
   const isNoticiasLegislativasPage = location.pathname === "/noticias-legislativas";
-  if (isResumosPage || isCategoriasTopicoPage || isGamificacaoPage || isQuestoesResolverPage || isCategoriasQuestoesPage || isAulasEmTelaPage || isAdminMetodologias || isQuestoesSimNaoPage || isQuestoesCorrespPage || isQuestoesCasoPraticoPage || isQuestoesHubPage || isFlashcardsAreasPage || isMetodologiasAreas || isMetodologiasTemas || isVadeMecumBloggerPage || isTermosJuridicosPage || isPoliticaPage || isProposicoesListaPage || isNoticiasLegislativasPage) return null;
+  if (isResumosPage || isCategoriasTopicoPage || isGamificacaoPage || isQuestoesResolverPage || isCategoriasQuestoesPage || isAulasEmTelaPage || isAdminMetodologias || isQuestoesSimNaoPage || isQuestoesCorrespPage || isQuestoesCasoPraticoPage || isQuestoesHubPage || isQuestoesV2Page || isFlashcardsAreasPage || isMetodologiasAreas || isMetodologiasTemas || isVadeMecumBloggerPage || isTermosJuridicosPage || isPoliticaPage || isProposicoesListaPage || isNoticiasLegislativasPage) return null;
 
   // HOME LAYOUT
   if (isHome) {

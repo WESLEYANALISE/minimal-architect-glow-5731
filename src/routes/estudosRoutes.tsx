@@ -33,6 +33,8 @@ const FlashcardsLacunasEstudar = lazy(() => import("../pages/FlashcardsLacunasEs
 
 // Questões
 const QuestoesHub = lazy(() => import("../pages/ferramentas/QuestoesHub"));
+const QuestoesHubNovo = lazy(() => import("../pages/ferramentas/QuestoesHubNovo"));
+const QuestoesTemasNovo = lazy(() => import("../pages/ferramentas/QuestoesTemasNovo"));
 const QuestoesSimNaoAreas = lazy(() => import("../pages/ferramentas/QuestoesSimNaoAreas"));
 const QuestoesSimNaoTemas = lazy(() => import("../pages/ferramentas/QuestoesSimNaoTemas"));
 const QuestoesSimNaoResolver = lazy(() => import("../pages/ferramentas/QuestoesSimNaoResolver"));
@@ -129,6 +131,8 @@ export const estudosRoutes = (
     {/* Questões */}
     <Route path="/questoes" element={<Navigate to="/ferramentas/questoes" replace />} />
     <Route path="/ferramentas/questoes" element={<L><QuestoesHub /></L>} />
+    <Route path="/ferramentas/questoes-v2" element={<L><QuestoesHubNovo /></L>} />
+    <Route path="/ferramentas/questoes-v2/temas" element={<L><QuestoesTemasNovo /></L>} />
     <Route path="/ferramentas/questoes/modo" element={<L><QuestoesEscolhaModo /></L>} />
     <Route path="/ferramentas/questoes/temas" element={<L><QuestoesTemas /></L>} />
     <Route path="/ferramentas/questoes/resolver" element={<L><QuestoesResolver /></L>} />
