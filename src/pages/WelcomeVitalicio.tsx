@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useEffect, useState, useRef } from 'react';
+import { usePaymentSDK } from '@/hooks/usePaymentSDK';
 import { useFacebookPixel } from '@/hooks/useFacebookPixel';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ChevronRight, ChevronLeft, GraduationCap, Scale, FileText, BookOpen, Sparkles, Play, ImageIcon, Crown, Shield, Check } from 'lucide-react';
@@ -64,6 +65,7 @@ const WelcomeVitalicio = () => {
   const [showPixScreen, setShowPixScreen] = useState(false);
   const [showCpfInput, setShowCpfInput] = useState(false);
   const [pixCpf, setPixCpf] = useState('');
+  usePaymentSDK();
   const { pixData, loading: pixLoading, createPix, copyPixCode, reset: resetPix } = useMercadoPagoPix();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { trackEvent } = useFacebookPixel();

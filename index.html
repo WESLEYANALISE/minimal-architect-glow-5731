@@ -2,12 +2,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-PPWVT74W');</script>
+    <!-- Google Tag Manager — deferred 3s for LCP -->
+    <script>
+      function loadGTM(){if(window.gtmLoaded)return;window.gtmLoaded=true;
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PPWVT74W');}
+      setTimeout(loadGTM,3000);
+    </script>
     <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
@@ -22,10 +26,7 @@
     <link rel="preload" href="/audio/welcome-background.mp3" as="fetch" crossorigin="anonymous" />
     <style>#lovable-badge { display: none !important; }</style>
 
-    <!-- Mercado Pago SDK (legado - mantido para fallback) -->
-    <script src="https://sdk.mercadopago.com/js/v2" async></script>
-    <!-- PagBank SDK para encriptação de cartão -->
-    <script src="https://assets.pagseguro.com.br/checkout-sdk-js/rc/dist/browser/pagseguro.min.js" async></script>
+    <!-- Payment SDKs removed from head — loaded on-demand via usePaymentSDK.ts -->
     <title>Direito Prime - Aprovação OAB | Vade Mecum, Questões e Videoaulas para OAB</title>
     
     <!-- Preconnect para recursos críticos -->
@@ -45,11 +46,19 @@
     
     <!-- Hero banners: preloads estáticos removidos (Vite gera URLs com hash, tornando-os ineficazes). Agora são injetados dinamicamente via useHomePreloader.ts -->
     
-    <!-- Fonts com estratégia de carregamento otimizada -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=Source+Serif+4:wght@400;500;600;700&family=Cinzel:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&family=Playfair+Display:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <!-- Critical font: Inter only (95% do app) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=Source+Serif+4:wght@400;500;600;700&family=Cinzel:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&family=Playfair+Display:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     </noscript>
+    <!-- Deferred fonts: loaded after 3s for pages that need them -->
+    <script>
+      setTimeout(function(){
+        var l=document.createElement('link');l.rel='stylesheet';
+        l.href='https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Source+Serif+4:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&family=Crimson+Text:wght@400;600;700&family=Source+Sans+3:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap';
+        document.head.appendChild(l);
+      },3000);
+    </script>
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.webmanifest" />

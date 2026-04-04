@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { usePaymentSDK } from "@/hooks/usePaymentSDK";
 import { PaymentMethodModal } from "@/components/assinatura/PaymentMethodModal";
 import { CheckoutCartaoModal } from "@/components/assinatura/CheckoutCartaoModal";
 import PixPaymentScreen from "@/components/assinatura/PixPaymentScreen";
@@ -166,6 +167,7 @@ const AssinaturaNova = () => {
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('anual');
   const [fraseIndex] = useState(() => Math.floor(Math.random() * FRASES.length));
 
+  usePaymentSDK();
   const { pixData, loading: pixLoading, createPix, copyPixCode, reset: resetPix } = useMercadoPagoPix();
 
   const currentPlan = PLANS[selectedPlan] || PLANS.anual;

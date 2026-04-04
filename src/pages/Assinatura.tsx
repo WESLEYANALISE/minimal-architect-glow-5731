@@ -1,4 +1,5 @@
 import { useState, useEffect, memo, useRef } from "react";
+import { usePaymentSDK } from "@/hooks/usePaymentSDK";
 import { PaymentMethodModal } from "@/components/assinatura/PaymentMethodModal";
 import { CheckoutCartaoModal } from "@/components/assinatura/CheckoutCartaoModal";
 import PixPaymentScreen from "@/components/assinatura/PixPaymentScreen";
@@ -133,6 +134,7 @@ const Assinatura = () => {
   const [showCpfInput, setShowCpfInput] = useState(false);
   const [pixCpf, setPixCpf] = useState('');
 
+  usePaymentSDK();
   const { pixData, loading: pixLoading, createPix, copyPixCode, reset: resetPix } = useMercadoPagoPix();
 
   const [showAllFeatures, setShowAllFeatures] = useState(false);
