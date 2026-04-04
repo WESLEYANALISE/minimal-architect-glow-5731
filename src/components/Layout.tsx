@@ -72,53 +72,14 @@ const SHOW_BOTTOM_NAV_PREFIXES = [
 const HIDE_HEADER_ROUTES = new Set([
   "/professora",
   "/chat-professora",
-  "/blogger-juridico",
-  "/jurisprudencia-webview",
-  "/vade-mecum",
-  "/jurisprudencia-corpus-927",
-  "/primeiros-passos",
-  "/juriflix",
-  "/tres-poderes",
-  
-  "/videoaulas",
-  "/videoaulas-oab",
-  "/estudos",
-  
-  "/aulas",
   "/evelyn",
   "/explicacao-artigo",
-  "/ferramentas/simulados",
+  "/primeiros-passos",
 ]);
 
 const HIDE_HEADER_PREFIXES = [
-  "/blogger-juridico/",
   "/resumo-do-dia",
-  "/novas-leis",
-  "/videoaulas/iniciante",
-  "/videoaulas/faculdade",
-  "/videoaulas/areas/",
-  "/oab/trilhas-aprovacao",
-  "/oab/trilhas-etica",
-  "/oab/primeira-fase",
-  "/oab/segunda-fase",
-  "/oab/carreira",
-  "/faculdade/disciplina",
-  "/faculdade/topico",
-  "/faculdade/universidade",
-  "/conceitos/area",
-  "/aulas/area",
-  "/conceitos/materia",
-  "/conceitos/topico",
-  "/conceitos/trilhante",
-  "/conceitos/livro",
-  "/dominando/trilhas",
-  "/dominando/area",
-  "/dominando/estudo",
-  "/resumos-juridicos/personalizado",
   "/aulas-em-tela/",
-  
-  "/legislativo/",
-  "/vade-mecum/",
 ];
 
 // Helper function to check if path matches prefixes

@@ -423,6 +423,39 @@ const getHierarchicalDestination = (pathname: string, search: string): string | 
   if (pathname === "/termos-juridicos") return null;
   if (pathname.startsWith("/termos-juridicos/")) return null;
 
+  // ===== CONCEITOS / TRILHAS =====
+  if (pathname.match(/^\/conceitos\/topico\/[^/]+$/)) return "/conceitos/area";
+  if (pathname.match(/^\/conceitos\/materia\/[^/]+$/)) return "/conceitos/area";
+  if (pathname.match(/^\/conceitos\/trilhante\/[^/]+$/)) return "/conceitos/area";
+  if (pathname.match(/^\/conceitos\/livro\/[^/]+$/)) return "/conceitos/area";
+  if (pathname.match(/^\/conceitos\/area\/[^/]+$/)) return "/aulas";
+  if (pathname.startsWith("/conceitos/")) return "/aulas";
+
+  // ===== DOMINANDO =====
+  if (pathname.match(/^\/dominando\/estudo\/[^/]+$/)) return "/dominando/area";
+  if (pathname.match(/^\/dominando\/area\/[^/]+$/)) return "/dominando/trilhas";
+  if (pathname === "/dominando/trilhas") return "/dominando";
+  if (pathname.startsWith("/dominando/")) return "/dominando";
+  if (pathname === "/dominando") return "/";
+
+  // ===== NOVAS LEIS =====
+  if (pathname.match(/^\/novas-leis\/[^/]+$/)) return "/novas-leis";
+  if (pathname === "/novas-leis") return "/?tab=leis";
+
+  // ===== TRÊS PODERES =====
+  if (pathname === "/tres-poderes") return "/";
+
+  // ===== VIDEOAULAS OAB =====
+  if (pathname.startsWith("/videoaulas-oab/")) return "/videoaulas-oab";
+  if (pathname === "/videoaulas-oab") return "/videoaulas";
+
+  // ===== ESTUDOS =====
+  if (pathname === "/estudos") return "/";
+
+  // ===== AULAS =====
+  if (pathname === "/aulas/areas") return "/aulas";
+  if (pathname === "/aulas") return "/";
+
   // ===== OUTRAS ROTAS =====
   if (pathname === "/em-alta") return "/";
   if (pathname === "/novidades") return "/";
@@ -520,7 +553,19 @@ const getPreviousPageTitle = (pathname: string, search: string): string => {
     "/noticias-juridicas": "Notícias Jurídicas",
     "/ranking-faculdades": "Ranking Faculdades",
     "/blogger-juridico": "Blogger Jurídico",
-    "/blogger-juridico/artigos": "Artigos"
+    "/blogger-juridico/artigos": "Artigos",
+    "/aulas": "Aulas",
+    "/aulas/areas": "Áreas",
+    "/estudos": "Estudos",
+    "/dominando": "Dominando",
+    "/dominando/trilhas": "Trilhas",
+    "/dominando/area": "Área",
+    "/videoaulas-oab": "Videoaulas OAB",
+    "/tres-poderes": "Três Poderes",
+    "/novas-leis": "Novas Leis",
+    "/conceitos/area": "Área",
+    "/?tab=estudos": "Estudos",
+    "/iniciando-direito/todos": "Iniciando",
   };
 
   // Verifica título direto
