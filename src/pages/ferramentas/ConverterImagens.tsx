@@ -24,7 +24,6 @@ interface TabelaImagens {
   imagens: ImagemInfo[];
   totalWebp: number;
   totalPendentes: number;
-  ultimaData?: string;
 }
 
 // ── Categorias ──────────────────────────────────────────────
@@ -148,6 +147,7 @@ const ConverterImagens = () => {
   const [loading, setLoading] = useState(false);
   const [tabelaSelecionada, setTabelaSelecionada] = useState<string | null>(null);
   const [categoriaAtiva, setCategoriaAtiva] = useState("todas");
+  const [filtroStatus, setFiltroStatus] = useState<"todas" | "pendentes" | "finalizadas">("todas");
   const [dadosTabelas, setDadosTabelas] = useState<TabelaImagens[]>([]);
   const [convertendo, setConvertendo] = useState(false);
   const [pausado, setPausado] = useState(false);
@@ -158,9 +158,11 @@ const ConverterImagens = () => {
 
   // ── Filtro por categoria ──
   const tabelasFiltradas = useMemo(() => {
-    if (categoriaAtiva === "todas") return dadosTabelas;
-    return dadosTabelas.filter(t => t.categoria === categoriaAtiva);
-  }, [dadosTabelas, categoriaAtiva]);
+    let lista = categoriaAtiva === "todas" ? dadosTabelas : dadosTabelas.filter(t => t.categoria === categoriaAtiva);
+    if (filtroStatus === "pendentes") lista = lista.filter(t => t.totalPendentes > 0);
+    if (filtroStatus === "finalizadas") lista = lista.filter(t => t.totalPendentes === 0);
+    return lista;
+  }, [dadosTabelas, categoriaAtiva, filtroStatus]);
 
   const totalImagens = tabelasFiltradas.reduce((acc, t) => acc + t.imagens.length, 0);
   const totalWebp = tabelasFiltradas.reduce((acc, t) => acc + t.totalWebp, 0);
@@ -224,7 +226,7 @@ const ConverterImagens = () => {
         try {
           const { data, error } = await supabase
             .from(config.tabela as any)
-            .select(`id, ${config.coluna}, created_at`)
+            .select(`id, ${config.coluna}`)
             .not(config.coluna, 'is', null)
             .order('id', { ascending: false });
 
@@ -235,7 +237,6 @@ const ConverterImagens = () => {
             url: item[config.coluna] || '',
             formato: detectarFormato(item[config.coluna] || ''),
             coluna: config.coluna,
-            created_at: item.created_at,
           })).filter((img: ImagemInfo) => img.url);
 
           if (imagens.length === 0) continue;
@@ -252,7 +253,6 @@ const ConverterImagens = () => {
             imagens,
             totalWebp,
             totalPendentes,
-            ultimaData: imagens[0]?.created_at,
           });
         } catch (err) {
           console.warn(`Tabela ${config.tabela} não encontrada:`, err);
@@ -423,6 +423,27 @@ const ConverterImagens = () => {
               </button>
             );
           })}
+        </div>
+
+        {/* ── Toggle: Todas / Pendentes / Finalizadas ── */}
+        <div className="flex rounded-lg bg-muted/50 p-0.5">
+          {([
+            { id: "todas" as const, label: "Todas" },
+            { id: "pendentes" as const, label: "Pendentes" },
+            { id: "finalizadas" as const, label: "Finalizadas" },
+          ]).map(opt => (
+            <button
+              key={opt.id}
+              onClick={() => setFiltroStatus(opt.id)}
+              className={`flex-1 text-xs font-medium py-1.5 rounded-md transition-colors ${
+                filtroStatus === opt.id
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
 
         {/* ── Estatísticas ── */}
