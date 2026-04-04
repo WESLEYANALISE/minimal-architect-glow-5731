@@ -9,6 +9,7 @@ interface LivroCarouselCardProps {
   priority?: boolean;
   isPremiumLocked?: boolean;
   showYear?: string;
+  isSelected?: boolean;
 }
 
 export const LivroCarouselCard = memo(({ titulo, capaUrl, onClick, numero, priority, isPremiumLocked, showYear }: LivroCarouselCardProps) => {
