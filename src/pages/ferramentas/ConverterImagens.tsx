@@ -24,7 +24,6 @@ interface TabelaImagens {
   imagens: ImagemInfo[];
   totalWebp: number;
   totalPendentes: number;
-  ultimaData?: string;
 }
 
 // ── Categorias ──────────────────────────────────────────────
