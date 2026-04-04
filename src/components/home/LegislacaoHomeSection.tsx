@@ -22,6 +22,7 @@ const SECOES_LEGISLACAO = [
 
 export const LegislacaoHomeSection = memo(() => {
   const navigate = useTransitionNavigate();
+  const { onTouchStart } = usePrefetchRoute();
   const { isPremium } = useSubscription();
   const { noticias: noticiasLeg, loading: loadingLeg } = useNoticiasLegislativas(10);
   const [acessoRapido, setAcessoRapido] = useState<AcessoRapidoItem[]>(loadAcessoRapidoConfig);
