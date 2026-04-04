@@ -141,7 +141,8 @@ export function HomeAtalhosSection({ onProfessora, gatedNavigate, user, requireA
             return (
               <button
                 key={codigo.id}
-                onClick={() => navigate(codigo.route)}
+                onPointerDown={() => navigate(codigo.route)}
+                onTouchStart={() => onTouchStart(codigo.route)}
                 className={`w-[110px] shrink-0 group relative bg-gradient-to-br ${codigo.bg} rounded-xl p-3 h-[120px] flex flex-col items-start justify-between text-left overflow-hidden border border-white/[0.08] hover:scale-[1.03] active:scale-95 transition-transform cursor-pointer`}
                 style={{ boxShadow: '0 4px 16px -4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)' }}
               >
