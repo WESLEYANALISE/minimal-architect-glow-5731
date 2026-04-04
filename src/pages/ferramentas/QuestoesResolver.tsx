@@ -77,14 +77,30 @@ const FRASES_GERACAO = [
   "Quase pronto...",
 ];
 
-const QuestoesResolver = () => {
+interface QuestoesResolverProps {
+  inlineArea?: string;
+  inlineTema?: string;
+  inlineModo?: string;
+  inlineAutoplayAudio?: boolean;
+  onExit?: () => void;
+  onComplete?: () => void;
+}
+
+const QuestoesResolver = ({
+  inlineArea,
+  inlineTema,
+  inlineModo,
+  inlineAutoplayAudio,
+  onExit,
+  onComplete,
+}: QuestoesResolverProps = {}) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const area = searchParams.get("area") || "";
-  const tema = searchParams.get("tema") || "";
-  const modo = searchParams.get("modo") || "";
+  const area = inlineArea ?? searchParams.get("area") ?? "";
+  const tema = inlineTema ?? searchParams.get("tema") ?? "";
+  const modo = inlineModo ?? searchParams.get("modo") ?? "";
   const autoplayParam = searchParams.get("autoplay");
-  const autoplayAudio = autoplayParam !== null ? autoplayParam === "true" : true;
+  const autoplayAudio = inlineAutoplayAudio ?? (autoplayParam !== null ? autoplayParam === "true" : true);
   const isModoTodas = modo === "todas";
   const [isGenerating, setIsGenerating] = useState(false);
   const countdownDone = true; // Skip countdown — start instantly
