@@ -31,7 +31,7 @@ const ROUTE_IMPORTS: Record<string, () => Promise<any>> = {
   '/dicionario': () => import('../pages/Dicionario'),
   '/politica': () => import('../pages/Politica'),
   '/plano-estudos': () => import('../pages/PlanoEstudos'),
-  '/mapa-mental': () => import('../pages/MapaMental'),
+  '/mapa-mental': () => import('../pages/MapaMentalAreas'),
   '/dica-do-dia': () => import('../pages/DicaDoDia'),
 };
 
