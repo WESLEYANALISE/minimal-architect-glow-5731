@@ -327,8 +327,8 @@ export default {
 				'50%': { transform: 'scale(1.05) translateZ(0)', boxShadow: '0 8px 28px rgba(0,0,0,0.4)' }
 			},
 			'page-enter': {
-				'0%': { opacity: '0', transform: 'scale(0.98) translateY(4px)' },
-				'100%': { opacity: '1', transform: 'scale(1) translateY(0)' }
+				'0%': { opacity: '0', transform: 'translateX(30%)' },
+				'100%': { opacity: '1', transform: 'translateX(0)' }
 			},
 			'countdown-stomp': {
 				'0%': { opacity: '0', transform: 'scale(2.5) translateY(-40px)' },
