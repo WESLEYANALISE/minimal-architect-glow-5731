@@ -184,14 +184,33 @@ const ConverterImagens = () => {
     return map;
   }, [dadosTabelas]);
 
+  // Função auxiliar para buscar TODAS as linhas sem limite de 1000
+  const fetchAllPaginated = async (
+    tabela: string,
+    selectCols: string,
+    filterCol?: string
+  ) => {
+    const PAGE = 1000;
+    let all: any[] = [];
+    let from = 0;
+    while (true) {
+      let query = supabase.from(tabela as any).select(selectCols).range(from, from + PAGE - 1);
+      if (filterCol) query = query.not(filterCol, 'is', null);
+      const { data, error } = await query;
+      if (error || !data?.length) break;
+      all = all.concat(data);
+      if (data.length < PAGE) break;
+      from += PAGE;
+    }
+    return all;
+  };
+
   const carregarEconomia = async () => {
     try {
-      const { data } = await supabase
-        .from('cache_imagens_webp')
-        .select('tamanho_original, tamanho_webp');
-      if (data) {
-        const original = data.reduce((acc, item) => acc + (item.tamanho_original || 0), 0);
-        const webp = data.reduce((acc, item) => acc + (item.tamanho_webp || 0), 0);
+      const data = await fetchAllPaginated('cache_imagens_webp', 'tamanho_original, tamanho_webp');
+      if (data.length) {
+        const original = data.reduce((acc: number, item: any) => acc + (item.tamanho_original || 0), 0);
+        const webp = data.reduce((acc: number, item: any) => acc + (item.tamanho_webp || 0), 0);
         setEconomiaTotal({ original, webp, totalConversoes: data.length });
       }
     } catch (err) {
