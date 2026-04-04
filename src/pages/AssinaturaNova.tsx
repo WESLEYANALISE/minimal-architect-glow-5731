@@ -7,7 +7,7 @@ import type { PlanType } from "@/hooks/use-mercadopago-pix";
 import {
   Shield, ArrowRight, Crown, Clock, Lock, Sparkles, BookOpen, Brain,
   Headphones, FileText, Scale, CheckCircle, Target, MessageCircle,
-  Gavel, Map, Video, Layers, ScrollText, Infinity, Calendar, Check
+  Monitor, Map, Video, Layers, ScrollText, Infinity, Calendar, Check
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
