@@ -66,7 +66,6 @@ const Previdenciario = () => {
   const navigate = useTransitionNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterMode, setFilterMode] = useState<FilterMode>('todos');
-  const { backgroundUrl, opacity, isGenerating, generateNew, deleteImage, setOpacity } = useBackgroundImage('previdenciario');
   const { isPremium, loading: loadingSubscription } = useSubscription();
   const [premiumModalOpen, setPremiumModalOpen] = useState(false);
 
