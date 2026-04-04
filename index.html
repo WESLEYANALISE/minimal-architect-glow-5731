@@ -26,10 +26,7 @@
     <link rel="preload" href="/audio/welcome-background.mp3" as="fetch" crossorigin="anonymous" />
     <style>#lovable-badge { display: none !important; }</style>
 
-    <!-- Mercado Pago SDK (legado - mantido para fallback) -->
-    <script src="https://sdk.mercadopago.com/js/v2" async></script>
-    <!-- PagBank SDK para encriptação de cartão -->
-    <script src="https://assets.pagseguro.com.br/checkout-sdk-js/rc/dist/browser/pagseguro.min.js" async></script>
+    <!-- Payment SDKs removed from head — loaded on-demand via usePaymentSDK.ts -->
     <title>Direito Prime - Aprovação OAB | Vade Mecum, Questões e Videoaulas para OAB</title>
     
     <!-- Preconnect para recursos críticos -->
