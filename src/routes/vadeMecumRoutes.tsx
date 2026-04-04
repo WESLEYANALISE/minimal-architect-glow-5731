@@ -62,6 +62,7 @@ export const vadeMecumRoutes = (
     <Route path="/jurisprudencia-corpus-927" element={<L><JurisprudenciaCorpus927 /></L>} />
     <Route path="/codigos" element={<L><Codigos /></L>} />
     <Route path="/codigo/:id" element={<L><CodigoView /></L>} />
+    <Route path="/lei/:slug" element={<LeiRedirect />} />
     <Route path="/constituicao" element={<L><Constituicao /></L>} />
     <Route path="/legislacao-penal-especial" element={<L><LegislacaoPenalEspecial /></L>} />
     <Route path="/lei-penal/lep" element={<Navigate to="/codigo/lei-lep" replace />} />
