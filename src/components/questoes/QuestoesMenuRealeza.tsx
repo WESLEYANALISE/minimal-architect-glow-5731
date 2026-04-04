@@ -107,7 +107,7 @@ export const QuestoesMenuRealeza = ({
               <h3 className="text-sm font-bold text-white mb-0.5">{action.label}</h3>
               <p className="text-[10px]" style={{ color: "hsla(0, 0%, 100%, 0.45)" }}>{action.desc}</p>
 
-              <BorderBeam size={80} duration={10} delay={i * 0.5} colorFrom="hsl(40, 80%, 55%)" colorTo="hsl(345, 65%, 40%)" />
+              
             </motion.button>
           );
         })}
