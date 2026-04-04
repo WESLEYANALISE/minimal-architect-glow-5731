@@ -443,24 +443,25 @@ const VadeMecumTodas = () => {
         {/* Mobile tabs */}
         <div className="lg:hidden max-w-4xl mx-auto w-full px-4 pt-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 w-full bg-card/80 backdrop-blur-md border border-border/50 h-auto p-1">
+            <TabsList className="grid grid-cols-3 w-full h-auto p-1 rounded-xl" style={{ background: 'hsla(0, 0%, 100%, 0.06)', border: '1px solid hsla(40, 60%, 50%, 0.12)' }}>
               <TabsTrigger 
                 value="legislacao" 
-                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:text-white"
+                style={{ }}
               >
                 <Scale className="w-4 h-4" />
                 <span>Legislação</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="leis-do-dia" 
-                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400"
+                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:text-white"
               >
                 <Calendar className="w-4 h-4" />
                 <span>Leis do Dia</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="explicacoes" 
-                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-400"
+                className="flex items-center gap-1.5 py-2.5 text-xs sm:text-sm data-[state=active]:text-white"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Explicações</span>
@@ -491,11 +492,13 @@ const VadeMecumTodas = () => {
             <div className="max-w-3xl mx-auto w-full px-6 xl:px-8 pb-8 pt-6">
               {/* Desktop header */}
               <div className="text-center mb-6">
-                <div className="inline-flex flex-col items-center gap-3 px-8 py-5 rounded-2xl bg-black/30 backdrop-blur-sm">
-                  <img src={brasaoRepublica} alt="Brasão da República" className="w-14 h-14 object-contain drop-shadow-lg" />
+                <div className="inline-flex flex-col items-center gap-3 px-8 py-5 rounded-2xl" style={{ background: 'hsla(0, 0%, 5%, 0.6)', border: '1px solid hsla(40, 60%, 50%, 0.15)' }}>
+                  <div className="rounded-full p-1" style={{ border: '2px solid hsla(40, 60%, 50%, 0.25)' }}>
+                    <img src={brasaoRepublica} alt="Brasão da República" className="w-14 h-14 object-contain drop-shadow-lg" />
+                  </div>
                   <div>
-                    <h1 className="text-2xl font-bold text-white">Vade Mecum 2026</h1>
-                    <p className="text-sm text-white/80 mt-1">Legislação brasileira sempre atualizada</p>
+                    <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>Vade Mecum 2026</h1>
+                    <p className="text-sm mt-1" style={{ color: 'hsl(40, 70%, 60%)' }}>Legislação brasileira sempre atualizada</p>
                   </div>
                 </div>
               </div>
@@ -503,7 +506,8 @@ const VadeMecumTodas = () => {
               {/* Barra de busca */}
               <div
                 onClick={() => setSearchOpen(true)}
-                className="flex items-center gap-3 px-4 py-4 bg-card/90 backdrop-blur-sm rounded-2xl cursor-pointer border border-border/30 hover:border-primary/30 transition-colors mb-6 relative overflow-hidden"
+                className="flex items-center gap-3 px-4 py-4 rounded-2xl cursor-pointer transition-colors mb-6 relative overflow-hidden"
+                style={{ background: 'hsla(0, 0%, 100%, 0.04)', border: '1px solid hsla(40, 60%, 50%, 0.12)' }}
               >
                 <Search className="w-5 h-5 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Buscar artigo, lei ou código...</span>
@@ -517,8 +521,10 @@ const VadeMecumTodas = () => {
                     <button
                       key={card.id}
                       onClick={() => handleCategoryClick(card)}
-                      className="group bg-card/90 backdrop-blur-sm rounded-2xl border border-border/30 cursor-pointer hover:scale-[1.02] transition-all overflow-hidden h-[120px] p-3 flex flex-col gap-2 text-left relative"
+                      className="group rounded-2xl cursor-pointer hover:scale-[1.02] transition-all overflow-hidden h-[120px] p-3 flex flex-col gap-2 text-left relative"
                       style={{
+                        background: 'hsla(0, 0%, 100%, 0.04)',
+                        border: '1px solid hsla(40, 60%, 50%, 0.1)',
                         boxShadow: '4px 6px 12px rgba(0, 0, 0, 0.4)',
                       }}
                     >
@@ -574,8 +580,8 @@ const VadeMecumTodas = () => {
                   {/* Barra de busca */}
                   <div
                     onClick={() => setSearchOpen(true)}
-                    className="flex items-center gap-3 px-4 py-4 bg-card/90 backdrop-blur-sm rounded-2xl cursor-pointer border border-border/30 hover:border-primary/30 transition-colors mb-4 relative overflow-hidden"
-                    style={{ opacity: 0, animation: 'slideDown 0.4s ease-out forwards' } as React.CSSProperties}
+                    className="flex items-center gap-3 px-4 py-4 rounded-2xl cursor-pointer transition-colors mb-4 relative overflow-hidden"
+                    style={{ background: 'hsla(0, 0%, 100%, 0.04)', border: '1px solid hsla(40, 60%, 50%, 0.12)', opacity: 0, animation: 'slideDown 0.4s ease-out forwards' } as React.CSSProperties}
                   >
                     <div className="absolute inset-0 overflow-hidden pointer-events-none z-[2] rounded-2xl">
                       <div
@@ -595,8 +601,10 @@ const VadeMecumTodas = () => {
                         <button
                           key={card.id}
                           onClick={() => handleCategoryClick(card)}
-                          className="group bg-card/90 backdrop-blur-sm rounded-2xl border border-border/30 cursor-pointer active:scale-95 hover:scale-[1.02] transition-all overflow-hidden h-[130px] p-3 flex flex-col gap-2 text-left relative"
+                          className="group rounded-2xl cursor-pointer active:scale-95 hover:scale-[1.02] transition-all overflow-hidden h-[130px] p-3 flex flex-col gap-2 text-left relative"
                           style={{
+                            background: 'hsla(0, 0%, 100%, 0.04)',
+                            border: '1px solid hsla(40, 60%, 50%, 0.1)',
                             opacity: 0,
                             animation: `slideDown 0.4s ease-out ${(index + 1) * 0.06}s forwards`,
                             boxShadow: '4px 6px 12px rgba(0, 0, 0, 0.4)',
