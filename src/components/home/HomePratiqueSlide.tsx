@@ -122,16 +122,6 @@ export function HomePratiqueSlide() {
                 {/* Dark gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
 
-                {/* Ghost icon */}
-                <Icon
-                  className="absolute -bottom-2 -right-2 w-[60px] h-[60px] pointer-events-none rotate-[-12deg] blur-[0.3px]"
-                  strokeWidth={1.2}
-                  style={{
-                    animation: `ghostGlow 6s ease-in-out infinite ${index * 0.9}s`,
-                    opacity: 0.25,
-                    color: 'rgba(255,255,255,0.3)',
-                  }}
-                />
 
                 {/* Shine effect */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-xl">
