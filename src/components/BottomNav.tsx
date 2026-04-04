@@ -69,8 +69,9 @@ export const BottomNav = () => {
           </button>
 
           {/* Notícias */}
-          <button
-            onClick={() => requireAuth(() => startTransition(() => navigate('/noticias-juridicas')))}
+            <button
+              onPointerDown={() => requireAuth(() => startTransition(() => navigate('/noticias-juridicas')))}
+              onTouchStart={() => prefetchOnTouch('/noticias-juridicas')}
             className={cn(
               "flex flex-col items-center justify-center gap-1 py-2 rounded-xl transition-all nav-item-tap",
               location.pathname === '/noticias-juridicas'
