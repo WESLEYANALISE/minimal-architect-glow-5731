@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Monitor, Film, ArrowRight, Sparkles } from "lucide-react";
+import { Monitor, Bot, ArrowRight, Sparkles } from "lucide-react";
 
 interface DesktopEstudosComputadorProps {
   navigate: (path: string) => void;
@@ -40,9 +40,9 @@ export const DesktopEstudosComputador = memo(({ navigate }: DesktopEstudosComput
           </div>
         </button>
 
-        {/* Card 2: Estudo em Mídia */}
+        {/* Card 2: Assistente Jurídica */}
         <button
-          onClick={() => navigate("/estudos-midia")}
+          onClick={() => navigate("/chat-professora")}
           className="group relative rounded-xl overflow-hidden border border-white/[0.06] hover:border-rose-500/30 transition-all duration-500 text-left cursor-pointer"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-[hsl(350,50%,12%)] via-[hsl(345,45%,9%)] to-[hsl(340,40%,7%)]" />
@@ -51,21 +51,21 @@ export const DesktopEstudosComputador = memo(({ navigate }: DesktopEstudosComput
           <div className="relative p-3.5 flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <div className="p-2 rounded-lg bg-rose-500/15 border border-rose-500/20">
-                <Film className="w-5 h-5 text-rose-400" />
+                <Bot className="w-5 h-5 text-rose-400" />
               </div>
               <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/15 text-[9px] font-medium text-rose-400/80">
                 <Sparkles className="w-2.5 h-2.5" />
-                Multimídia
+                IA
               </span>
             </div>
 
             <div>
-              <h3 className="text-sm font-bold text-white/95">Estudo em Mídia</h3>
-              <p className="text-[11px] text-white/45 leading-snug">Vídeos, podcasts e audiências</p>
+              <h3 className="text-sm font-bold text-white/95">Evelyn</h3>
+              <p className="text-[11px] text-white/45 leading-snug">Assistente jurídica com IA</p>
             </div>
 
             <div className="flex items-center gap-1 text-rose-400/80 text-[11px] font-medium">
-              Acessar
+              Conversar
               <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" />
             </div>
           </div>
