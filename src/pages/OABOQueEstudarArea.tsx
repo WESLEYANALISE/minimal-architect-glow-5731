@@ -1,127 +1,67 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, CheckCircle2, Clock, ArrowLeft, ExternalLink } from "lucide-react";
+import { Loader2, CheckCircle2, Clock, ExternalLink, Crown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useState, useMemo } from "react";
+import { DotPattern } from "@/components/ui/dot-pattern";
 
-// Função para normalizar texto (remover acentos e lowercase)
+const GOLD = "hsl(40, 80%, 55%)";
+
 const normalizeText = (text: string | null | undefined): string => {
   if (!text) return "";
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
+  return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 };
 
-interface Materia {
-  id: number;
-  area: string;
-  materia: string;
-}
-
-interface Resumo {
-  id: number;
-  area: string;
-  tema: string;
-  subtema: string | null;
-}
+interface Materia { id: number; area: string; materia: string; }
+interface Resumo { id: number; area: string; tema: string; subtema: string | null; }
 
 const OABOQueEstudarArea = () => {
   const navigate = useNavigate();
   const { area } = useParams<{ area: string }>();
   const [searchTerm, setSearchTerm] = useState("");
-
   const areaDecoded = decodeURIComponent(area || "");
 
-  // Buscar matérias da área (são os valores da coluna correspondente)
   const { data: dadosTabela, isLoading: loadingMaterias } = useQuery({
     queryKey: ["plano-estudos-materias", areaDecoded],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("PLANO DE ESTUDOS- MATERIAS")
-        .select("*");
-
-      if (error) {
-        console.error("Erro ao buscar matérias:", error);
-        throw error;
-      }
-
-      console.log("Dados da tabela:", data);
-      console.log("Área selecionada:", areaDecoded);
-
-      // Extrair matérias da coluna correspondente à área
+      const { data, error } = await (supabase as any).from("PLANO DE ESTUDOS- MATERIAS").select("*");
+      if (error) throw error;
       const materiasDaArea: Materia[] = [];
-      
       data?.forEach((row: any, index: number) => {
-        // Verificar se a coluna existe e tem valor
         if (row[areaDecoded] && row[areaDecoded].toString().trim() !== "") {
-          materiasDaArea.push({
-            id: index + 1,
-            area: areaDecoded,
-            materia: row[areaDecoded].toString().trim(),
-          });
+          materiasDaArea.push({ id: index + 1, area: areaDecoded, materia: row[areaDecoded].toString().trim() });
         }
       });
-
-      console.log("Matérias extraídas:", materiasDaArea);
       return materiasDaArea;
     },
   });
 
-  // Buscar todos os resumos para fazer matching
   const { data: resumos, isLoading: loadingResumos } = useQuery({
     queryKey: ["resumos-all"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("RESUMO")
-        .select("id, area, tema, subtema");
-
+      const { data, error } = await supabase.from("RESUMO").select("id, area, tema, subtema");
       if (error) throw error;
       return data as Resumo[];
     },
   });
 
-  // Fazer matching de matérias com resumos
   const materiasComResumos = useMemo(() => {
     if (!dadosTabela || !resumos) return [];
-
-    return dadosTabela.map((materia) => {
+    return dadosTabela.map(materia => {
       const materiaNormalizada = normalizeText(materia.materia);
-
-      // Buscar match no tema primeiro
-      let resumoMatch = resumos.find((resumo) => {
-        const temaNormalizado = normalizeText(resumo.tema);
-        return temaNormalizado && temaNormalizado === materiaNormalizada;
-      });
-
-      // Se não achou no tema, buscar no subtema
-      if (!resumoMatch) {
-        resumoMatch = resumos.find((resumo) => {
-          const subtemaNormalizado = normalizeText(resumo.subtema);
-          return subtemaNormalizado && subtemaNormalizado === materiaNormalizada;
-        });
-      }
-
-      return {
-        ...materia,
-        temResumo: !!resumoMatch,
-        resumo: resumoMatch || null,
-      };
+      let resumoMatch = resumos.find(r => normalizeText(r.tema) === materiaNormalizada);
+      if (!resumoMatch) resumoMatch = resumos.find(r => normalizeText(r.subtema) === materiaNormalizada);
+      return { ...materia, temResumo: !!resumoMatch, resumo: resumoMatch || null };
     });
   }, [dadosTabela, resumos]);
 
-  // Filtrar matérias
   const materiasFiltradas = useMemo(() => {
     if (!searchTerm) return materiasComResumos;
-    const searchLower = searchTerm.toLowerCase();
-    return materiasComResumos.filter((materia) =>
-      materia.materia.toLowerCase().includes(searchLower)
-    );
+    return materiasComResumos.filter(m => m.materia.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [materiasComResumos, searchTerm]);
 
   const isLoading = loadingMaterias || loadingResumos;
@@ -129,99 +69,84 @@ const OABOQueEstudarArea = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: GOLD }} />
       </div>
     );
   }
 
   const totalMaterias = materiasComResumos.length;
-  const materiasComConteudo = materiasComResumos.filter((m) => m.temResumo).length;
+  const materiasComConteudo = materiasComResumos.filter(m => m.temResumo).length;
 
   return (
-    <div className="min-h-screen pb-20">
-      {/* Header Melhorado */}
-      <div className="sticky top-0 z-10 bg-gradient-to-br from-[hsl(0,75%,55%)] to-[hsl(350,70%,45%)] shadow-lg">
+    <div className="min-h-screen relative overflow-hidden pb-20" style={{ background: 'linear-gradient(to bottom, hsl(345, 65%, 28%), hsl(350, 40%, 12%))' }}>
+      <DotPattern className="opacity-[0.15]" />
+
+      {/* Header */}
+      <div className="sticky top-0 z-10 shadow-lg relative" style={{ background: 'linear-gradient(135deg, hsl(345, 65%, 30%), hsl(350, 40%, 18%))' }}>
         <div className="relative px-4 py-6">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate(-1)}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div className="text-center text-white">
-            <h1 className="text-2xl md:text-3xl font-bold mb-1">{areaDecoded}</h1>
-            <div className="flex items-center justify-center gap-4 text-sm text-white/90">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Crown className="w-5 h-5" style={{ color: GOLD }} />
+              <h1 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: "'Playfair Display', serif", color: 'hsl(40, 60%, 85%)' }}>
+                {areaDecoded}
+              </h1>
+            </div>
+            <div className="flex items-center justify-center gap-4 text-sm" style={{ color: 'hsl(40, 30%, 70%)' }}>
               <span>{totalMaterias} {totalMaterias === 1 ? "matéria" : "matérias"}</span>
               <span>•</span>
-              <span className="font-semibold">{materiasComConteudo} com conteúdo</span>
+              <span className="font-semibold" style={{ color: GOLD }}>{materiasComConteudo} com conteúdo</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="px-3 py-6 max-w-4xl mx-auto">
-        {/* Barra de Pesquisa */}
-        <Card className="mb-6">
+      <div className="relative z-10 px-3 py-6 max-w-4xl mx-auto">
+        <Card className="mb-6 backdrop-blur-sm" style={{ background: 'hsla(345, 30%, 18%, 0.7)', borderColor: 'hsla(40, 60%, 50%, 0.15)' }}>
           <CardContent className="p-4">
             <Input
               placeholder="Buscar matéria..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="text-base"
+              style={{ background: 'hsla(345, 20%, 15%, 0.5)', borderColor: 'hsla(40, 60%, 50%, 0.2)', color: 'hsl(40, 60%, 90%)' }}
             />
           </CardContent>
         </Card>
 
-        {/* Lista de Matérias - Layout Uniforme */}
         <div className="grid grid-cols-1 gap-3">
-          {materiasFiltradas.map((materia) => (
-            <Card key={materia.id} className="overflow-hidden hover:shadow-md transition-shadow">
+          {materiasFiltradas.map(materia => (
+            <Card key={materia.id} className="overflow-hidden hover:shadow-md transition-shadow backdrop-blur-sm" style={{ background: 'hsla(345, 30%, 18%, 0.7)', borderColor: 'hsla(40, 60%, 50%, 0.12)' }}>
               <CardContent className="p-5">
                 <div className="flex items-start gap-3">
-                  {/* Conteúdo Principal */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-base mb-2 line-clamp-2">
+                    <h3 className="font-semibold text-base mb-2 line-clamp-2" style={{ color: 'hsl(40, 60%, 90%)' }}>
                       {materia.materia}
                     </h3>
-                    
-                    {/* Badge de Status */}
                     <div className="mb-2">
                       {materia.temResumo ? (
-                        <Badge className="bg-green-500/10 text-green-700 hover:bg-green-500/20 border-green-500/20">
+                        <Badge style={{ background: 'hsla(140, 60%, 40%, 0.15)', color: 'hsl(140, 60%, 60%)', borderColor: 'hsla(140, 60%, 40%, 0.2)' }}>
                           <CheckCircle2 className="w-3 h-3 mr-1" />
                           Conteúdo disponível
                         </Badge>
                       ) : (
-                        <Badge variant="secondary" className="border">
+                        <Badge style={{ background: 'hsla(40, 40%, 50%, 0.1)', color: 'hsl(40, 20%, 55%)', borderColor: 'hsla(40, 40%, 50%, 0.2)' }}>
                           <Clock className="w-3 h-3 mr-1" />
                           Em breve
                         </Badge>
                       )}
                     </div>
-
-                    {/* Informação de localização */}
                     {materia.temResumo && materia.resumo && (
-                      <p className="text-xs text-muted-foreground line-clamp-1">
+                      <p className="text-xs line-clamp-1" style={{ color: 'hsl(40, 20%, 50%)' }}>
                         {materia.resumo.area} → {materia.resumo.tema}
                       </p>
                     )}
                   </div>
-
-                  {/* Botão de Ação */}
                   <div className="flex-shrink-0">
                     {materia.temResumo && materia.resumo && (
                       <Button
                         size="sm"
-                        onClick={() =>
-                          navigate(
-                            `/resumos-juridicos/prontos/${encodeURIComponent(
-                              materia.resumo!.area
-                            )}/${encodeURIComponent(materia.resumo!.tema)}`
-                          )
-                        }
-                        className="whitespace-nowrap"
+                        onClick={() => navigate(`/resumos-juridicos/prontos/${encodeURIComponent(materia.resumo!.area)}/${encodeURIComponent(materia.resumo!.tema)}`)}
+                        style={{ background: GOLD, color: 'hsl(350, 40%, 12%)' }}
                       >
                         <ExternalLink className="w-4 h-4 mr-1" />
                         Ver conteúdo
@@ -236,9 +161,7 @@ const OABOQueEstudarArea = () => {
 
         {materiasFiltradas.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">
-              Nenhuma matéria encontrada para "{searchTerm}"
-            </p>
+            <p style={{ color: 'hsl(40, 20%, 55%)' }}>Nenhuma matéria encontrada para "{searchTerm}"</p>
           </div>
         )}
       </div>
