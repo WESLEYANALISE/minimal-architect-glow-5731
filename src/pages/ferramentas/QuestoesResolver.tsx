@@ -103,7 +103,7 @@ const QuestoesResolver = ({
   const autoplayAudio = inlineAutoplayAudio ?? (autoplayParam !== null ? autoplayParam === "true" : true);
   const isModoTodas = modo === "todas";
   const [isGenerating, setIsGenerating] = useState(false);
-  const countdownDone = true; // Skip countdown — start instantly
+  const [countdownDone, setCountdownDone] = useState(false);
   const [questoes, setQuestoes] = useState<Questao[]>([]);
   const [geracaoStatus, setGeracaoStatus] = useState<GeracaoStatus | null>(null);
   const [progressMessage, setProgressMessage] = useState("");
