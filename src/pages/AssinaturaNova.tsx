@@ -38,7 +38,7 @@ const BENEFITS = [
   { Icon: Sparkles, title: 'IA Evelyn', value: '24h' },
   { Icon: Map, title: 'Mapas mentais', value: '+500' },
   { Icon: Video, title: 'Videoaulas', value: '+80' },
-  { Icon: Gavel, title: 'Audiências', value: '' },
+  { Icon: Monitor, title: 'Acesso Desktop', value: '' },
   { Icon: ScrollText, title: 'Legislação', value: '' },
   { Icon: MessageCircle, title: 'Assistente', value: '' },
   { Icon: CheckCircle, title: 'Simulados', value: '' },
