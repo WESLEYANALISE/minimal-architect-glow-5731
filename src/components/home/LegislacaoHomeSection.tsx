@@ -3,6 +3,7 @@ import { useSubscription } from "@/contexts/SubscriptionContext";
 import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
 import { UniversalImage } from "@/components/ui/universal-image";
 import { useTransitionNavigate } from "@/hooks/useTransitionNavigate";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, Scale, Landmark, BookOpen, Bell, Loader2, Settings, Shield, Newspaper, Users } from "lucide-react";
