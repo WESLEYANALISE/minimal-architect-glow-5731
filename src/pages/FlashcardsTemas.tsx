@@ -5,13 +5,21 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import FlashcardsEstudar from "@/pages/FlashcardsEstudar";
 import { useFlashcardsAutoGeneration } from "@/hooks/useFlashcardsAutoGeneration";
-import { getAreaGradient, getAreaHex } from "@/lib/flashcardsAreaColors";
-// Vertical list replaces serpentine trail
-import bgAreasOab from "@/assets/bg-areas-oab.webp";
-import { InstantBackground } from "@/components/ui/instant-background";
+import { DotPattern } from "@/components/ui/dot-pattern";
 import { useIndexedDBCache } from "@/hooks/useIndexedDBCache";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
+
+// ── Realeza palette ──
+const R = {
+  bg: "hsl(0, 0%, 7%)",
+  gold: "hsl(40, 80%, 55%)",
+  goldMuted: "hsl(40, 70%, 60%)",
+  border: "hsla(40, 60%, 50%, 0.12)",
+  iconBg: "hsla(40, 60%, 50%, 0.12)",
+  iconBorder: "hsla(40, 60%, 50%, 0.15)",
+  headerGradient: "linear-gradient(135deg, hsl(0, 0%, 11%), hsl(0, 0%, 8%))",
+};
 
 // Favoritos helpers (localStorage)
 const getFavoritosKey = (area: string) => `flashcards-favoritos-${area}`;
@@ -40,7 +48,7 @@ const normalizar = (str: string) =>
 const ListSkeleton = () => (
   <div className="px-4 py-3 space-y-2 max-w-lg mx-auto animate-fade-in">
     {Array.from({ length: 8 }).map((_, i) => (
-      <div key={i} className="h-[68px] rounded-xl bg-white/5 animate-pulse" />
+      <div key={i} className="h-[68px] rounded-xl animate-pulse" style={{ background: "hsla(0, 0%, 100%, 0.04)" }} />
     ))}
   </div>
 );
@@ -57,8 +65,6 @@ const FlashcardsTemas = () => {
   const [estudarTema, setEstudarTema] = useState<string | null>(null);
   const cacheHashRef = useRef('');
 
-  const hex = getAreaHex(area);
-  const gradient = getAreaGradient(area);
   const { isPremium } = useSubscription();
 
   // Cache IndexedDB
@@ -104,7 +110,6 @@ const FlashcardsTemas = () => {
         };
       });
 
-      // Salvar no cache apenas se dados mudaram
       const newHash = hashTemas(result);
       if (newHash !== cacheHashRef.current) {
         cacheHashRef.current = newHash;
@@ -120,20 +125,17 @@ const FlashcardsTemas = () => {
     refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: () => {
-      // Só poll se geração está ativa, intervalo maior para evitar loops
       if (!isGenerating) return false;
       return 15000;
     }
   });
 
-  // Atualizar hash quando cache carrega
   useEffect(() => {
     if (cachedData && cachedData.length > 0 && !cacheHashRef.current) {
       cacheHashRef.current = hashTemas(cachedData);
     }
   }, [cachedData]);
 
-  // isLoading só é true se não tem cache E query está carregando
   const isLoading = isQueryLoading && !temas && (!cachedData || cachedData.length === 0);
 
   const queryClient = useQueryClient();
@@ -190,30 +192,24 @@ const FlashcardsTemas = () => {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      <InstantBackground
-        src={bgAreasOab}
-        alt="Áreas"
-        blurCategory="oab"
-        gradientClassName="bg-gradient-to-b from-black/70 via-black/80 to-[#0d0d14]"
-      />
-
-      {/* Header with area gradient */}
-      <div className={`bg-gradient-to-br ${gradient} relative overflow-hidden z-10`}>
-        <div className="absolute -right-6 -bottom-6 opacity-10">
-          <Brain className="w-32 h-32 text-white" />
+    <div className="min-h-screen relative" style={{ background: R.bg }}>
+      {/* Realeza Header */}
+      <div className="relative overflow-hidden z-10" style={{ background: R.headerGradient, borderBottom: `1px solid ${R.border}` }}>
+        <DotPattern className="opacity-[0.04]" />
+        <div className="absolute -right-6 -bottom-6 opacity-[0.05]">
+          <Brain className="w-32 h-32" style={{ color: R.gold }} />
         </div>
         <div className="relative z-10 pt-6 pb-5 px-4">
           <div className="max-w-lg mx-auto">
             <div className="flex items-center gap-4 animate-fade-in">
-              <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center shadow-lg backdrop-blur-sm">
-                <Brain className="w-7 h-7 text-white" />
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg backdrop-blur-sm" style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}>
+                <Brain className="w-7 h-7" style={{ color: R.gold }} />
               </div>
               <div className="flex-1">
                 <h1 className="text-xl font-bold text-white line-clamp-1" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>
                   {area}
                 </h1>
-                <p className="text-sm text-white/70 mt-0.5">
+                <p className="text-sm mt-0.5" style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>
                   Escolha um tema para estudar
                 </p>
               </div>
@@ -232,24 +228,24 @@ const FlashcardsTemas = () => {
             {isGenerating && (
               <div className="px-4 py-2 animate-slide-down">
                 <div className="max-w-lg mx-auto">
-                  <div className="flex items-center gap-3 rounded-xl px-4 py-3 border"
-                    style={{ backgroundColor: `${hex}15`, borderColor: `${hex}30` }}
+                  <div className="flex items-center gap-3 rounded-xl px-4 py-3"
+                    style={{ backgroundColor: "hsla(40, 60%, 50%, 0.08)", border: `1px solid hsla(40, 60%, 50%, 0.2)` }}
                   >
                     <div className="relative">
-                      <Zap className="w-5 h-5" style={{ color: hex }} />
+                      <Zap className="w-5 h-5" style={{ color: R.gold }} />
                       <div className="absolute inset-0 animate-ping">
-                        <Zap className="w-5 h-5 opacity-50" style={{ color: hex }} />
+                        <Zap className="w-5 h-5 opacity-50" style={{ color: R.gold }} />
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium" style={{ color: hex }}>
+                      <p className="text-sm font-medium" style={{ color: R.gold }}>
                         Gerando flashcards automaticamente...
                       </p>
-                      <p className="text-xs truncate" style={{ color: `${hex}99` }}>
+                      <p className="text-xs truncate" style={{ color: R.goldMuted }}>
                         {currentTema ? `Tema: ${currentTema}` : 'Iniciando...'} • {geradosCount} gerados
                       </p>
                     </div>
-                    <Loader2 className="w-4 h-4 animate-spin shrink-0" style={{ color: hex }} />
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0" style={{ color: R.gold }} />
                   </div>
                 </div>
               </div>
@@ -257,72 +253,59 @@ const FlashcardsTemas = () => {
 
             {/* Info Stats */}
             <div className="px-4 py-3">
-              <div className="flex items-center justify-center gap-6 text-sm text-white/80">
+              <div className="flex items-center justify-center gap-6 text-sm" style={{ color: "hsla(40, 60%, 70%, 0.7)" }}>
                 <div className="flex items-center gap-2">
-                  <BookOpen className="w-4 h-4" style={{ color: hex }} />
+                  <BookOpen className="w-4 h-4" style={{ color: R.gold }} />
                   <span>{totalTemas} temas</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4" style={{ color: hex }} />
+                  <FileText className="w-4 h-4" style={{ color: R.gold }} />
                   <span>{(totalFlashcards ?? 0).toLocaleString('pt-BR')} flashcards</span>
                 </div>
               </div>
             </div>
 
-            {/* Tab switcher: Ordem / Favoritos / Pesquisar */}
+            {/* Tab switcher — golden active */}
             <div className="px-4 pb-2">
-              <div className="max-w-lg mx-auto flex rounded-xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm">
-                <button
-                  onClick={() => setActiveTab("ordem")}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-medium transition-all ${
-                    activeTab === "ordem"
-                      ? "text-white shadow-md"
-                      : "text-white/50 hover:text-white/70"
-                  }`}
-                  style={activeTab === "ordem" ? { backgroundColor: `${hex}40` } : {}}
-                >
-                  <ListOrdered className="w-4 h-4" />
-                  Ordem
-                </button>
-                <button
-                  onClick={() => setActiveTab("favoritos")}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-medium transition-all ${
-                    activeTab === "favoritos"
-                      ? "text-white shadow-md"
-                      : "text-white/50 hover:text-white/70"
-                  }`}
-                  style={activeTab === "favoritos" ? { backgroundColor: `${hex}40` } : {}}
-                >
-                  <Heart className="w-4 h-4" />
-                  Favoritos {favoritos.length > 0 && `(${favoritos.length})`}
-                </button>
-                <button
-                  onClick={() => setActiveTab("pesquisar")}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-medium transition-all ${
-                    activeTab === "pesquisar"
-                      ? "text-white shadow-md"
-                      : "text-white/50 hover:text-white/70"
-                  }`}
-                  style={activeTab === "pesquisar" ? { backgroundColor: `${hex}40` } : {}}
-                >
-                  <Search className="w-4 h-4" />
-                  Pesquisar
-                </button>
+              <div className="max-w-lg mx-auto flex rounded-xl overflow-hidden backdrop-blur-sm" style={{ background: "hsla(0, 0%, 100%, 0.04)", border: `1px solid ${R.border}` }}>
+                {([
+                  { key: "ordem" as const, icon: ListOrdered, label: "Ordem" },
+                  { key: "favoritos" as const, icon: Heart, label: `Favoritos${favoritos.length > 0 ? ` (${favoritos.length})` : ''}` },
+                  { key: "pesquisar" as const, icon: Search, label: "Pesquisar" },
+                ]).map(tab => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-medium transition-all"
+                    style={{
+                      background: activeTab === tab.key ? "hsla(40, 60%, 50%, 0.15)" : "transparent",
+                      color: activeTab === tab.key ? R.gold : "hsla(0, 0%, 100%, 0.4)",
+                    }}
+                  >
+                    <tab.icon className="w-4 h-4" />
+                    {tab.label}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Search input (only when pesquisar tab active) */}
+            {/* Search input */}
             {activeTab === "pesquisar" && (
               <div className="px-4 pb-3 animate-fade-in">
                 <div className="max-w-lg mx-auto">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "hsla(40, 60%, 50%, 0.4)" }} />
                     <input
                       type="text"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       placeholder="Buscar tema..."
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/10 border border-white/15 text-white text-sm placeholder:text-white/40 focus:outline-none focus:border-white/30 backdrop-blur-sm"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-white text-sm focus:outline-none backdrop-blur-sm"
+                      style={{
+                        background: "hsla(0, 0%, 100%, 0.06)",
+                        border: `1px solid ${R.border}`,
+                        color: "white",
+                      }}
                       autoFocus
                     />
                   </div>
@@ -346,17 +329,27 @@ const FlashcardsTemas = () => {
                         style={{
                           animationDelay: `${idx * 30}ms`,
                           animationFillMode: 'backwards',
-                          background: isLocked ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.06)',
-                          border: `1px solid ${isLocked ? 'rgba(255,255,255,0.06)' : `${hex}25`}`,
+                          background: isLocked ? 'hsla(0, 0%, 100%, 0.02)' : 'hsla(0, 0%, 100%, 0.04)',
+                          border: `1px solid ${isLocked ? 'hsla(0, 0%, 100%, 0.05)' : R.border}`,
                         }}
                       >
-                        {/* Number badge */}
+                        {/* Shimmer on hover */}
+                        {!isLocked && (
+                          <div
+                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                            style={{
+                              background: "linear-gradient(105deg, transparent 40%, hsla(40, 80%, 70%, 0.04) 45%, hsla(40, 80%, 70%, 0.08) 50%, hsla(40, 80%, 70%, 0.04) 55%, transparent 60%)",
+                            }}
+                          />
+                        )}
+
+                        {/* Number badge — golden ring */}
                         <div
                           className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
                           style={{
-                            backgroundColor: isLocked ? 'rgba(255,255,255,0.06)' : `${hex}20`,
-                            color: isLocked ? 'rgba(255,255,255,0.3)' : hex,
-                            border: `1.5px solid ${isLocked ? 'rgba(255,255,255,0.08)' : `${hex}35`}`,
+                            backgroundColor: isLocked ? 'hsla(0, 0%, 100%, 0.04)' : 'hsla(40, 60%, 50%, 0.1)',
+                            color: isLocked ? 'hsla(0, 0%, 100%, 0.3)' : R.gold,
+                            border: `1.5px solid ${isLocked ? 'hsla(0, 0%, 100%, 0.06)' : 'hsla(40, 60%, 50%, 0.25)'}`,
                           }}
                         >
                           {idx + 1}
@@ -368,14 +361,14 @@ const FlashcardsTemas = () => {
                             {tema.tema}
                           </p>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <p className="text-[11px]" style={{ color: isLocked ? 'rgba(255,255,255,0.2)' : hex }}>
+                            <p className="text-[11px]" style={{ color: isLocked ? 'hsla(0, 0%, 100%, 0.2)' : R.goldMuted }}>
                               {(tema.totalFlashcards ?? 0).toLocaleString('pt-BR')} flashcards
                             </p>
                             {!tema.temFlashcards && tema.parcial && (
-                              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400">parcial</span>
+                              <span className="text-[9px] px-1.5 py-0.5 rounded-full" style={{ background: "hsla(40, 80%, 50%, 0.15)", color: R.gold }}>parcial</span>
                             )}
                             {!tema.temFlashcards && !tema.parcial && (
-                              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-white/10 text-white/30">pendente</span>
+                              <span className="text-[9px] px-1.5 py-0.5 rounded-full" style={{ background: "hsla(0, 0%, 100%, 0.06)", color: "hsla(0, 0%, 100%, 0.3)" }}>pendente</span>
                             )}
                           </div>
                         </div>
@@ -385,9 +378,9 @@ const FlashcardsTemas = () => {
                           <div
                             className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
                             style={{
-                              background: "linear-gradient(135deg, #f59e0b, #b45309)",
-                              border: "1.5px solid #fbbf24",
-                              boxShadow: "0 0 8px rgba(245,158,11,0.5)",
+                              background: `linear-gradient(135deg, ${R.gold}, hsl(35, 70%, 35%))`,
+                              border: `1.5px solid ${R.gold}`,
+                              boxShadow: `0 0 8px hsla(40, 80%, 55%, 0.5)`,
                             }}
                           >
                             <Crown className="w-3.5 h-3.5 text-white" />
@@ -401,19 +394,19 @@ const FlashcardsTemas = () => {
                               }}
                               className="w-7 h-7 rounded-full flex items-center justify-center transition-colors"
                               style={{
-                                backgroundColor: isFavorited ? '#dc2626' : 'rgba(255,255,255,0.08)',
-                                border: isFavorited ? '1.5px solid #fca5a5' : '1.5px solid rgba(255,255,255,0.15)',
+                                backgroundColor: isFavorited ? '#dc2626' : 'hsla(0, 0%, 100%, 0.06)',
+                                border: isFavorited ? '1.5px solid #fca5a5' : `1.5px solid ${R.border}`,
                               }}
                             >
                               <Heart
                                 className="w-3.5 h-3.5"
                                 style={{
-                                  color: isFavorited ? 'white' : 'rgba(255,255,255,0.5)',
+                                  color: isFavorited ? 'white' : 'hsla(0, 0%, 100%, 0.4)',
                                   fill: isFavorited ? 'white' : 'none',
                                 }}
                               />
                             </button>
-                            <ChevronRight className="w-4 h-4 text-white/30 group-hover:text-white/60 transition-colors" />
+                            <ChevronRight className="w-4 h-4 transition-colors group-hover:translate-x-0.5" style={{ color: "hsla(40, 70%, 60%, 0.4)" }} />
                           </div>
                         )}
                       </button>
@@ -422,7 +415,7 @@ const FlashcardsTemas = () => {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-16 text-gray-400">
+              <div className="text-center py-16" style={{ color: "hsla(40, 60%, 70%, 0.4)" }}>
                 {activeTab === "favoritos"
                   ? "Nenhum tema favoritado ainda. Toque no ♥ para favoritar."
                   : activeTab === "pesquisar" && searchTerm.trim()
@@ -438,8 +431,8 @@ const FlashcardsTemas = () => {
       {showBackToTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-24 left-4 z-50 w-11 h-11 rounded-full flex items-center justify-center shadow-lg border border-white/20 backdrop-blur-md transition-all hover:scale-110 active:scale-95 animate-fade-in"
-          style={{ backgroundColor: `${hex}cc` }}
+          className="fixed bottom-24 left-4 z-50 w-11 h-11 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md transition-all hover:scale-110 active:scale-95 animate-fade-in"
+          style={{ background: `${R.gold}cc`, border: `1px solid ${R.border}` }}
           aria-label="Voltar ao topo"
         >
           <ArrowUp className="w-5 h-5 text-white" />

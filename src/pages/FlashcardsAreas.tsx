@@ -25,6 +25,8 @@ import heroVideoaulas from "@/assets/hero-videoaulas.webp";
 import bgFlashcardsCategorias from "@/assets/bg-flashcards-categorias-mobile.webp";
 
 import { getAreaGradient, getAreaHex } from "@/lib/flashcardsAreaColors";
+import { DotPattern } from "@/components/ui/dot-pattern";
+import { NumberTicker } from "@/components/ui/number-ticker";
 
 const FREE_AREAS = ["Direito Constitucional", "Direito Administrativo"];
 
@@ -77,9 +79,6 @@ const isInList = (area: string, list: string[]) => {
   return list.some(o => o.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') === norm);
 };
 
-const ALTA_INCIDENCIA_GRADIENT = "from-indigo-500 to-indigo-700";
-const COMPLEMENTARES_GRADIENT = "from-slate-500 to-slate-700";
-
 interface FlashcardArea {
   area: string;
   totalFlashcards: number;
@@ -114,7 +113,6 @@ type TabId = typeof TABS[number]["id"];
 
 // Prefetch tema stats on hover/touch
 const prefetchTemaStats = (area: string) => {
-  // Only prefetch if not already in cache
   const cacheKey = `flashcards-temas-${area}`;
   const db = indexedDB.open('vade-mecum-db');
   db.onsuccess = () => {
@@ -125,9 +123,8 @@ const prefetchTemaStats = (area: string) => {
       const req = store.get(cacheKey);
       req.onsuccess = () => {
         if (req.result && (Date.now() - req.result.timestamp) < 1000 * 60 * 60 * 24 * 7) {
-          return; // Cache still valid
+          return;
         }
-        // Fetch and save to cache
         supabase.rpc('get_flashcard_temas_stats', { p_area: area }).then(({ data }) => {
           if (data) {
             try {
@@ -140,6 +137,19 @@ const prefetchTemaStats = (area: string) => {
       };
     } catch (e) { /* ignore */ }
   };
+};
+
+// ── Realeza palette constants ──
+const R = {
+  bg: "hsl(0, 0%, 7%)",
+  bgCard: "hsl(0, 0%, 10%)",
+  gold: "hsl(40, 80%, 55%)",
+  goldMuted: "hsl(40, 70%, 60%)",
+  border: "hsla(40, 60%, 50%, 0.12)",
+  borderHover: "hsla(40, 60%, 50%, 0.25)",
+  headerGradient: "linear-gradient(135deg, hsl(0, 0%, 11%), hsl(0, 0%, 8%))",
+  iconBg: "hsla(40, 60%, 50%, 0.12)",
+  iconBorder: "hsla(40, 60%, 50%, 0.15)",
 };
 
 const FlashcardsAreas = () => {
@@ -167,7 +177,7 @@ const FlashcardsAreas = () => {
     staleTime: 1000 * 60 * 60,
   });
 
-  // Fetch lacunas count from FLASHCARDS_LACUNAS (correct table)
+  // Fetch lacunas count
   const { data: lacunasCount = 0 } = useQuery({
     queryKey: ["flashcards-lacunas-total-count"],
     queryFn: async () => {
@@ -201,9 +211,7 @@ const FlashcardsAreas = () => {
 
   const sorted = areas ? sortAreas(areas).filter(a => !isAreaOculta(a.area)) : [];
 
-  const renderCard = (item: FlashcardArea, idx: number, gradientOverride?: string) => {
-    const gradient = gradientOverride || getAreaGradient(item.area);
-    // All areas are accessible — premium gate is at tema level (2 free per area)
+  const renderCard = (item: FlashcardArea, idx: number) => {
     const handleClick = () => {
       navigate(`/flashcards/temas?area=${encodeURIComponent(item.area)}`);
     };
@@ -213,65 +221,85 @@ const FlashcardsAreas = () => {
         onClick={handleClick}
         onMouseEnter={() => prefetchTemaStats(item.area)}
         onTouchStart={() => prefetchTemaStats(item.area)}
-        className={`group relative overflow-hidden rounded-2xl p-4 text-left transition-all duration-150 hover:scale-[1.02] bg-gradient-to-br ${gradient} shadow-lg h-[100px] animate-fade-in shine-effect`}
-        style={{ animationDelay: `${idx * 30}ms`, animationFillMode: 'backwards' }}
+        className="group relative overflow-hidden rounded-2xl p-4 text-left transition-all duration-150 hover:scale-[1.03] active:scale-[0.97] shadow-lg h-[100px] animate-fade-in"
+        style={{
+          animationDelay: `${idx * 30}ms`,
+          animationFillMode: 'backwards',
+          background: "hsla(0, 0%, 100%, 0.04)",
+          border: `1px solid ${R.border}`,
+          boxShadow: `0 4px 20px -4px rgba(0,0,0,0.4), inset 0 1px 0 hsla(40, 60%, 80%, 0.06)`,
+        }}
       >
-        <div className="absolute -right-3 -bottom-3 opacity-20">
-          <Brain className="w-20 h-20 text-white" />
+        {/* Shimmer */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          style={{
+            background: "linear-gradient(105deg, transparent 40%, hsla(40, 80%, 70%, 0.06) 45%, hsla(40, 80%, 70%, 0.12) 50%, hsla(40, 80%, 70%, 0.06) 55%, transparent 60%)",
+          }}
+        />
+        <div className="absolute -right-3 -bottom-3 opacity-[0.07]">
+          <Brain className="w-20 h-20" style={{ color: R.gold }} />
         </div>
 
-        <div className="relative z-10 bg-white/20 rounded-xl p-2 w-fit mb-2 group-hover:bg-white/30 transition-colors">
-          <Brain className="w-5 h-5 text-white" />
+        <div
+          className="relative z-10 rounded-xl p-2 w-fit mb-2 transition-colors"
+          style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}
+        >
+          <Brain className="w-5 h-5" style={{ color: R.gold }} />
         </div>
         <h3 className="relative z-10 font-semibold text-white text-sm leading-tight pr-6">
           {item.area.replace(/^Direito\s+(do\s+|da\s+|de\s+|dos\s+|das\s+)?/i, '').replace(/^Direitos\s+/i, '')}
         </h3>
-        <ChevronRight className="absolute bottom-3 right-3 w-4 h-4 text-white/70 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+        <ChevronRight className="absolute bottom-3 right-3 w-4 h-4 transition-all group-hover:translate-x-0.5" style={{ color: "hsla(40, 70%, 60%, 0.5)" }} />
       </button>
     );
   };
 
-  const renderCategoriaSection = (titulo: string, subtitulo: string, items: FlashcardArea[], gradientOverride?: string) => {
+  const renderCategoriaSection = (titulo: string, subtitulo: string, items: FlashcardArea[]) => {
     if (items.length === 0) return null;
     return (
       <div className="mb-5">
-        <h2 className="text-sm font-bold text-foreground">{titulo}</h2>
-        <p className="text-xs text-muted-foreground mb-3">{subtitulo}</p>
+        <h2 className="text-sm font-bold" style={{ color: R.goldMuted }}>{titulo}</h2>
+        <p className="text-xs text-white/40 mb-3">{subtitulo}</p>
         <div className="grid grid-cols-2 gap-3">
-          {items.map((item, idx) => renderCard(item, idx, gradientOverride))}
+          {items.map((item, idx) => renderCard(item, idx))}
         </div>
       </div>
     );
   };
 
-  // Admin hub sub-views
-  if (subView === "menu") {
-    return (
-      <div className="min-h-screen pb-20" style={{ background: "hsl(0 0% 12%)" }}>
-        <div className="relative overflow-hidden rounded-b-3xl mb-2" style={{ background: "linear-gradient(135deg, hsl(25 35% 22%), hsl(15 30% 16%))" }}>
-          <div className="absolute inset-0 opacity-10">
-            <Brain className="absolute -right-6 -bottom-6 w-32 h-32 text-white" />
+  // ── Realeza Header ──
+  const RealezaHeader = ({ onBack, backLabel = "Voltar" }: { onBack: () => void; backLabel?: string }) => (
+    <div className="relative overflow-hidden rounded-b-3xl mb-2" style={{ background: R.headerGradient, borderBottom: `1px solid ${R.border}` }}>
+      <DotPattern className="opacity-[0.04]" />
+      <div className="absolute -right-6 -bottom-6 opacity-[0.05]">
+        <Brain className="w-32 h-32" style={{ color: R.gold }} />
+      </div>
+      <div className="relative z-10 px-4 pt-4 pb-5">
+        <button onClick={onBack} className="flex items-center gap-1 text-xs mb-3 hover:opacity-80 transition-opacity" style={{ color: R.goldMuted }}>
+          <ArrowLeft className="w-4 h-4" />
+          <span>{backLabel}</span>
+        </button>
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}>
+            <Brain className="w-5 h-5" style={{ color: R.gold }} />
           </div>
-          <div className="relative z-10 px-4 pt-4 pb-5">
-           <div className="flex items-center gap-3">
-              <button 
-                onClick={() => navigate("/")} 
-                className="w-8 h-8 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4 text-white" />
-              </button>
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: "hsla(25, 50%, 35%, 0.5)", border: "1px solid hsla(25, 50%, 45%, 0.3)" }}>
-                <Brain className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-white">Flashcards</h1>
-                <p className="text-xs text-white/60">
-                  {totalFlashcards.toLocaleString('pt-BR')} disponíveis
-                </p>
-              </div>
-            </div>
+          <div>
+            <h1 className="text-lg font-bold text-white" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>Flashcards</h1>
+            <p className="text-xs" style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>
+              <NumberTicker value={totalFlashcards} className="font-semibold" style={{ color: R.goldMuted }} /> disponíveis
+            </p>
           </div>
         </div>
+      </div>
+    </div>
+  );
+
+  // ── Sub-views ──
+  if (subView === "menu") {
+    return (
+      <div className="min-h-screen pb-20" style={{ background: R.bg }}>
+        <RealezaHeader onBack={() => navigate("/")} />
         <FlashcardsMenuPrincipal
           totalFlashcards={totalFlashcards}
           onPraticar={() => setSubView("categories")}
@@ -286,9 +314,9 @@ const FlashcardsAreas = () => {
 
   if (subView === "progresso") {
     return (
-      <div className="min-h-screen pb-20" style={{ background: "hsl(0 0% 12%)" }}>
+      <div className="min-h-screen pb-20" style={{ background: R.bg }}>
         <div className="px-4 pt-4 pb-2">
-          <button onClick={() => setSubView("menu")} className="flex items-center gap-1 text-muted-foreground text-xs hover:text-foreground transition-colors mb-2">
+          <button onClick={() => setSubView("menu")} className="flex items-center gap-1 text-xs hover:opacity-80 transition-opacity mb-2" style={{ color: R.goldMuted }}>
             <ArrowLeft className="w-4 h-4" /><span>Menu</span>
           </button>
         </div>
@@ -299,9 +327,9 @@ const FlashcardsAreas = () => {
 
   if (subView === "reforco") {
     return (
-      <div className="min-h-screen pb-20" style={{ background: "hsl(0 0% 12%)" }}>
+      <div className="min-h-screen pb-20" style={{ background: R.bg }}>
         <div className="px-4 pt-4 pb-2">
-          <button onClick={() => setSubView("menu")} className="flex items-center gap-1 text-muted-foreground text-xs hover:text-foreground transition-colors mb-2">
+          <button onClick={() => setSubView("menu")} className="flex items-center gap-1 text-xs hover:opacity-80 transition-opacity mb-2" style={{ color: R.goldMuted }}>
             <ArrowLeft className="w-4 h-4" /><span>Menu</span>
           </button>
         </div>
@@ -312,9 +340,9 @@ const FlashcardsAreas = () => {
 
   if (subView === "cadernos") {
     return (
-      <div className="min-h-screen pb-20" style={{ background: "hsl(0 0% 12%)" }}>
+      <div className="min-h-screen pb-20" style={{ background: R.bg }}>
         <div className="px-4 pt-4 pb-2">
-          <button onClick={() => setSubView("menu")} className="flex items-center gap-1 text-muted-foreground text-xs hover:text-foreground transition-colors mb-2">
+          <button onClick={() => setSubView("menu")} className="flex items-center gap-1 text-xs hover:opacity-80 transition-opacity mb-2" style={{ color: R.goldMuted }}>
             <ArrowLeft className="w-4 h-4" /><span>Menu</span>
           </button>
         </div>
@@ -325,9 +353,9 @@ const FlashcardsAreas = () => {
 
   if (subView === "diagnostico") {
     return (
-      <div className="min-h-screen pb-20" style={{ background: "hsl(0 0% 12%)" }}>
+      <div className="min-h-screen pb-20" style={{ background: R.bg }}>
         <div className="px-4 pt-4 pb-2">
-          <button onClick={() => setSubView("menu")} className="flex items-center gap-1 text-muted-foreground text-xs hover:text-foreground transition-colors mb-2">
+          <button onClick={() => setSubView("menu")} className="flex items-center gap-1 text-xs hover:opacity-80 transition-opacity mb-2" style={{ color: R.goldMuted }}>
             <ArrowLeft className="w-4 h-4" /><span>Menu</span>
           </button>
         </div>
@@ -338,44 +366,23 @@ const FlashcardsAreas = () => {
 
   if (subView === "categories") {
     return (
-      <div className="min-h-screen pb-20" style={{ background: "hsl(0 0% 12%)" }}>
-        {/* Header banner — matching QuestoesHub categorias style */}
-        <div className="relative overflow-hidden rounded-b-3xl mb-2" style={{ background: "linear-gradient(135deg, hsl(15 40% 28%), hsl(10 35% 20%))" }}>
-          <div className="absolute inset-0 opacity-10">
-            <Brain className="absolute -right-6 -bottom-6 w-32 h-32 text-white" />
-          </div>
-          <div className="relative z-10 px-4 pt-4 pb-5">
-            <button onClick={() => setSubView("menu")} className="flex items-center gap-1 text-white/70 text-xs mb-3 hover:text-white transition-colors">
-              <ArrowLeft className="w-4 h-4" />
-              <span>Menu</span>
-            </button>
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: "hsla(15, 40%, 40%, 0.5)", border: "1px solid hsla(15, 40%, 50%, 0.3)" }}>
-                <Brain className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-white">Flashcards</h1>
-                <p className="text-xs text-white/60">
-                  {totalFlashcards.toLocaleString('pt-BR')} disponíveis
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="min-h-screen pb-20" style={{ background: R.bg }}>
+        <RealezaHeader onBack={() => setSubView("menu")} backLabel="Menu" />
 
-        {/* Fullscreen background + serpentine timeline */}
+        {/* Serpentine timeline with golden accents */}
         <div className="relative px-4 pb-4">
-          <div className="absolute inset-0 -top-16 -bottom-4 -left-0 -right-0 overflow-hidden pointer-events-none">
-            <img src={bgFlashcardsCategorias} alt="" className="w-full h-full object-cover opacity-15" />
-            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[hsl(0_0%_12%)] via-[hsl(0_0%_12%)]/80 to-transparent" />
+          <div className="absolute inset-0 -top-16 -bottom-4 overflow-hidden pointer-events-none">
+            <img src={bgFlashcardsCategorias} alt="" className="w-full h-full object-cover opacity-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[hsl(0,0%,7%)] via-[hsl(0,0%,7%)]/80 to-transparent" />
           </div>
 
           <div className="relative py-6 px-2">
-            {/* Central line */}
+            {/* Central golden line */}
             <div className="absolute left-1/2 top-4 bottom-4 w-0.5 -translate-x-1/2">
-              <div className="w-full h-full bg-gradient-to-b from-purple-500/30 via-blue-500/20 to-amber-500/30" />
+              <div className="w-full h-full" style={{ background: "linear-gradient(to bottom, hsla(40, 60%, 50%, 0.3), hsla(40, 60%, 50%, 0.15), hsla(40, 60%, 50%, 0.3))" }} />
               <motion.div
-                className="absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-transparent via-white/60 to-transparent rounded-full"
+                className="absolute top-0 left-0 w-full h-12 rounded-full"
+                style={{ background: "linear-gradient(to bottom, transparent, hsla(40, 80%, 55%, 0.6), transparent)" }}
                 animate={{ top: ["0%", "100%"] }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
               />
@@ -388,22 +395,22 @@ const FlashcardsAreas = () => {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.5, ease: "easeOut" }}
-                className="w-[calc(50%-24px)] h-[130px] p-4 rounded-2xl text-left transition-all hover:scale-[1.03] active:scale-95 relative overflow-hidden shine-effect"
+                className="w-[calc(50%-24px)] h-[130px] p-4 rounded-2xl text-left transition-all hover:scale-[1.03] active:scale-95 relative overflow-hidden"
                 style={{
-                  background: "linear-gradient(135deg, hsl(265 60% 50%), hsl(280 55% 40%))",
-                  border: "1px solid hsla(265, 50%, 60%, 0.4)",
-                  boxShadow: "0 8px 24px rgba(147, 51, 234, 0.35)",
+                  background: "hsla(0, 0%, 100%, 0.04)",
+                  border: `1px solid ${R.border}`,
+                  boxShadow: `0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 hsla(40, 60%, 80%, 0.06)`,
                 }}
               >
-                <div className="absolute -right-3 -bottom-3 opacity-15">
-                  <Brain className="w-[88px] h-[88px] text-white" />
+                <div className="absolute -right-3 -bottom-3 opacity-[0.07]">
+                  <Brain className="w-[88px] h-[88px]" style={{ color: R.gold }} />
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mb-2">
-                  <Brain className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2" style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}>
+                  <Brain className="w-5 h-5" style={{ color: R.gold }} />
                 </div>
                 <p className="text-sm font-bold text-white">Conceitos</p>
-                <p className="text-[10px] text-white/60 mt-0.5">{totalAreas} áreas</p>
-                <p className="text-[10px] text-purple-200 font-semibold mt-1">{totalFlashcards.toLocaleString('pt-BR')} cards</p>
+                <p className="text-[10px] mt-0.5" style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>{totalAreas} áreas</p>
+                <p className="text-[10px] font-semibold mt-1" style={{ color: R.goldMuted }}>{totalFlashcards.toLocaleString('pt-BR')} cards</p>
               </motion.button>
               
               <div className="absolute left-1/2 -translate-x-1/2 z-10">
@@ -411,8 +418,8 @@ const FlashcardsAreas = () => {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2, type: "spring" }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg bg-gradient-to-br from-purple-400 to-purple-600"
-                  style={{ boxShadow: "0 0 16px rgba(147, 51, 234, 0.5)" }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg"
+                  style={{ background: `linear-gradient(135deg, ${R.gold}, hsl(35, 70%, 40%))`, boxShadow: `0 0 16px hsla(40, 80%, 55%, 0.5)` }}
                 >
                   <Footprints className="w-5 h-5 text-white" />
                 </motion.div>
@@ -426,8 +433,8 @@ const FlashcardsAreas = () => {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.4, type: "spring" }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg bg-gradient-to-br from-emerald-400 to-green-600"
-                  style={{ boxShadow: "0 0 16px rgba(52, 211, 153, 0.5)" }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg"
+                  style={{ background: `linear-gradient(135deg, ${R.gold}, hsl(35, 70%, 40%))`, boxShadow: `0 0 16px hsla(40, 80%, 55%, 0.5)` }}
                 >
                   <Footprints className="w-5 h-5 text-white" />
                 </motion.div>
@@ -438,22 +445,22 @@ const FlashcardsAreas = () => {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5, ease: "easeOut" }}
-                className="w-[calc(50%-24px)] h-[130px] p-4 rounded-2xl text-left transition-all hover:scale-[1.03] active:scale-95 relative overflow-hidden shine-effect"
+                className="w-[calc(50%-24px)] h-[130px] p-4 rounded-2xl text-left transition-all hover:scale-[1.03] active:scale-95 relative overflow-hidden"
                 style={{
-                  background: "linear-gradient(135deg, hsl(160 55% 45%), hsl(170 50% 35%))",
-                  border: "1px solid hsla(160, 50%, 55%, 0.4)",
-                  boxShadow: "0 8px 24px rgba(16, 185, 129, 0.35)",
+                  background: "hsla(0, 0%, 100%, 0.04)",
+                  border: `1px solid ${R.border}`,
+                  boxShadow: `0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 hsla(40, 60%, 80%, 0.06)`,
                 }}
               >
-                <div className="absolute -right-3 -bottom-3 opacity-15">
-                  <PenLine className="w-[88px] h-[88px] text-white" />
+                <div className="absolute -right-3 -bottom-3 opacity-[0.07]">
+                  <PenLine className="w-[88px] h-[88px]" style={{ color: R.gold }} />
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mb-2">
-                  <PenLine className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2" style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}>
+                  <PenLine className="w-5 h-5" style={{ color: R.gold }} />
                 </div>
                 <p className="text-sm font-bold text-white">Lacunas</p>
-                <p className="text-[10px] text-white/60 mt-0.5">Complete a frase</p>
-                <p className="text-[10px] text-emerald-200 font-semibold mt-1">{lacunasCount.toLocaleString('pt-BR')} cards</p>
+                <p className="text-[10px] mt-0.5" style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>Complete a frase</p>
+                <p className="text-[10px] font-semibold mt-1" style={{ color: R.goldMuted }}>{lacunasCount.toLocaleString('pt-BR')} cards</p>
               </motion.button>
             </div>
 
@@ -464,22 +471,22 @@ const FlashcardsAreas = () => {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.55, duration: 0.5, ease: "easeOut" }}
-                className="w-[calc(50%-24px)] h-[130px] p-4 rounded-2xl text-left transition-all hover:scale-[1.03] active:scale-95 relative overflow-hidden shine-effect"
+                className="w-[calc(50%-24px)] h-[130px] p-4 rounded-2xl text-left transition-all hover:scale-[1.03] active:scale-95 relative overflow-hidden"
                 style={{
-                  background: "linear-gradient(135deg, hsl(215 70% 55%), hsl(225 65% 45%))",
-                  border: "1px solid hsla(215, 60%, 60%, 0.4)",
-                  boxShadow: "0 8px 24px rgba(59, 130, 246, 0.35)",
+                  background: "hsla(0, 0%, 100%, 0.04)",
+                  border: `1px solid ${R.border}`,
+                  boxShadow: `0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 hsla(40, 60%, 80%, 0.06)`,
                 }}
               >
-                <div className="absolute -right-3 -bottom-3 opacity-15">
-                  <Link2 className="w-[88px] h-[88px] text-white" />
+                <div className="absolute -right-3 -bottom-3 opacity-[0.07]">
+                  <Link2 className="w-[88px] h-[88px]" style={{ color: R.gold }} />
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mb-2">
-                  <Link2 className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2" style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}>
+                  <Link2 className="w-5 h-5" style={{ color: R.gold }} />
                 </div>
                 <p className="text-sm font-bold text-white">Correspondência</p>
-                <p className="text-[10px] text-white/60 mt-0.5">Associe conceitos</p>
-                <p className="text-[10px] text-blue-200 font-semibold mt-1">{correspondenciaCount > 0 ? `${correspondenciaCount} sets` : 'Novo!'}</p>
+                <p className="text-[10px] mt-0.5" style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>Associe conceitos</p>
+                <p className="text-[10px] font-semibold mt-1" style={{ color: R.goldMuted }}>{correspondenciaCount > 0 ? `${correspondenciaCount} sets` : 'Novo!'}</p>
               </motion.button>
               
               <div className="absolute left-1/2 -translate-x-1/2 z-10">
@@ -487,8 +494,8 @@ const FlashcardsAreas = () => {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.65, type: "spring" }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg bg-gradient-to-br from-blue-400 to-blue-600"
-                  style={{ boxShadow: "0 0 16px rgba(59, 130, 246, 0.5)" }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg"
+                  style={{ background: `linear-gradient(135deg, ${R.gold}, hsl(35, 70%, 40%))`, boxShadow: `0 0 16px hsla(40, 80%, 55%, 0.5)` }}
                 >
                   <Footprints className="w-5 h-5 text-white" />
                 </motion.div>
@@ -502,8 +509,8 @@ const FlashcardsAreas = () => {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.85, type: "spring" }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg bg-gradient-to-br from-teal-500 to-cyan-700"
-                  style={{ boxShadow: "0 0 16px rgba(20, 184, 166, 0.5)" }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg"
+                  style={{ background: `linear-gradient(135deg, ${R.gold}, hsl(35, 70%, 40%))`, boxShadow: `0 0 16px hsla(40, 80%, 55%, 0.5)` }}
                 >
                   <Footprints className="w-5 h-5 text-white" />
                 </motion.div>
@@ -514,22 +521,22 @@ const FlashcardsAreas = () => {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.75, duration: 0.5, ease: "easeOut" }}
-                className="w-[calc(50%-24px)] h-[130px] p-4 rounded-2xl text-left transition-all hover:scale-[1.03] active:scale-95 relative overflow-hidden shine-effect"
+                className="w-[calc(50%-24px)] h-[130px] p-4 rounded-2xl text-left transition-all hover:scale-[1.03] active:scale-95 relative overflow-hidden"
                 style={{
-                  background: "linear-gradient(135deg, hsl(175 50% 38%), hsl(185 55% 28%))",
-                  border: "1px solid hsla(175, 45%, 45%, 0.4)",
-                  boxShadow: "0 8px 24px rgba(20, 184, 166, 0.35)",
+                  background: "hsla(0, 0%, 100%, 0.04)",
+                  border: `1px solid ${R.border}`,
+                  boxShadow: `0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 hsla(40, 60%, 80%, 0.06)`,
                 }}
               >
-                <div className="absolute -right-3 -bottom-3 opacity-15">
-                  <BookOpen className="w-[88px] h-[88px] text-white" />
+                <div className="absolute -right-3 -bottom-3 opacity-[0.07]">
+                  <BookOpen className="w-[88px] h-[88px]" style={{ color: R.gold }} />
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mb-2">
-                  <BookOpen className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2" style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}>
+                  <BookOpen className="w-5 h-5" style={{ color: R.gold }} />
                 </div>
                 <p className="text-sm font-bold text-white">Termos Jurídicos</p>
-                <p className="text-[10px] text-white/60 mt-0.5">Dicionário A-Z</p>
-                <p className="text-[10px] text-teal-200 font-semibold mt-1">{termosCount.toLocaleString('pt-BR')} termos</p>
+                <p className="text-[10px] mt-0.5" style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>Dicionário A-Z</p>
+                <p className="text-[10px] font-semibold mt-1" style={{ color: R.goldMuted }}>{termosCount.toLocaleString('pt-BR')} termos</p>
               </motion.button>
             </div>
           </div>
@@ -538,26 +545,25 @@ const FlashcardsAreas = () => {
     );
   }
 
+  // ── "praticar" sub-view — Area list with tabs ──
   return (
-    <div className="min-h-screen pb-20" style={{ background: "hsl(0 0% 12%)" }}>
-      {/* Header — banner marrom igual ao menu admin */}
-      <div
-        className="relative overflow-hidden rounded-b-3xl mb-3"
-        style={{ background: "linear-gradient(135deg, hsl(25 35% 22%), hsl(15 30% 16%))" }}
-      >
+    <div className="min-h-screen pb-20" style={{ background: R.bg }}>
+      {/* Realeza Header */}
+      <div className="relative overflow-hidden rounded-b-3xl mb-3" style={{ background: R.headerGradient, borderBottom: `1px solid ${R.border}` }}>
+        <DotPattern className="opacity-[0.04]" />
         <Brain
-          className="absolute -right-3 -bottom-3 text-white pointer-events-none"
-          style={{ width: 100, height: 100, opacity: 0.06 }}
+          className="absolute -right-3 -bottom-3 pointer-events-none"
+          style={{ width: 100, height: 100, opacity: 0.04, color: R.gold }}
         />
         <div className="relative z-10 px-4 pt-3 pb-5">
           <button
             onClick={() => setSubView("categories")}
             className="flex items-center gap-2 mb-3 group"
           >
-            <ArrowLeft className="w-4 h-4 text-white/70 group-hover:text-white transition-colors" />
+            <ArrowLeft className="w-4 h-4 transition-colors" style={{ color: R.goldMuted }} />
             <div className="flex flex-col items-start">
-              <span className="text-[9px] text-white/50 uppercase tracking-wide">Voltar</span>
-              <span className="text-xs font-semibold text-white/80 group-hover:text-white transition-colors">
+              <span className="text-[9px] uppercase tracking-wide" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Voltar</span>
+              <span className="text-xs font-semibold transition-colors" style={{ color: R.goldMuted }}>
                 Categorias
               </span>
             </div>
@@ -565,17 +571,14 @@ const FlashcardsAreas = () => {
           <div className="flex items-center gap-3">
             <div
               className="w-12 h-12 rounded-2xl flex items-center justify-center"
-              style={{
-                background: "hsla(25, 50%, 35%, 0.5)",
-                border: "1px solid hsla(25, 50%, 45%, 0.3)",
-              }}
+              style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}
             >
-              <Brain className="w-6 h-6 text-white" />
+              <Brain className="w-6 h-6" style={{ color: R.gold }} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white tracking-tight">Flashcards</h1>
-              <p className="text-xs text-white/55">
-                <span className="text-white/90 font-semibold">{totalFlashcards.toLocaleString('pt-BR')}</span> disponíveis
+              <h1 className="text-xl font-bold text-white tracking-tight" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>Flashcards</h1>
+              <p className="text-xs" style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>
+                <span className="font-semibold" style={{ color: R.goldMuted }}>{totalFlashcards.toLocaleString('pt-BR')}</span> disponíveis
               </p>
             </div>
           </div>
@@ -584,7 +587,7 @@ const FlashcardsAreas = () => {
 
       {/* Hero Carousel */}
       <div className="px-4 pb-4">
-        <div className="relative overflow-hidden rounded-2xl">
+        <div className="relative overflow-hidden rounded-2xl" style={{ border: `1px solid ${R.border}` }}>
           <div 
             key={slideIndex}
             className="relative min-h-[140px] overflow-hidden rounded-2xl animate-fade-in"
@@ -592,10 +595,10 @@ const FlashcardsAreas = () => {
             <img src={HERO_SLIDES[slideIndex].image} alt="" className="absolute inset-0 w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
             <div className="relative z-10 p-5 flex flex-col justify-end h-full min-h-[140px]">
-              <h2 className="text-base font-bold text-white leading-tight mb-1">
+              <h2 className="text-base font-bold text-white leading-tight mb-1" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>
                 {HERO_SLIDES[slideIndex].title}
               </h2>
-              <p className="text-xs text-white/80 leading-relaxed">
+              <p className="text-xs leading-relaxed" style={{ color: "hsla(40, 60%, 70%, 0.8)" }}>
                 {HERO_SLIDES[slideIndex].subtitle}
               </p>
             </div>
@@ -605,16 +608,21 @@ const FlashcardsAreas = () => {
               <button
                 key={i}
                 onClick={() => setSlideIndex(i)}
-                className={`rounded-full transition-all ${i === slideIndex ? "w-5 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/40"}`}
+                className="rounded-full transition-all"
+                style={{
+                  width: i === slideIndex ? 20 : 6,
+                  height: 6,
+                  background: i === slideIndex ? R.gold : "hsla(40, 60%, 50%, 0.3)",
+                }}
               />
             ))}
           </div>
         </div>
       </div>
 
-      {/* Tab Menu */}
+      {/* Tab Menu — golden active */}
       <div className="px-2 pb-4">
-        <div className="flex bg-muted/50 rounded-xl p-1 gap-1">
+        <div className="flex rounded-xl p-1 gap-1" style={{ background: "hsla(0, 0%, 100%, 0.04)", border: `1px solid ${R.border}` }}>
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -622,11 +630,12 @@ const FlashcardsAreas = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-3 rounded-lg text-sm font-medium transition-all ${
-                  isActive 
-                    ? "bg-background text-foreground shadow-sm" 
-                    : "bg-card/80 text-muted-foreground hover:text-foreground shine-effect"
-                }`}
+                className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-lg text-sm font-medium transition-all"
+                style={{
+                  background: isActive ? "hsla(40, 60%, 50%, 0.15)" : "transparent",
+                  color: isActive ? R.gold : "hsla(0, 0%, 100%, 0.4)",
+                  border: isActive ? `1px solid hsla(40, 60%, 50%, 0.2)` : "1px solid transparent",
+                }}
               >
                 <Icon className="w-4 h-4" />
                 {tab.label}
@@ -642,7 +651,7 @@ const FlashcardsAreas = () => {
           {isLoading ? (
             <div className="grid grid-cols-2 gap-3">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="h-[100px] rounded-2xl bg-card/50 animate-pulse" />
+                <div key={i} className="h-[100px] rounded-2xl animate-pulse" style={{ background: "hsla(0, 0%, 100%, 0.04)" }} />
               ))}
             </div>
           ) : (
@@ -656,30 +665,35 @@ const FlashcardsAreas = () => {
           {isLoading ? (
             <div className="grid grid-cols-2 gap-3">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-[100px] rounded-2xl bg-card/50 animate-pulse" />
+                <div key={i} className="h-[100px] rounded-2xl animate-pulse" style={{ background: "hsla(0, 0%, 100%, 0.04)" }} />
               ))}
             </div>
           ) : (
             <>
               <div className="mb-5">
-                <h2 className="text-sm font-bold text-foreground">Frequentes</h2>
-                <p className="text-xs text-muted-foreground mb-3">Frequentes em concursos e OAB</p>
+                <h2 className="text-sm font-bold" style={{ color: R.goldMuted }}>Frequentes</h2>
+                <p className="text-xs text-white/40 mb-3">Frequentes em concursos e OAB</p>
                 <div className="grid grid-cols-2 gap-3">
-                  {sorted.filter(a => isInList(a.area, ALTA_INCIDENCIA)).map((item, idx) => renderCard(item, idx, ALTA_INCIDENCIA_GRADIENT))}
+                  {sorted.filter(a => isInList(a.area, ALTA_INCIDENCIA)).map((item, idx) => renderCard(item, idx))}
                   <button
                     onClick={() => navigate('/categorias/trilha/Teoria%20e%20Filosofia%20do%20Direito')}
-                    className="group relative overflow-hidden rounded-2xl p-4 text-left transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-br from-violet-500 to-violet-700 shadow-lg h-[100px] animate-fade-in"
+                    className="group relative overflow-hidden rounded-2xl p-4 text-left transition-all duration-150 hover:scale-[1.03] active:scale-[0.97] shadow-lg h-[100px] animate-fade-in"
+                    style={{
+                      background: "hsla(0, 0%, 100%, 0.04)",
+                      border: `1px solid ${R.border}`,
+                      boxShadow: `0 4px 20px -4px rgba(0,0,0,0.4), inset 0 1px 0 hsla(40, 60%, 80%, 0.06)`,
+                    }}
                   >
-                    <div className="absolute -right-3 -bottom-3 opacity-20">
-                      <Brain className="w-20 h-20 text-white" />
+                    <div className="absolute -right-3 -bottom-3 opacity-[0.07]">
+                      <Brain className="w-20 h-20" style={{ color: R.gold }} />
                     </div>
-                    <div className="bg-white/20 rounded-xl p-2 w-fit mb-2 group-hover:bg-white/30 transition-colors">
-                      <Brain className="w-5 h-5 text-white" />
+                    <div className="rounded-xl p-2 w-fit mb-2 transition-colors" style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}>
+                      <Brain className="w-5 h-5" style={{ color: R.gold }} />
                     </div>
                     <h3 className="font-semibold text-white text-sm leading-tight pr-6">
                       Teoria e Filosofia do Direito
                     </h3>
-                    <ChevronRight className="absolute bottom-3 right-3 w-4 h-4 text-white/70 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="absolute bottom-3 right-3 w-4 h-4 transition-all group-hover:translate-x-0.5" style={{ color: "hsla(40, 70%, 60%, 0.5)" }} />
                   </button>
                 </div>
               </div>
@@ -693,23 +707,23 @@ const FlashcardsAreas = () => {
           {isLoading ? (
             <div className="grid grid-cols-2 gap-3">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-[100px] rounded-2xl bg-card/50 animate-pulse" />
+                <div key={i} className="h-[100px] rounded-2xl animate-pulse" style={{ background: "hsla(0, 0%, 100%, 0.04)" }} />
               ))}
             </div>
           ) : (
-            renderCategoriaSection("Extras", "Aprofunde seus conhecimentos", sorted.filter(a => !isInList(a.area, MAIS_COBRADAS) && !isInList(a.area, ALTA_INCIDENCIA)), COMPLEMENTARES_GRADIENT)
+            renderCategoriaSection("Extras", "Aprofunde seus conhecimentos", sorted.filter(a => !isInList(a.area, MAIS_COBRADAS) && !isInList(a.area, ALTA_INCIDENCIA)))
           )}
         </div>
       )}
 
       {/* Estatísticas Modal/Overlay */}
       {showEstatisticas && (
-        <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
-          <div className="px-4 pt-4 pb-2 flex items-center gap-3 sticky top-0 bg-background z-10">
-            <button onClick={() => setShowEstatisticas(false)} className="shrink-0 w-9 h-9 rounded-full bg-muted flex items-center justify-center">
-              <ArrowLeft className="w-5 h-5" />
+        <div className="fixed inset-0 z-50 overflow-y-auto" style={{ background: R.bg }}>
+          <div className="px-4 pt-4 pb-2 flex items-center gap-3 sticky top-0 z-10" style={{ background: R.bg }}>
+            <button onClick={() => setShowEstatisticas(false)} className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "hsla(40, 60%, 50%, 0.1)", border: `1px solid ${R.border}` }}>
+              <ArrowLeft className="w-5 h-5" style={{ color: R.gold }} />
             </button>
-            <h2 className="text-lg font-bold text-foreground">Estatísticas</h2>
+            <h2 className="text-lg font-bold text-white">Estatísticas</h2>
           </div>
           <FlashcardsEstatisticas />
         </div>
@@ -719,13 +733,15 @@ const FlashcardsAreas = () => {
       {!showEstatisticas && (
         <button
           onClick={() => setShowEstatisticas(true)}
-          className="fixed bottom-20 right-4 z-40 w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+          className="fixed bottom-20 right-4 z-40 w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+          style={{
+            background: `linear-gradient(135deg, ${R.gold}, hsl(35, 70%, 40%))`,
+            boxShadow: `0 4px 16px hsla(40, 80%, 55%, 0.4)`,
+          }}
         >
-          <BarChart3 className="w-5 h-5" />
+          <BarChart3 className="w-5 h-5 text-white" />
         </button>
       )}
-
-      {/* Modal removed - navigates directly to /flashcards/temas */}
     </div>
   );
 };
