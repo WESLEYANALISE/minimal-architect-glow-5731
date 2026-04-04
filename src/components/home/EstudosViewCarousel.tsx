@@ -8,7 +8,7 @@ import { ResenhaHojeSection } from "@/components/ResenhaHojeSection";
 import brasaoRepublica from "@/assets/brasao-republica.png?format=webp&quality=80";
 
 const VIEWS = [
-  { id: "estudos", label: "Estudos", desc: "FACULDADE • OAB • CONCURSOS", icon: GraduationCap, headerBg: "linear-gradient(135deg, hsl(0 60% 12%), hsl(0 50% 15%), hsl(0 60% 12%))", footerBg: "linear-gradient(135deg, hsl(0 50% 10%), hsl(0 40% 12%), hsl(0 50% 10%))" },
+  { id: "estudos", label: "Estudos", desc: "FACULDADE • OAB • CONCURSOS", icon: GraduationCap, headerBg: "linear-gradient(135deg, hsl(350 50% 12%), hsl(345 45% 15%), hsl(350 50% 12%))", footerBg: "linear-gradient(135deg, hsl(350 45% 10%), hsl(345 40% 12%), hsl(350 45% 10%))" },
   { id: "leis", label: "Leis do Dia", desc: "Publicações do Diário Oficial", icon: ScrollText, headerBg: "linear-gradient(135deg, hsl(38 65% 28%), hsl(42 70% 34%), hsl(38 65% 28%))", footerBg: "linear-gradient(135deg, hsl(38 65% 18%), hsl(42 70% 22%), hsl(38 65% 18%))" },
   { id: "vademecum", label: "Vade Mecum", desc: "Legislação brasileira completa", icon: Scale, headerBg: "linear-gradient(135deg, hsl(160 55% 22%), hsl(160 65% 28%), hsl(160 55% 22%))", footerBg: "linear-gradient(135deg, hsl(160 55% 14%), hsl(160 65% 18%), hsl(160 55% 14%))" },
 ] as const;

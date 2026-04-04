@@ -574,7 +574,7 @@ const Index = () => {
                   <img
                     src={logoDireitoPremium}
                     alt="Direito Prime"
-                    className="w-[4.5rem] h-[4.5rem] rounded-full object-contain shadow-xl ring-[3px] ring-[hsl(8,65%,32%)] bg-[#1a0a0a]"
+                    className="w-[4.5rem] h-[4.5rem] rounded-full object-contain shadow-xl ring-[3px] ring-[hsl(350,50%,22%)] bg-[hsl(345,45%,6%)]"
                     loading="eager"
                     decoding="sync"
                   />
@@ -582,12 +582,12 @@ const Index = () => {
 
                 {/* Barra de pesquisa */}
                 <div
-                  className="flex-1 -ml-4 pl-7 pr-3 py-2 rounded-r-2xl rounded-l-lg bg-gradient-to-r from-[hsl(8,65%,32%)] to-[hsl(8,50%,22%)] border border-[hsl(8,65%,38%)]/60 relative shadow-lg shadow-[hsl(8,65%,20%)]/40"
+                  className="flex-1 -ml-4 pl-7 pr-3 py-2 rounded-r-2xl rounded-l-lg bg-gradient-to-r from-[hsl(350,50%,18%)] to-[hsl(345,45%,12%)] border border-rose-500/25 relative shadow-lg shadow-[hsl(350,50%,10%)]/40"
                 >
                   <div className="w-full flex items-center gap-3 px-3 py-1 rounded-xl bg-white/60 border border-white/30 relative z-10">
                     <SearchBarAnimatedText />
-                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm shadow-primary/30">
-                      <Search className="w-3 h-3 text-primary-foreground" />
+                    <div className="w-6 h-6 rounded-full bg-[hsl(350,50%,40%)] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm shadow-rose-500/30">
+                      <Search className="w-3 h-3 text-white" />
                     </div>
                   </div>
                 </div>
