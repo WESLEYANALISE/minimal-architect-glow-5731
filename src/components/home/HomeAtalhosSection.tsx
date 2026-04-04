@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import { Settings, Flame, Scale, ChevronRight } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { EmAltaCarousel } from "@/components/EmAltaCarousel";

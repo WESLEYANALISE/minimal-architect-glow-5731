@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { Video, ChevronRight, MonitorPlay, Headphones, Crown } from "lucide-react";
 import { useDeviceType } from "@/hooks/use-device-type";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import capaIniciante from "@/assets/portal-videos-iniciante.webp";
 import capaVideoaulas from "@/assets/portal-videos-videoaulas.webp";
 import capaAudioaulas from "@/assets/portal-videos-audioaulas.webp";

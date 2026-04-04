@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { startTransition } from "react";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import { Menu, Bell, Newspaper, Scale, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
