@@ -407,7 +407,7 @@ const QuestoesHubNovo = () => {
   const handleBackFromResolver = () => {
     setSubView("temas");
   };
-};
+
   return (
     <div className="min-h-screen relative overflow-hidden" style={{ background: "hsl(0 0% 10%)" }}>
       <DotPattern className="opacity-[0.03]" />
