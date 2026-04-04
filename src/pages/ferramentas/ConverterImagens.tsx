@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Image, RefreshCw, Check, Loader2, Play, Pause, TrendingDown, Calendar, Database } from "lucide-react";
+import { ArrowLeft, Image, RefreshCw, Check, Loader2, Play, Pause, TrendingDown, Database, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -19,127 +19,135 @@ interface ImagemInfo {
 interface TabelaImagens {
   tabela: string;
   coluna: string;
+  label: string;
+  categoria: string;
   imagens: ImagemInfo[];
   totalWebp: number;
   totalPendentes: number;
   ultimaData?: string;
 }
 
-// TODAS as tabelas com colunas de imagem (gerado automaticamente do banco)
-const TABELAS_IMAGENS = [
-  // Blogs e Notícias
-  { tabela: "BLOGGER_JURIDICO", coluna: "url_capa" },
-  { tabela: "BLOGGER_JURIDICO", coluna: "imagem_wikipedia" },
-  { tabela: "blogger_politico", coluna: "url_capa" },
-  { tabela: "blogger_politico", coluna: "imagem_wikipedia" },
-  { tabela: "noticias_juridicas_cache", coluna: "imagem" },
-  { tabela: "noticias_politicas_cache", coluna: "imagem_url" },
-  
-  // Bibliotecas
-  { tabela: "CAPA-BIBILIOTECA", coluna: "capa" },
-  { tabela: "BIBILIOTECA-OAB", coluna: "Capa-livro" },
-  { tabela: "BIBILIOTECA-OAB", coluna: "Capa-area" },
-  { tabela: "BIBLIOTECA-ESTUDOS", coluna: "Capa-livro" },
-  { tabela: "BIBLIOTECA-ESTUDOS", coluna: "Capa-area" },
-  { tabela: "BIBLIOTECA-ESTUDOS", coluna: "url_capa_gerada" },
-  { tabela: "BIBLIOTECA-CLASSICOS", coluna: "imagem" },
-  { tabela: "BIBLIOTECA-CLASSICOS", coluna: "Capa-area" },
-  { tabela: "BIBLIOTECA-ORATORIA", coluna: "imagem" },
-  { tabela: "BIBLIOTECA-ORATORIA", coluna: "Capa-area" },
-  { tabela: "BIBLIOTECA-LIDERANÇA", coluna: "imagem" },
-  { tabela: "BIBLIOTECA-LIDERANÇA", coluna: "Capa-area" },
-  { tabela: "BIBLIOTECA-FORA-DA-TOGA", coluna: "capa-livro" },
-  { tabela: "BIBLIOTECA-FORA-DA-TOGA", coluna: "capa-area" },
-  
-  // Cursos e JuriFlix
-  { tabela: "JURIFLIX", coluna: "capa" },
-  { tabela: "CURSOS", coluna: "capa" },
-  { tabela: "CURSOS", coluna: "capa-modulo" },
-  { tabela: "CURSOS", coluna: "capa-area" },
-  { tabela: "CURSOS-APP", coluna: "capa-aula" },
-  
-  // Resumos
-  { tabela: "RESUMO", coluna: "url_imagem_resumo" },
-  { tabela: "RESUMO", coluna: "url_imagem_exemplo_1" },
-  { tabela: "RESUMO", coluna: "url_imagem_exemplo_2" },
-  { tabela: "RESUMO", coluna: "url_imagem_exemplo_3" },
-  { tabela: "RESUMOS_ARTIGOS_LEI", coluna: "url_imagem_resumo" },
-  { tabela: "RESUMOS_ARTIGOS_LEI", coluna: "url_imagem_exemplo_1" },
-  { tabela: "RESUMOS_ARTIGOS_LEI", coluna: "url_imagem_exemplo_2" },
-  { tabela: "RESUMOS_ARTIGOS_LEI", coluna: "url_imagem_exemplo_3" },
-  
-  // Flashcards
-  { tabela: "FLASHCARDS - ARTIGOS LEI", coluna: "url_imagem_exemplo" },
-  { tabela: "FLASHCARDS_GERADOS", coluna: "url_imagem_exemplo" },
-  { tabela: "flashcards_areas_capas", coluna: "url_capa" },
-  
-  // Questões
-  { tabela: "QUESTOES_ARTIGOS_LEI", coluna: "url_imagem_exemplo" },
-  { tabela: "QUESTOES_GERADAS", coluna: "url_imagem_exemplo" },
-  
-  // Simulados e Simulações
-  { tabela: "SIMULACAO_CASOS", coluna: "prompt_imagem" },
-  { tabela: "SIMULACAO_CASOS", coluna: "avatar_juiza" },
-  { tabela: "SIMULACAO_CASOS", coluna: "avatar_advogado_reu" },
-  { tabela: "SIMULACAO_PARTIDAS", coluna: "avatar_escolhido" },
-  { tabela: "SIMULADO-ESCREVENTE", coluna: "Imagem" },
-  { tabela: "SIMULADO-JUIZ SUBSTITUTO", coluna: "Imagem" },
-  { tabela: "SIMULADO-OAB", coluna: "url_imagem_exemplo" },
-  { tabela: "SIMULADO-OAB", coluna: "url_imagem_comentario" },
-  
-  // Audiências e Vídeos
-  { tabela: "AUDIO-AULA", coluna: "imagem_miniatura" },
-  { tabela: "audiencias_playlists", coluna: "thumbnail" },
-  { tabela: "audiencias_videos", coluna: "thumbnail" },
-  { tabela: "documentarios_juridicos", coluna: "thumbnail" },
-  
-  // Carreiras e Capas
-  { tabela: "carreiras_capas", coluna: "url_capa" },
-  { tabela: "radar_capas_diarias", coluna: "url_capa" },
-  
-  // Meu Brasil
-  { tabela: "meu_brasil_juristas", coluna: "foto_url" },
-  
-  // Concursos e Estágios
-  
-  { tabela: "ESTAGIO-BLOG", coluna: "Capa" },
-  
-  // Rankings Políticos - Deputados
-  { tabela: "deputados_populares", coluna: "foto_url" },
-  { tabela: "cache_proposicoes_recentes", coluna: "autor_principal_foto" },
-  { tabela: "cache_plp_recentes", coluna: "autor_principal_foto" },
-  { tabela: "ranking_comissoes", coluna: "foto_url" },
-  { tabela: "ranking_despesas", coluna: "foto_url" },
-  { tabela: "ranking_despesas_mandato", coluna: "foto_url" },
-  { tabela: "ranking_discursos", coluna: "foto_url" },
-  { tabela: "ranking_frentes", coluna: "foto_url" },
-  { tabela: "ranking_menos_despesas", coluna: "foto_url" },
-  { tabela: "ranking_nota_final", coluna: "foto_url" },
-  { tabela: "ranking_presenca", coluna: "foto_url" },
-  { tabela: "ranking_proposicoes", coluna: "foto_url" },
-  { tabela: "tres_poderes_deputados_bio", coluna: "foto_url" },
-  
-  // Rankings Políticos - Senadores
-  { tabela: "ranking_senadores_comissoes", coluna: "foto_url" },
-  { tabela: "ranking_senadores_despesas", coluna: "foto_url" },
-  { tabela: "ranking_senadores_discursos", coluna: "foto_url" },
-  { tabela: "ranking_senadores_materias", coluna: "foto_url" },
-  { tabela: "ranking_senadores_votacoes", coluna: "foto_url" },
-  { tabela: "senado_senadores", coluna: "foto" },
-  
-  // Leitura e Mapas
-  { tabela: "LEITURA_FORMATADA", coluna: "capa_url" },
-  { tabela: "leitura_interativa", coluna: "capa_url" },
-  { tabela: "mapas_mentais_artigos", coluna: "imagem_url" },
-  
-  // Push Notifications
-  { tabela: "notificacoes_push_enviadas", coluna: "imagem_url" },
+// ── Categorias ──────────────────────────────────────────────
+const CATEGORIAS = [
+  { id: "todas", label: "Todas", emoji: "📊" },
+  { id: "capas", label: "Capas Principais", emoji: "🎯" },
+  { id: "bibliotecas", label: "Bibliotecas", emoji: "📚" },
+  { id: "blog", label: "Blog e Notícias", emoji: "📰" },
+  { id: "resumos", label: "Resumos e Flashcards", emoji: "📝" },
+  { id: "simulados", label: "Simulados e Questões", emoji: "🎮" },
+  { id: "audio", label: "Áudio e Vídeo", emoji: "🎧" },
+  { id: "politica", label: "Política", emoji: "🏛️" },
+  { id: "outros", label: "Outros", emoji: "📁" },
+];
+
+// ── Mapeamento tabela:coluna → categoria + nome amigável ────
+interface TabelaConfig {
+  tabela: string;
+  coluna: string;
+  label: string;
+  categoria: string;
+}
+
+const TABELAS_IMAGENS: TabelaConfig[] = [
+  // ─── Capas Principais ───
+  { tabela: "CURSOS", coluna: "capa", label: "Cursos — Capas", categoria: "capas" },
+  { tabela: "CURSOS", coluna: "capa-modulo", label: "Cursos — Capas Módulo", categoria: "capas" },
+  { tabela: "CURSOS", coluna: "capa-area", label: "Cursos — Capas Área", categoria: "capas" },
+  { tabela: "JURIFLIX", coluna: "capa", label: "JuriFlix — Capas", categoria: "capas" },
+  { tabela: "CAPA-BIBILIOTECA", coluna: "capa", label: "Capas de Bibliotecas", categoria: "capas" },
+  { tabela: "carreiras_capas", coluna: "url_capa", label: "Carreiras — Capas", categoria: "capas" },
+  { tabela: "radar_capas_diarias", coluna: "url_capa", label: "Radar Jurídico — Capas", categoria: "capas" },
+  { tabela: "CURSOS-APP", coluna: "capa-aula", label: "Cursos App — Capas Aula", categoria: "capas" },
+
+  // ─── Bibliotecas ───
+  { tabela: "BIBILIOTECA-OAB", coluna: "Capa-livro", label: "Biblioteca OAB — Livros", categoria: "bibliotecas" },
+  { tabela: "BIBILIOTECA-OAB", coluna: "Capa-area", label: "Biblioteca OAB — Áreas", categoria: "bibliotecas" },
+  { tabela: "BIBLIOTECA-ESTUDOS", coluna: "Capa-livro", label: "Biblioteca Estudos — Livros", categoria: "bibliotecas" },
+  { tabela: "BIBLIOTECA-ESTUDOS", coluna: "Capa-area", label: "Biblioteca Estudos — Áreas", categoria: "bibliotecas" },
+  { tabela: "BIBLIOTECA-ESTUDOS", coluna: "url_capa_gerada", label: "Biblioteca Estudos — Capas Geradas", categoria: "bibliotecas" },
+  { tabela: "BIBLIOTECA-CLASSICOS", coluna: "imagem", label: "Biblioteca Clássicos — Capas", categoria: "bibliotecas" },
+  { tabela: "BIBLIOTECA-CLASSICOS", coluna: "Capa-area", label: "Biblioteca Clássicos — Áreas", categoria: "bibliotecas" },
+  { tabela: "BIBLIOTECA-ORATORIA", coluna: "imagem", label: "Biblioteca Oratória — Capas", categoria: "bibliotecas" },
+  { tabela: "BIBLIOTECA-ORATORIA", coluna: "Capa-area", label: "Biblioteca Oratória — Áreas", categoria: "bibliotecas" },
+  { tabela: "BIBLIOTECA-LIDERANÇA", coluna: "imagem", label: "Biblioteca Liderança — Capas", categoria: "bibliotecas" },
+  { tabela: "BIBLIOTECA-LIDERANÇA", coluna: "Capa-area", label: "Biblioteca Liderança — Áreas", categoria: "bibliotecas" },
+  { tabela: "BIBLIOTECA-FORA-DA-TOGA", coluna: "capa-livro", label: "Fora da Toga — Livros", categoria: "bibliotecas" },
+  { tabela: "BIBLIOTECA-FORA-DA-TOGA", coluna: "capa-area", label: "Fora da Toga — Áreas", categoria: "bibliotecas" },
+
+  // ─── Blog e Notícias ───
+  { tabela: "BLOGGER_JURIDICO", coluna: "url_capa", label: "Blogger Jurídico — Capas", categoria: "blog" },
+  { tabela: "BLOGGER_JURIDICO", coluna: "imagem_wikipedia", label: "Blogger Jurídico — Wikipedia", categoria: "blog" },
+  { tabela: "blogger_politico", coluna: "url_capa", label: "Blogger Político — Capas", categoria: "blog" },
+  { tabela: "blogger_politico", coluna: "imagem_wikipedia", label: "Blogger Político — Wikipedia", categoria: "blog" },
+  { tabela: "noticias_juridicas_cache", coluna: "imagem", label: "Notícias Jurídicas", categoria: "blog" },
+  { tabela: "noticias_politicas_cache", coluna: "imagem_url", label: "Notícias Políticas", categoria: "blog" },
+
+  // ─── Resumos e Flashcards ───
+  { tabela: "RESUMO", coluna: "url_imagem_resumo", label: "Resumos — Imagem Principal", categoria: "resumos" },
+  { tabela: "RESUMO", coluna: "url_imagem_exemplo_1", label: "Resumos — Exemplo 1", categoria: "resumos" },
+  { tabela: "RESUMO", coluna: "url_imagem_exemplo_2", label: "Resumos — Exemplo 2", categoria: "resumos" },
+  { tabela: "RESUMO", coluna: "url_imagem_exemplo_3", label: "Resumos — Exemplo 3", categoria: "resumos" },
+  { tabela: "RESUMOS_ARTIGOS_LEI", coluna: "url_imagem_resumo", label: "Resumos Artigos — Principal", categoria: "resumos" },
+  { tabela: "RESUMOS_ARTIGOS_LEI", coluna: "url_imagem_exemplo_1", label: "Resumos Artigos — Ex. 1", categoria: "resumos" },
+  { tabela: "RESUMOS_ARTIGOS_LEI", coluna: "url_imagem_exemplo_2", label: "Resumos Artigos — Ex. 2", categoria: "resumos" },
+  { tabela: "RESUMOS_ARTIGOS_LEI", coluna: "url_imagem_exemplo_3", label: "Resumos Artigos — Ex. 3", categoria: "resumos" },
+  { tabela: "FLASHCARDS - ARTIGOS LEI", coluna: "url_imagem_exemplo", label: "Flashcards Artigos", categoria: "resumos" },
+  { tabela: "FLASHCARDS_GERADOS", coluna: "url_imagem_exemplo", label: "Flashcards Gerados", categoria: "resumos" },
+  { tabela: "flashcards_areas_capas", coluna: "url_capa", label: "Flashcards — Capas Áreas", categoria: "resumos" },
+
+  // ─── Simulados e Questões ───
+  { tabela: "QUESTOES_ARTIGOS_LEI", coluna: "url_imagem_exemplo", label: "Questões Artigos Lei", categoria: "simulados" },
+  { tabela: "QUESTOES_GERADAS", coluna: "url_imagem_exemplo", label: "Questões Geradas", categoria: "simulados" },
+  { tabela: "SIMULACAO_CASOS", coluna: "prompt_imagem", label: "Simulação — Imagens", categoria: "simulados" },
+  { tabela: "SIMULACAO_CASOS", coluna: "avatar_juiza", label: "Simulação — Avatar Juíza", categoria: "simulados" },
+  { tabela: "SIMULACAO_CASOS", coluna: "avatar_advogado_reu", label: "Simulação — Avatar Advogado", categoria: "simulados" },
+  { tabela: "SIMULACAO_PARTIDAS", coluna: "avatar_escolhido", label: "Simulação — Avatar Jogador", categoria: "simulados" },
+  { tabela: "SIMULADO-ESCREVENTE", coluna: "Imagem", label: "Simulado Escrevente", categoria: "simulados" },
+  { tabela: "SIMULADO-JUIZ SUBSTITUTO", coluna: "Imagem", label: "Simulado Juiz Substituto", categoria: "simulados" },
+  { tabela: "SIMULADO-OAB", coluna: "url_imagem_exemplo", label: "Simulado OAB — Exemplo", categoria: "simulados" },
+  { tabela: "SIMULADO-OAB", coluna: "url_imagem_comentario", label: "Simulado OAB — Comentário", categoria: "simulados" },
+
+  // ─── Áudio e Vídeo ───
+  { tabela: "AUDIO-AULA", coluna: "imagem_miniatura", label: "Áudio Aulas — Miniaturas", categoria: "audio" },
+  { tabela: "audiencias_playlists", coluna: "thumbnail", label: "Audiências — Playlists", categoria: "audio" },
+  { tabela: "audiencias_videos", coluna: "thumbnail", label: "Audiências — Vídeos", categoria: "audio" },
+  { tabela: "documentarios_juridicos", coluna: "thumbnail", label: "Documentários Jurídicos", categoria: "audio" },
+
+  // ─── Política ───
+  { tabela: "deputados_populares", coluna: "foto_url", label: "Deputados Populares", categoria: "politica" },
+  { tabela: "cache_proposicoes_recentes", coluna: "autor_principal_foto", label: "Proposições Recentes", categoria: "politica" },
+  { tabela: "cache_plp_recentes", coluna: "autor_principal_foto", label: "PLPs Recentes", categoria: "politica" },
+  { tabela: "ranking_comissoes", coluna: "foto_url", label: "Ranking Comissões", categoria: "politica" },
+  { tabela: "ranking_despesas", coluna: "foto_url", label: "Ranking Despesas", categoria: "politica" },
+  { tabela: "ranking_despesas_mandato", coluna: "foto_url", label: "Ranking Despesas Mandato", categoria: "politica" },
+  { tabela: "ranking_discursos", coluna: "foto_url", label: "Ranking Discursos", categoria: "politica" },
+  { tabela: "ranking_frentes", coluna: "foto_url", label: "Ranking Frentes", categoria: "politica" },
+  { tabela: "ranking_menos_despesas", coluna: "foto_url", label: "Ranking Menos Despesas", categoria: "politica" },
+  { tabela: "ranking_nota_final", coluna: "foto_url", label: "Ranking Nota Final", categoria: "politica" },
+  { tabela: "ranking_presenca", coluna: "foto_url", label: "Ranking Presença", categoria: "politica" },
+  { tabela: "ranking_proposicoes", coluna: "foto_url", label: "Ranking Proposições", categoria: "politica" },
+  { tabela: "tres_poderes_deputados_bio", coluna: "foto_url", label: "Deputados — Bio", categoria: "politica" },
+  { tabela: "ranking_senadores_comissoes", coluna: "foto_url", label: "Senadores — Comissões", categoria: "politica" },
+  { tabela: "ranking_senadores_despesas", coluna: "foto_url", label: "Senadores — Despesas", categoria: "politica" },
+  { tabela: "ranking_senadores_discursos", coluna: "foto_url", label: "Senadores — Discursos", categoria: "politica" },
+  { tabela: "ranking_senadores_materias", coluna: "foto_url", label: "Senadores — Matérias", categoria: "politica" },
+  { tabela: "ranking_senadores_votacoes", coluna: "foto_url", label: "Senadores — Votações", categoria: "politica" },
+  { tabela: "senado_senadores", coluna: "foto", label: "Senadores — Fotos", categoria: "politica" },
+
+  // ─── Outros ───
+  { tabela: "LEITURA_FORMATADA", coluna: "capa_url", label: "Leitura Formatada", categoria: "outros" },
+  { tabela: "leitura_interativa", coluna: "capa_url", label: "Leitura Interativa", categoria: "outros" },
+  { tabela: "mapas_mentais_artigos", coluna: "imagem_url", label: "Mapas Mentais", categoria: "outros" },
+  { tabela: "notificacoes_push_enviadas", coluna: "imagem_url", label: "Push Notifications", categoria: "outros" },
+  { tabela: "meu_brasil_juristas", coluna: "foto_url", label: "Meu Brasil — Juristas", categoria: "outros" },
+  { tabela: "ESTAGIO-BLOG", coluna: "Capa", label: "Blog de Estágio", categoria: "outros" },
 ];
 
 const ConverterImagens = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [tabelaSelecionada, setTabelaSelecionada] = useState<string | null>(null);
+  const [categoriaAtiva, setCategoriaAtiva] = useState("todas");
   const [dadosTabelas, setDadosTabelas] = useState<TabelaImagens[]>([]);
   const [convertendo, setConvertendo] = useState(false);
   const [pausado, setPausado] = useState(false);
@@ -148,17 +156,37 @@ const ConverterImagens = () => {
   const [imagemConvertendo, setImagemConvertendo] = useState<string | null>(null);
   const [economiaTotal, setEconomiaTotal] = useState({ original: 0, webp: 0, totalConversoes: 0 });
 
-  const totalImagens = dadosTabelas.reduce((acc, t) => acc + t.imagens.length, 0);
-  const totalWebp = dadosTabelas.reduce((acc, t) => acc + t.totalWebp, 0);
-  const totalPendentes = dadosTabelas.reduce((acc, t) => acc + t.totalPendentes, 0);
+  // ── Filtro por categoria ──
+  const tabelasFiltradas = useMemo(() => {
+    if (categoriaAtiva === "todas") return dadosTabelas;
+    return dadosTabelas.filter(t => t.categoria === categoriaAtiva);
+  }, [dadosTabelas, categoriaAtiva]);
+
+  const totalImagens = tabelasFiltradas.reduce((acc, t) => acc + t.imagens.length, 0);
+  const totalWebp = tabelasFiltradas.reduce((acc, t) => acc + t.totalWebp, 0);
+  const totalPendentes = tabelasFiltradas.reduce((acc, t) => acc + t.totalPendentes, 0);
   const percentualConvertido = totalImagens > 0 ? Math.round((totalWebp / totalImagens) * 100) : 0;
+
+  // ── Stats por categoria ──
+  const statsPorCategoria = useMemo(() => {
+    const map: Record<string, { total: number; webp: number; pendentes: number }> = {};
+    for (const cat of CATEGORIAS) {
+      if (cat.id === "todas") continue;
+      const items = dadosTabelas.filter(t => t.categoria === cat.id);
+      map[cat.id] = {
+        total: items.reduce((a, t) => a + t.imagens.length, 0),
+        webp: items.reduce((a, t) => a + t.totalWebp, 0),
+        pendentes: items.reduce((a, t) => a + t.totalPendentes, 0),
+      };
+    }
+    return map;
+  }, [dadosTabelas]);
 
   const carregarEconomia = async () => {
     try {
       const { data } = await supabase
         .from('cache_imagens_webp')
         .select('tamanho_original, tamanho_webp');
-      
       if (data) {
         const original = data.reduce((acc, item) => acc + (item.tamanho_original || 0), 0);
         const webp = data.reduce((acc, item) => acc + (item.tamanho_webp || 0), 0);
@@ -190,7 +218,6 @@ const ConverterImagens = () => {
     setLoading(true);
     try {
       carregarEconomia();
-      const resultados: TabelaImagens[] = [];
       const tabelasAgrupadas: Map<string, TabelaImagens> = new Map();
 
       for (const config of TABELAS_IMAGENS) {
@@ -216,23 +243,23 @@ const ConverterImagens = () => {
           const chave = `${config.tabela}:${config.coluna}`;
           const totalWebp = imagens.filter(img => img.formato === 'webp').length;
           const totalPendentes = imagens.filter(img => !['webp', 'desconhecido', 'svg'].includes(img.formato)).length;
-          const ultimaData = imagens[0]?.created_at;
 
           tabelasAgrupadas.set(chave, {
             tabela: config.tabela,
             coluna: config.coluna,
+            label: config.label,
+            categoria: config.categoria,
             imagens,
             totalWebp,
             totalPendentes,
-            ultimaData,
+            ultimaData: imagens[0]?.created_at,
           });
         } catch (err) {
           console.warn(`Tabela ${config.tabela} não encontrada:`, err);
         }
       }
 
-      resultados.push(...tabelasAgrupadas.values());
-      resultados.sort((a, b) => b.totalPendentes - a.totalPendentes);
+      const resultados = [...tabelasAgrupadas.values()].sort((a, b) => b.totalPendentes - a.totalPendentes);
       setDadosTabelas(resultados);
       toast.success(`${resultados.length} tabelas carregadas`);
     } catch (error) {
@@ -249,7 +276,6 @@ const ConverterImagens = () => {
       const { data: convertData, error } = await supabase.functions.invoke('converter-imagem-webp', {
         body: { imageUrl: url }
       });
-
       if (error || !convertData?.success) return { sucesso: false };
 
       const { error: updateError } = await supabase
@@ -258,29 +284,26 @@ const ConverterImagens = () => {
         .eq('id', id);
 
       if (updateError) return { sucesso: false };
-
-      return { 
-        sucesso: true, 
-        tamanhoOriginal: convertData.tamanhoOriginal || 0, 
-        tamanhoWebp: convertData.tamanhoWebP || 0 
+      return {
+        sucesso: true,
+        tamanhoOriginal: convertData.tamanhoOriginal || 0,
+        tamanhoWebp: convertData.tamanhoWebP || 0,
       };
     } catch {
       return { sucesso: false };
     }
   };
 
-  // Limite de 10 conversões simultâneas, usando 80% = 8 paralelas
   const BATCH_SIZE = 8;
-  const DELAY_BETWEEN_BATCHES = 1000; // 1s entre lotes
+  const DELAY_BETWEEN_BATCHES = 1000;
 
   const converterTodas = async () => {
-    const tabelaFiltrada = tabelaSelecionada 
-      ? dadosTabelas.filter(t => `${t.tabela}:${t.coluna}` === tabelaSelecionada)
-      : dadosTabelas;
+    const fonte = tabelaSelecionada
+      ? tabelasFiltradas.filter(t => `${t.tabela}:${t.coluna}` === tabelaSelecionada)
+      : tabelasFiltradas;
 
     const imagensPendentes: { tabela: string; coluna: string; img: ImagemInfo }[] = [];
-    
-    tabelaFiltrada.forEach(t => {
+    fonte.forEach(t => {
       t.imagens
         .filter(img => !['webp', 'desconhecido', 'svg'].includes(img.formato))
         .forEach(img => imagensPendentes.push({ tabela: t.tabela, coluna: t.coluna, img }));
@@ -295,22 +318,17 @@ const ConverterImagens = () => {
     setPausado(false);
     setTotalParaConverter(imagensPendentes.length);
     setProgressoAtual(0);
-
     let convertidas = 0;
 
-    // Processar em lotes paralelos de BATCH_SIZE
     for (let i = 0; i < imagensPendentes.length; i += BATCH_SIZE) {
       if (pausado) break;
-
       const batch = imagensPendentes.slice(i, i + BATCH_SIZE);
       setImagemConvertendo(`Lote ${Math.floor(i / BATCH_SIZE) + 1} (${batch.length} imagens)`);
 
-      // Processar lote em paralelo
       const resultados = await Promise.all(
         batch.map(item => converterImagem(item.tabela, item.coluna, item.img.id, item.img.url))
       );
 
-      // Atualizar estado para cada resultado
       resultados.forEach((resultado, idx) => {
         const item = batch[idx];
         if (resultado.sucesso) {
@@ -319,17 +337,17 @@ const ConverterImagens = () => {
             setEconomiaTotal(prev => ({
               original: prev.original + resultado.tamanhoOriginal!,
               webp: prev.webp + resultado.tamanhoWebp!,
-              totalConversoes: prev.totalConversoes + 1
+              totalConversoes: prev.totalConversoes + 1,
             }));
           }
           setDadosTabelas(prev => prev.map(t => {
             if (t.tabela === item.tabela && t.coluna === item.coluna) {
               const imgs = t.imagens.map(im => im.id === item.img.id ? { ...im, formato: 'webp' } : im);
-              return { 
-                ...t, 
-                imagens: imgs, 
-                totalWebp: imgs.filter(im => im.formato === 'webp').length, 
-                totalPendentes: imgs.filter(im => !['webp', 'desconhecido', 'svg'].includes(im.formato)).length 
+              return {
+                ...t,
+                imagens: imgs,
+                totalWebp: imgs.filter(im => im.formato === 'webp').length,
+                totalPendentes: imgs.filter(im => !['webp', 'desconhecido', 'svg'].includes(im.formato)).length,
               };
             }
             return t;
@@ -338,8 +356,6 @@ const ConverterImagens = () => {
       });
 
       setProgressoAtual(prev => prev + batch.length);
-
-      // Delay entre lotes para não sobrecarregar
       if (i + BATCH_SIZE < imagensPendentes.length && !pausado) {
         await new Promise(r => setTimeout(r, DELAY_BETWEEN_BATCHES));
       }
@@ -352,11 +368,13 @@ const ConverterImagens = () => {
 
   useEffect(() => { carregarImagens(); }, []);
 
-  const tabelaAtual = tabelaSelecionada ? dadosTabelas.find(t => `${t.tabela}:${t.coluna}` === tabelaSelecionada) : null;
+  const tabelaAtual = tabelaSelecionada
+    ? tabelasFiltradas.find(t => `${t.tabela}:${t.coluna}` === tabelaSelecionada)
+    : null;
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Header Compacto */}
+      {/* Header */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border px-3 py-3">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-muted rounded-lg">
@@ -375,7 +393,39 @@ const ConverterImagens = () => {
       </div>
 
       <div className="flex-1 p-3 space-y-3">
-        {/* Estatísticas Minimalistas */}
+        {/* ── Chips de Categoria ── */}
+        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+          {CATEGORIAS.map(cat => {
+            const stats = cat.id === "todas" ? null : statsPorCategoria[cat.id];
+            const isActive = categoriaAtiva === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  setCategoriaAtiva(cat.id);
+                  setTabelaSelecionada(null);
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors shrink-0 ${
+                  isActive
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted/60 text-muted-foreground hover:bg-muted'
+                }`}
+              >
+                <span>{cat.emoji}</span>
+                <span>{cat.label}</span>
+                {stats && stats.pendentes > 0 && (
+                  <span className={`ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                    isActive ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-destructive/20 text-destructive'
+                  }`}>
+                    {stats.pendentes}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ── Estatísticas ── */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           <div className="bg-muted/50 rounded-lg p-2 text-center">
             <div className="text-lg sm:text-xl font-bold">{totalImagens}</div>
@@ -385,8 +435,8 @@ const ConverterImagens = () => {
             <div className="text-lg sm:text-xl font-bold text-green-500">{totalWebp}</div>
             <div className="text-[10px] text-muted-foreground">WebP</div>
           </div>
-          <div className="bg-amber-500/10 rounded-lg p-2 text-center">
-            <div className="text-lg sm:text-xl font-bold text-amber-500">{totalPendentes}</div>
+          <div className="bg-destructive/10 rounded-lg p-2 text-center">
+            <div className="text-lg sm:text-xl font-bold text-destructive">{totalPendentes}</div>
             <div className="text-[10px] text-muted-foreground">Pendentes</div>
           </div>
           <div className="bg-primary/10 rounded-lg p-2 text-center">
@@ -403,14 +453,14 @@ const ConverterImagens = () => {
               {formatarTamanho(economiaTotal.original - economiaTotal.webp)}
             </div>
             <div className="text-[10px] text-muted-foreground">
-              Economizados ({economiaTotal.totalConversoes} conv.)
+              Economizados ({economiaTotal.totalConversoes})
             </div>
           </div>
         </div>
 
         <Progress value={percentualConvertido} className="h-2" />
 
-        {/* Controles */}
+        {/* ── Controles ── */}
         <div className="flex items-center gap-2">
           {!convertendo ? (
             <Button onClick={converterTodas} disabled={totalPendentes === 0} size="sm" className="flex-1">
@@ -430,22 +480,22 @@ const ConverterImagens = () => {
           )}
         </div>
 
-        {/* Progresso da Conversão */}
+        {/* ── Progresso da Conversão ── */}
         {convertendo && (
-          <div className="bg-amber-500/10 rounded-lg p-3">
+          <div className="bg-primary/10 rounded-lg p-3">
             <Progress value={(progressoAtual / totalParaConverter) * 100} className="h-2 mb-2" />
             <p className="text-xs text-muted-foreground truncate">{imagemConvertendo}</p>
           </div>
         )}
 
-        {/* Lista de Tabelas */}
+        {/* ── Lista de Tabelas ── */}
         <ScrollArea className="flex-1">
           <div className="space-y-1">
-            {dadosTabelas.map(t => {
+            {tabelasFiltradas.map(t => {
               const chave = `${t.tabela}:${t.coluna}`;
               const selecionada = tabelaSelecionada === chave;
               const percentual = t.imagens.length > 0 ? Math.round((t.totalWebp / t.imagens.length) * 100) : 100;
-              
+
               return (
                 <div
                   key={chave}
@@ -455,29 +505,21 @@ const ConverterImagens = () => {
                   }`}
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs font-medium truncate">{t.tabela}</span>
-                      <span className="text-[10px] text-muted-foreground">({t.coluna})</span>
-                    </div>
-                    {t.ultimaData && (
-                      <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                        <Calendar className="w-3 h-3" />
-                        {new Date(t.ultimaData).toLocaleDateString('pt-BR')}
-                      </div>
-                    )}
+                    <span className="text-xs font-medium truncate block">{t.label}</span>
+                    <span className="text-[10px] text-muted-foreground">{t.imagens.length} imagens</span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 shrink-0">
                     {t.totalPendentes > 0 ? (
-                      <Badge variant="secondary" className="text-[10px] h-5 bg-amber-500/20 text-amber-500">
+                      <Badge variant="secondary" className="text-[10px] h-5 bg-destructive/20 text-destructive">
                         {t.totalPendentes}
                       </Badge>
                     ) : (
                       <Check className="w-4 h-4 text-green-500" />
                     )}
                     <div className="w-12 h-1.5 bg-muted rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-green-500 transition-all" 
+                      <div
+                        className="h-full bg-green-500 transition-all"
                         style={{ width: `${percentual}%` }}
                       />
                     </div>
@@ -488,24 +530,24 @@ const ConverterImagens = () => {
           </div>
         </ScrollArea>
 
-        {/* Preview de Imagens da Tabela Selecionada */}
+        {/* ── Preview de Imagens ── */}
         {tabelaAtual && (
           <div className="bg-card border border-border rounded-lg p-3">
             <div className="flex items-center gap-2 mb-3">
               <Database className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">{tabelaAtual.tabela}</span>
+              <span className="text-sm font-medium">{tabelaAtual.label}</span>
               <Badge variant="outline" className="text-[10px]">{tabelaAtual.imagens.length} imagens</Badge>
             </div>
             <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
               {tabelaAtual.imagens.slice(0, 24).map((img, idx) => (
-                <div 
+                <div
                   key={`${img.id}-${idx}`}
                   className={`relative aspect-square rounded overflow-hidden border ${
                     img.formato === 'webp' ? 'border-green-500/50' : 'border-border'
                   }`}
                 >
-                  <img 
-                    src={img.url} 
+                  <img
+                    src={img.url}
                     alt=""
                     className="w-full h-full object-cover"
                     loading="lazy"
@@ -513,7 +555,7 @@ const ConverterImagens = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <span className={`absolute bottom-0.5 left-0.5 text-[8px] font-bold px-1 rounded ${
-                    img.formato === 'webp' ? 'bg-green-500 text-white' : 'bg-amber-500 text-black'
+                    img.formato === 'webp' ? 'bg-green-500 text-white' : 'bg-destructive text-destructive-foreground'
                   }`}>
                     {img.formato.toUpperCase()}
                   </span>
