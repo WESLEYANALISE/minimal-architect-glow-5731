@@ -599,16 +599,16 @@ const Index = () => {
               <DesktopEstudosComputador navigate={gatedNavigate} onEvelyn={() => setProfessoraOpen(true)} />
             </div>
 
+            {/* Portal de Vídeos (Estudos em Mídia) */}
+            <div className="px-2 pt-4">
+              <PortalDeVideosSection navigate={gatedNavigate} />
+            </div>
+
             {/* Estudos / Leis do Dia / Vade Mecum - Carousel com setas */}
             <div className="pt-4 pb-4">
               <EstudosViewCarousel>
                 <HomePratiqueSlide />
               </EstudosViewCarousel>
-            </div>
-
-            {/* Portal de Vídeos */}
-            <div className="px-2 pt-4">
-              <PortalDeVideosSection navigate={gatedNavigate} />
             </div>
 
             {/* Simulados - apenas admin */}
