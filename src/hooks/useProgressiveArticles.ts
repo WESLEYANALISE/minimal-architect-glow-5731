@@ -62,9 +62,9 @@ interface UseProgressiveArticlesReturn<T> {
  */
 export const useProgressiveArticles = <T = any>({
   tableName,
-  initialChunk = 50,
-  backgroundChunk = 100,
-  delayBetweenChunks = 200,
+  initialChunk = 200,
+  backgroundChunk = 200,
+  delayBetweenChunks = 50,
   enabled = true,
   cacheKey,
   idMin,
