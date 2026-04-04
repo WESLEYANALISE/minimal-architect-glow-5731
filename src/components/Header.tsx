@@ -553,7 +553,19 @@ const getPreviousPageTitle = (pathname: string, search: string): string => {
     "/noticias-juridicas": "Notícias Jurídicas",
     "/ranking-faculdades": "Ranking Faculdades",
     "/blogger-juridico": "Blogger Jurídico",
-    "/blogger-juridico/artigos": "Artigos"
+    "/blogger-juridico/artigos": "Artigos",
+    "/aulas": "Aulas",
+    "/aulas/areas": "Áreas",
+    "/estudos": "Estudos",
+    "/dominando": "Dominando",
+    "/dominando/trilhas": "Trilhas",
+    "/dominando/area": "Área",
+    "/videoaulas-oab": "Videoaulas OAB",
+    "/tres-poderes": "Três Poderes",
+    "/novas-leis": "Novas Leis",
+    "/conceitos/area": "Área",
+    "/?tab=estudos": "Estudos",
+    "/iniciando-direito/todos": "Iniciando",
   };
 
   // Verifica título direto
