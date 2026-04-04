@@ -536,13 +536,6 @@ const VadeMecumTodas = () => {
                 })}
               </div>
 
-              {/* Brasão decorativo */}
-              <div className="mt-8 text-center">
-                <img src={brasaoRepublica} alt="Brasão da República" className="w-14 h-14 object-contain mx-auto mb-2 drop-shadow-lg" />
-                <p className="text-xs text-foreground/70 max-w-xs mx-auto">
-                  Legislação brasileira sempre atualizada
-                </p>
-              </div>
             </div>
           </div>
 
