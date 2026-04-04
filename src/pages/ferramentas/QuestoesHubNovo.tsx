@@ -269,7 +269,7 @@ const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => 
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-normal text-white leading-snug line-clamp-2">{tema.tema}</p>
                     <p className="text-[11px] mt-0.5" style={{ color: "hsl(40, 80%, 55%)" }}>
-                      {tema.totalQuestoes.toLocaleString('pt-BR')} questões • {tema.subtemasGerados}/{tema.totalSubtemas} subtemas
+                      {tema.totalQuestoes.toLocaleString('pt-BR')} questões
                     </p>
                   </div>
 
