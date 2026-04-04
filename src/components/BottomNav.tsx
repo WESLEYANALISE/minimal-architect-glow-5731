@@ -22,6 +22,7 @@ export const BottomNav = () => {
   const [isNovidadesOpen, setIsNovidadesOpen] = useState(false);
   const [isFerramentasOpen, setIsFerramentasOpen] = useState(false);
   const { naoLidas: notifNaoLidas } = useNotificacoesApp();
+  const { onTouchStart: prefetchOnTouch } = usePrefetchRoute();
   const isActive = (path: string) => location.pathname === path;
   
   if (location.pathname.startsWith('/ferramentas/questoes') || location.pathname === '/assinatura' || (location.pathname === '/' && !isAuthenticated)) {
