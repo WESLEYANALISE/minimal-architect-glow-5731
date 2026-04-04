@@ -933,7 +933,7 @@ export const ArtigoListaCompacta = ({
               }}
               className={`rounded-md text-sm font-medium flex items-center gap-1.5 ${
                 modoVisualizacao === 'artigos' && subModoConteudo === 'lista'
-                  ? '!bg-accent !text-black shadow-sm'
+                  ? '!bg-accent !text-white shadow-sm'
                   : 'text-white hover:bg-muted/30'
               }`}
             >
@@ -949,7 +949,7 @@ export const ArtigoListaCompacta = ({
               }}
               className={`rounded-md text-sm font-medium flex items-center gap-1.5 ${
                 modoVisualizacao === 'capitulos' && subModoConteudo === 'lista'
-                  ? '!bg-accent !text-black shadow-sm'
+                  ? '!bg-accent !text-white shadow-sm'
                   : 'text-white hover:bg-muted/30'
               }`}
             >

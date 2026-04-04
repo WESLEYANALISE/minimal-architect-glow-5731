@@ -588,15 +588,6 @@ const Constituicao = () => {
             titulo={secao === 'adct' ? 'EMENDAS CONSTITUCIONAIS' : 'CONSTITUIÇÃO FEDERAL'} 
             subtitulo={secao === 'adct' ? 'Disposições transitórias da CF/88' : 'de 5 de outubro de 1988'}
           />
-          <div className="px-4 max-w-4xl mx-auto -mt-2 mb-2">
-            <button 
-              onClick={() => { setSecao(null); setSearchInput(''); setSearchQuery(''); }}
-              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Voltar
-            </button>
-          </div>
         </div>
       )}
 
