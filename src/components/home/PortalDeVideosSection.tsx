@@ -1,9 +1,9 @@
 import { memo } from "react";
 import { Video, ChevronRight, MonitorPlay, Headphones } from "lucide-react";
 import { useDeviceType } from "@/hooks/use-device-type";
-import coverIniciante from "@/assets/covers/cover-midia-iniciante.jpg";
-import coverVideoaulas from "@/assets/covers/cover-midia-videoaulas.jpg";
-import coverAudioaulas from "@/assets/covers/cover-midia-audioaulas.jpg";
+import capaIniciante from "@/assets/portal-videos-iniciante.jpg";
+import capaVideoaulas from "@/assets/portal-videos-videoaulas.jpg";
+import capaAudioaulas from "@/assets/portal-videos-audioaulas.jpg";
 
 interface PortalDeVideosSectionProps {
   navigate: (path: string) => void;
@@ -17,7 +17,7 @@ const itens = [
     icon: Video,
     route: "/aulas-em-tela",
     gradient: "from-emerald-600 via-emerald-700 to-emerald-800",
-    capa: coverIniciante,
+    capa: capaIniciante,
   },
   {
     id: "videoaulas",
@@ -26,7 +26,7 @@ const itens = [
     icon: Video,
     route: "/videoaulas",
     gradient: "from-purple-600 via-purple-700 to-purple-800",
-    capa: coverVideoaulas,
+    capa: capaVideoaulas,
   },
   {
     id: "audioaulas",
@@ -35,7 +35,7 @@ const itens = [
     icon: Headphones,
     route: "/audioaulas",
     gradient: "from-amber-600 via-amber-700 to-amber-800",
-    capa: coverAudioaulas,
+    capa: capaAudioaulas,
   },
 ];
 

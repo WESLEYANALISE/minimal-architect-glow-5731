@@ -1,7 +1,5 @@
 import { memo } from "react";
-import { Monitor, Bot, ArrowRight, Sparkles, ChevronRight } from "lucide-react";
-import coverDesktop from "@/assets/covers/cover-modo-desktop.jpg";
-import coverEvelyn from "@/assets/covers/cover-evelyn.jpg";
+import { Monitor, Bot, ArrowRight, Sparkles } from "lucide-react";
 
 interface DesktopEstudosComputadorProps {
   navigate: (path: string) => void;
@@ -23,67 +21,63 @@ export const DesktopEstudosComputador = memo(({ navigate, onEvelyn }: DesktopEst
         {/* Card 1: Modo Desktop */}
         <button
           onClick={() => navigate("/funcoes")}
-          className="group relative rounded-xl overflow-hidden border border-white/[0.06] active:scale-95 transition-transform text-left cursor-pointer min-h-[110px]"
-          style={{ boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)' }}
+          className="group relative rounded-xl overflow-hidden border border-white/[0.06] hover:border-rose-500/30 transition-all duration-500 text-left cursor-pointer"
         >
-          <img src={coverDesktop} alt="" loading="lazy" width={512} height={512} className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(350,50%,12%)] via-[hsl(345,45%,9%)] to-[hsl(340,40%,7%)]" />
+          <div className="absolute -top-6 -right-6 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl group-hover:bg-rose-500/20 transition-all duration-700" />
 
-          {/* Shine effect */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-xl">
-            <div
-              className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/[0.08] to-transparent skew-x-[-20deg]"
-              style={{ animation: 'shinePratique 4s ease-in-out infinite 1s' }}
-            />
-          </div>
-
-          <div className="relative z-[1] p-3 sm:p-4 flex flex-col items-start justify-end h-full min-h-[110px]">
-            <div className="bg-white/15 backdrop-blur-sm p-2.5 rounded-xl mb-2">
-              <Monitor className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-left w-full flex items-end justify-between">
-              <div>
-                <span className="text-[15px] sm:text-base font-bold text-white block leading-tight drop-shadow-md">Modo Desktop</span>
-                <span className="text-[11px] sm:text-xs text-white/70 block drop-shadow-sm">Estude pelo computador</span>
+          <div className="relative p-3.5 flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <div className="p-2 rounded-lg bg-rose-500/15 border border-rose-500/20">
+                <Monitor className="w-5 h-5 text-rose-400" />
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-white/25 group-hover:text-white/60 transition-colors shrink-0 mb-0.5" />
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/15 text-[9px] font-medium text-rose-400/80">
+                <Sparkles className="w-2.5 h-2.5" />
+                Exclusivo
+              </span>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-bold text-white/95">Modo Desktop</h3>
+              <p className="text-[11px] text-white/45 leading-snug">Estude pelo computador</p>
+            </div>
+
+            <div className="flex items-center gap-1 text-rose-400/80 text-[11px] font-medium">
+              Acessar
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" />
             </div>
           </div>
-
-          <div className="absolute bottom-0 left-0 right-0 h-[3px] z-[2]" style={{ background: 'linear-gradient(90deg, transparent, #f9a8d480, transparent)' }} />
         </button>
 
         {/* Card 2: Evelyn - Assistente Jurídica */}
         <button
           onClick={handleEvelynClick}
-          className="group relative rounded-xl overflow-hidden border border-white/[0.06] active:scale-95 transition-transform text-left cursor-pointer min-h-[110px]"
-          style={{ boxShadow: '0 6px 20px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)' }}
+          className="group relative rounded-xl overflow-hidden border border-white/[0.06] hover:border-rose-500/30 transition-all duration-500 text-left cursor-pointer"
         >
-          <img src={coverEvelyn} alt="" loading="lazy" width={512} height={512} className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(350,50%,12%)] via-[hsl(345,45%,9%)] to-[hsl(340,40%,7%)]" />
+          <div className="absolute -top-6 -right-6 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl group-hover:bg-rose-500/20 transition-all duration-700" />
 
-          {/* Shine effect */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-xl">
-            <div
-              className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/[0.08] to-transparent skew-x-[-20deg]"
-              style={{ animation: 'shinePratique 4s ease-in-out infinite 1.2s' }}
-            />
-          </div>
-
-          <div className="relative z-[1] p-3 sm:p-4 flex flex-col items-start justify-end h-full min-h-[110px]">
-            <div className="bg-white/15 backdrop-blur-sm p-2.5 rounded-xl mb-2">
-              <Bot className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-left w-full flex items-end justify-between">
-              <div>
-                <span className="text-[15px] sm:text-base font-bold text-white block leading-tight drop-shadow-md">Evelyn</span>
-                <span className="text-[11px] sm:text-xs text-white/70 block drop-shadow-sm">Assistente jurídica com IA</span>
+          <div className="relative p-3.5 flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <div className="p-2 rounded-lg bg-rose-500/15 border border-rose-500/20">
+                <Bot className="w-5 h-5 text-rose-400" />
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-white/25 group-hover:text-white/60 transition-colors shrink-0 mb-0.5" />
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/15 text-[9px] font-medium text-rose-400/80">
+                <Sparkles className="w-2.5 h-2.5" />
+                IA
+              </span>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-bold text-white/95">Evelyn</h3>
+              <p className="text-[11px] text-white/45 leading-snug">Assistente jurídica com IA</p>
+            </div>
+
+            <div className="flex items-center gap-1 text-rose-400/80 text-[11px] font-medium">
+              Conversar
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" />
             </div>
           </div>
-
-          <div className="absolute bottom-0 left-0 right-0 h-[3px] z-[2]" style={{ background: 'linear-gradient(90deg, transparent, #c084fc80, transparent)' }} />
         </button>
       </div>
     </div>
