@@ -517,9 +517,6 @@ const QuestoesResolver = () => {
         </Drawer>
       </div>
 
-      {shouldShowCountdown && (
-        <CountdownStart onComplete={() => setCountdownDone(true)} />
-      )}
     </>
   );
 };
