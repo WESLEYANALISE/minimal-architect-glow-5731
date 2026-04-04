@@ -225,7 +225,7 @@ export const AppSidebar = ({ onClose, collapsed = false, onToggle }: AppSidebarP
     },
     {
       label: 'Audioaulas',
-      icon: Wifi,
+      icon: Mic,
       path: "/audioaulas",
     },
     {
