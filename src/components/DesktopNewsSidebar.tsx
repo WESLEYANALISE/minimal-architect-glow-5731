@@ -66,7 +66,7 @@ export const DesktopNewsSidebar = () => {
                 className="w-full text-left p-2 rounded-lg hover:bg-muted/50 transition-colors group"
               >
                 <div className="flex gap-2.5 items-start">
-                  <div className="w-20 h-14 rounded bg-muted flex-shrink-0 overflow-hidden border border-border/50">
+                  <div className="w-24 h-16 rounded bg-muted flex-shrink-0 overflow-hidden border border-border/50">
                     {imagem ? (
                       <img
                         src={imagem}
