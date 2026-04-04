@@ -521,8 +521,10 @@ const VadeMecumTodas = () => {
                     <button
                       key={card.id}
                       onClick={() => handleCategoryClick(card)}
-                      className="group bg-card/90 backdrop-blur-sm rounded-2xl border border-border/30 cursor-pointer hover:scale-[1.02] transition-all overflow-hidden h-[120px] p-3 flex flex-col gap-2 text-left relative"
+                      className="group rounded-2xl cursor-pointer hover:scale-[1.02] transition-all overflow-hidden h-[120px] p-3 flex flex-col gap-2 text-left relative"
                       style={{
+                        background: 'hsla(0, 0%, 100%, 0.04)',
+                        border: '1px solid hsla(40, 60%, 50%, 0.1)',
                         boxShadow: '4px 6px 12px rgba(0, 0, 0, 0.4)',
                       }}
                     >
