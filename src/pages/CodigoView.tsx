@@ -994,7 +994,8 @@ const CodigoView = () => {
       {articles.length > 0 && showScrollTop && (
         <button 
           onClick={scrollToTopSmooth} 
-          className="fixed bottom-20 right-4 bg-accent hover:bg-accent text-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg z-30"
+          className="fixed bottom-20 right-4 w-12 h-12 rounded-full flex items-center justify-center shadow-lg z-30 text-white"
+          style={{ background: 'hsl(40, 80%, 45%)' }}
         >
           <ArrowUp className="w-5 h-5" />
         </button>
