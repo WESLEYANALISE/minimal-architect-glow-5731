@@ -1,27 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { Scale, Search, Loader2, ChevronRight, Lock, Crown } from "lucide-react";
+import { Scale, Search, Loader2, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuestoesAreasCache } from "@/hooks/useQuestoesAreasCache";
-import { useContentLimit } from "@/hooks/useContentLimit";
-import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
 
 const QuestoesAreas = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [showPremiumCard, setShowPremiumCard] = useState(false);
 
   const { areas, isLoading, totalQuestoes } = useQuestoesAreasCache();
 
   const filteredAreas = areas?.filter((item) =>
     item.area.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  // Aplicar limite de conteúdo premium (20%)
-  const { visibleItems, lockedItems, isPremiumRequired } = useContentLimit(filteredAreas, 'questoes');
 
   const areaIcons = ["📜", "⚖️", "💼", "💰", "🏛️", "📋"];
   const glowColors = [
@@ -44,11 +38,6 @@ const QuestoesAreas = () => {
             <h1 className="text-xl md:text-2xl font-bold">Questões por Tema</h1>
             <p className="text-sm text-muted-foreground">
               {isLoading ? 'Carregando...' : `${totalQuestoes.toLocaleString('pt-BR')} questões disponíveis`}
-              {isPremiumRequired && (
-                <span className="text-amber-500 ml-2">
-                  • {visibleItems.length} áreas liberadas
-                </span>
-              )}
             </p>
           </div>
         </div>
@@ -83,14 +72,13 @@ const QuestoesAreas = () => {
               <Skeleton key={i} className="h-[72px] w-full rounded-lg" />
             ))}
           </div>
-        ) : visibleItems.length === 0 && lockedItems.length === 0 ? (
+        ) : !filteredAreas || filteredAreas.length === 0 ? (
           <Card className="p-6 text-center">
             <p className="text-muted-foreground">Nenhuma área encontrada</p>
           </Card>
         ) : (
           <div className="flex flex-col gap-3">
-            {/* Áreas visíveis */}
-            {visibleItems.map((item, index) => (
+            {filteredAreas.map((item, index) => (
               <Card
                 key={item.area}
                 className="cursor-pointer hover:bg-muted/80 transition-all border-l-4 bg-card/90 backdrop-blur-sm hover:translate-x-1"
@@ -128,56 +116,9 @@ const QuestoesAreas = () => {
                 </CardContent>
               </Card>
             ))}
-
-            {/* Áreas bloqueadas */}
-            {lockedItems.map((item, index) => {
-              const realIndex = visibleItems.length + index;
-              return (
-                <Card
-                  key={item.area}
-                  className="cursor-pointer hover:border-amber-500/40 transition-all border-l-4 bg-card/50 backdrop-blur-sm"
-                  style={{
-                    borderLeftColor: "hsl(45, 93%, 47%)",
-                    boxShadow: `inset 4px 0 12px -4px hsl(45, 93%, 47%, 0.3)`
-                  }}
-                  onClick={() => setShowPremiumCard(true)}
-                >
-                  <CardContent className="p-4 flex items-center gap-4">
-                    <div 
-                      className="rounded-lg p-2.5 shrink-0 flex items-center justify-center border border-amber-500/30 bg-amber-500/10"
-                    >
-                      <Lock className="w-5 h-5 text-amber-500" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-base text-muted-foreground">{item.area}</h3>
-                      <p className="text-sm text-muted-foreground/70">
-                        {item.totalQuestoes > 0 ? (
-                          `${item.totalQuestoes.toLocaleString("pt-BR")} questões`
-                        ) : (
-                          "Sem questões ainda"
-                        )}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/90 text-white text-[10px] font-semibold">
-                      <Crown className="w-3 h-3" />
-                      Premium
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
           </div>
         )}
       </div>
-
-      {/* Premium Card */}
-      <PremiumFloatingCard
-        isOpen={showPremiumCard}
-        onClose={() => setShowPremiumCard(false)}
-        title="Questões Premium"
-        description="Desbloqueie todas as áreas de questões assinando um dos nossos planos."
-        sourceFeature="Questões"
-      />
     </div>
   );
 };

@@ -8,9 +8,6 @@ import { Button } from "@/components/ui/button";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useResumosTemas } from "@/hooks/useResumosAreasCache";
 
-const FREE_AREAS_RESUMOS = ["Direito Constitucional", "Direito Administrativo"];
-const normalizeAreaResumo = (area: string) => area.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-const isAreaFreeResumo = (area: string) => FREE_AREAS_RESUMOS.some(f => normalizeAreaResumo(f) === normalizeAreaResumo(area));
 
 const ResumosProntos = () => {
   const navigate = useNavigate();
@@ -110,8 +107,7 @@ const ResumosProntos = () => {
           <div className="space-y-2">
             {temasFiltrados.map((tema, index) => {
               const ordemNum = parseInt(tema.ordem) || (index + 1);
-              const lockedFrom20 = Math.max(1, Math.ceil(temasFiltrados.length * 0.20));
-              const isLockedTema = !isPremium && index >= lockedFrom20;
+              const isLockedTema = !isPremium && index >= 2;
               return (
                 <button
                   key={tema.tema}

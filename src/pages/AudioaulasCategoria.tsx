@@ -111,8 +111,8 @@ const AudioaulasCategoria = () => {
     }
   }, [audios]);
 
-  // Limite de 20% para usuários gratuitos
-  const limiteGratis = Math.max(1, Math.ceil((audios || []).length * 0.10));
+  // Limite fixo de 2 áudios gratuitos por área
+  const limiteGratis = 2;
 
   const [showPremiumCard, setShowPremiumCard] = useState(false);
 
