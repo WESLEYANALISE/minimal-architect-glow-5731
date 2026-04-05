@@ -60,13 +60,13 @@ const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
   // Verificar ao voltar para o app
   useAppLifecycle(checkPaymentStatus);
 
-  // Polling agressivo a cada 3s para detectar pagamento aprovado
+  // Polling fallback a cada 10s (Realtime listener below handles instant detection)
   useEffect(() => {
     if (showSuccess || isGenerating || !qrCode) return;
     
     const interval = setInterval(async () => {
       await refreshSubscription();
-    }, 3000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [refreshSubscription, showSuccess, isGenerating, qrCode]);
