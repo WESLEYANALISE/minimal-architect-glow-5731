@@ -184,7 +184,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: 'es2020',
     sourcemap: false,
-    minify: true,
+    minify: 'terser',
     rollupOptions: {
       output: {
         // Manual chunks otimizados para melhor caching e code splitting
