@@ -745,6 +745,28 @@ export default function Perfil() {
             <PerfilSuporteTab />
           </TabsContent>
         </Tabs>
+          </>
+        )}
+
+        {/* Avatar Picker Dialog - shared */}
+        <Dialog open={showAvatarPicker} onOpenChange={setShowAvatarPicker}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle>Escolher avatar</DialogTitle>
+            </DialogHeader>
+            <div className="grid grid-cols-4 gap-3 py-2">
+              {AVATAR_IDS.map((id) => (
+                <button
+                  key={id}
+                  onClick={() => handleSelectAvatar(id)}
+                  className="rounded-full overflow-hidden border-2 border-transparent hover:border-primary transition-colors p-1"
+                >
+                  <img src={`https://i.pravatar.cc/150?img=${id}`} alt={`Avatar ${id}`} className="w-full h-full rounded-full" />
+                </button>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
