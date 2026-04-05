@@ -506,11 +506,6 @@ const App = () => {
                <Route path="/welcome" element={<Navigate to="/" replace />} />
                <Route path="/welcome-vitalicio" element={<WelcomeVitalicio />} />
                <Route path="/auth" element={<Auth />} />
-              <Route path="/escolher-plano" element={
-                <ProtectedRoute skipOnboardingCheck>
-                  <L><EscolherPlano /></L>
-                </ProtectedRoute>
-              } />
               <Route path="/onboarding" element={
                 <ProtectedRoute skipOnboardingCheck>
                   <Onboarding />
