@@ -204,22 +204,19 @@ export default function AssinaturaNova() {
     <>
       <div className="min-h-screen bg-black text-white overflow-x-hidden">
 
-        {/* ═══ Header ═══ */}
-        <div className="pt-12 pb-6 text-center px-6">
-          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
-              style={{ background: "linear-gradient(145deg, hsl(43 80% 50% / 0.2), hsl(43 80% 50% / 0.05))", border: "1px solid hsl(43 60% 50% / 0.3)" }}>
-              <Crown className="w-8 h-8 text-amber-400" />
-            </div>
-          </motion.div>
-          <motion.h1 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-            className="text-2xl font-black tracking-tight">
-            Acesso <span className="text-amber-400">Prime</span>
-          </motion.h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}
-            className="text-zinc-500 text-sm mt-1.5">
-            Tudo que você precisa para o Direito
-          </motion.p>
+        {/* ═══ Hero ═══ */}
+        <div className="relative w-full h-[280px] overflow-hidden">
+          <img src={heroBackground} alt="" className="w-full h-full object-cover object-center brightness-110 saturate-[1.15]" loading="eager" />
+          <div className="absolute inset-0 bg-[linear-gradient(110deg,transparent_30%,rgba(255,255,255,0.12)_50%,transparent_70%)] bg-[length:250%_100%] animate-[shimmer_3s_ease-in-out_infinite]" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent" />
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-8">
+            <img src={newLogo} alt="Direito Prime" className="w-14 h-14 mb-2.5 object-contain"
+              style={{ filter: "drop-shadow(0 2px 16px rgba(212,168,75,0.7))" }} />
+            <h1 className="text-2xl font-black text-white tracking-tight" style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7)" }}>
+              Acesso <span className="text-amber-400">Prime</span>
+            </h1>
+            <p className="text-zinc-400 text-xs mt-1 font-medium">Tudo que você precisa para o Direito</p>
+          </div>
         </div>
 
         {/* ═══ Benefits ═══ */}
