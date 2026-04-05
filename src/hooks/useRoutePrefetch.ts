@@ -125,7 +125,7 @@ const CHUNK_PREFETCH_MAP: Record<string, () => Promise<any>> = {
   '/resumos-juridicos/prontos': () => import('../pages/ResumosProntos'),
   '/flashcards-hub': () => import('../pages/FlashcardsHub'),
   '/aulas': () => import('../pages/AulasPage'),
-  '/assinatura': () => import('../pages/Assinatura'),
+  '/assinatura': () => import('../pages/AssinaturaNova'),
 };
 
 // Mapa de contexto - quais dados/chunks prefetch baseado na rota atual

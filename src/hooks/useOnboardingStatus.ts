@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { hasPlanChosen } from '@/pages/EscolherPlano';
+const hasPlanChosen = () => true; // EscolherPlano removed — plan always considered chosen
 import { supabase } from '@/integrations/supabase/client';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 
@@ -69,7 +69,7 @@ export const useOnboardingStatus = (): OnboardingStatus => {
     : false;
 
   // Verificar se já escolheu plano (localStorage OU já é Premium)
-  const planChosen = user ? (hasPlanChosen(user.id) || isPremium) : false;
+  const planChosen = user ? (hasPlanChosen() || isPremium) : false;
 
   // Onboarding é completo se:
   // 1. Já completou antes (localStorage) OU

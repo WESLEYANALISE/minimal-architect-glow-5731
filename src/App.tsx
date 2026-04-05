@@ -44,7 +44,7 @@ const WelcomeVitalicio = lazy(() => import("./pages/WelcomeVitalicio"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const AcompanhamentoPage = lazy(() => import("./pages/Acompanhamento"));
 
-const EscolherPlano = lazy(() => import("./pages/EscolherPlano"));
+
 const OnboardingPaywall = lazy(() => import("./pages/OnboardingPaywall"));
 const ChatProfessora = lazy(() => import("./pages/ChatProfessora"));
 const ProfessoraChatPage = lazy(() => import("./pages/ProfessoraChatPage"));
@@ -506,11 +506,6 @@ const App = () => {
                <Route path="/welcome" element={<Navigate to="/" replace />} />
                <Route path="/welcome-vitalicio" element={<WelcomeVitalicio />} />
                <Route path="/auth" element={<Auth />} />
-              <Route path="/escolher-plano" element={
-                <ProtectedRoute skipOnboardingCheck>
-                  <L><EscolherPlano /></L>
-                </ProtectedRoute>
-              } />
               <Route path="/onboarding" element={
                 <ProtectedRoute skipOnboardingCheck>
                   <Onboarding />
