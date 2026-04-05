@@ -781,11 +781,11 @@ serve(async (req) => {
             signal: AbortSignal.timeout(45000),
           });
 
-          if (response.status === 429) continue;
-          if (response.status === 404) { console.log(`[processar] Modelo ${modelo} indisponível`); continue modeloLoop; }
+          if (response.status === 429) { console.log(`[processar] Rate limit modelo=${modelo} key=${keyInfo.index}`); continue; }
+          if (response.status === 404) { console.log(`[processar] Modelo ${modelo} indisponível (404)`); continue modeloLoop; }
 
           const data = await response.json();
-          if (!response.ok) { console.error(`[processar] Erro Gemini:`, JSON.stringify(data).substring(0, 300)); continue; }
+          if (!response.ok) { console.error(`[processar] Erro ${response.status} modelo=${modelo}:`, JSON.stringify(data).substring(0, 500)); continue; }
 
           respostaIA = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
           modeloUsado = modelo;
