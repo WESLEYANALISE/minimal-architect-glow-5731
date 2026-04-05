@@ -44,7 +44,7 @@ const WelcomeVitalicio = lazy(() => import("./pages/WelcomeVitalicio"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const AcompanhamentoPage = lazy(() => import("./pages/Acompanhamento"));
 
-const EscolherPlano = lazy(() => import("./pages/EscolherPlano"));
+
 const OnboardingPaywall = lazy(() => import("./pages/OnboardingPaywall"));
 const ChatProfessora = lazy(() => import("./pages/ChatProfessora"));
 const ProfessoraChatPage = lazy(() => import("./pages/ProfessoraChatPage"));

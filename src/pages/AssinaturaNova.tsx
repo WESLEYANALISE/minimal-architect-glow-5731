@@ -372,11 +372,14 @@ export default function AssinaturaNova() {
         <PixPaymentScreen
           userId={user.id}
           planType={selectedPlan}
-          pixData={pixData}
-          pixLoading={pixLoading}
+          qrCodeBase64={pixData?.qrCodeBase64}
+          qrCode={pixData?.qrCode}
+          amount={plan.price}
+          expiresAt={pixData?.expiresAt}
+          isGenerating={pixLoading}
           onCopyCode={copyPixCode}
-          onClose={() => { setShowPixScreen(false); resetPix(); }}
-          onSuccess={() => { setShowPixScreen(false); resetPix(); navigate("/"); }}
+          onCancel={() => { setShowPixScreen(false); resetPix(); }}
+          onPaymentApproved={() => { setShowPixScreen(false); resetPix(); navigate("/"); }}
         />
       )}
     </>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { hasPlanChosen } from '@/pages/EscolherPlano';
+const hasPlanChosen = () => true; // EscolherPlano removed — plan always considered chosen
 import { supabase } from '@/integrations/supabase/client';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 
