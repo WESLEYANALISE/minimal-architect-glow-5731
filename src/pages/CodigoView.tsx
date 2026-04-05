@@ -880,7 +880,7 @@ const CodigoView = () => {
 
   // LAYOUT MOBILE/TABLET - Modo Realeza
   return (
-    <div className="min-h-screen text-foreground pb-24 relative" style={{ background: 'linear-gradient(to bottom, hsl(345, 65%, 18%), hsl(350, 40%, 10%))' }}>
+    <div className="min-h-screen text-foreground pb-24 relative" style={{ background: 'linear-gradient(to bottom, hsl(345, 55%, 16%), hsl(350, 35%, 8%))' }}>
       {/* DotPattern de fundo */}
       <DotPattern className="opacity-[0.04]" />
       
