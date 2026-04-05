@@ -650,7 +650,7 @@ const CodigoView = () => {
   // LAYOUT DESKTOP - 3 colunas
   if (isDesktop) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen text-foreground">
         {renderModals()}
         
         <VadeMecumDesktopLayout
