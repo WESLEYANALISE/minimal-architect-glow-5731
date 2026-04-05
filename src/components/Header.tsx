@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { PesquisarSheet } from "./PesquisarSheet";
 import SearchBarAnimatedText from "./SearchBarAnimatedText";
@@ -698,6 +698,7 @@ const getPageTitle = (pathname: string): string => {
 
 export const Header = () => {
   const navigate = useNavigate();
+  const [, startTransition] = useTransition();
   const location = useLocation();
   const { user } = useAuth();
   const [pesquisarOpen, setPesquisarOpen] = useState(false);
@@ -777,7 +778,7 @@ export const Header = () => {
     
     // Se destination é null e estamos em /codigo/*, usar navigate(-1) para voltar à rota anterior
     if (!destination && location.pathname.startsWith("/codigo/")) {
-      navigate(-1);
+      startTransition(() => { navigate(-1); });
       setTimeout(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 100);
       return;
     }
@@ -785,11 +786,13 @@ export const Header = () => {
     if (!destination) return;
 
     // Passa state especial quando voltando para /vade-mecum de subcategorias
-    if (destination === "/vade-mecum") {
-      navigate(destination, { state: { fromSubcategory: true } });
-    } else {
-      navigate(destination);
-    }
+    startTransition(() => {
+      if (destination === "/vade-mecum") {
+        navigate(destination, { state: { fromSubcategory: true } });
+      } else {
+        navigate(destination);
+      }
+    });
 
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
