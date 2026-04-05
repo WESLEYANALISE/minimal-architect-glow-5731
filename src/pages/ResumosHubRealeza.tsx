@@ -21,7 +21,7 @@ import capaFeynman from "@/assets/capa-resumo-feynman.webp";
 
 // ── Constants ──
 
-const FREE_AREAS = ["Direito Constitucional", "Direito Administrativo"];
+
 
 const PRINCIPAIS = [
   "Direito Constitucional", "Direito Administrativo", "Direito Civil",
@@ -244,8 +244,7 @@ const TemasInline = ({ area, onBack }: { area: string; onBack: () => void }) => 
           </p>
         ) : temasFiltered.map((tema, i) => {
           const isFav = favoritos.includes(tema.tema);
-          const lockedFrom = isPremium ? Infinity : Math.max(1, Math.ceil(temasFiltered.length * 0.20));
-          const isLocked = !isPremium && i >= lockedFrom;
+          const isLocked = !isPremium && i >= 2;
           return (
             <motion.button key={tema.tema} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
               onClick={() => isLocked ? navigate("/assinatura") : handleSelect(tema.tema)}
@@ -390,7 +389,7 @@ const ResumosHubRealeza = () => {
 
   const renderAreaItem = (item: { area: string; count: number }, idx: number, showTime?: number) => {
     const isFav = favs.includes(item.area);
-    const isLocked = !isPremium && !FREE_AREAS.some(f => norm(f) === norm(item.area));
+    const isLocked = false;
     return (
       <motion.div key={item.area} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.03 }}>
         <div className="flex items-center gap-3 p-3.5 rounded-xl transition-all active:scale-[0.98]"
