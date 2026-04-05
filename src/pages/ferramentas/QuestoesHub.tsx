@@ -553,6 +553,7 @@ const QuestoesHub = () => {
               temasReforco={sugestoes.filter(s => s.tipo === "prioridade").length}
               totalQuestoes={totalQuestoes}
               userStats={userStats}
+              isDesktop={isDesktop}
               onPraticar={() => setSubView("categorias")}
               onProgresso={() => setSubView("progresso")}
               onReforco={() => setSubView("reforco")}
