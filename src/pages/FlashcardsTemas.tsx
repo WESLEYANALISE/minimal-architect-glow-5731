@@ -124,10 +124,7 @@ const FlashcardsTemas = () => {
     gcTime: 1000 * 60 * 30,
     refetchOnMount: true,
     refetchOnWindowFocus: false,
-    refetchInterval: () => {
-      if (!isGenerating) return false;
-      return 15000;
-    }
+    refetchInterval: 15000
   });
 
   useEffect(() => {
