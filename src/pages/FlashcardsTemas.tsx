@@ -64,6 +64,7 @@ const FlashcardsTemas = () => {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [estudarTema, setEstudarTema] = useState<string | null>(null);
   const cacheHashRef = useRef('');
+  const isGeneratingRef = useRef(false);
 
   const { isPremium } = useSubscription();
 
@@ -124,10 +125,7 @@ const FlashcardsTemas = () => {
     gcTime: 1000 * 60 * 30,
     refetchOnMount: true,
     refetchOnWindowFocus: false,
-    refetchInterval: () => {
-      if (!isGenerating) return false;
-      return 15000;
-    }
+    refetchInterval: () => isGeneratingRef.current ? 15000 : false
   });
 
   useEffect(() => {
@@ -150,6 +148,7 @@ const FlashcardsTemas = () => {
     enabled: !!area && !isLoading && (temas?.some(t => !t.temFlashcards) || false),
     onProgress: handleAutoGenProgress
   });
+  isGeneratingRef.current = isGenerating;
 
   const totalFlashcards = temas?.reduce((acc, t) => acc + t.totalFlashcards, 0) || 0;
   const totalTemas = temas?.length || 0;
