@@ -150,6 +150,8 @@ const NoticiasJuridicas = () => {
         capa: n.imagem_webp || n.imagem || '',
         link: n.link,
         dataHora: n.data_publicacao || n.created_at || new Date().toISOString(),
+        conteudo_formatado: n.conteudo_formatado || '',
+        conteudo_completo: n.conteudo_completo || '',
       }));
     },
     cacheDuration: 2 * 60 * 1000,
