@@ -108,7 +108,7 @@ const SYSTEM_PROMPT = `Você é a Evelyn, uma superinteligência artificial jur�
 - Se receber um áudio transcrito, responda ao conteúdo falado
 - Se receber um PDF/documento, analise e faça resumo jurídico`;
 
-const MODELOS = ["gemini-2.5-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash"];
+const MODELOS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite-preview"];
 
 const STOPWORDS = new Set([
   'o', 'a', 'os', 'as', 'um', 'uma', 'uns', 'umas', 'de', 'da', 'do', 'das', 'dos',
@@ -781,11 +781,11 @@ serve(async (req) => {
             signal: AbortSignal.timeout(45000),
           });
 
-          if (response.status === 429) continue;
-          if (response.status === 404) { console.log(`[processar] Modelo ${modelo} indisponível`); continue modeloLoop; }
+          if (response.status === 429) { console.log(`[processar] Rate limit modelo=${modelo} key=${keyInfo.index}`); continue; }
+          if (response.status === 404) { console.log(`[processar] Modelo ${modelo} indisponível (404)`); continue modeloLoop; }
 
           const data = await response.json();
-          if (!response.ok) { console.error(`[processar] Erro Gemini:`, JSON.stringify(data).substring(0, 300)); continue; }
+          if (!response.ok) { console.error(`[processar] Erro ${response.status} modelo=${modelo}:`, JSON.stringify(data).substring(0, 500)); continue; }
 
           respostaIA = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
           modeloUsado = modelo;
