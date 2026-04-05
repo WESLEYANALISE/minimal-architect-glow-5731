@@ -1,67 +1,132 @@
 
 
-## Plano: Auditoria de Performance e Compatibilidade da Tela de Assinatura/Pagamento
+## Auditoria Completa do Vade Mecum: Problemas e Melhorias
 
-### Problemas Identificados
+### Resumo
 
-#### 1. SDKs desnecessarios carregados (MercadoPago + PagBank)
-O `usePaymentSDK.ts` carrega SDKs do MercadoPago e PagBank (~200KB+ combinados) na pagina `EscolherPlano`, mas o pagamento real usa **Asaas** via Edge Functions. Esses scripts sao **codigo morto** que bloqueiam largura de banda e podem causar erros em ambientes restritos (iframe com CSP rigorosa).
-
-#### 2. Fetch de IP externo bloqueante no checkout
-No `CheckoutCartao.tsx` (linha 474), antes de submeter o pagamento, faz `fetch('https://api.ipify.org')` para obter IP. Em iframes com CSP restritiva ou redes lentas, isso pode **travar o checkout por 5-10s** ou falhar silenciosamente.
-
-#### 3. Clipboard sem fallback seguro em 39 arquivos
-Encontrei 39 arquivos usando `navigator.clipboard.writeText()` diretamente sem o fallback seguro de `src/lib/utils.ts`. Em iframes sem `allow-clipboard-write`, o botao "Copiar codigo PIX" falha silenciosamente — o usuario pensa que copiou mas nao copiou.
-
-#### 4. Polling agressivo no PixPaymentScreen (3s)
-O `PixPaymentScreen.tsx` faz `refreshSubscription()` a cada 3 segundos. Isso gera ~20 queries/minuto ao Supabase. Combinado com o listener Realtime que ja existe, o polling e redundante e desperdiça recursos.
-
-#### 5. CEP lookup via Edge Function no checkout
-O `handleCepChange` (linha 399) chama `supabase.functions.invoke('geocode-cep')` a cada CEP completo digitado. Em iframe, essa chamada pode falhar se o Supabase client nao tiver sessao ativa (cookie bloqueado).
-
-#### 6. AssinaturaWebView usa iframe para checkout externo
-O `AssinaturaWebView.tsx` renderiza um `<iframe>` apontando para URLs externas de checkout. Em Safari/iOS, iframes de terceiros tem cookies bloqueados por padrao, podendo quebrar o fluxo de pagamento do gateway.
+O Vade Mecum tem uma arquitetura mista: o `CodigoView.tsx` (1007 linhas) serve como hub unificado para ~80 leis via `/codigo/:id`, mas ainda existem **2 páginas legadas ativas** (`EstatutoView`, `SumulaView`) e **13 páginas legadas mortas** (não importadas em nenhum lugar). Identifiquei **8 problemas** divididos em 3 categorias.
 
 ---
 
-### Implementacao
+### PROBLEMA 1 — Codigo morto: 13 arquivos View abandonados
 
-#### Etapa 1 — Remover SDKs mortos
-**`src/hooks/usePaymentSDK.ts`**: Esvaziar o hook (return void) ou remover completamente. Os scripts do MercadoPago e PagBank nao sao usados — todo pagamento vai via Edge Functions do Asaas.
+Estes arquivos existem mas **nenhuma rota os importa** — todas as rotas antigas redirecionam para `/codigo/:id`:
 
-**`src/pages/EscolherPlano.tsx`**: Remover a chamada `usePaymentSDK()`.
+```text
+AbusoAutoridadeView.tsx    CrimesDemocraticosView.tsx
+CrimesHediondosView.tsx    InterceptacaoTelefonicaView.tsx
+JuizadosEspeciaisView.tsx  LeiDrogasView.tsx
+LeiPenalGenericView.tsx    LeiPenalLavagemDinheiro.tsx
+LepView.tsx                MariaDaPenhaView.tsx
+OrganizacoesCriminosasView.tsx  PacoteAnticrimeView.tsx
+TorturaView.tsx
+```
 
-#### Etapa 2 — Tornar fetch de IP nao-bloqueante
-**`src/components/assinatura/CheckoutCartao.tsx`**: Mover o `fetch('https://api.ipify.org')` para fora do fluxo de submit. Pre-carregar o IP ao montar o componente com `useEffect` + timeout de 3s. Se falhar, enviar `undefined` — o backend ja trata isso.
+Total: ~4.600 linhas de codigo morto. Usam hooks antigos (`useCacheFirstArticles`, `useAutoNarracaoGeneration`), nao tem Modo Realeza, nao tem layout desktop.
 
-#### Etapa 3 — Unificar clipboard com fallback seguro
-**`src/components/assinatura/PixPaymentScreen.tsx`** e demais arquivos que usam `navigator.clipboard` direto: Substituir por `copyToClipboard()` de `src/lib/utils.ts` que ja tem fallback via `document.execCommand` e funciona em iframes.
-
-#### Etapa 4 — Reduzir polling do PIX
-**`src/components/assinatura/PixPaymentScreen.tsx`**: Como ja existe listener Realtime (linhas 75-110), aumentar o intervalo de polling de 3s para 10s como fallback. O Realtime detecta o pagamento instantaneamente.
-
-#### Etapa 5 — CEP lookup com fallback gracioso
-**`src/components/assinatura/CheckoutCartao.tsx`**: Envolver o `geocode-cep` em try/catch com timeout de 3s. Se falhar (iframe/rede), simplesmente nao mostrar endereco — o CEP em si ja e suficiente para o pagamento.
-
-#### Etapa 6 — AssinaturaWebView com deteccao de iframe
-**`src/components/AssinaturaWebView.tsx`**: Quando `isInIframe` for true, abrir URL de checkout em `window.open()` (nova aba) em vez de iframe dentro de iframe (duplo embedding). Adicionar listener `postMessage` para detectar retorno.
+**Melhoria**: Deletar todos os 13 arquivos.
 
 ---
 
-### Arquivos a modificar (7)
+### PROBLEMA 2 — EstatutoView e SumulaView duplicam CodigoView
 
-1. **`src/hooks/usePaymentSDK.ts`** — Remover carregamento de SDKs mortos
-2. **`src/pages/EscolherPlano.tsx`** — Remover `usePaymentSDK()`
-3. **`src/components/assinatura/CheckoutCartao.tsx`** — IP pre-carregado + CEP com timeout
-4. **`src/components/assinatura/PixPaymentScreen.tsx`** — Polling 10s + clipboard seguro
-5. **`src/components/AssinaturaWebView.tsx`** — Abrir em nova aba quando em iframe
-6. **`src/components/assinatura/PaymentMonitor.tsx`** — Polling 10s (ja tem Realtime)
-7. **`src/lib/utils.ts`** — Nenhuma mudanca (ja tem fallback correto, serve de referencia)
+Ambas sao rotas ativas (`/estatuto/:id`, `/sumula/:id`) mas replicam 90% da logica do CodigoView com diferenças:
+
+- **EstatutoView** (686 linhas): Usa `useCacheFirstArticles` (hook antigo, sem progressive loading), tem layout desktop via `VadeMecumDesktopLayout`, mas **sem Modo Realeza** (fundo `bg-background` generico), sem `DotPattern`, sem gradiente bordo.
+- **SumulaView** (461 linhas): Adapta sumulas para formato Article, tem layout desktop, mas tambem **sem Modo Realeza**, sem `DotPattern`, usa `useCacheFirstArticles`.
+
+**Melhoria**: Migrar ambas para o CodigoView unificado adicionando mapeamentos em `codeNames`/`tableNames`/`lawNumbers` para estatutos e sumulas, e configurar redirects nas rotas. Isso eliminaria ~1.150 linhas duplicadas.
+
+---
+
+### PROBLEMA 3 — Mapeamentos triplicados no CodigoView
+
+O CodigoView tem **3 objetos de mapeamento enormes** dentro do componente (~150 linhas cada):
+
+1. `codeNames` (slug → nome legivel) — linhas 153-228
+2. `tableNames` (slug → nome tabela) — linhas 230-305
+3. `lawNumbers` (slug → numero da lei) — linhas 308-383
+
+Estes repetem parcialmente o `CODIGO_TO_TABLE` de `codigoMappings.ts` mas com slugs diferentes (ex: `lei-beneficios` vs `beneficios`). Aliases inconsistentes.
+
+**Melhoria**: Centralizar tudo em `codigoMappings.ts` com um unico objeto:
+```ts
+{ slug, tableName, displayName, lawNumber, urlPlanalto }
+```
+
+---
+
+### PROBLEMA 4 — Desktop sem Modo Realeza
+
+O `VadeMecumDesktopLayout.tsx` (linha 207-298) usa `bg-background` generico, sem gradiente bordo, sem DotPattern, sem acentos dourados. No mobile do CodigoView ja tem Modo Realeza, mas no desktop nao.
+
+**Melhoria**: Aplicar gradiente bordo e DotPattern no container principal do desktop layout, com bordas douradas na sidebar.
+
+---
+
+### PROBLEMA 5 — Busca do desktop isolada da busca mobile
+
+No mobile, a `BuscaCompacta` aparece no CodigoView diretamente. No desktop, ela aparece dentro do `ArtigoListaCompacta` (via props `searchInput`/`onSearchInputChange`). Nao ha atalho de teclado `/` para focar a busca no desktop apesar do footer do sidebar indicar isso.
+
+**Melhoria**: Implementar o atalho `/` que esta documentado no sidebar mas nao funciona.
+
+---
+
+### PROBLEMA 6 — Performance: EstatutoView/SumulaView usam hook antigo
+
+`useCacheFirstArticles` faz um unico fetch de todos os artigos. O `useProgressiveArticles` (usado no CodigoView) carrega 100 primeiro e o resto em background com IndexedDB cache. Estatutos e Sumulas nao se beneficiam desse ganho.
+
+**Melhoria**: Resolvido automaticamente ao migrar para CodigoView (Problema 2).
+
+---
+
+### PROBLEMA 7 — `gerarAulasBackground` dispara em toda lei
+
+O `CodigoView` dispara `processar-aulas-background` 3s apos abrir **qualquer** lei. Para leis com 500+ artigos isso gasta Edge Function invocations inutilmente se ja foram processadas.
+
+**Melhoria**: Verificar cache antes de disparar, ou limitar a leis com aulas pendentes.
+
+---
+
+### PROBLEMA 8 — Falta de loading skeleton coerente no desktop
+
+O desktop layout mostra skeletons genericos (`animate-pulse flex gap-3`) sem o estilo Realeza. O mobile usa skeletons com `bg-card rounded-2xl`.
+
+**Melhoria**: Usar o `LegislacaoSkeleton` existente ou criar versao com gradiente bordo.
+
+---
+
+### Plano de Implementacao (priorizado)
+
+#### Fase 1 — Limpeza (impacto alto, risco baixo)
+1. Deletar os 13 arquivos View mortos
+2. Centralizar mapeamentos em `codigoMappings.ts` com estrutura unificada
+
+#### Fase 2 — Unificacao (impacto alto, risco medio)
+3. Migrar EstatutoView para CodigoView (adicionar slugs de estatutos)
+4. Migrar SumulaView para CodigoView (adapter de sumula → artigo)
+5. Atualizar rotas para redirect
+
+#### Fase 3 — Visual e UX
+6. Aplicar Modo Realeza no VadeMecumDesktopLayout
+7. Implementar atalho `/` para busca no desktop
+8. Otimizar `gerarAulasBackground` com verificacao de cache
+
+### Arquivos a modificar
+
+1. **Deletar** 13 arquivos `*View.tsx` mortos
+2. **Refatorar** `src/lib/codigoMappings.ts` — objeto unificado com displayName + lawNumber
+3. **Simplificar** `src/pages/CodigoView.tsx` — usar mapeamento centralizado, remover 150 linhas de objetos internos
+4. **Migrar** `src/pages/EstatutoView.tsx` → adicionar slugs ao CodigoView, depois deletar
+5. **Migrar** `src/pages/SumulaView.tsx` → adicionar slugs ao CodigoView com adapter, depois deletar
+6. **Atualizar** `src/routes/vadeMecumRoutes.tsx` — redirects de `/estatuto/:id` e `/sumula/:id`
+7. **Estilizar** `src/components/vade-mecum/VadeMecumDesktopLayout.tsx` — Modo Realeza
+8. **Otimizar** `src/pages/CodigoView.tsx` — gerarAulasBackground condicional
 
 ### O que NAO muda
-- Edge Functions (Asaas, PIX, cartao)
-- Rotas, layout, design
-- Logica de subscription/premium
-- Facebook Pixel tracking
-- Funcionalidades de pagamento
+- Funcionalidades (drawer, busca, playlist, ranking, grifos, anotacoes, pratica)
+- Edge Functions
+- Dados e tabelas
+- ArtigoFullscreenDrawer, ArtigoListaCompacta
+- Layout mobile do CodigoView (ja tem Modo Realeza)
 
