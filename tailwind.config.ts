@@ -327,8 +327,9 @@ export default {
 				'50%': { transform: 'scale(1.05) translateZ(0)', boxShadow: '0 8px 28px rgba(0,0,0,0.4)' }
 			},
 			'page-enter': {
-				'0%': { opacity: '0', transform: 'translateX(30%)' },
-				'100%': { opacity: '1', transform: 'translateX(0)' }
+				'0%': { transform: 'translateX(100%)' },
+				'40%': { transform: 'translateX(0%)' },
+				'100%': { transform: 'translateX(0%)' }
 			},
 			'countdown-stomp': {
 				'0%': { opacity: '0', transform: 'scale(2.5) translateY(-40px)' },
@@ -376,7 +377,7 @@ export default {
 			'sound-wave': 'sound-wave 0.8s ease-in-out infinite',
 			'stagger-in': 'stagger-in 0.3s ease-out both',
 			'sound-float-pulse': 'sound-float-pulse 2s ease-in-out infinite',
-			'page-enter': 'page-enter 200ms ease-out',
+			'page-enter': 'page-enter 350ms cubic-bezier(0.25, 0.1, 0.25, 1)',
 			'countdown-stomp': 'countdown-stomp 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
 			'bounceX': 'bounceX 1.5s ease-in-out infinite',
 			'border-beam': 'border-beam var(--duration, 15s) infinite linear',
