@@ -301,7 +301,6 @@ const FlashcardsAreas = () => {
 
   // ── Sub-views ──
   if (subView === "menu") {
-    const { isDesktop: isDesktopDevice } = useDeviceType();
     return (
       <div className="min-h-screen pb-20" style={{ background: R.bg }}>
         <RealezaHeader onBack={() => navigate("/")} />
