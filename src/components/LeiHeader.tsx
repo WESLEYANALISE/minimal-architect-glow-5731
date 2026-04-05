@@ -75,12 +75,15 @@ export const LeiHeader = ({
     <div className={`flex flex-col items-center justify-center py-6 px-4 ${className}`}>
       {/* Brasão da República com botão de favoritar */}
       <div className="relative mb-4">
-        <div className="absolute inset-0 bg-accent/20 rounded-full blur-xl animate-pulse" />
-        <img 
-          src={brasaoRepublica} 
-          alt="Brasão da República Federativa do Brasil" 
-          className="w-20 h-20 sm:w-24 sm:h-24 object-contain relative z-10 drop-shadow-lg"
-        />
+        <div className="absolute inset-0 rounded-full blur-xl animate-pulse" style={{ background: 'hsla(40, 60%, 50%, 0.15)' }} />
+        <div className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center" style={{ border: '2px solid hsla(40, 60%, 50%, 0.25)' }}>
+          <img 
+            src={brasaoRepublica} 
+            alt="Brasão da República Federativa do Brasil" 
+            className="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow-lg"
+            style={{ mixBlendMode: 'luminosity', filter: 'brightness(1.2) contrast(1.1)' }}
+          />
+        </div>
         
         {/* Botão de favoritar - ao lado do brasão */}
         {showFavoriteButton && onToggleFavorita && (
@@ -108,7 +111,7 @@ export const LeiHeader = ({
       </div>
       
       {/* Nome da Lei */}
-      <h1 className="text-xl sm:text-2xl font-bold text-foreground text-center tracking-wide">
+      <h1 className="text-xl sm:text-2xl font-bold text-foreground text-center tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>
         {titulo}
       </h1>
       
@@ -130,8 +133,8 @@ export const LeiHeader = ({
         </a>
       )}
       
-      {/* Linha decorativa */}
-      <div className="w-24 h-1 bg-gradient-to-r from-transparent via-accent to-transparent mt-4" />
+      {/* Linha decorativa dourada */}
+      <div className="w-24 h-0.5 mt-4" style={{ background: 'linear-gradient(to right, transparent, hsl(40, 80%, 55%), transparent)' }} />
       
       {/* Ementa em vermelho - abaixo da linha */}
       {ementaFinal && (

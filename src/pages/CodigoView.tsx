@@ -39,6 +39,7 @@ import { useDeviceType } from "@/hooks/use-device-type";
 import { VadeMecumDesktopLayout } from "@/components/vade-mecum/VadeMecumDesktopLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthRequiredDialog } from "@/components/auth/AuthRequiredDialog";
+import { DotPattern } from "@/components/ui/dot-pattern";
 
 
 interface Article {
@@ -675,23 +676,30 @@ const CodigoView = () => {
     setSearchQuery(numeroArtigo);
   };
 
-  // Registrar visualização quando buscar um artigo
-  const registrarVisualizacao = async (numeroArtigo: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      await supabase
-        .from('artigos_visualizacoes')
-        .insert({
-          tabela_codigo: tableName,
-          numero_artigo: numeroArtigo,
-          user_id: user?.id || null,
-          origem: 'busca'
-        });
-    } catch (error) {
-      console.error('Erro ao registrar visualização:', error);
+  // Registrar visualização de forma não-bloqueante
+  const registrarVisualizacao = useCallback((numeroArtigo: string) => {
+    const doRegister = async () => {
+      try {
+        const { data: { user: u } } = await supabase.auth.getUser();
+        await supabase
+          .from('artigos_visualizacoes')
+          .insert({
+            tabela_codigo: tableName,
+            numero_artigo: numeroArtigo,
+            user_id: u?.id || null,
+            origem: 'busca'
+          });
+      } catch (error) {
+        console.error('Erro ao registrar visualização:', error);
+      }
+    };
+    // Defer para não bloquear abertura do drawer
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(doRegister);
+    } else {
+      setTimeout(doRegister, 0);
     }
-  };
+  }, [tableName]);
 
   // Registrar visualização quando buscar um artigo específico
   useEffect(() => {
@@ -870,9 +878,12 @@ const CodigoView = () => {
     );
   }
 
-  // LAYOUT MOBILE/TABLET - Original
+  // LAYOUT MOBILE/TABLET - Modo Realeza
   return (
-    <div className="min-h-screen bg-background text-foreground pb-24">
+    <div className="min-h-screen text-foreground pb-24 relative" style={{ background: 'linear-gradient(to bottom, hsl(345, 65%, 18%), hsl(350, 40%, 10%))' }}>
+      {/* DotPattern de fundo */}
+      <DotPattern className="opacity-[0.04]" />
+      
       {renderModals()}
 
       {/* Header com Brasão */}
