@@ -17,6 +17,8 @@ import AssinaturaGerenciamento from "@/components/AssinaturaGerenciamento";
 import { useFacebookPixel } from "@/hooks/useFacebookPixel";
 import { useSubscriptionFunnelTracking } from "@/hooks/useSubscriptionFunnelTracking";
 import { motion } from "framer-motion";
+import newLogo from "@/assets/logo-direito-premium-new.webp";
+import heroBackground from "@/assets/assinatura-bg.webp";
 
 // ─── Plans ───
 const PLANS: Record<string, { price: number; label: string; days: number; badge: string | null; installments: number; sub: string }> = {
