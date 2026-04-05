@@ -112,9 +112,9 @@ export const vadeMecumRoutes = (
     <Route path="/leis-ordinarias/mediacao" element={<Navigate to="/codigo/LEI 13140 - MEDIACAO" replace />} />
     <Route path="/leis-ordinarias/adi-adc" element={<Navigate to="/codigo/LEI 9868 - ADI E ADC" replace />} />
     <Route path="/estatutos" element={<L><Estatutos /></L>} />
-    <Route path="/estatuto/:id" element={<L><EstatutoView /></L>} />
+    <Route path="/estatuto/:id" element={<EstatutoRedirect />} />
     <Route path="/sumulas" element={<L><Sumulas /></L>} />
-    <Route path="/sumula/:id" element={<L><SumulaView /></L>} />
+    <Route path="/sumula/:id" element={<SumulaRedirect />} />
     <Route path="/previdenciario" element={<L><Previdenciario /></L>} />
     <Route path="/previdenciario/beneficios" element={<L><LeiPrevidenciariaBeneficios /></L>} />
     <Route path="/previdenciario/custeio" element={<L><LeiPrevidenciariaCusteio /></L>} />
