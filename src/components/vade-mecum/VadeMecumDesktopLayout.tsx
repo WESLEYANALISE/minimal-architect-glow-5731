@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { ReactNode } from 'react';
 import { VadeMecumNavigationSidebar } from './VadeMecumNavigationSidebar';
 import { ArtigoListaCompacta } from '@/components/ArtigoListaCompacta';
@@ -7,6 +7,7 @@ import { useArticleNavigationShortcuts } from '@/hooks/useDesktopKeyboardShortcu
 import { PanelLeftClose, PanelLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { DotPattern } from '@/components/ui/dot-pattern';
 
 
 interface Article {
@@ -203,14 +204,38 @@ export const VadeMecumDesktopLayout = ({
     enabled: !!selectedArticle
   });
 
+  // Atalho "/" para focar na busca
+  useEffect(() => {
+    const handleSlashKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.contentEditable === 'true') return;
+      if (e.key === '/') {
+        e.preventDefault();
+        const searchInput = document.querySelector<HTMLInputElement>(
+          'input[placeholder*="Buscar"], input[placeholder*="buscar"]'
+        );
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleSlashKey);
+    return () => window.removeEventListener('keydown', handleSlashKey);
+  }, []);
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen relative" style={{ background: 'linear-gradient(to bottom, hsl(345, 55%, 16%), hsl(350, 35%, 8%))' }}>
+      {/* DotPattern de fundo */}
+      <DotPattern className="opacity-[0.04]" />
+
       {/* Toggle sidebar button */}
-      <div className="flex items-center px-5 py-2 border-b border-border/30 bg-background flex-shrink-0 sticky top-0 z-30">
+      <div className="flex items-center px-5 py-2 border-b flex-shrink-0 sticky top-0 z-30"
+           style={{ borderColor: 'hsla(40, 60%, 50%, 0.12)', background: 'hsla(345, 55%, 16%, 0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8"
+          className="h-8 w-8 text-foreground hover:bg-white/10"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
           {sidebarOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeft className="h-4 w-4" />}
@@ -221,14 +246,15 @@ export const VadeMecumDesktopLayout = ({
       {header}
 
       {/* Main content: sidebar + articles */}
-      <div className="flex flex-1">
+      <div className="flex flex-1 relative z-10">
         {/* Sidebar de capítulos */}
         <div className={cn(
-          "border-r border-border/30 bg-card/30 flex-shrink-0 transition-all duration-300 overflow-hidden",
+          "flex-shrink-0 transition-all duration-300 overflow-hidden",
           sidebarOpen ? "w-[280px]" : "w-0"
-        )}>
+        )}
+        style={{ borderRight: sidebarOpen ? '1px solid hsla(40, 60%, 50%, 0.12)' : 'none' }}>
           {sidebarOpen && (
-            <div className="h-[calc(100vh-120px)] sticky top-[53px]">
+            <div className="h-[calc(100vh-120px)] sticky top-[53px]" style={{ background: 'hsla(345, 55%, 14%, 0.6)' }}>
               <VadeMecumNavigationSidebar
                 codeName={codeName}
                 structure={structure}
@@ -246,11 +272,11 @@ export const VadeMecumDesktopLayout = ({
             {articles.length === 0 && isLoading ? (
               <div className="p-4 space-y-3">
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="animate-pulse flex gap-3 p-3 rounded-lg bg-card/50">
-                    <div className="w-16 h-5 rounded bg-muted flex-shrink-0" />
+                  <div key={i} className="animate-pulse flex gap-3 p-3 rounded-lg" style={{ background: 'hsla(345, 40%, 20%, 0.4)' }}>
+                    <div className="w-16 h-5 rounded bg-white/10 flex-shrink-0" />
                     <div className="flex-1 space-y-2">
-                      <div className="h-4 w-full rounded bg-muted" />
-                      <div className="h-3 w-3/4 rounded bg-muted" />
+                      <div className="h-4 w-full rounded bg-white/10" />
+                      <div className="h-3 w-3/4 rounded bg-white/10" />
                     </div>
                   </div>
                 ))}
