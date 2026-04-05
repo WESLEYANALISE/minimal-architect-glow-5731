@@ -524,9 +524,22 @@ const CodigoView = () => {
   }, [searchQuery]);
 
   // Disparar geração automática de aulas em background ao acessar o código
+  // Pular para súmulas (não têm aulas) e verificar cache antes de disparar
   useEffect(() => {
+    if (isSumula) return; // Súmulas não precisam de aulas
+    
     const gerarAulasBackground = async () => {
       try {
+        // Verificar se já existe aula para este código no cache
+        const { data: existingAula } = await supabase
+          .from('aulas_artigos')
+          .select('id')
+          .eq('codigo_tabela', tableName)
+          .limit(1);
+        
+        // Se já tem aulas, não disparar processamento
+        if (existingAula && existingAula.length > 0) return;
+        
         // Disparar em background - não bloqueia a UI
         supabase.functions.invoke('processar-aulas-background', {
           body: { codigoTabela: tableName }
@@ -545,7 +558,7 @@ const CodigoView = () => {
     // Executar após um pequeno delay para não competir com carregamento inicial
     const timeout = setTimeout(gerarAulasBackground, 3000);
     return () => clearTimeout(timeout);
-  }, [tableName]);
+  }, [tableName, isSumula]);
 
   // Renderizar modais compartilhados
   const renderModals = () => (
