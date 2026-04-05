@@ -600,6 +600,143 @@ const FlashcardsAreas = () => {
   }
 
   // ── "praticar" sub-view — Area list with tabs ──
+
+  // Desktop: two-column layout with sidebar nav
+  if (isDesktopDevice) {
+    const getTabContent = () => {
+      if (isLoading) {
+        return (
+          <div className="grid grid-cols-3 xl:grid-cols-4 gap-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="h-[120px] rounded-2xl animate-pulse" style={{ background: "hsla(0, 0%, 100%, 0.04)" }} />
+            ))}
+          </div>
+        );
+      }
+      let items: FlashcardArea[] = [];
+      let title = "";
+      let subtitle = "";
+      if (activeTab === "principais") {
+        items = sorted.filter(a => isInList(a.area, MAIS_COBRADAS));
+        title = "Principais";
+        subtitle = "Essenciais para qualquer prova";
+      } else if (activeTab === "frequentes") {
+        items = sorted.filter(a => isInList(a.area, ALTA_INCIDENCIA));
+        title = "Frequentes";
+        subtitle = "Frequentes em concursos e OAB";
+      } else {
+        items = sorted.filter(a => !isInList(a.area, MAIS_COBRADAS) && !isInList(a.area, ALTA_INCIDENCIA));
+        title = "Extras";
+        subtitle = "Aprofunde seus conhecimentos";
+      }
+      return (
+        <div>
+          <h2 className="text-sm font-bold mb-1" style={{ color: R.goldMuted }}>{title}</h2>
+          <p className="text-xs text-white/40 mb-4">{subtitle}</p>
+          <div className="grid grid-cols-3 xl:grid-cols-4 gap-4">
+            {items.map((item, idx) => (
+              <button
+                key={item.area}
+                onClick={() => navigate(`/flashcards/temas?area=${encodeURIComponent(item.area)}`)}
+                onMouseEnter={() => prefetchTemaStats(item.area)}
+                className="group relative overflow-hidden rounded-2xl p-4 text-left transition-all duration-150 hover:scale-[1.03] active:scale-[0.97] shadow-lg h-[120px] animate-fade-in"
+                style={{
+                  animationDelay: `${idx * 30}ms`,
+                  animationFillMode: 'backwards',
+                  background: "hsla(0, 0%, 100%, 0.04)",
+                  border: `1px solid ${R.border}`,
+                  boxShadow: `0 4px 20px -4px rgba(0,0,0,0.4), inset 0 1px 0 hsla(40, 60%, 80%, 0.06)`,
+                }}
+              >
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{ background: "linear-gradient(105deg, transparent 40%, hsla(40, 80%, 70%, 0.06) 45%, hsla(40, 80%, 70%, 0.12) 50%, hsla(40, 80%, 70%, 0.06) 55%, transparent 60%)" }}
+                />
+                <div className="absolute -right-3 -bottom-3 opacity-[0.07]">
+                  <Brain className="w-20 h-20" style={{ color: R.gold }} />
+                </div>
+                <div className="relative z-10 rounded-xl p-2 w-fit mb-2" style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}>
+                  <Brain className="w-5 h-5" style={{ color: R.gold }} />
+                </div>
+                <h3 className="relative z-10 font-semibold text-white text-sm leading-tight pr-6">
+                  {item.area.replace(/^Direito\s+(do\s+|da\s+|de\s+|dos\s+|das\s+)?/i, '').replace(/^Direitos\s+/i, '')}
+                </h3>
+                <ChevronRight className="absolute bottom-3 right-3 w-4 h-4 transition-all group-hover:translate-x-0.5" style={{ color: "hsla(40, 70%, 60%, 0.5)" }} />
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <div className="min-h-screen" style={{ background: R.bg }}>
+        {/* Compact header */}
+        <div className="relative overflow-hidden mb-4" style={{ background: R.headerGradient, borderBottom: `1px solid ${R.border}` }}>
+          <DotPattern className="opacity-[0.04]" />
+          <div className="relative z-10 px-6 pt-3 pb-4 flex items-center gap-4">
+            <button onClick={() => setSubView("categories")} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <ArrowLeft className="w-4 h-4" style={{ color: R.goldMuted }} />
+              <span className="text-xs font-semibold" style={{ color: R.goldMuted }}>Categorias</span>
+            </button>
+            <div className="flex items-center gap-3 ml-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}>
+                <Brain className="w-5 h-5" style={{ color: R.gold }} />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-white" style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}>Flashcards</h1>
+                <p className="text-[11px]" style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>
+                  <span className="font-semibold" style={{ color: R.goldMuted }}>{totalFlashcards.toLocaleString('pt-BR')}</span> disponíveis
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Two-column layout */}
+        <div className="px-6 pb-8 grid grid-cols-[260px_1fr] gap-6">
+          {/* LEFT: Sidebar */}
+          <div className="space-y-4 sticky top-20 self-start">
+            {/* Vertical nav */}
+            <nav className="rounded-2xl p-3 space-y-1" style={{ background: "hsla(0, 0%, 100%, 0.03)", border: `1px solid ${R.border}` }}>
+              <p className="text-[10px] uppercase tracking-wider px-3 pt-1 pb-2" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Categorias</p>
+              {TABS.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all text-left"
+                    style={{
+                      background: isActive ? "hsla(40, 60%, 50%, 0.12)" : "transparent",
+                      color: isActive ? R.gold : "hsla(0, 0%, 100%, 0.5)",
+                      borderLeft: isActive ? `3px solid ${R.gold}` : "3px solid transparent",
+                    }}
+                  >
+                    <Icon className="w-4 h-4 shrink-0" />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Stats */}
+            <div className="rounded-2xl p-4 space-y-3" style={{ background: "hsla(0, 0%, 100%, 0.03)", border: `1px solid ${R.border}` }}>
+              <p className="text-[10px] uppercase tracking-wider" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Estatísticas</p>
+              <FlashcardsEstatisticas />
+            </div>
+          </div>
+
+          {/* RIGHT: Content */}
+          <div className="min-w-0">
+            {getTabContent()}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Mobile: original layout
   return (
     <div className="min-h-screen pb-20" style={{ background: R.bg }}>
       {/* Realeza Header */}
