@@ -243,182 +243,173 @@ export const QuestoesMenuPrincipal = ({
 
   const currentSlide = rotatingSlides[rotatingIndex];
 
+  const renderStats = () => (
+    <div className={`grid grid-cols-4 gap-2 ${isDesktop ? 'gap-3' : ''}`}>
+      <div className="relative rounded-2xl py-4 px-2 text-center overflow-hidden" style={{ background: "hsl(215 20% 18%)", border: "1px solid hsl(210 40% 40% / 0.25)" }}>
+        <p className={`font-bold text-foreground tracking-tight ${isDesktop ? 'text-2xl' : 'text-xl'}`}>{totalRespondidas.toLocaleString("pt-BR")}</p>
+        <p className="text-[9px] text-muted-foreground mt-1 font-medium">de {totalQuestoes.toLocaleString("pt-BR")}</p>
+        <div className="mt-2 mx-auto w-4/5 h-1.5 rounded-full overflow-hidden" style={{ background: "hsl(210 15% 25%)" }}>
+          <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progressoRespondidas}%`, background: "hsl(210 80% 60%)" }} />
+        </div>
+      </div>
+      <div className="relative rounded-2xl py-4 px-2 text-center overflow-hidden" style={{ background: "hsl(152 20% 16%)", border: "1px solid hsl(152 50% 40% / 0.3)" }}>
+        <p className={`font-bold tracking-tight ${isDesktop ? 'text-2xl' : 'text-xl'}`} style={{ color: "hsl(152 75% 50%)" }}>{taxaGlobal}%</p>
+        <p className="text-[9px] text-muted-foreground mt-1 font-medium">Acertos</p>
+        <div className="mt-2 mx-auto w-4/5 h-1 rounded-full overflow-hidden" style={{ background: "hsl(152 15% 22%)" }}>
+          <div className="h-full rounded-full transition-all duration-700" style={{ width: `${taxaGlobal}%`, background: "hsl(152 72% 42%)" }} />
+        </div>
+      </div>
+      <div className="relative rounded-2xl py-4 px-2 text-center overflow-hidden" style={{ background: "hsl(0 20% 16%)", border: "1px solid hsl(0 50% 42% / 0.3)" }}>
+        <p className={`font-bold tracking-tight ${isDesktop ? 'text-2xl' : 'text-xl'}`} style={{ color: "hsl(0 78% 58%)" }}>{taxaErros}%</p>
+        <p className="text-[9px] text-muted-foreground mt-1 font-medium">Erros</p>
+        <div className="mt-2 mx-auto w-4/5 h-1 rounded-full overflow-hidden" style={{ background: "hsl(0 15% 22%)" }}>
+          <div className="h-full rounded-full transition-all duration-700" style={{ width: `${taxaErros}%`, background: "hsl(0 78% 50%)" }} />
+        </div>
+      </div>
+      <div className="relative rounded-2xl py-4 px-2 text-center overflow-hidden" style={{ background: "hsl(25 22% 16%)", border: "1px solid hsl(25 55% 42% / 0.3)" }}>
+        <Flame className="w-4 h-4 mx-auto mb-0.5" style={{ color: "hsl(20 95% 55%)" }} />
+        <p className={`font-bold text-foreground tracking-tight ${isDesktop ? 'text-2xl' : 'text-xl'}`}>{diasConsecutivos}</p>
+        <p className="text-[9px] text-muted-foreground mt-1 font-medium">Dias seguidos</p>
+      </div>
+    </div>
+  );
+
+  const renderMenuCards = () => (
+    <div className={`grid grid-cols-2 gap-3 ${isDesktop ? 'gap-4' : ''}`}>
+      {MENU_ITEMS.map((item, i) => {
+        const Icon = item.icon;
+        const BgIcon = item.bgIcon;
+        const badge = getBadge(item.key);
+        const isEmpty = totalRespondidas === 0;
+        const isEmptyBadge = isEmpty && item.emptyBadge;
+        return (
+          <button
+            key={item.key}
+            onClick={handlers[item.key]}
+            className={`relative p-4 rounded-2xl text-left transition-all duration-200 hover:scale-[1.03] active:scale-95 overflow-hidden animate-fade-in group shine-effect ${isDesktop ? 'h-[150px]' : 'h-[130px]'}`}
+            style={{
+              background: item.gradient,
+              border: "1px solid hsl(0 0% 100% / 0.1)",
+              animationDelay: `${i * 80}ms`,
+              animationFillMode: "both",
+            }}
+          >
+            <BgIcon className="absolute -bottom-2 -right-2 text-white pointer-events-none" style={{ width: 88, height: 88, opacity: 0.15 }} />
+            {badge && !isEmptyBadge && item.key !== "progresso" && (
+              <span className="absolute top-2.5 right-2.5 text-[10px] font-bold text-white px-2 py-0.5 rounded-full" style={{ background: "hsl(0 0% 100% / 0.18)", border: "1px solid hsl(0 0% 100% / 0.1)" }}>{badge}</span>
+            )}
+            {item.key === "progresso" && totalRespondidas > 0 && (
+              <div className="absolute top-2 right-2">
+                <svg width="30" height="30" viewBox="0 0 30 30" className="transform -rotate-90">
+                  <circle cx="15" cy="15" r="12" fill="none" stroke="hsla(0,0%,100%,0.15)" strokeWidth="3" />
+                  <circle cx="15" cy="15" r="12" fill="none" stroke="white" strokeWidth="3" strokeDasharray={2 * Math.PI * 12} strokeDashoffset={2 * Math.PI * 12 - (taxaGlobal / 100) * 2 * Math.PI * 12} strokeLinecap="round" className="transition-all duration-700" />
+                </svg>
+                <span className="absolute inset-0 flex items-center justify-center text-[7px] font-bold text-white">{taxaGlobal}%</span>
+              </div>
+            )}
+            {isEmptyBadge && (
+              <span className="absolute top-2.5 right-2.5 text-[9px] font-semibold text-white/70 px-2 py-0.5 rounded-full" style={{ background: "hsl(0 0% 100% / 0.1)" }}>{item.emptyBadge}</span>
+            )}
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-2" style={{ background: item.iconBg, border: "1px solid hsl(0 0% 100% / 0.1)" }}>
+              <Icon className="w-6 h-6 text-white" />
+            </div>
+            <p className={`font-bold text-white ${isDesktop ? 'text-base' : 'text-sm'}`}>{item.label}</p>
+            <p className={`text-white/60 mt-0.5 ${isDesktop ? 'text-xs' : 'text-[10px]'}`}>{item.desc}</p>
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  const renderArabella = () => {
+    if (!displayedText) return null;
+    return (
+      <motion.div
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="space-y-2"
+      >
+        <div className="flex items-center gap-2.5">
+          <img src={draArabellaAvatar} alt="Dra. Arabella" className="w-9 h-9 rounded-full object-cover border-2" style={{ borderColor: "hsl(265 50% 45%)" }} />
+          <span className="text-xs font-bold text-foreground">Dra. Arabella</span>
+        </div>
+        <div className="ml-5 relative">
+          <div className="absolute -top-1 left-3 w-3 h-3 rotate-45" style={{ background: "hsl(265 20% 22%)" }} />
+          <div className="relative rounded-2xl rounded-tl-md px-4 py-3" style={{ background: "hsl(265 20% 22%)", border: "1px solid hsl(265 30% 30% / 0.4)" }}>
+            <span className="text-xs text-white leading-relaxed" dangerouslySetInnerHTML={{ __html: displayedText }} />
+            {isTyping && <span className="inline-block w-0.5 h-3 bg-violet-400 ml-0.5 animate-pulse" />}
+          </div>
+        </div>
+        {!isTyping && (
+          <button
+            onClick={onDiagnostico}
+            className="ml-5 w-[calc(100%-20px)] relative flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-white transition-colors hover:opacity-90 overflow-hidden shine-effect"
+            style={{ background: "linear-gradient(135deg, hsl(265 55% 50%), hsl(280 50% 42%))" }}
+          >
+            Ver análise completa <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </motion.div>
+    );
+  };
+
+  const renderDesktopSidebar = () => (
+    <div className="space-y-5">
+      {/* Quick stats summary */}
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: "hsl(215 20% 15%)", border: "1px solid hsl(210 40% 40% / 0.2)" }}>
+        <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+          <Star className="w-4 h-4 text-amber-400" />
+          Resumo Rápido
+        </h3>
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-muted-foreground">Matéria preferida</span>
+            <span className="text-xs font-semibold text-foreground">{materiaPreferida}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-muted-foreground">Temas estudados</span>
+            <span className="text-xs font-semibold text-foreground">{temasEstudados}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-muted-foreground">Total questões</span>
+            <span className="text-xs font-semibold text-foreground">{totalQuestoes.toLocaleString("pt-BR")}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-muted-foreground">Dias consecutivos</span>
+            <span className="text-xs font-semibold" style={{ color: "hsl(20 95% 55%)" }}>🔥 {diasConsecutivos}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Arabella */}
+      {renderArabella()}
+    </div>
+  );
+
+  // ── DESKTOP ──
+  if (isDesktop) {
+    return (
+      <div className="px-6 pb-8">
+        {renderStats()}
+        <div className="mt-5 grid grid-cols-3 gap-6">
+          <div className="col-span-2 space-y-5">
+            {renderMenuCards()}
+          </div>
+          <div>
+            {renderDesktopSidebar()}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── MOBILE ──
   return (
     <div className="px-4 space-y-5 pb-8">
-      {/* Stats resumo - 4 columns */}
-      <div className="grid grid-cols-4 gap-2">
-        {/* Card: Respondidas */}
-        <div
-          className="relative rounded-2xl py-4 px-2 text-center overflow-hidden"
-          style={{ background: "hsl(215 20% 18%)", border: "1px solid hsl(210 40% 40% / 0.25)" }}
-        >
-          <p className="text-xl font-bold text-foreground tracking-tight">{totalRespondidas.toLocaleString("pt-BR")}</p>
-          <p className="text-[9px] text-muted-foreground mt-1 font-medium">de {totalQuestoes.toLocaleString("pt-BR")}</p>
-          <div className="mt-2 mx-auto w-4/5 h-1.5 rounded-full overflow-hidden" style={{ background: "hsl(210 15% 25%)" }}>
-            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progressoRespondidas}%`, background: "hsl(210 80% 60%)" }} />
-          </div>
-        </div>
-
-        {/* Card: Acertos */}
-        <div
-          className="relative rounded-2xl py-4 px-2 text-center overflow-hidden"
-          style={{ background: "hsl(152 20% 16%)", border: "1px solid hsl(152 50% 40% / 0.3)" }}
-        >
-          <p className="text-xl font-bold tracking-tight" style={{ color: "hsl(152 75% 50%)" }}>{taxaGlobal}%</p>
-          <p className="text-[9px] text-muted-foreground mt-1 font-medium">Acertos</p>
-          <div className="mt-2 mx-auto w-4/5 h-1 rounded-full overflow-hidden" style={{ background: "hsl(152 15% 22%)" }}>
-            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${taxaGlobal}%`, background: "hsl(152 72% 42%)" }} />
-          </div>
-        </div>
-
-        {/* Card: Erros */}
-        <div
-          className="relative rounded-2xl py-4 px-2 text-center overflow-hidden"
-          style={{ background: "hsl(0 20% 16%)", border: "1px solid hsl(0 50% 42% / 0.3)" }}
-        >
-          <p className="text-xl font-bold tracking-tight" style={{ color: "hsl(0 78% 58%)" }}>{taxaErros}%</p>
-          <p className="text-[9px] text-muted-foreground mt-1 font-medium">Erros</p>
-          <div className="mt-2 mx-auto w-4/5 h-1 rounded-full overflow-hidden" style={{ background: "hsl(0 15% 22%)" }}>
-            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${taxaErros}%`, background: "hsl(0 78% 50%)" }} />
-          </div>
-        </div>
-
-        {/* Card: Dias consecutivos */}
-        <div
-          className="relative rounded-2xl py-4 px-2 text-center overflow-hidden"
-          style={{ background: "hsl(25 22% 16%)", border: "1px solid hsl(25 55% 42% / 0.3)" }}
-        >
-          <Flame className="w-4 h-4 mx-auto mb-0.5" style={{ color: "hsl(20 95% 55%)" }} />
-          <p className="text-xl font-bold text-foreground tracking-tight">{diasConsecutivos}</p>
-          <p className="text-[9px] text-muted-foreground mt-1 font-medium">Dias seguidos</p>
-        </div>
-      </div>
-
-      {/* Grid 2x2 - cards with shine */}
-      <div className="grid grid-cols-2 gap-3">
-        {MENU_ITEMS.map((item, i) => {
-          const Icon = item.icon;
-          const BgIcon = item.bgIcon;
-          const badge = getBadge(item.key);
-          const isEmpty = totalRespondidas === 0;
-          const isEmptyBadge = isEmpty && item.emptyBadge;
-          return (
-            <button
-              key={item.key}
-              onClick={handlers[item.key]}
-              className="relative h-[130px] p-4 rounded-2xl text-left transition-all duration-200 hover:scale-[1.03] active:scale-95 overflow-hidden animate-fade-in group shine-effect"
-              style={{
-                background: item.gradient,
-                border: "1px solid hsl(0 0% 100% / 0.1)",
-                animationDelay: `${i * 80}ms`,
-                animationFillMode: "both",
-              }}
-            >
-              <BgIcon
-                className="absolute -bottom-2 -right-2 text-white pointer-events-none"
-                style={{ width: 88, height: 88, opacity: 0.15 }}
-              />
-              {badge && !isEmptyBadge && item.key !== "progresso" && (
-                <span
-                  className="absolute top-2.5 right-2.5 text-[10px] font-bold text-white px-2 py-0.5 rounded-full"
-                  style={{
-                    background: "hsl(0 0% 100% / 0.18)",
-                    border: "1px solid hsl(0 0% 100% / 0.1)",
-                  }}
-                >
-                  {badge}
-                </span>
-              )}
-              {item.key === "progresso" && totalRespondidas > 0 && (
-                <div className="absolute top-2 right-2">
-                  <svg width="30" height="30" viewBox="0 0 30 30" className="transform -rotate-90">
-                    <circle cx="15" cy="15" r="12" fill="none" stroke="hsla(0,0%,100%,0.15)" strokeWidth="3" />
-                    <circle cx="15" cy="15" r="12" fill="none" stroke="white" strokeWidth="3"
-                      strokeDasharray={2 * Math.PI * 12}
-                      strokeDashoffset={2 * Math.PI * 12 - (taxaGlobal / 100) * 2 * Math.PI * 12}
-                      strokeLinecap="round"
-                      className="transition-all duration-700"
-                    />
-                  </svg>
-                  <span className="absolute inset-0 flex items-center justify-center text-[7px] font-bold text-white">{taxaGlobal}%</span>
-                </div>
-              )}
-              {isEmptyBadge && (
-                <span
-                  className="absolute top-2.5 right-2.5 text-[9px] font-semibold text-white/70 px-2 py-0.5 rounded-full"
-                  style={{
-                    background: "hsl(0 0% 100% / 0.1)",
-                  }}
-                >
-                  {item.emptyBadge}
-                </span>
-              )}
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-2"
-                style={{
-                  background: item.iconBg,
-                  border: "1px solid hsl(0 0% 100% / 0.1)",
-                }}
-              >
-                <Icon className="w-6 h-6 text-white" />
-              </div>
-              <p className="text-sm font-bold text-white">{item.label}</p>
-              <p className="text-[10px] text-white/60 mt-0.5">{item.desc}</p>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Dra. Arabella - Chat bubble style */}
-      {displayedText && (
-        <motion.div
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="space-y-2"
-        >
-          <div className="flex items-center gap-2.5">
-            <img
-              src={draArabellaAvatar}
-              alt="Dra. Arabella"
-              className="w-9 h-9 rounded-full object-cover border-2"
-              style={{ borderColor: "hsl(265 50% 45%)" }}
-            />
-            <span className="text-xs font-bold text-foreground">Dra. Arabella</span>
-          </div>
-
-          <div className="ml-5 relative">
-            <div
-              className="absolute -top-1 left-3 w-3 h-3 rotate-45"
-              style={{ background: "hsl(265 20% 22%)" }}
-            />
-            <div
-              className="relative rounded-2xl rounded-tl-md px-4 py-3"
-              style={{
-                background: "hsl(265 20% 22%)",
-                border: "1px solid hsl(265 30% 30% / 0.4)",
-              }}
-            >
-              <span className="text-xs text-white leading-relaxed" dangerouslySetInnerHTML={{ __html: displayedText }} />
-              {isTyping && (
-                <span className="inline-block w-0.5 h-3 bg-violet-400 ml-0.5 animate-pulse" />
-              )}
-            </div>
-          </div>
-
-          {!isTyping && (
-            <button
-              onClick={onDiagnostico}
-              className="ml-5 w-[calc(100%-20px)] relative flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-white transition-colors hover:opacity-90 overflow-hidden shine-effect"
-              style={{
-                background: "linear-gradient(135deg, hsl(265 55% 50%), hsl(280 50% 42%))",
-              }}
-            >
-              Ver análise completa <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </motion.div>
-      )}
+      {renderStats()}
+      {renderMenuCards()}
+      {renderArabella()}
     </div>
   );
 };
