@@ -819,10 +819,8 @@ export default function Perfil() {
             <PerfilSuporteTab />
           </TabsContent>
         </Tabs>
-          </>
-        )}
 
-        {/* Avatar Picker Dialog - shared */}
+        {/* Avatar Picker Dialog */}
         <Dialog open={showAvatarPicker} onOpenChange={setShowAvatarPicker}>
           <DialogContent className="max-w-sm">
             <DialogHeader>
