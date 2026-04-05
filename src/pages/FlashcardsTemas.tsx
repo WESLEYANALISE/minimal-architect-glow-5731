@@ -148,6 +148,7 @@ const FlashcardsTemas = () => {
     enabled: !!area && !isLoading && (temas?.some(t => !t.temFlashcards) || false),
     onProgress: handleAutoGenProgress
   });
+  isGeneratingRef.current = isGenerating;
 
   const totalFlashcards = temas?.reduce((acc, t) => acc + t.totalFlashcards, 0) || 0;
   const totalTemas = temas?.length || 0;
