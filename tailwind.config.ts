@@ -377,7 +377,7 @@ export default {
 			'sound-wave': 'sound-wave 0.8s ease-in-out infinite',
 			'stagger-in': 'stagger-in 0.3s ease-out both',
 			'sound-float-pulse': 'sound-float-pulse 2s ease-in-out infinite',
-			'page-enter': 'page-enter 200ms ease-out',
+			'page-enter': 'page-enter 350ms cubic-bezier(0.25, 0.1, 0.25, 1)',
 			'countdown-stomp': 'countdown-stomp 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
 			'bounceX': 'bounceX 1.5s ease-in-out infinite',
 			'border-beam': 'border-beam var(--duration, 15s) infinite linear',
