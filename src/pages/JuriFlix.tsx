@@ -514,6 +514,18 @@ const JuriFlix = () => {
     );
   }
 
+  // Stats computadas
+  const statsData = useMemo(() => {
+    if (!titulos) return { total: 0, totalFilmes: 0, totalSeries: 0, totalDocs: 0, notaMedia: "0", plataformas: [] as string[] };
+    const totalFilmes = titulos.filter(t => t.tipo?.toLowerCase().includes("filme")).length;
+    const totalSeries = titulos.filter(t => t.tipo?.toLowerCase().includes("série")).length;
+    const totalDocs = titulos.filter(t => t.tipo?.toLowerCase().includes("documentário")).length;
+    const notas = titulos.map(t => parseFloat(t.nota || "0")).filter(n => n > 0);
+    const notaMedia = notas.length ? (notas.reduce((a, b) => a + b, 0) / notas.length).toFixed(1) : "0";
+    const plataformas = [...new Set(titulos.map(t => t.plataforma).filter(Boolean))] as string[];
+    return { total: titulos.length, totalFilmes, totalSeries, totalDocs, notaMedia, plataformas };
+  }, [titulos]);
+
   // ===== DESKTOP LAYOUT =====
   if (isDesktop) {
     return (
@@ -524,7 +536,7 @@ const JuriFlix = () => {
         )}
 
         {/* Toolbar: Section tabs + Filter tabs + Search */}
-        <div className="max-w-7xl mx-auto px-6 py-4 space-y-4">
+        <div className="px-6 py-4 space-y-4">
           <div className="flex items-center gap-4 flex-wrap">
             <SectionTabs className="flex-1" />
             <div className="relative w-72">
@@ -544,60 +556,230 @@ const JuriFlix = () => {
           )}
         </div>
 
-        {/* Content */}
-        <div className="max-w-7xl mx-auto px-6 pb-8">
-          {desktopSection !== "catalogo" ? (
-            renderSectionContent()
-          ) : activeTab === "todos" ? (
-            <div className="space-y-8">
-              <CarouselSection title="Filmes" icon={Film} items={filmes} onItemClick={handleItemClick} cardSize="lg" />
-              <CarouselSection title="Séries" icon={Tv} items={series} onItemClick={handleItemClick} cardSize="lg" />
-              <CarouselSection title="Documentários" icon={Video} items={documentarios} onItemClick={handleItemClick} cardSize="lg" />
+        {/* 3-column layout */}
+        <div className="px-6 pb-8 grid grid-cols-[280px_1fr_280px] gap-6">
+          {/* LEFT SIDEBAR — Stats & Info */}
+          <aside className="space-y-4 sticky top-20 self-start">
+            {/* Estatísticas */}
+            <div className="bg-card/60 backdrop-blur-sm rounded-2xl border border-border/30 p-4 space-y-4">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <Clapperboard className="w-4 h-4 text-red-500" />
+                Estatísticas
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-white/5 rounded-xl p-3 text-center">
+                  <p className="text-xl font-black text-red-400">{statsData.total}</p>
+                  <p className="text-[10px] text-muted-foreground">Total</p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-3 text-center">
+                  <p className="text-xl font-black text-yellow-400">{statsData.notaMedia}</p>
+                  <p className="text-[10px] text-muted-foreground">Nota Média</p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-3 text-center">
+                  <p className="text-lg font-bold">{statsData.totalFilmes}</p>
+                  <p className="text-[10px] text-muted-foreground">Filmes</p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-3 text-center">
+                  <p className="text-lg font-bold">{statsData.totalSeries}</p>
+                  <p className="text-[10px] text-muted-foreground">Séries</p>
+                </div>
+              </div>
+              <div className="bg-white/5 rounded-xl p-3 text-center">
+                <p className="text-lg font-bold">{statsData.totalDocs}</p>
+                <p className="text-[10px] text-muted-foreground">Documentários</p>
+              </div>
             </div>
-          ) : (
-            <div className="grid grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-5">
-              {filteredItems.map((titulo) => (
-                <div 
-                  key={titulo.id} 
-                  className="cursor-pointer group"
-                  onClick={() => handleItemClick(titulo.id)}
-                >
-                  <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-card/50 mb-2 ring-1 ring-white/10 shadow-lg group-hover:shadow-2xl group-hover:shadow-red-500/20 group-hover:ring-red-500/40 transition-all duration-300 group-hover:scale-[1.03]">
-                    {(titulo.poster_path || titulo.capa) ? (
-                      <img src={titulo.poster_path || titulo.capa || ""} alt={titulo.nome || ""} className="w-full h-full object-cover" loading="lazy" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-900/50 to-red-600/30">
-                        <Film className="w-8 h-8 text-muted-foreground" />
-                      </div>
-                    )}
-                    {titulo.nota && (
-                      <div className="absolute top-2 left-2 bg-black/80 backdrop-blur-sm px-2 py-0.5 rounded-md text-[11px] font-bold flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                        {titulo.nota}
-                      </div>
-                    )}
-                    <JuriflixFavoritoButton juriflixId={titulo.id} className="absolute top-2 right-2" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-                      <div className="p-3 w-full">
-                        <div className="flex items-center gap-1.5 bg-white text-black px-3 py-1.5 rounded-full text-xs font-bold w-fit mx-auto">
-                          <Play className="w-3 h-3 fill-black" />
-                          Ver mais
+
+            {/* Plataformas */}
+            {statsData.plataformas.length > 0 && (
+              <div className="bg-card/60 backdrop-blur-sm rounded-2xl border border-border/30 p-4 space-y-3">
+                <h3 className="text-sm font-bold flex items-center gap-2">
+                  <Tv className="w-4 h-4 text-red-500" />
+                  Plataformas
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {statsData.plataformas.slice(0, 10).map(p => (
+                    <span key={p} className="px-2.5 py-1 bg-white/5 rounded-lg text-[11px] text-muted-foreground">
+                      {p}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Top 5 */}
+            <div className="bg-card/60 backdrop-blur-sm rounded-2xl border border-border/30 p-4 space-y-3">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                Top 5 Notas
+              </h3>
+              <div className="space-y-1.5">
+                {topNotas.slice(0, 5).map((t, i) => (
+                  <button
+                    key={t.id}
+                    onClick={() => handleItemClick(t.id)}
+                    className="w-full flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-white/5 transition-colors text-left"
+                  >
+                    <span className="text-sm font-black text-muted-foreground/50 w-5 text-center">{i + 1}</span>
+                    <div className="w-8 aspect-[2/3] rounded-md overflow-hidden bg-card/50 shrink-0">
+                      {(t.poster_path || t.capa) && (
+                        <img src={t.poster_path || t.capa || ""} alt="" className="w-full h-full object-cover" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-semibold line-clamp-1">{t.nome}</p>
+                      <p className="text-[10px] text-muted-foreground">{t.ano}</p>
+                    </div>
+                    <div className="flex items-center gap-0.5 text-[10px] font-bold text-yellow-400">
+                      <Star className="w-2.5 h-2.5 fill-yellow-400" />
+                      {t.nota}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </aside>
+
+          {/* CENTER — Main Content */}
+          <div className="min-w-0">
+            {desktopSection !== "catalogo" ? (
+              renderSectionContent()
+            ) : activeTab === "todos" ? (
+              <div className="space-y-8">
+                <CarouselSection title="Filmes" icon={Film} items={filmes} onItemClick={handleItemClick} cardSize="lg" />
+                <CarouselSection title="Séries" icon={Tv} items={series} onItemClick={handleItemClick} cardSize="lg" />
+                <CarouselSection title="Documentários" icon={Video} items={documentarios} onItemClick={handleItemClick} cardSize="lg" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 xl:grid-cols-4 gap-4">
+                {filteredItems.map((titulo) => (
+                  <div 
+                    key={titulo.id} 
+                    className="cursor-pointer group"
+                    onClick={() => handleItemClick(titulo.id)}
+                  >
+                    <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-card/50 mb-2 ring-1 ring-white/10 shadow-lg group-hover:shadow-2xl group-hover:shadow-red-500/20 group-hover:ring-red-500/40 transition-all duration-300 group-hover:scale-[1.03]">
+                      {(titulo.poster_path || titulo.capa) ? (
+                        <img src={titulo.poster_path || titulo.capa || ""} alt={titulo.nome || ""} className="w-full h-full object-cover" loading="lazy" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-900/50 to-red-600/30">
+                          <Film className="w-8 h-8 text-muted-foreground" />
                         </div>
-                        {titulo.sinopse && (
-                          <p className="text-[10px] text-white/80 line-clamp-2 mt-2">{titulo.sinopse}</p>
-                        )}
+                      )}
+                      {titulo.nota && (
+                        <div className="absolute top-2 left-2 bg-black/80 backdrop-blur-sm px-2 py-0.5 rounded-md text-[11px] font-bold flex items-center gap-1">
+                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                          {titulo.nota}
+                        </div>
+                      )}
+                      <JuriflixFavoritoButton juriflixId={titulo.id} className="absolute top-2 right-2" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                        <div className="p-3 w-full">
+                          <div className="flex items-center gap-1.5 bg-white text-black px-3 py-1.5 rounded-full text-xs font-bold w-fit mx-auto">
+                            <Play className="w-3 h-3 fill-black" />
+                            Ver mais
+                          </div>
+                        </div>
                       </div>
                     </div>
+                    <h3 className="text-sm font-semibold line-clamp-2 leading-snug">{titulo.nome}</h3>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs text-muted-foreground">{titulo.ano}</span>
+                      {titulo.duracao && <span className="text-xs text-muted-foreground">• {titulo.duracao} min</span>}
+                    </div>
                   </div>
-                  <h3 className="text-sm font-semibold line-clamp-2 leading-snug">{titulo.nome}</h3>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs text-muted-foreground">{titulo.ano}</span>
-                    {titulo.duracao && <span className="text-xs text-muted-foreground">• {titulo.duracao} min</span>}
-                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT SIDEBAR — Favoritos & Recentes */}
+          <aside className="space-y-4 sticky top-20 self-start">
+            {/* Meus Favoritos */}
+            <div className="bg-card/60 backdrop-blur-sm rounded-2xl border border-border/30 p-4 space-y-3">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+                Meus Favoritos
+                <span className="text-[10px] text-muted-foreground ml-auto">{favoritosTitulos.length}</span>
+              </h3>
+              {favoritosTitulos.length === 0 ? (
+                <div className="text-center py-6 space-y-2">
+                  <Heart className="w-8 h-8 text-muted-foreground/20 mx-auto" />
+                  <p className="text-[11px] text-muted-foreground">
+                    Clique no ❤️ para salvar
+                  </p>
                 </div>
-              ))}
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  {favoritosTitulos.slice(0, 6).map(t => (
+                    <div
+                      key={t.id}
+                      className="cursor-pointer group"
+                      onClick={() => handleItemClick(t.id)}
+                    >
+                      <div className="relative aspect-[2/3] rounded-lg overflow-hidden bg-card/50 ring-1 ring-white/10 group-hover:ring-red-500/40 transition-all">
+                        {(t.poster_path || t.capa) && (
+                          <img src={t.poster_path || t.capa || ""} alt="" className="w-full h-full object-cover" />
+                        )}
+                      </div>
+                      <p className="text-[10px] font-medium line-clamp-1 mt-1">{t.nome}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {favoritosTitulos.length > 6 && (
+                <button
+                  onClick={() => setDesktopSection("favoritos")}
+                  className="w-full text-[11px] text-red-400 font-medium hover:underline"
+                >
+                  Ver todos ({favoritosTitulos.length})
+                </button>
+              )}
             </div>
-          )}
+
+            {/* Adicionados Recentes */}
+            <div className="bg-card/60 backdrop-blur-sm rounded-2xl border border-border/30 p-4 space-y-3">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <Film className="w-4 h-4 text-red-500" />
+                Mais Recentes
+              </h3>
+              <div className="space-y-1.5">
+                {(titulos || [])
+                  .filter(t => t.ano)
+                  .sort((a, b) => (b.ano || 0) - (a.ano || 0))
+                  .slice(0, 6)
+                  .map(t => (
+                    <button
+                      key={t.id}
+                      onClick={() => handleItemClick(t.id)}
+                      className="w-full flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-white/5 transition-colors text-left"
+                    >
+                      <div className="w-8 aspect-[2/3] rounded-md overflow-hidden bg-card/50 shrink-0">
+                        {(t.poster_path || t.capa) && (
+                          <img src={t.poster_path || t.capa || ""} alt="" className="w-full h-full object-cover" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] font-semibold line-clamp-1">{t.nome}</p>
+                        <p className="text-[10px] text-muted-foreground">{t.tipo} • {t.ano}</p>
+                      </div>
+                    </button>
+                  ))}
+              </div>
+            </div>
+
+            {/* Dica */}
+            <div className="bg-gradient-to-br from-red-950/30 to-card/60 rounded-2xl border border-red-500/10 p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Popcorn className="w-4 h-4 text-red-500" />
+                <h3 className="text-sm font-bold">Dica JuriFlix</h3>
+              </div>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                Assista filmes e séries jurídicos para fixar conceitos do Direito de forma envolvente. 
+                Dramas de tribunal e documentários sobre justiça são ótimos complementos ao estudo! 🍿
+              </p>
+            </div>
+          </aside>
         </div>
       </div>
     );
