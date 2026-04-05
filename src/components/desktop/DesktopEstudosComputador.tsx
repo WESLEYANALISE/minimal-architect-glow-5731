@@ -11,7 +11,7 @@ export const DesktopEstudosComputador = memo(({ navigate, onEvelyn }: DesktopEst
     if (onEvelyn) {
       onEvelyn();
     } else {
-      navigate("/chat-professora");
+      navigate("/evelyn");
     }
   };
 
@@ -69,7 +69,7 @@ export const DesktopEstudosComputador = memo(({ navigate, onEvelyn }: DesktopEst
             </div>
 
             <div>
-              <h3 className="text-sm font-bold text-white/95">Evelyn</h3>
+              <h3 className="text-sm font-bold text-white/95">Evelyn WhatsApp</h3>
               <p className="text-[11px] text-white/45 leading-snug">Assistente jurídica com IA</p>
             </div>
 
