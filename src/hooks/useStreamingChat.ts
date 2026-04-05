@@ -231,6 +231,7 @@ export const useStreamingChat = (options: UseStreamingChatOptions) => {
 
   return {
     messages,
+    setMessages,
     isStreaming,
     uploadedFiles,
     setUploadedFiles,
