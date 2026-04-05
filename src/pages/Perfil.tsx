@@ -94,6 +94,7 @@ export default function Perfil() {
   });
 
   const [deleting, setDeleting] = useState(false);
+  const { isDesktop } = useDeviceType();
 
   useEffect(() => {
     if (user) {
