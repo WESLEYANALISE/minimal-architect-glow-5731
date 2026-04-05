@@ -1,56 +1,55 @@
 
 
-## Plano: Layout desktop para Flashcards — Abas como lista lateral
+## Plano: Corrigir tela preta ao voltar dos flashcards
 
 ### Problema
-A sub-view "praticar" (lista de areas com abas Principais/Frequentes/Extras) usa layout mobile mesmo no desktop: abas horizontais, grid 2 colunas, hero carousel pequeno. As laterais ficam vazias.
+
+Quando o usuario esta estudando um flashcard (inline via estado `estudarTema` dentro de `FlashcardsTemas`), o botao "Voltar" do Header faz navegacao por rota (`/flashcards/temas` → `/flashcards/areas`), em vez de simplesmente fechar o viewer inline (`setEstudarTema(null)`). Isso causa:
+
+1. Desmontagem do componente lazy `FlashcardsTemas`
+2. Remontagem via `Suspense` → tela preta/branca
+3. Recarregamento completo dos dados
+
+O componente `FlashcardsEstudar` e renderizado inline (sem mudanca de rota), mas o Header nao sabe disso — ele ve a rota `/flashcards/temas` e navega para `/flashcards/areas`.
 
 ### Solucao
 
-No desktop, converter para layout de **duas colunas**: sidebar esquerda fixa com navegacao vertical + conteudo principal expandido.
-
-```text
-┌─────────────────────────────────────────────────────┐
-│  Header (Flashcards - X disponíveis)                │
-├──────────────┬──────────────────────────────────────┤
-│  NAVEGAÇÃO   │  CONTEÚDO                            │
-│              │                                      │
-│  ● Principais│  Grid 3-4 colunas de areas           │
-│    Frequentes│                                      │
-│    Extras    │                                      │
-│              │                                      │
-│  ─────────── │                                      │
-│  Stats       │                                      │
-│  Compreendi  │                                      │
-│  Revisar     │                                      │
-│  Streak      │                                      │
-│              │                                      │
-│  Dra.Arabella│                                      │
-└──────────────┴──────────────────────────────────────┘
-```
+Criar um mecanismo para o `FlashcardsTemas` interceptar a navegacao "voltar" quando esta no modo inline de estudo, fazendo `setEstudarTema(null)` em vez de navegar por rota.
 
 ### Mudancas
 
-**1. `src/pages/FlashcardsAreas.tsx`** — Sub-view "praticar" (linhas ~554-751)
+**1. `src/pages/FlashcardsTemas.tsx`**
+- Registrar um callback global (via contexto ou window event) quando `estudarTema` esta ativo
+- Usar `useEffect` para ouvir `popstate` ou expor callback via um ref/contexto que o Header possa consultar
+- Abordagem mais simples: usar `window.__flashcardBackHandler` como callback temporario que o Header verifica antes de navegar
 
-Quando `isDesktopDevice`:
-- Remover hero carousel (desnecessario no desktop)
-- Substituir abas horizontais por lista vertical na sidebar esquerda com icones e indicador ativo (borda dourada lateral)
-- Abaixo das abas na sidebar: bloco de stats (total estudados, compreendi %, revisar %, streak)
-- Abaixo dos stats: Dra. Arabella feedback (reutilizar logica do menu principal)
-- Area principal: grid `grid-cols-3 xl:grid-cols-4 gap-4` com cards maiores (`h-[120px]`)
-- Manter layout mobile inalterado
+**2. `src/components/Header.tsx`**
+- Em `handleBackNavigation`, antes de fazer `navigate(destination)`, verificar se existe `window.__flashcardBackHandler`
+- Se existir, chamar o handler e retornar (sem navegar)
+- Isso permite que qualquer pagina com sub-views inline intercepte o voltar
 
-**2. `src/pages/FlashcardsAreas.tsx`** — Sub-view "categories" (serpentine timeline, linhas ~372-551)
+### Implementacao detalhada
 
-Quando `isDesktopDevice`:
-- Converter serpentine (mobile) em grid horizontal `grid-cols-4 gap-5` com os 4 cards lado a lado
-- Remover timeline central e footprints (elementos mobile-only)
-- Cards maiores no desktop
+```text
+FlashcardsTemas.tsx:
+  useEffect(() => {
+    if (estudarTema) {
+      window.__backInterceptor = () => setEstudarTema(null);
+      return () => { delete window.__backInterceptor; };
+    }
+  }, [estudarTema]);
+
+Header.tsx - handleBackNavigation:
+  if (window.__backInterceptor) {
+    window.__backInterceptor();
+    return;
+  }
+  // ...resto da logica existente
+```
 
 ### O que NAO muda
-- Layout mobile (todas as sub-views)
-- Sub-view "menu" (ja tem layout desktop)
-- Componentes FlashcardsMenuPrincipal, FlashcardsEstatisticas
-- Rotas, dados, logica de navegacao
+- Rotas, lazy loading, Suspense
+- FlashcardsEstudar, FlashcardViewer
+- Navegacao em todas as outras paginas
+- Layout mobile/desktop
 
