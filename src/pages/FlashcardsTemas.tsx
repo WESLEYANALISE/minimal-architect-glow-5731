@@ -64,6 +64,7 @@ const FlashcardsTemas = () => {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [estudarTema, setEstudarTema] = useState<string | null>(null);
   const cacheHashRef = useRef('');
+  const isGeneratingRef = useRef(false);
 
   const { isPremium } = useSubscription();
 
