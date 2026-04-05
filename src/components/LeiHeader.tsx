@@ -76,12 +76,17 @@ export const LeiHeader = ({
       {/* Brasão da República com botão de favoritar */}
       <div className="relative mb-4">
         <div className="absolute inset-0 rounded-full blur-xl animate-pulse" style={{ background: 'hsla(40, 60%, 50%, 0.15)' }} />
-        <div className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center" style={{ border: '2px solid hsla(40, 60%, 50%, 0.25)' }}>
+        <div 
+          className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center overflow-hidden"
+          style={{ 
+            border: '2px solid hsla(40, 60%, 50%, 0.25)',
+            background: 'hsl(350, 40%, 12%)'
+          }}
+        >
           <img 
             src={brasaoRepublica} 
             alt="Brasão da República Federativa do Brasil" 
-            className="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow-lg"
-            style={{ mixBlendMode: 'luminosity', filter: 'brightness(1.2) contrast(1.1)' }}
+            className="w-[70%] h-[70%] object-contain drop-shadow-lg"
           />
         </div>
         
