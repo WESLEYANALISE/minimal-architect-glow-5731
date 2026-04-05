@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Camera, User, Briefcase, GraduationCap, FileText, Loader2, LogOut, ChevronDown, Smile, Trash2, Bell } from 'lucide-react';
+import { useDeviceType } from '@/hooks/use-device-type';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -346,32 +347,196 @@ export default function Perfil() {
     );
   }
 
+  const { isDesktop } = useDeviceType();
+
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+    <div className={cn("min-h-screen bg-background", isDesktop ? "pb-4" : "pb-24")}>
+      <main className={cn(
+        "mx-auto px-4 py-6 space-y-6",
+        isDesktop ? "max-w-5xl" : "max-w-2xl"
+      )}>
         {/* Page Title */}
-        <div className="text-center">
-          <h1 className="text-xl font-bold">Meu Perfil</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Configure suas informações</p>
-        </div>
+        {!isDesktop && (
+          <div className="text-center">
+            <h1 className="text-xl font-bold">Meu Perfil</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">Configure suas informações</p>
+          </div>
+        )}
 
-        {/* Atalho Notificações */}
-        <Button
-          variant="outline"
-          className="w-full justify-start gap-2 text-sm"
-          onClick={() => navigate('/notificacoes-preferencias')}
-        >
-          <Bell className="h-4 w-4 text-primary" />
-          Preferências de Notificações
-        </Button>
+        {isDesktop ? (
+          /* Desktop: 2 column layout */
+          <div className="grid grid-cols-12 gap-8">
+            {/* Left column - Avatar + form */}
+            <div className="col-span-5 space-y-6">
+              <div className="text-left">
+                <h1 className="text-2xl font-bold">Meu Perfil</h1>
+                <p className="text-sm text-muted-foreground mt-1">Configure suas informações</p>
+              </div>
 
-        {/* Tabs */}
-        <Tabs defaultValue="perfil" className="w-full">
-          <TabsList className={cn("grid w-full mb-4", isAdmin ? "grid-cols-2" : "grid-cols-3")}>
-            <TabsTrigger value="perfil">Perfil</TabsTrigger>
-            {!isAdmin && <TabsTrigger value="plano">Plano</TabsTrigger>}
-            <TabsTrigger value="suporte" onClick={(e) => { e.preventDefault(); navigate('/suporte'); }}>Suporte</TabsTrigger>
-          </TabsList>
+              <Button
+                variant="outline"
+                className="w-full justify-start gap-2 text-sm"
+                onClick={() => navigate('/notificacoes-preferencias')}
+              >
+                <Bell className="h-4 w-4 text-primary" />
+                Preferências de Notificações
+              </Button>
+
+              {/* Avatar + info */}
+              <div className="flex items-center gap-5 p-4 rounded-xl bg-muted/30 border border-border/50">
+                <div className="relative flex-shrink-0">
+                  <div className="w-24 h-24 rounded-full bg-muted border-4 border-background shadow-xl overflow-hidden">
+                    {profile.avatar_url ? (
+                      <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+                        <User className="h-10 w-10 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+                  >
+                    {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+                  </button>
+                  <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-lg text-foreground truncate">{profile.nome || 'Usuário'}</p>
+                  <p className="text-sm text-muted-foreground truncate">{profile.email || user?.email}</p>
+                  <button
+                    onClick={() => setShowAvatarPicker(true)}
+                    className="mt-2 flex items-center gap-1.5 text-sm text-primary hover:underline"
+                  >
+                    <Smile className="h-4 w-4" />
+                    Escolher avatar
+                  </button>
+                </div>
+              </div>
+
+              {/* Form fields */}
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="nome" className="text-sm">Nome</Label>
+                  <Input id="nome" value={profile.nome || ''} onChange={(e) => setProfile(prev => ({ ...prev, nome: e.target.value }))} placeholder="Seu nome" className="h-10" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-sm">E-mail</Label>
+                  <Input id="email" value={profile.email || user?.email || ''} readOnly disabled className="h-10 opacity-70" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="telefone" className="text-sm">Telefone (WhatsApp)</Label>
+                  <PhoneInput value={profile.telefone || ''} onChange={(_, fullNumber) => setProfile(prev => ({ ...prev, telefone: fullNumber }))} placeholder="(11) 99999-9999" className="h-10" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-sm">Qual é o seu objetivo?</Label>
+                  <Select value={profile.intencao || undefined} onValueChange={(value) => setProfile(prev => ({ ...prev, intencao: value as Intencao }))}>
+                    <SelectTrigger className="h-auto p-3">
+                      <SelectValue placeholder="Selecione seu objetivo">
+                        {profile.intencao && (() => {
+                          const selected = intencaoOptions.find(o => o.value === profile.intencao);
+                          return selected ? (
+                            <div className="flex items-center gap-2">
+                              <div className="p-1.5 rounded-full bg-primary text-primary-foreground">{selected.icon}</div>
+                              <div className="text-left">
+                                <p className="font-medium text-sm">{selected.label}</p>
+                                <p className="text-xs text-muted-foreground">{selected.description}</p>
+                              </div>
+                            </div>
+                          ) : null;
+                        })()}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {intencaoOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value} className="p-3">
+                          <div className="flex items-center gap-2">
+                            <div className="p-1.5 rounded-full bg-muted">{option.icon}</div>
+                            <div>
+                              <p className="font-medium text-sm">{option.label}</p>
+                              <p className="text-xs text-muted-foreground">{option.description}</p>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <Button onClick={handleSave} disabled={saving} className="flex-1 h-10">
+                    {saving ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>) : ('Salvar alterações')}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={async () => {
+                      try { await supabase.auth.signOut({ scope: 'local' }); } catch (error) { console.error('Erro ao sair:', error); }
+                      navigate('/', { replace: true });
+                    }}
+                    className="h-10 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* Excluir conta */}
+                <div className="pt-6 border-t border-border/50">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button className="flex items-center gap-2 text-xs text-muted-foreground hover:text-destructive transition-colors">
+                        <Trash2 className="w-3.5 h-3.5" />
+                        Excluir minha conta
+                      </button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Excluir conta</AlertDialogTitle>
+                        <AlertDialogDescription>Você realmente deseja excluir sua conta? Esta ação é irreversível.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteAccount} disabled={deleting} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                          {deleting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Excluindo...</>) : ('Sim, excluir minha conta')}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </div>
+            </div>
+
+            {/* Right column - Tabs Plano/Suporte */}
+            <div className="col-span-7">
+              <Tabs defaultValue={isAdmin ? "perfil" : "plano"} className="w-full">
+                <TabsList className={cn("grid w-full mb-4", isAdmin ? "grid-cols-1" : "grid-cols-2")}>
+                  {!isAdmin && <TabsTrigger value="plano">Plano</TabsTrigger>}
+                  <TabsTrigger value="suporte" onClick={(e) => { e.preventDefault(); navigate('/suporte'); }}>Suporte</TabsTrigger>
+                </TabsList>
+                <TabsContent value="plano"><PerfilPlanoTab /></TabsContent>
+                <TabsContent value="suporte"><PerfilSuporteTab /></TabsContent>
+              </Tabs>
+            </div>
+          </div>
+        ) : (
+          /* Mobile: original layout */
+          <>
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-2 text-sm"
+              onClick={() => navigate('/notificacoes-preferencias')}
+            >
+              <Bell className="h-4 w-4 text-primary" />
+              Preferências de Notificações
+            </Button>
+
+            <Tabs defaultValue="perfil" className="w-full">
+              <TabsList className={cn("grid w-full mb-4", isAdmin ? "grid-cols-2" : "grid-cols-3")}>
+                <TabsTrigger value="perfil">Perfil</TabsTrigger>
+                {!isAdmin && <TabsTrigger value="plano">Plano</TabsTrigger>}
+                <TabsTrigger value="suporte" onClick={(e) => { e.preventDefault(); navigate('/suporte'); }}>Suporte</TabsTrigger>
+              </TabsList>
 
           {/* Perfil Tab */}
           <TabsContent value="perfil" className="space-y-6">
