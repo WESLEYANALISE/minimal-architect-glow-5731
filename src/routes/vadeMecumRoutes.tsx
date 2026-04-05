@@ -12,6 +12,18 @@ const LeiRedirect = () => {
   return <Navigate to={`/codigo/lei-${slug}`} replace />;
 };
 
+/** Redireciona /estatuto/:id → /codigo/estatuto-:id */
+const EstatutoRedirect = () => {
+  const { id } = useParams();
+  return <Navigate to={`/codigo/estatuto-${id}`} replace />;
+};
+
+/** Redireciona /sumula/:id → /codigo/sumula-:id */
+const SumulaRedirect = () => {
+  const { id } = useParams();
+  return <Navigate to={`/codigo/sumula-${id}`} replace />;
+};
+
 // Vade Mecum
 const VadeMecumTodas = lazy(() => import("../pages/VadeMecumTodas"));
 const Codigos = lazy(() => import("../pages/Codigos"));
@@ -30,9 +42,7 @@ const LegislacaoPenalEspecial = lazy(() => import("../pages/LegislacaoPenalEspec
 const LeisOrdinarias = lazy(() => import("../pages/LeisOrdinarias"));
 const JurisprudenciaCorpus927 = lazy(() => import("../pages/JurisprudenciaCorpus927"));
 const Estatutos = lazy(() => import("../pages/Estatutos"));
-const EstatutoView = lazy(() => import("../pages/EstatutoView"));
 const Sumulas = lazy(() => import("../pages/Sumulas"));
-const SumulaView = lazy(() => import("../pages/SumulaView"));
 const Previdenciario = lazy(() => import("../pages/Previdenciario"));
 const LeiPrevidenciariaBeneficios = lazy(() => import("../pages/LeiPrevidenciariaBeneficios"));
 const LeiPrevidenciariaCusteio = lazy(() => import("../pages/LeiPrevidenciariaCusteio"));
