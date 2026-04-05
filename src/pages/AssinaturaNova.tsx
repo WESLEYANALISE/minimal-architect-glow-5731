@@ -250,6 +250,18 @@ export default function AssinaturaNova() {
           </div>
         </div>
 
+        {/* ═══ Persuasive message ═══ */}
+        <div className="px-5 max-w-md mx-auto mb-6">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <h2 className="text-base font-black text-center text-white leading-snug mb-1.5 tracking-tight">
+              {FRASES_PERSUASIVAS[fraseIndex].titulo}
+            </h2>
+            <p className="text-[12px] text-amber-400/70 text-center font-medium italic tracking-tight">
+              {FRASES_PERSUASIVAS[fraseIndex].sub}
+            </p>
+          </motion.div>
+        </div>
+
         {/* ═══ Benefits ═══ */}
         <div className="px-5 max-w-md mx-auto mb-8">
           <div className="grid grid-cols-2 gap-2">
@@ -285,12 +297,19 @@ export default function AssinaturaNova() {
           </div>
         </div>
 
-        {/* ═══ Summary ═══ */}
+        {/* ═══ Plan-specific phrase ═══ */}
         <div className="px-5 max-w-md mx-auto mb-5">
-          <p className="text-[11px] leading-relaxed text-zinc-400 text-center rounded-xl p-3"
-            style={{ background: "hsl(0 0% 7%)", border: "1px solid hsl(0 0% 14%)" }}>
-            Acesso a <span className="text-amber-400 font-bold">+1.200 livros</span>, <span className="text-amber-400 font-bold">+136 mil questões</span>, <span className="text-amber-400 font-bold">+101 mil flashcards</span>, <span className="text-amber-400 font-bold">+13 mil resumos</span>, IA jurídica, Vade Mecum completo e <span className="text-amber-400 font-bold">mais de 137 funções</span>. ⚖️
-          </p>
+          <motion.div
+            key={selectedPlan}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="rounded-xl p-3 text-center"
+            style={{ background: "hsl(0 0% 7%)", border: "1px solid hsl(0 0% 14%)" }}
+          >
+            <p className="text-[12px] font-bold text-white leading-snug">{PLAN_PHRASES[selectedPlan]?.titulo}</p>
+            <p className="text-[11px] text-zinc-500 mt-0.5">{PLAN_PHRASES[selectedPlan]?.sub}</p>
+          </motion.div>
         </div>
 
         {/* ═══ CTA ═══ */}
