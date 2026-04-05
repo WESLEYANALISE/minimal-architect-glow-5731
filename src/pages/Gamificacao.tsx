@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Trophy, ArrowLeft, Gamepad2, BarChart3, BookOpen, Scale, Landmark, Gavel, FileText, Users, HandCoins, Building2, Search, Briefcase, Globe, ChevronRight, Swords, CircleCheck, Rocket, HelpCircle, Brain, ArrowDownAZ, PenLine, BookOpenCheck } from "lucide-react";
+import { useDeviceType } from "@/hooks/use-device-type";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { RankingList } from "@/components/gamificacao/RankingList";
@@ -145,12 +146,12 @@ const JOGOS = [
 const Gamificacao = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isDesktop } = useDeviceType();
   const isAdmin = user?.email === ADMIN_EMAIL;
   const [activeTab, setActiveTab] = useState<TabId>("areas");
   const [slideIndex, setSlideIndex] = useState(0);
   const [jogoSelecionado, setJogoSelecionado] = useState<JogoSelecionado>(null);
 
-  // Auto-advance slides
   useEffect(() => {
     const timer = setInterval(() => {
       setSlideIndex((i) => (i + 1) % HERO_SLIDES.length);
@@ -163,28 +164,121 @@ const Gamificacao = () => {
   }, [user, isAdmin]);
 
   const handleJogoClick = (jogoId: JogoSelecionado) => {
-    if (jogoId === "batalha") {
-      navigate("/gamificacao/batalha-juridica/areas");
-    } else if (jogoId === "invasores") {
-      navigate("/gamificacao/invasores");
-    } else if (jogoId === "quiz") {
-      navigate("/jogos-juridicos/quiz/jogar");
-    } else if (jogoId === "memoria") {
-      navigate("/jogos-juridicos/memoria/jogar");
-    } else if (jogoId === "ordenar_palavras") {
-      navigate("/jogos-juridicos/ordenar_palavras/jogar");
-    } else if (jogoId === "completar_lacunas") {
-      navigate("/jogos-juridicos/completar_lacunas/jogar");
-    } else if (jogoId === "caso_pratico") {
-      navigate("/gamificacao/caso-pratico");
-    } else if (jogoId === "jogo_pistas") {
-      navigate("/gamificacao/jogo-pistas");
-    } else if (jogoId === "sim_nao") {
-      setJogoSelecionado("sim_nao");
-    } else {
-      setJogoSelecionado("forca");
-    }
+    if (jogoId === "batalha") navigate("/gamificacao/batalha-juridica/areas");
+    else if (jogoId === "invasores") navigate("/gamificacao/invasores");
+    else if (jogoId === "quiz") navigate("/jogos-juridicos/quiz/jogar");
+    else if (jogoId === "memoria") navigate("/jogos-juridicos/memoria/jogar");
+    else if (jogoId === "ordenar_palavras") navigate("/jogos-juridicos/ordenar_palavras/jogar");
+    else if (jogoId === "completar_lacunas") navigate("/jogos-juridicos/completar_lacunas/jogar");
+    else if (jogoId === "caso_pratico") navigate("/gamificacao/caso-pratico");
+    else if (jogoId === "jogo_pistas") navigate("/gamificacao/jogo-pistas");
+    else if (jogoId === "sim_nao") setJogoSelecionado("sim_nao");
+    else setJogoSelecionado("forca");
   };
+
+  if (isDesktop) {
+    return (
+      <div className="min-h-[calc(100vh-4.5rem)] bg-background">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="grid grid-cols-12 gap-6">
+            {/* Left: Hero + Games */}
+            <div className="col-span-9 space-y-6">
+              {/* Compact Hero */}
+              <div className="relative overflow-hidden rounded-2xl h-[180px]">
+                <AnimatePresence mode="wait">
+                  <motion.div key={slideIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0">
+                    <img src={HERO_SLIDES[slideIndex].image} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                    <div className="absolute bottom-4 left-6 z-10">
+                      <h2 className="text-lg font-bold text-white">{HERO_SLIDES[slideIndex].title}</h2>
+                      <p className="text-sm text-white/80">{HERO_SLIDES[slideIndex].subtitle}</p>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+                <div className="absolute bottom-2 right-4 flex gap-1.5 z-10">
+                  {HERO_SLIDES.map((_, i) => (
+                    <button key={i} onClick={() => setSlideIndex(i)} className={`rounded-full transition-all ${i === slideIndex ? "w-5 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/40"}`} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Games grid */}
+              {!jogoSelecionado && (
+                <div>
+                  <p className="text-sm text-muted-foreground mb-3 font-medium">Escolha um jogo:</p>
+                  <div className="grid grid-cols-3 xl:grid-cols-5 gap-3">
+                    {JOGOS.map((jogo) => {
+                      const Icon = jogo.iconComponent;
+                      return (
+                        <motion.button key={jogo.id} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={() => handleJogoClick(jogo.id)}
+                          className={`group relative overflow-hidden rounded-2xl p-4 text-left bg-gradient-to-br ${jogo.cor} shadow-lg h-[120px]`}>
+                          <div className="absolute -right-3 -bottom-3 opacity-20"><Icon className="w-20 h-20 text-white" /></div>
+                          <div className="bg-white/20 rounded-xl p-2 w-fit mb-2"><Icon className="w-5 h-5 text-white" /></div>
+                          <h3 className="font-bold text-white text-sm leading-tight">{jogo.nome}</h3>
+                          <p className="text-white/70 text-[10px] mt-1 leading-tight">{jogo.descricao}</p>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Tabs + content for selected game */}
+              {(jogoSelecionado === "forca" || jogoSelecionado === "sim_nao") && (
+                <>
+                  <div className="flex bg-muted/50 rounded-xl p-1 gap-1 max-w-md">
+                    {TABS.map((tab) => {
+                      const Icon = tab.icon;
+                      const isActive = activeTab === tab.id;
+                      return (
+                        <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-medium transition-all ${isActive ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                          <Icon className="w-3.5 h-3.5" />{tab.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {activeTab === "areas" && (
+                    <div className="grid grid-cols-3 xl:grid-cols-5 gap-3">
+                      {MATERIAS.map((materia, idx) => {
+                        const Icon = materia.icon;
+                        const basePath = jogoSelecionado === "sim_nao" ? "/gamificacao/sim-nao" : "/gamificacao";
+                        return (
+                          <motion.button key={materia.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.03 }}
+                            onClick={() => navigate(`${basePath}/${materia.id}`)}
+                            className={`group relative overflow-hidden rounded-2xl p-4 text-left transition-all duration-150 hover:scale-[1.02] bg-gradient-to-br ${materia.cor} shadow-lg h-[100px]`}>
+                            <div className="absolute -right-3 -bottom-3 opacity-20"><Icon className="w-20 h-20 text-white" /></div>
+                            <div className="bg-white/20 rounded-xl p-2 w-fit mb-2 group-hover:bg-white/30 transition-colors"><Icon className="w-5 h-5 text-white" /></div>
+                            <h3 className="font-semibold text-white text-sm leading-tight pr-6">{materia.nome}</h3>
+                            <ChevronRight className="absolute bottom-3 right-3 w-4 h-4 text-white/70 group-hover:text-white" />
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {activeTab === "ranking" && <RankingList />}
+                  {activeTab === "estatisticas" && <GamificacaoEstatisticas />}
+                </>
+              )}
+            </div>
+
+            {/* Right sidebar: Ranking */}
+            <div className="col-span-3 space-y-4">
+              <div className="sticky top-20">
+                <div className="rounded-2xl border border-border bg-card/50 p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Trophy className="w-5 h-5 text-amber-500" />
+                    <h3 className="font-semibold text-sm">Ranking</h3>
+                  </div>
+                  <RankingList />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20">

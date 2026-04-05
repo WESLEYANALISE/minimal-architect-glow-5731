@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useDeviceType } from "@/hooks/use-device-type";
 import { supabase } from "@/integrations/supabase/client";
 import { PlanoEstudosWizard } from "@/components/PlanoEstudosWizard";
 import { JurisprudenciaLoadingAnimation } from "@/components/jurisprudencia/JurisprudenciaLoadingAnimation";
@@ -112,8 +113,10 @@ const PlanoEstudos = () => {
     );
   }
 
+  const { isDesktop } = useDeviceType();
+
   return (
-    <div className="px-3 py-4 max-w-4xl mx-auto animate-fade-in">
+    <div className={`px-3 py-4 ${isDesktop ? 'max-w-3xl' : 'max-w-4xl'} mx-auto animate-fade-in`}>
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
           <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-600 shadow-lg shadow-red-500/50">
