@@ -68,6 +68,14 @@ const FlashcardsTemas = () => {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [estudarTema, setEstudarTema] = useState<string | null>(null);
   const cacheHashRef = useRef('');
+
+  // Register back interceptor when studying inline
+  useEffect(() => {
+    if (estudarTema) {
+      (window as any).__backInterceptor = () => setEstudarTema(null);
+      return () => { delete (window as any).__backInterceptor; };
+    }
+  }, [estudarTema]);
   const isGeneratingRef = useRef(false);
 
   const { isPremium } = useSubscription();
