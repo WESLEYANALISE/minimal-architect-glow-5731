@@ -295,7 +295,7 @@ const NoticiasJuridicas = () => {
   // ─── MOBILE ───
   return (
     <div className="min-h-screen bg-background pb-8">
-      <div className="sticky top-[52px] z-30 bg-background/95 backdrop-blur-md border-b border-border">
+      <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-border">
         <div className="grid grid-cols-4 gap-1.5 px-4 py-3">
           {FILTROS.map(f => (
             <button key={f.value} onClick={() => setFiltro(f.value)} className={cn("py-2 rounded-xl text-sm font-semibold transition-all text-center", filtro === f.value ? "bg-primary text-primary-foreground shadow-md" : "bg-muted/50 text-muted-foreground hover:bg-muted")}>{f.label}</button>
