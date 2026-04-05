@@ -28,7 +28,7 @@ import { useArticleTracking } from "@/hooks/useArticleTracking";
 import { ArtigoActionsMenu } from "@/components/ArtigoActionsMenu";
 import { formatForWhatsApp } from "@/lib/formatWhatsApp";
 import { useProgressiveArticles } from "@/hooks/useProgressiveArticles";
-import { getCodigoFromTable } from "@/lib/codigoMappings";
+import { getCodigoFromTable, LAW_METADATA, LawMetadata } from "@/lib/codigoMappings";
 import { AulaArtigoSlidesViewer } from "@/components/AulaArtigoSlidesViewer";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -150,270 +150,82 @@ const CodigoView = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [highlightAlteracao, setHighlightAlteracao] = useState<{ elementoTipo: string; elementoNumero: string | null; tipoAlteracao?: string; leiAlteradora?: string | null; anoAlteracao?: number | null; textoCompleto?: string | null; textoAnterior?: string | null; urlLeiAlteradora?: string | null } | null>(null);
-  const codeNames: {
-    [key: string]: string;
-  } = {
-    cc: "Código Civil",
-    cp: "Código Penal",
-    cpc: "Código de Processo Civil",
-    cpp: "Código de Processo Penal",
-    cf: "Constituição Federal",
-    clt: "Consolidação das Leis do Trabalho",
-    cdc: "Código de Defesa do Consumidor",
-    ctn: "Código Tributário Nacional",
-    ctb: "Código de Trânsito Brasileiro",
-    ce: "Código Eleitoral",
-    ca: "Código de Águas",
-    cba: "Código Brasileiro de Aeronáutica",
-    cbt: "Código Brasileiro de Telecomunicações",
-    ccom: "Código Comercial",
-    cdm: "Código de Minas",
-    cpm: "Código Penal Militar",
-    cppm: "Código de Processo Penal Militar",
-    cflorestal: "Código Florestal",
-    ccaca: "Código de Caça",
-    cpesca: "Código de Pesca",
-    cpi: "Código de Propriedade Industrial",
-    cdus: "Código de Defesa do Usuário",
-    "lei-beneficios": "Lei de Benefícios da Previdência Social",
-    "lei-custeio": "Lei de Custeio da Previdência Social",
-    "lei-improbidade": "Lei de Improbidade Administrativa",
-    "lei-acesso-informacao": "Lei de Acesso à Informação",
-    "lei-anticorrupcao": "Lei Anticorrupção",
-    "lei-mediacao": "Lei de Mediação",
-    "lei-lgpd": "Lei Geral de Proteção de Dados",
-    "lei-lrf": "Lei de Responsabilidade Fiscal",
-    "lei-licitacoes": "Lei de Licitações e Contratos",
-    "lei-acao-popular": "Lei da Ação Popular",
-    "lei-registros-publicos": "Lei de Registros Públicos",
-    "lei-acao-civil-publica": "Lei da Ação Civil Pública",
-    "lei-juizados-civeis": "Lei dos Juizados Especiais",
-    "lei-legislacao-tributaria": "Lei da Legislação Tributária",
-    "lei-processo-administrativo": "Lei do Processo Administrativo",
-    "lei-adi-adc": "Lei da ADI e ADC",
-    // Legislação Penal Especial
-    "lei-lep": "Lei de Execução Penal",
-    "lei-drogas": "Lei de Drogas",
-    "lei-maria-penha": "Lei Maria da Penha",
-    "lei-crimes-hediondos": "Lei de Crimes Hediondos",
-    "lei-tortura": "Lei de Tortura",
-    "lei-organizacoes-criminosas": "Lei de Organizações Criminosas",
-    "lei-interceptacao-telefonica": "Lei de Interceptação Telefônica",
-    "lei-lavagem-dinheiro": "Lei de Lavagem de Dinheiro",
-    "lei-crimes-democraticos": "Lei de Crimes Democráticos",
-    "lei-abuso-autoridade": "Lei de Abuso de Autoridade",
-    "lei-pacote-anticrime": "Pacote Anticrime",
-    "lei-juizados-especiais": "Juizados Especiais Cíveis e Criminais",
-    "lei-crimes-ambientais": "Lei de Crimes Ambientais",
-    "lei-falencia": "Lei de Recuperação e Falência",
-    "lei-feminicidio": "Lei do Feminicídio",
-    "lei-antiterrorismo": "Lei Antiterrorismo",
-    "lei-crimes-financeiro": "Crimes contra o Sistema Financeiro",
-    "lei-crimes-tributario": "Crimes contra a Ordem Tributária",
-    "lei-ficha-limpa": "Lei da Ficha Limpa",
-    "lei-crimes-responsabilidade": "Crimes de Responsabilidade",
-    "lei-crimes-transnacionais": "Crimes Transnacionais",
-    // Novas Leis de Prioridade Alta
-    "lei-servidor": "Estatuto do Servidor Público Federal",
-    "lei-contravencoes": "Lei das Contravenções Penais",
-    "lei-prisao-temporaria": "Lei de Prisão Temporária",
-    "lei-identificacao-criminal": "Lei de Identificação Criminal",
-    "lei-sa": "Lei das Sociedades Anônimas",
-    "lei-concessoes": "Lei de Concessões",
-    "lei-ppp": "Lei das PPPs",
-    "lei-mpu": "Lei Orgânica do Ministério Público da União",
-    "lei-defensoria": "Lei Orgânica da Defensoria Pública",
-    "decreto-etica": "Código de Ética do Servidor Público",
-    "complementar": "Lei da Previdência Complementar",
-  };
-  
-  const tableNames: {
-    [key: string]: string;
-  } = {
-    cc: "CC - Código Civil",
-    cp: "CP - Código Penal",
-    cpc: "CPC – Código de Processo Civil",
-    cpp: "CPP – Código de Processo Penal",
-    cf: "CF - Constituição Federal",
-    clt: "CLT - Consolidação das Leis do Trabalho",
-    cdc: "CDC – Código de Defesa do Consumidor",
-    ctn: "CTN – Código Tributário Nacional",
-    ctb: "CTB Código de Trânsito Brasileiro",
-    ce: "CE – Código Eleitoral",
-    ca: "CA - Código de Águas",
-    cba: "CBA Código Brasileiro de Aeronáutica",
-    cbt: "CBT Código Brasileiro de Telecomunicações",
-    ccom: "CCOM – Código Comercial",
-    cdm: "CDM – Código de Minas",
-    cpm: "CPM – Código Penal Militar",
-    cppm: "CPPM – Código de Processo Penal Militar",
-    cflorestal: "CF - Código Florestal",
-    ccaca: "CC - Código de Caça",
-    cpesca: "CP - Código de Pesca",
-    cpi: "CPI - Código de Propriedade Industrial",
-    cdus: "CDUS - Código de Defesa do Usuário",
-    "lei-beneficios": "LEI 8213 - Benefícios",
-    "lei-custeio": "LEI 8212 - Custeio",
-    "lei-improbidade": "LEI 8429 - IMPROBIDADE",
-    "lei-acesso-informacao": "LEI 12527 - ACESSO INFORMACAO",
-    "lei-anticorrupcao": "LEI 12846 - ANTICORRUPCAO",
-    "lei-mediacao": "LEI 13140 - MEDIACAO",
-    "lei-lgpd": "LEI 13709 - LGPD",
-    "lei-lrf": "LC 101 - LRF",
-    "lei-licitacoes": "LEI 14133 - LICITACOES",
-    "lei-acao-popular": "LEI 4717 - ACAO POPULAR",
-    "lei-registros-publicos": "LEI 6015 - REGISTROS PUBLICOS",
-    "lei-acao-civil-publica": "LEI 7347 - ACAO CIVIL PUBLICA",
-    "lei-juizados-civeis": "LEI 9099 - JUIZADOS CIVEIS",
-    "lei-legislacao-tributaria": "LEI 9430 - LEGISLACAO TRIBUTARIA",
-    "lei-processo-administrativo": "LEI 9784 - PROCESSO ADMINISTRATIVO",
-    "lei-adi-adc": "LEI 9868 - ADI E ADC",
-    // Legislação Penal Especial
-    "lei-lep": "Lei 7.210 de 1984 - Lei de Execução Penal",
-    "lei-drogas": "Lei 11.343 de 2006 - Lei de Drogas",
-    "lei-maria-penha": "Lei 11.340 de 2006 - Maria da Penha",
-    "lei-crimes-hediondos": "Lei 8.072 de 1990 - Crimes Hediondos",
-    "lei-tortura": "Lei 9.455 de 1997 - Tortura",
-    "lei-organizacoes-criminosas": "Lei 12.850 de 2013 - Organizações Criminosas",
-    "lei-interceptacao-telefonica": "Lei 9.296 de 1996 - Interceptação Telefônica",
-    "lei-lavagem-dinheiro": "LLD - Lei de Lavagem de Dinheiro",
-    "lei-crimes-democraticos": "Lei 14.197 de 2021 - Crimes Contra o Estado Democrático",
-    "lei-abuso-autoridade": "Lei 13.869 de 2019 - Abuso de Autoridade",
-    "lei-pacote-anticrime": "Lei 13.964 de 2019 - Pacote Anticrime",
-    "lei-juizados-especiais": "Lei 9.099 de 1995 - Juizados Especiais",
-    "lei-crimes-ambientais": "LEI 9605 - Crimes Ambientais",
-    "lei-falencia": "LEI 11101 - Recuperação e Falência",
-    "lei-feminicidio": "LEI 13104 - Feminicídio",
-    "lei-antiterrorismo": "LEI 13260 - Antiterrorismo",
-    "lei-crimes-financeiro": "LEI 7492 - Crimes Sistema Financeiro",
-    "lei-crimes-tributario": "LEI 8137 - Crimes Ordem Tributária",
-    "lei-ficha-limpa": "LC 135 - Ficha Limpa",
-    "lei-crimes-responsabilidade": "LEI 1079 - Crimes Responsabilidade",
-    "lei-crimes-transnacionais": "LEI 5015 - Crimes Transnacionais",
-    // Novas Leis de Prioridade Alta
-    "lei-servidor": "LEI 8112 - SERVIDOR PUBLICO",
-    "lei-contravencoes": "DL 3688 - CONTRAVENCOES PENAIS",
-    "lei-prisao-temporaria": "LEI 7960 - PRISAO TEMPORARIA",
-    "lei-identificacao-criminal": "LEI 12037 - IDENTIFICACAO CRIMINAL",
-    "lei-sa": "LEI 6404 - SOCIEDADES ANONIMAS",
-    "lei-concessoes": "LEI 8987 - CONCESSOES",
-    "lei-ppp": "LEI 11079 - PPP",
-    "lei-mpu": "LC 75 - MINISTERIO PUBLICO UNIAO",
-    "lei-defensoria": "LC 80 - DEFENSORIA PUBLICA",
-    "decreto-etica": "DECRETO 1171 - ETICA SERVIDOR",
-    "complementar": "LC 109 - PREVIDENCIA COMPLEMENTAR",
-  };
 
-  // Mapeamento para número da lei (subtítulo)
-  const lawNumbers: {
-    [key: string]: string;
-  } = {
-    cc: "Lei nº 10.406/2002",
-    cp: "Decreto-Lei nº 2.848/1940",
-    cpc: "Lei nº 13.105/2015",
-    cpp: "Decreto-Lei nº 3.689/1941",
-    cf: "de 5 de outubro de 1988",
-    clt: "Decreto-Lei nº 5.452/1943",
-    cdc: "Lei nº 8.078/1990",
-    ctn: "Lei nº 5.172/1966",
-    ctb: "Lei nº 9.503/1997",
-    ce: "Lei nº 4.737/1965",
-    ca: "Decreto nº 24.643/1934",
-    cba: "Lei nº 7.565/1986",
-    cbt: "Lei nº 4.117/1962",
-    ccom: "Lei nº 556/1850",
-    cdm: "Decreto-Lei nº 227/1967",
-    cpm: "Decreto-Lei nº 1.001/1969",
-    cppm: "Decreto-Lei nº 1.002/1969",
-    cflorestal: "Lei nº 12.651/2012",
-    ccaca: "Lei nº 5.197/1967",
-    cpesca: "Lei nº 11.959/2009",
-    cpi: "Lei nº 9.279/1996",
-    cdus: "Lei nº 13.460/2017",
-    "lei-beneficios": "Lei nº 8.213/1991",
-    "lei-custeio": "Lei nº 8.212/1991",
-    "lei-improbidade": "Lei nº 8.429/1992",
-    "lei-acesso-informacao": "Lei nº 12.527/2011",
-    "lei-anticorrupcao": "Lei nº 12.846/2013",
-    "lei-mediacao": "Lei nº 13.140/2015",
-    "lei-lgpd": "Lei nº 13.709/2018",
-    "lei-lrf": "LC nº 101/2000",
-    "lei-licitacoes": "Lei nº 14.133/2021",
-    "lei-acao-popular": "Lei nº 4.717/1965",
-    "lei-registros-publicos": "Lei nº 6.015/1973",
-    "lei-acao-civil-publica": "Lei nº 7.347/1985",
-    "lei-juizados-civeis": "Lei nº 9.099/1995",
-    "lei-legislacao-tributaria": "Lei nº 9.430/1996",
-    "lei-processo-administrativo": "Lei nº 9.784/1999",
-    "lei-adi-adc": "Lei nº 9.868/1999",
-    // Legislação Penal Especial
-    "lei-lep": "Lei nº 7.210/1984",
-    "lei-drogas": "Lei nº 11.343/2006",
-    "lei-maria-penha": "Lei nº 11.340/2006",
-    "lei-crimes-hediondos": "Lei nº 8.072/1990",
-    "lei-tortura": "Lei nº 9.455/1997",
-    "lei-organizacoes-criminosas": "Lei nº 12.850/2013",
-    "lei-interceptacao-telefonica": "Lei nº 9.296/1996",
-    "lei-lavagem-dinheiro": "Lei nº 9.613/1998",
-    "lei-crimes-democraticos": "Lei nº 14.197/2021",
-    "lei-abuso-autoridade": "Lei nº 13.869/2019",
-    "lei-pacote-anticrime": "Lei nº 13.964/2019",
-    "lei-juizados-especiais": "Lei nº 9.099/1995",
-    "lei-crimes-ambientais": "Lei nº 9.605/1998",
-    "lei-falencia": "Lei nº 11.101/2005",
-    "lei-feminicidio": "Lei nº 13.104/2015",
-    "lei-antiterrorismo": "Lei nº 13.260/2016",
-    "lei-crimes-financeiro": "Lei nº 7.492/1986",
-    "lei-crimes-tributario": "Lei nº 8.137/1990",
-    "lei-ficha-limpa": "LC nº 135/2010",
-    "lei-crimes-responsabilidade": "Lei nº 1.079/1950",
-    "lei-crimes-transnacionais": "Lei nº 5.015/2004",
-    // Novas Leis de Prioridade Alta
-    "lei-servidor": "Lei nº 8.112/1990",
-    "lei-contravencoes": "DL nº 3.688/1941",
-    "lei-prisao-temporaria": "Lei nº 7.960/1989",
-    "lei-identificacao-criminal": "Lei nº 12.037/2009",
-    "lei-sa": "Lei nº 6.404/1976",
-    "lei-concessoes": "Lei nº 8.987/1995",
-    "lei-ppp": "Lei nº 11.079/2004",
-    "lei-mpu": "LC nº 75/1993",
-    "lei-defensoria": "LC nº 80/1994",
-    "decreto-etica": "Decreto nº 1.171/1994",
-    "complementar": "LC nº 109/2001",
-  };
-  
-  // Verificar se o ID é um nome de tabela direto ou um slug
-  const decodedId = decodeURIComponent(id || '');
-  const allTableValues = Object.values(tableNames);
-  const isDirectTableName = allTableValues.includes(decodedId);
-  
-  const finalTableName = isDirectTableName ? decodedId : (tableNames[id as string] || "CP - Código Penal");
-  const codeName = isDirectTableName 
-    ? (Object.entries(codeNames).find(([key]) => tableNames[key] === decodedId)?.[1] || "Código")
-    : (codeNames[id as string] || "Código");
-  const tableName = finalTableName;
-  
-  // Obter o número da lei para o subtítulo
-  const lawNumber = isDirectTableName 
-    ? (Object.entries(lawNumbers).find(([key]) => tableNames[key] === decodedId)?.[1] || "")
-    : (lawNumbers[id as string] || "");
+  // Resolver metadata a partir do slug (suporta códigos, estatutos, súmulas e tabela direta)
+  const resolvedMeta = useMemo((): { tableName: string; codeName: string; lawNumber: string; isSumula: boolean; itemLabel: string; meta: LawMetadata | null } => {
+    const slug = id || '';
+    const decodedSlug = decodeURIComponent(slug);
+    
+    // 1. Buscar no LAW_METADATA pelo slug direto
+    const meta = LAW_METADATA[slug] || LAW_METADATA[decodedSlug];
+    if (meta) {
+      return {
+        tableName: meta.tableName,
+        codeName: meta.displayName,
+        lawNumber: meta.lawNumber || '',
+        isSumula: meta.tipo === 'sumula',
+        itemLabel: meta.itemLabel || 'Artigo',
+        meta,
+      };
+    }
+    
+    // 2. Fallback: Verificar se é um nome de tabela direto (URLs legadas com nome de tabela na URL)
+    for (const [, m] of Object.entries(LAW_METADATA)) {
+      if (m.tableName === decodedSlug) {
+        return {
+          tableName: m.tableName,
+          codeName: m.displayName,
+          lawNumber: m.lawNumber || '',
+          isSumula: m.tipo === 'sumula',
+          itemLabel: m.itemLabel || 'Artigo',
+          meta: m,
+        };
+      }
+    }
+    
+    // 3. Fallback final
+    return {
+      tableName: 'CP - Código Penal',
+      codeName: 'Código Penal',
+      lawNumber: 'Decreto-Lei nº 2.848/1940',
+      isSumula: false,
+      itemLabel: 'Artigo',
+      meta: null,
+    };
+  }, [id]);
+
+  const { tableName, codeName, lawNumber, isSumula, itemLabel } = resolvedMeta;
+  const meta = resolvedMeta.meta;
 
   // URL do Planalto para o link "Ver no Planalto"
   const urlPlanalto = URLS_PLANALTO[tableName] || "";
 
-  // Use progressive loading: primeiros 50 instantâneos, resto em background
+  // Use progressive loading: primeiros 100 instantâneos, resto em background
   const { 
-    articles, 
+    articles: rawArticles, 
     isLoadingInitial: isLoading, 
     isLoadingMore: isLoadingFull,
     isComplete,
     totalLoaded 
-  } = useProgressiveArticles<Article>({
+  } = useProgressiveArticles<any>({
     tableName,
-    initialChunk: 100,       // Primeiros 100 artigos instantâneos
-    backgroundChunk: 500,   // Carregar 500 por vez em background
-    delayBetweenChunks: 100 // 100ms entre cada chunk
+    initialChunk: 100,
+    backgroundChunk: 500,
+    delayBetweenChunks: 100
   });
+
+  // Adapter: para súmulas, converter campos para formato Article
+  const articles: Article[] = useMemo(() => {
+    if (!isSumula) return rawArticles as Article[];
+    return rawArticles.map((item: any) => ({
+      id: item.id,
+      "Número do Artigo": item.id?.toString() || "",
+      "Artigo": item["Texto da Súmula"] || "",
+      "Narração": item["Narração"] || null,
+      "Comentario": null,
+      "Aula": null,
+    }));
+  }, [rawArticles, isSumula]);
   
   // Função placeholder para updateArticle (se necessário no futuro)
   const updateArticle = useCallback((id: number, updates: Partial<Article>) => {
@@ -712,9 +524,22 @@ const CodigoView = () => {
   }, [searchQuery]);
 
   // Disparar geração automática de aulas em background ao acessar o código
+  // Pular para súmulas (não têm aulas) e verificar cache antes de disparar
   useEffect(() => {
+    if (isSumula) return; // Súmulas não precisam de aulas
+    
     const gerarAulasBackground = async () => {
       try {
+        // Verificar se já existe aula para este código no cache
+        const { data: existingAula } = await supabase
+          .from('aulas_artigos')
+          .select('id')
+          .eq('codigo_tabela', tableName)
+          .limit(1);
+        
+        // Se já tem aulas, não disparar processamento
+        if (existingAula && existingAula.length > 0) return;
+        
         // Disparar em background - não bloqueia a UI
         supabase.functions.invoke('processar-aulas-background', {
           body: { codigoTabela: tableName }
@@ -733,7 +558,7 @@ const CodigoView = () => {
     // Executar após um pequeno delay para não competir com carregamento inicial
     const timeout = setTimeout(gerarAulasBackground, 3000);
     return () => clearTimeout(timeout);
-  }, [tableName]);
+  }, [tableName, isSumula]);
 
   // Renderizar modais compartilhados
   const renderModals = () => (
@@ -825,7 +650,7 @@ const CodigoView = () => {
   // LAYOUT DESKTOP - 3 colunas
   if (isDesktop) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen text-foreground">
         {renderModals()}
         
         <VadeMecumDesktopLayout
