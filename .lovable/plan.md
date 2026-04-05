@@ -1,55 +1,54 @@
 
 
-## Plano: Corrigir tela preta ao voltar dos flashcards
+## Plano: Sidebar de historico de conversas no Chat Professora (estilo ChatGPT)
 
 ### Problema
-
-Quando o usuario esta estudando um flashcard (inline via estado `estudarTema` dentro de `FlashcardsTemas`), o botao "Voltar" do Header faz navegacao por rota (`/flashcards/temas` → `/flashcards/areas`), em vez de simplesmente fechar o viewer inline (`setEstudarTema(null)`). Isso causa:
-
-1. Desmontagem do componente lazy `FlashcardsTemas`
-2. Remontagem via `Suspense` → tela preta/branca
-3. Recarregamento completo dos dados
-
-O componente `FlashcardsEstudar` e renderizado inline (sem mudanca de rota), mas o Header nao sabe disso — ele ve a rota `/flashcards/temas` e navega para `/flashcards/areas`.
+A pagina `/chat-professora` mostra apenas o chat centralizado sem historico de conversas. O usuario quer ver uma lista lateral esquerda com conversas anteriores agrupadas por data, como no ChatGPT.
 
 ### Solucao
 
-Criar um mecanismo para o `FlashcardsTemas` interceptar a navegacao "voltar" quando esta no modo inline de estudo, fazendo `setEstudarTema(null)` em vez de navegar por rota.
+No desktop (lg+), adicionar sidebar esquerda com historico de conversas. No mobile, manter layout atual com um botao para abrir o historico em drawer/sheet.
+
+```text
+Desktop:
+┌──────────────┬──────────────────────────────────────┐
+│  + Nova conv │  Header (Professora / Estudar)       │
+│  ──────────  │  ────────────────────────────────────│
+│  Hoje        │                                      │
+│  · Conv 1    │  Chat messages                       │
+│  · Conv 2    │                                      │
+│  Ontem       │                                      │
+│  · Conv 3    │                                      │
+│  Anteriores  │                                      │
+│  · Conv 4    │  Input                               │
+└──────────────┴──────────────────────────────────────┘
+```
 
 ### Mudancas
 
-**1. `src/pages/FlashcardsTemas.tsx`**
-- Registrar um callback global (via contexto ou window event) quando `estudarTema` esta ativo
-- Usar `useEffect` para ouvir `popstate` ou expor callback via um ref/contexto que o Header possa consultar
-- Abordagem mais simples: usar `window.__flashcardBackHandler` como callback temporario que o Header verifica antes de navegar
+**1. `src/pages/ChatProfessora.tsx`**
 
-**2. `src/components/Header.tsx`**
-- Em `handleBackNavigation`, antes de fazer `navigate(destination)`, verificar se existe `window.__flashcardBackHandler`
-- Se existir, chamar o handler e retornar (sem navegar)
-- Isso permite que qualquer pagina com sub-views inline intercepte o voltar
+- Importar e usar `useProfessoraConversations` (ja existe o hook completo)
+- No desktop: layout `grid grid-cols-[280px_1fr]` envolvendo sidebar + card de chat
+- Sidebar esquerda com:
+  - Botao "Nova conversa" no topo
+  - Lista de conversas agrupadas por data (`groupedConversations()`)
+  - Cada item mostra titulo truncado, hover highlight, botao delete
+  - Item ativo com borda/fundo destacado
+- Ao clicar numa conversa: carregar mensagens via `loadConversationMessages`, popular o chat
+- Ao enviar primeira mensagem de nova conversa: `createConversation` automaticamente
+- Integrar persistencia: salvar mensagens na tabela `chat_professora_historico` com `conversation_id`
+- No mobile: botao de historico no header que abre Sheet/Drawer com a mesma lista
 
-### Implementacao detalhada
-
-```text
-FlashcardsTemas.tsx:
-  useEffect(() => {
-    if (estudarTema) {
-      window.__backInterceptor = () => setEstudarTema(null);
-      return () => { delete window.__backInterceptor; };
-    }
-  }, [estudarTema]);
-
-Header.tsx - handleBackNavigation:
-  if (window.__backInterceptor) {
-    window.__backInterceptor();
-    return;
-  }
-  // ...resto da logica existente
-```
+**2. Integracao com `useStreamingChat`**
+- Ao selecionar conversa existente, carregar mensagens e popular o estado do hook
+- Ao iniciar nova conversa, resetar mensagens
+- Ao receber resposta, atualizar `updated_at` da conversa
 
 ### O que NAO muda
-- Rotas, lazy loading, Suspense
-- FlashcardsEstudar, FlashcardViewer
-- Navegacao em todas as outras paginas
-- Layout mobile/desktop
+- `useStreamingChat` (logica de streaming)
+- `useProfessoraConversations` (hook ja pronto)
+- Edge Functions de chat
+- Layout mobile do chat em si
+- Componentes de mensagem (`ChatMessageNew`, `ChatInputNew`)
 
