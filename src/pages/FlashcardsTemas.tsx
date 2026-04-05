@@ -60,6 +60,7 @@ const FlashcardsTemas = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const area = searchParams.get("area") || "";
+  const { isDesktop: isDesktopDevice } = useDeviceType();
   const [activeTab, setActiveTab] = useState<"ordem" | "favoritos" | "pesquisar">("ordem");
   const [favoritos, setFavoritos] = useState<string[]>(() => getFavoritos(area));
   const [searchTerm, setSearchTerm] = useState("");
@@ -70,6 +71,7 @@ const FlashcardsTemas = () => {
   const isGeneratingRef = useRef(false);
 
   const { isPremium } = useSubscription();
+  const { data: studyStats } = useFlashcardStats();
 
   // Cache IndexedDB
   const cacheKey = `flashcards-temas-${area}`;
