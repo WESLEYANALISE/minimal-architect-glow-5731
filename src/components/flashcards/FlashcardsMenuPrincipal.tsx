@@ -18,6 +18,7 @@ const R = {
 
 interface FlashcardsMenuPrincipalProps {
   totalFlashcards: number;
+  isDesktop?: boolean;
   onPraticar: () => void;
   onProgresso: () => void;
   onReforco: () => void;
@@ -94,6 +95,7 @@ function gerarFeedbackFlashcards(
 
 export const FlashcardsMenuPrincipal = ({
   totalFlashcards,
+  isDesktop = false,
   onPraticar,
   onProgresso,
   onReforco,
