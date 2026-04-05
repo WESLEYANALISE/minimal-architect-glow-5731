@@ -999,8 +999,8 @@ const Auth: React.FC = () => {
         </button>
 
         {/* Formulário na parte inferior */}
-        <div className="relative z-10 h-screen flex items-end justify-center">
-          <div className="w-full">
+        <div className="relative z-10 h-screen flex items-end justify-center px-4 sm:px-8">
+          <div className="w-full max-w-md mx-auto">
             <AuthFormCard {...formCardProps} />
 
             {mode === 'signup' && (
