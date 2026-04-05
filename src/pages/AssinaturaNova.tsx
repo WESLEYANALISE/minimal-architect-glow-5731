@@ -251,7 +251,7 @@ export default function AssinaturaNova() {
         </div>
 
         {/* ═══ Persuasive message ═══ */}
-        <div className="px-5 max-w-md sm:max-w-xl mx-auto mb-6">
+        <div className="px-5 max-w-md sm:max-w-2xl mx-auto mb-6">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <h2 className="text-base font-black text-center text-white leading-snug mb-1.5 tracking-tight">
               {FRASES_PERSUASIVAS[fraseIndex].titulo}
@@ -263,7 +263,7 @@ export default function AssinaturaNova() {
         </div>
 
         {/* ═══ Benefits ═══ */}
-        <div className="px-5 max-w-md sm:max-w-xl mx-auto mb-8">
+        <div className="px-5 max-w-md sm:max-w-2xl mx-auto mb-8">
           <div className="grid grid-cols-2 gap-2">
             {BENEFITS.map((b, i) => (
               <motion.div
@@ -288,7 +288,7 @@ export default function AssinaturaNova() {
         </div>
 
         {/* ═══ Plan cards ═══ */}
-        <div className="px-5 max-w-md sm:max-w-xl mx-auto mb-5">
+        <div className="px-5 max-w-md sm:max-w-2xl mx-auto mb-5">
           <h3 className="text-center text-xs font-bold text-zinc-500 mb-3 uppercase tracking-widest">Escolha seu plano</h3>
           <div className="grid grid-cols-3 gap-2">
             {Object.entries(PLANS).map(([key, p]) => (
@@ -298,7 +298,7 @@ export default function AssinaturaNova() {
         </div>
 
         {/* ═══ Plan-specific phrase ═══ */}
-        <div className="px-5 max-w-md sm:max-w-xl mx-auto mb-5">
+        <div className="px-5 max-w-md sm:max-w-2xl mx-auto mb-5">
           <motion.div
             key={selectedPlan}
             initial={{ opacity: 0, y: 8 }}
@@ -313,7 +313,7 @@ export default function AssinaturaNova() {
         </div>
 
         {/* ═══ CTA ═══ */}
-        <div className="px-5 max-w-md sm:max-w-xl mx-auto mb-2">
+        <div className="px-5 max-w-md sm:max-w-2xl mx-auto mb-2">
           <button
             onClick={handleAssinar}
             className="w-full py-3.5 rounded-xl font-black text-sm text-black tracking-tight transition-all duration-300 active:scale-[0.97] relative overflow-hidden"
@@ -328,7 +328,7 @@ export default function AssinaturaNova() {
         </div>
 
         {/* ═══ PIX link ═══ */}
-        <div className="px-5 max-w-md sm:max-w-xl mx-auto mb-4">
+        <div className="px-5 max-w-md sm:max-w-2xl mx-auto mb-4">
           <button
             onClick={() => {
               if (!user) { navigate("/auth"); return; }
@@ -347,7 +347,7 @@ export default function AssinaturaNova() {
         </div>
 
         {/* ═══ Social proof ═══ */}
-        <div className="px-5 max-w-md sm:max-w-xl mx-auto pb-12">
+        <div className="px-5 max-w-md sm:max-w-2xl mx-auto pb-12">
           <div className="flex items-center justify-center gap-1 mb-1">
             {[...Array(5)].map((_, i) => (
               <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
