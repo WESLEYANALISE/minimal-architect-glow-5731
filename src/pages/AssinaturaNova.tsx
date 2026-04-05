@@ -170,6 +170,7 @@ export default function AssinaturaNova() {
   const [showCpfInput, setShowCpfInput] = useState(false);
   const [pixCpf, setPixCpf] = useState("");
   const [cardInstallments, setCardInstallments] = useState(1);
+  const [fraseIndex] = useState(() => Math.floor(Math.random() * FRASES_PERSUASIVAS.length));
 
   const { pixData, loading: pixLoading, createPix, copyPixCode, reset: resetPix } = useMercadoPagoPix();
 
