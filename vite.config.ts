@@ -166,9 +166,9 @@ export default defineConfig(({ mode }) => ({
         ],
         // Clean old caches
         cleanupOutdatedCaches: true,
-        // Skip waiting to update immediately
         skipWaiting: true,
         clientsClaim: true,
+        navigateFallbackDenylist: [/^\/~oauth/],
         // Increase limit to cache larger bundles (15MB)
         maximumFileSizeToCacheInBytes: 17 * 1024 * 1024
       }
