@@ -2,12 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, BookOpen, Footprints, GraduationCap, Book, ArrowRight, Layers } from "lucide-react";
+import { useDeviceType } from "@/hooks/use-device-type";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import themisBackground from "@/assets/themis-estudos-background.webp";
 
 const ConceitosInicio = () => {
   const navigate = useNavigate();
+  const { isDesktop } = useDeviceType();
 
   // Buscar trilhas do banco
   const { data: trilhas, isLoading } = useQuery({
@@ -148,7 +150,7 @@ const ConceitosInicio = () => {
 
         {/* Cards das Trilhas */}
         <div className="px-4 pb-24">
-          <div className="max-w-lg mx-auto space-y-6">
+          <div className={`${isDesktop ? 'max-w-3xl grid grid-cols-2 gap-6' : 'max-w-lg space-y-6'} mx-auto`}>
             {trilhaCards.map((trilha, index) => {
               const IconComponent = trilha.icon;
               

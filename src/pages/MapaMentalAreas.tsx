@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDeviceType } from "@/hooks/use-device-type";
 import { Brain, Lock, Crown, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useGenericCache } from "@/hooks/useGenericCache";
@@ -71,6 +72,7 @@ const CORES_DEFAULT = {
 export default function MapaMentalAreas() {
   const navigate = useNavigate();
   const { isPremium } = useSubscription();
+  const { isDesktop } = useDeviceType();
 
   const { data: areas, isLoading: loading } = useGenericCache<AreaData[]>({
     cacheKey: 'mapa-mental-areas',
@@ -146,6 +148,40 @@ export default function MapaMentalAreas() {
           </div>
 
           {(areas || []).length > 0 ? (
+            isDesktop ? (
+              /* Desktop: grid layout */
+              <div className="grid grid-cols-3 xl:grid-cols-4 gap-4">
+                {(areas || []).map((areaData, index) => {
+                  const cores = CORES_POR_AREA[areaData.area.toUpperCase()] || CORES_DEFAULT;
+                  const isLocked = !isPremium && index >= limiteGratis;
+                  return (
+                    <motion.button
+                      key={areaData.area}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleAreaClick(areaData, index)}
+                      className={`relative min-h-[100px] bg-gradient-to-br ${cores.bgGradient} rounded-xl p-4 text-left transition-all hover:scale-[1.02] hover:shadow-xl shadow-lg border ${cores.borderColor} ${isLocked ? 'opacity-80' : ''}`}
+                      style={{ boxShadow: `0 4px 20px ${cores.glowColor}30` }}
+                    >
+                      {isLocked && (
+                        <div className="absolute top-2 right-2 z-10 flex items-center gap-0.5 bg-amber-500/90 text-white px-1.5 py-0.5 rounded-full text-[9px] font-medium">
+                          <Crown className="w-2 h-2" /><span>Premium</span>
+                        </div>
+                      )}
+                      <div className="bg-white/20 rounded-lg p-2 w-fit mb-3">
+                        <Brain className="w-5 h-5 text-white" />
+                      </div>
+                      <h3 className="text-sm font-bold text-white leading-tight">{areaData.area}</h3>
+                      <p className="text-[10px] text-white/70 mt-1">{areaData.count} {areaData.count === 1 ? 'mapa' : 'mapas'}</p>
+                      <ChevronRight className="absolute bottom-3 right-3 w-4 h-4 text-white/50" />
+                    </motion.button>
+                  );
+                })}
+              </div>
+            ) : (
+            /* Mobile: timeline layout */
             <div className="relative py-4">
               {/* Linha central da timeline */}
               <div className="absolute left-1/2 top-0 bottom-0 w-1 -translate-x-1/2">
@@ -239,6 +275,7 @@ export default function MapaMentalAreas() {
                 })}
               </div>
             </div>
+            )
           ) : (
             <div className="text-center py-12">
               <p className="text-muted-foreground">Nenhuma área encontrada.</p>

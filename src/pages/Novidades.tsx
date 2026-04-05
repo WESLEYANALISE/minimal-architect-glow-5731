@@ -1,4 +1,5 @@
 import { Sparkles, Calendar as CalendarIcon, Rocket, Wrench, Zap } from "lucide-react";
+import { useDeviceType } from "@/hooks/use-device-type";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { format, parse, isSameDay, isValid } from "date-fns";
@@ -49,6 +50,7 @@ const getAreaEmoji = (area: string) => {
 };
 
 const Novidades = () => {
+  const { isDesktop } = useDeviceType();
   const { data: novidades, isLoading: loading } = useGenericCache<Novidade[]>({
     cacheKey: 'novidades-list',
     fetchFn: async () => {
@@ -117,7 +119,7 @@ const Novidades = () => {
           </p>
         </div>
       ) : (
-        <div className="space-y-5">
+        <div className={`${isDesktop ? 'grid grid-cols-2 gap-5' : 'space-y-5'}`}>
           {sortedDates.map((dateStr, dateIndex) => {
             const items = groupedByDate[dateStr];
             const colorClass = dateGroupColors[dateIndex % dateGroupColors.length];

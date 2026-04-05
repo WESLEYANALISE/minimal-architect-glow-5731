@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { BookMarked, NotebookPen, Lightbulb, Brain, ArrowLeft, Footprints, ChevronRight } from 'lucide-react';
+import { useDeviceType } from '@/hooks/use-device-type';
 import { Button } from '@/components/ui/button';
 
 const metodologias = [
@@ -34,6 +35,45 @@ const metodologias = [
 
 const MetodologiasHub = () => {
   const navigate = useNavigate();
+  const { isDesktop } = useDeviceType();
+
+  if (isDesktop) {
+    return (
+      <div className="min-h-[calc(100vh-4.5rem)]" style={{ backgroundColor: '#1a1a2e' }}>
+        <div className="max-w-5xl mx-auto px-6 py-8">
+          <div className="flex items-center gap-3 mb-8">
+            <BookMarked className="w-7 h-7 text-primary" />
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Metodologias de Estudo</h1>
+              <p className="text-sm text-muted-foreground">Escolha um método de aprendizagem</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-6">
+            {metodologias.map((m) => {
+              const Icon = m.icon;
+              return (
+                <button
+                  key={m.id}
+                  onClick={() => navigate(`/metodologias/${m.id}`)}
+                  className={`group relative overflow-hidden rounded-2xl p-6 text-left bg-gradient-to-br ${m.bgGradient} shadow-xl hover:scale-[1.03] transition-all duration-200`}
+                  style={{ boxShadow: `0 8px 30px ${m.glowColor}` }}
+                >
+                  <div className="absolute top-0 left-0 right-0 h-1 opacity-80" style={{ background: `linear-gradient(90deg, transparent, ${m.color}, transparent)`, boxShadow: `0 0 15px ${m.color}` }} />
+                  <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mb-4 group-hover:bg-white/30 transition-colors">
+                    <Icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h2 className="text-lg font-bold text-white leading-tight mb-2">{m.titulo}</h2>
+                  <p className="text-white/70 text-sm leading-relaxed">{m.descricao}</p>
+                  <ChevronRight className="absolute bottom-4 right-4 w-5 h-5 text-white/50 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pb-24" style={{ backgroundColor: '#1a1a2e' }}>

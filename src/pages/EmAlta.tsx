@@ -1,4 +1,5 @@
 import { Flame, ArrowRight, GraduationCap, ClipboardCheck, Layers, FileCheck2, Brain, Video, Eye, Wrench, Compass, Clock, FileText, BookOpen, MapPin, Award, Library, HelpCircle } from "lucide-react";
+import { useDeviceType } from "@/hooks/use-device-type";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -129,6 +130,7 @@ const itensEstudos: ItemEmAlta[] = [
 const EmAlta = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isDesktop } = useDeviceType();
   const isAdmin = user?.email === ADMIN_EMAIL;
   const [activeTab, setActiveTab] = useState<"ferramentas" | "estudos">("estudos");
 
@@ -187,8 +189,8 @@ const EmAlta = () => {
         </motion.div>
 
         {/* Lista vertical de funcionalidades */}
-        <motion.div 
-          className="space-y-3"
+        <motion.div
+          className={isDesktop ? "grid grid-cols-2 xl:grid-cols-3 gap-3" : "space-y-3"}
           key={activeTab}
           initial={{ opacity: 0, x: activeTab === "ferramentas" ? -20 : 20 }}
           animate={{ opacity: 1, x: 0 }}

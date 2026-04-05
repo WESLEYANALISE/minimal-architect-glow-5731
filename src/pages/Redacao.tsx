@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useDeviceType } from "@/hooks/use-device-type";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
@@ -54,6 +55,7 @@ const categoryColors = [
 
 const Redacao = () => {
   const navigate = useNavigate();
+  const { isDesktop } = useDeviceType();
 
   // Buscar conteúdo agrupado por categoria
   const { data: categorias, isLoading } = useQuery({
@@ -138,7 +140,7 @@ const Redacao = () => {
 
           {/* Lista de Categorias */}
           {categorias && categorias.length > 0 ? (
-            <div className="space-y-4">
+            <div className={isDesktop ? "grid grid-cols-2 xl:grid-cols-3 gap-4" : "space-y-4"}>
               {categorias.map((cat, index) => {
                 const color = categoryColors[index % categoryColors.length];
                 const Icon = getIconForCategoria(cat.categoria);
