@@ -131,7 +131,8 @@ export const LeiHeader = ({
           href={urlPlanalto}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2 flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
+          className="mt-2 flex items-center gap-1.5 text-xs transition-colors"
+          style={{ color: 'hsl(40, 80%, 55%)' }}
         >
           <ExternalLink className="w-3.5 h-3.5" />
           Ver no Planalto
