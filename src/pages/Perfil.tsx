@@ -349,102 +349,151 @@ export default function Perfil() {
   }
 
 
-  return (
-    <div className={cn("min-h-screen bg-background", isDesktop ? "pb-4" : "pb-24")}>
-      <main className={cn(
-        "mx-auto px-4 py-6 space-y-6",
-        isDesktop ? "max-w-5xl" : "max-w-2xl"
-      )}>
-        {/* Page Title */}
-        {!isDesktop && (
-          <div className="text-center">
-            <h1 className="text-xl font-bold">Meu Perfil</h1>
+  if (isDesktop) {
+    return (
+      <div className="h-[calc(100vh-4.5rem)] grid grid-cols-[280px_1fr_280px]">
+        {/* Sidebar Esquerda - Avatar & Dados Pessoais */}
+        <aside className="border-r border-border/30 bg-card/20 overflow-y-auto p-5 space-y-5">
+          <div>
+            <h1 className="text-xl font-bold text-foreground">Meu Perfil</h1>
             <p className="text-xs text-muted-foreground mt-0.5">Configure suas informações</p>
           </div>
-        )}
 
-        {isDesktop ? (
-          /* Desktop: 2 column layout */
-          <div className="grid grid-cols-12 gap-8">
-            {/* Left column - Avatar + form */}
-            <div className="col-span-5 space-y-6">
-              <div className="text-left">
-                <h1 className="text-2xl font-bold">Meu Perfil</h1>
-                <p className="text-sm text-muted-foreground mt-1">Configure suas informações</p>
-              </div>
-
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-2 text-sm"
-                onClick={() => navigate('/notificacoes-preferencias')}
-              >
-                <Bell className="h-4 w-4 text-primary" />
-                Preferências de Notificações
-              </Button>
-
-              {/* Avatar + info */}
-              <div className="flex items-center gap-5 p-4 rounded-xl bg-muted/30 border border-border/50">
-                <div className="relative flex-shrink-0">
-                  <div className="w-24 h-24 rounded-full bg-muted border-4 border-background shadow-xl overflow-hidden">
-                    {profile.avatar_url ? (
-                      <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-                        <User className="h-10 w-10 text-muted-foreground" />
-                      </div>
-                    )}
+          {/* Avatar */}
+          <div className="flex flex-col items-center text-center p-4 rounded-xl bg-muted/30 border border-border/50">
+            <div className="relative mb-3">
+              <div className="w-24 h-24 rounded-full bg-muted border-4 border-background shadow-xl overflow-hidden">
+                {profile.avatar_url ? (
+                  <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+                    <User className="h-10 w-10 text-muted-foreground" />
                   </div>
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                    className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
-                  >
-                    {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
-                  </button>
-                  <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-lg text-foreground truncate">{profile.nome || 'Usuário'}</p>
-                  <p className="text-sm text-muted-foreground truncate">{profile.email || user?.email}</p>
-                  <button
-                    onClick={() => setShowAvatarPicker(true)}
-                    className="mt-2 flex items-center gap-1.5 text-sm text-primary hover:underline"
-                  >
-                    <Smile className="h-4 w-4" />
-                    Escolher avatar
-                  </button>
+                )}
+              </div>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+              >
+                {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+              </button>
+              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+            </div>
+            <p className="font-semibold text-foreground truncate max-w-full">{profile.nome || 'Usuário'}</p>
+            <p className="text-xs text-muted-foreground truncate max-w-full">{profile.email || user?.email}</p>
+            <button
+              onClick={() => setShowAvatarPicker(true)}
+              className="mt-2 flex items-center gap-1.5 text-xs text-primary hover:underline"
+            >
+              <Smile className="h-3.5 w-3.5" />
+              Escolher avatar
+            </button>
+          </div>
+
+          {/* Quick actions */}
+          <div className="space-y-2">
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-2 text-sm h-9"
+              onClick={() => navigate('/notificacoes-preferencias')}
+            >
+              <Bell className="h-4 w-4 text-primary" />
+              Notificações
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-2 text-sm h-9"
+              onClick={() => navigate('/suporte')}
+            >
+              <Shield className="h-4 w-4 text-primary" />
+              Suporte
+            </Button>
+          </div>
+
+          {/* Account info */}
+          <div className="border-t border-border/30 pt-4 space-y-2">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Conta</h3>
+            {[
+              { icon: Star, label: "Membro desde", value: user?.created_at ? new Date(user.created_at).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }) : '—' },
+              { icon: Shield, label: "Status", value: "Ativo" },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30">
+                <item.icon className="w-3.5 h-3.5 text-primary shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-[10px] text-muted-foreground">{item.label}</p>
+                  <p className="text-xs font-medium text-foreground truncate">{item.value}</p>
                 </div>
               </div>
+            ))}
+          </div>
 
-              {/* Form fields */}
-              <div className="space-y-4">
+          {/* Logout & Delete */}
+          <div className="border-t border-border/30 pt-4 space-y-2">
+            <Button
+              variant="outline"
+              onClick={async () => {
+                try { await supabase.auth.signOut({ scope: 'local' }); } catch (error) { console.error('Erro ao sair:', error); }
+                navigate('/', { replace: true });
+              }}
+              className="w-full h-9 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30 text-sm"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sair da conta
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button className="flex items-center gap-2 text-[11px] text-muted-foreground hover:text-destructive transition-colors mx-auto">
+                  <Trash2 className="w-3 h-3" />
+                  Excluir minha conta
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Excluir conta</AlertDialogTitle>
+                  <AlertDialogDescription>Você realmente deseja excluir sua conta? Esta ação é irreversível.</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteAccount} disabled={deleting} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    {deleting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Excluindo...</>) : ('Sim, excluir minha conta')}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </aside>
+
+        {/* Centro - Formulário & Plano */}
+        <main className="overflow-y-auto p-6">
+          <div className="max-w-xl mx-auto space-y-6">
+            {/* Form */}
+            <div className="space-y-4 p-5 rounded-xl bg-card/60 border border-border/30">
+              <h2 className="text-lg font-semibold text-foreground">Informações Pessoais</h2>
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="nome" className="text-sm">Nome</Label>
-                  <Input id="nome" value={profile.nome || ''} onChange={(e) => setProfile(prev => ({ ...prev, nome: e.target.value }))} placeholder="Seu nome" className="h-10" />
+                  <Label htmlFor="nome-d" className="text-sm">Nome</Label>
+                  <Input id="nome-d" value={profile.nome || ''} onChange={(e) => setProfile(prev => ({ ...prev, nome: e.target.value }))} placeholder="Seu nome" className="h-10" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-sm">E-mail</Label>
-                  <Input id="email" value={profile.email || user?.email || ''} readOnly disabled className="h-10 opacity-70" />
+                  <Label htmlFor="email-d" className="text-sm">E-mail</Label>
+                  <Input id="email-d" value={profile.email || user?.email || ''} readOnly disabled className="h-10 opacity-70" />
                 </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="telefone" className="text-sm">Telefone (WhatsApp)</Label>
+                  <Label htmlFor="telefone-d" className="text-sm">Telefone (WhatsApp)</Label>
                   <PhoneInput value={profile.telefone || ''} onChange={(_, fullNumber) => setProfile(prev => ({ ...prev, telefone: fullNumber }))} placeholder="(11) 99999-9999" className="h-10" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-sm">Qual é o seu objetivo?</Label>
+                  <Label className="text-sm">Objetivo</Label>
                   <Select value={profile.intencao || undefined} onValueChange={(value) => setProfile(prev => ({ ...prev, intencao: value as Intencao }))}>
-                    <SelectTrigger className="h-auto p-3">
-                      <SelectValue placeholder="Selecione seu objetivo">
+                    <SelectTrigger className="h-10">
+                      <SelectValue placeholder="Selecione">
                         {profile.intencao && (() => {
                           const selected = intencaoOptions.find(o => o.value === profile.intencao);
                           return selected ? (
-                            <div className="flex items-center gap-2">
-                              <div className="p-1.5 rounded-full bg-primary text-primary-foreground">{selected.icon}</div>
-                              <div className="text-left">
-                                <p className="font-medium text-sm">{selected.label}</p>
-                                <p className="text-xs text-muted-foreground">{selected.description}</p>
-                              </div>
-                            </div>
+                            <span className="text-sm">{selected.label}</span>
                           ) : null;
                         })()}
                       </SelectValue>
@@ -464,62 +513,108 @@ export default function Perfil() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+              <Button onClick={handleSave} disabled={saving} className="w-full h-10 mt-2">
+                {saving ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>) : ('Salvar alterações')}
+              </Button>
+            </div>
 
-                <div className="flex gap-3 pt-2">
-                  <Button onClick={handleSave} disabled={saving} className="flex-1 h-10">
-                    {saving ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>) : ('Salvar alterações')}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={async () => {
-                      try { await supabase.auth.signOut({ scope: 'local' }); } catch (error) { console.error('Erro ao sair:', error); }
-                      navigate('/', { replace: true });
-                    }}
-                    className="h-10 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30"
-                  >
-                    <LogOut className="h-4 w-4" />
-                  </Button>
+            {/* Plano */}
+            {!isAdmin && (
+              <div className="p-5 rounded-xl bg-card/60 border border-border/30">
+                <h2 className="text-lg font-semibold text-foreground mb-4">Meu Plano</h2>
+                <PerfilPlanoTab />
+              </div>
+            )}
+          </div>
+        </main>
+
+        {/* Sidebar Direita - Dicas & Info */}
+        <aside className="border-l border-border/30 bg-card/20 overflow-y-auto p-5 space-y-5">
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Seu Progresso</h3>
+          <div className="space-y-3">
+            {[
+              { icon: BookOpen, label: "Continue estudando", desc: "Mantenha sua sequência diária de estudos" },
+              { icon: Trophy, label: "Metas semanais", desc: "Defina e alcance seus objetivos" },
+              { icon: Clock, label: "Tempo de estudo", desc: "Acompanhe suas horas de dedicação" },
+            ].map((item) => (
+              <div key={item.label} className="flex items-start gap-3 p-3 rounded-xl bg-card/60 border border-border/30">
+                <div className="p-2 rounded-lg bg-primary/10 shrink-0">
+                  <item.icon className="w-4 h-4 text-primary" />
                 </div>
-
-                {/* Excluir conta */}
-                <div className="pt-6 border-t border-border/50">
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <button className="flex items-center gap-2 text-xs text-muted-foreground hover:text-destructive transition-colors">
-                        <Trash2 className="w-3.5 h-3.5" />
-                        Excluir minha conta
-                      </button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Excluir conta</AlertDialogTitle>
-                        <AlertDialogDescription>Você realmente deseja excluir sua conta? Esta ação é irreversível.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteAccount} disabled={deleting} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                          {deleting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Excluindo...</>) : ('Sim, excluir minha conta')}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                <div>
+                  <p className="text-sm font-medium text-foreground">{item.label}</p>
+                  <p className="text-[11px] text-muted-foreground">{item.desc}</p>
                 </div>
               </div>
-            </div>
+            ))}
+          </div>
 
-            {/* Right column - Tabs Plano/Suporte */}
-            <div className="col-span-7">
-              <Tabs defaultValue={isAdmin ? "perfil" : "plano"} className="w-full">
-                <TabsList className={cn("grid w-full mb-4", isAdmin ? "grid-cols-1" : "grid-cols-2")}>
-                  {!isAdmin && <TabsTrigger value="plano">Plano</TabsTrigger>}
-                  <TabsTrigger value="suporte" onClick={(e) => { e.preventDefault(); navigate('/suporte'); }}>Suporte</TabsTrigger>
-                </TabsList>
-                <TabsContent value="plano"><PerfilPlanoTab /></TabsContent>
-                <TabsContent value="suporte"><PerfilSuporteTab /></TabsContent>
-              </Tabs>
+          <div className="border-t border-border/30 pt-4">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Atalhos</h3>
+            <div className="space-y-2">
+              {[
+                { label: "Flashcards", path: "/flashcards", icon: BookOpen },
+                { label: "Simulados", path: "/ferramentas/simulados", icon: FileText },
+                { label: "Questões", path: "/questoes", icon: GraduationCap },
+              ].map((link) => (
+                <button
+                  key={link.path}
+                  onClick={() => navigate(link.path)}
+                  className="w-full flex items-center gap-2 p-2.5 rounded-lg bg-muted/30 hover:bg-muted/60 transition-colors text-left"
+                >
+                  <link.icon className="w-4 h-4 text-primary shrink-0" />
+                  <span className="text-sm text-foreground">{link.label}</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-muted-foreground ml-auto -rotate-90" />
+                </button>
+              ))}
             </div>
           </div>
-        ) : (
+
+          <div className="border-t border-border/30 pt-4">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Dicas</h3>
+            <div className="space-y-2">
+              {[
+                { text: "Complete seu perfil para receber recomendações personalizadas" },
+                { text: "Ative as notificações para não perder seus lembretes de estudo" },
+                { text: "Defina seu objetivo para receber conteúdo direcionado" },
+              ].map((tip, i) => (
+                <div key={i} className="p-2.5 rounded-lg bg-muted/30">
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">{tip.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        {/* Avatar Picker Dialog */}
+        <Dialog open={showAvatarPicker} onOpenChange={setShowAvatarPicker}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle>Escolher avatar</DialogTitle>
+            </DialogHeader>
+            <div className="grid grid-cols-4 gap-3 py-2">
+              {AVATAR_IDS.map((id) => (
+                <button key={id} onClick={() => handleSelectAvatar(id)} className="rounded-full overflow-hidden border-2 border-transparent hover:border-primary transition-colors p-1">
+                  <img src={`https://i.pravatar.cc/150?img=${id}`} alt={`Avatar ${id}`} className="w-full h-full rounded-full" />
+                </button>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  }
+
+  // ─── MOBILE ───
+  return (
+    <div className="min-h-screen bg-background pb-24">
+      <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        <div className="text-center">
+          <h1 className="text-xl font-bold">Meu Perfil</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">Configure suas informações</p>
+        </div>
+
           /* Mobile: original layout */
           <>
             <Button
