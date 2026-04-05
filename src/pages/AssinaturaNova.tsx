@@ -20,6 +20,36 @@ import { motion } from "framer-motion";
 import newLogo from "@/assets/logo-direito-premium-new.webp";
 import heroBackground from "@/assets/assinatura-bg.webp";
 
+// ─── Persuasive messages (rotated randomly each visit) ───
+const FRASES_PERSUASIVAS = [
+  { titulo: "Enquanto você improvisa, seus concorrentes já estão estudando com método.", sub: "Tenha tudo organizado num só lugar e saia na frente." },
+  { titulo: "Você não precisa de mais material. Precisa do material certo.", sub: "Resumos, questões, flashcards e cursos feitos pra quem quer passar." },
+  { titulo: "Cada dia sem estudar direito é um dia mais longe da sua aprovação.", sub: "Comece agora com o plano que já aprovou milhares." },
+  { titulo: "Seus colegas já estão usando. A diferença vai aparecer na prova.", sub: "Mais de 10.000 alunos já transformaram seus estudos." },
+  { titulo: "Estudar por PDF solto e anotação velha não vai te aprovar.", sub: "Aqui você tem método, tecnologia e conteúdo atualizado 2026." },
+  { titulo: "A faculdade não te prepara pra OAB. Mas a gente sim.", sub: "Do básico ao avançado, tudo que a faculdade deveria ter te dado." },
+  { titulo: "Não existe atalho. Mas existe o caminho mais inteligente.", sub: "IA, flashcards, simulados e Vade Mecum num só app." },
+  { titulo: "Você já sabe o que precisa fazer. Só falta a ferramenta certa.", sub: "Pare de perder tempo e comece a estudar com estratégia." },
+  { titulo: "Quem passa em concurso não estuda mais. Estuda melhor.", sub: "Tenha acesso a tudo que os aprovados usam." },
+  { titulo: "O Direito muda todo dia. Seu material de estudo também deveria.", sub: "Conteúdo sempre atualizado, do jeito que a banca cobra." },
+];
+
+// ─── Plan-specific persuasive phrases (shown below plan cards) ───
+const PLAN_PHRASES: Record<string, { titulo: string; sub: string }> = {
+  mensal: {
+    titulo: "Ideal pra quem quer testar sem compromisso.",
+    sub: "Acesso completo por 30 dias. Cancele quando quiser.",
+  },
+  anual: {
+    titulo: "O plano dos aprovados. Economia de 43% e 1 ano inteiro de acesso.",
+    sub: "Estude com calma, no seu ritmo, sem se preocupar com renovação.",
+  },
+  vitalicio: {
+    titulo: "Pague uma vez e tenha acesso pra sempre. Sem mensalidade, sem surpresas.",
+    sub: "O melhor custo-benefício pra quem leva o Direito a sério.",
+  },
+};
+
 // ─── Plans ───
 const PLANS: Record<string, { price: number; label: string; days: number; badge: string | null; installments: number; sub: string }> = {
   mensal:    { price: 21.90,  label: "Mensal",    days: 30,    badge: null,            installments: 1,  sub: "Cobrado todo mês" },
