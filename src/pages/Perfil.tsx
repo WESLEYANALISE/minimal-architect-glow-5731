@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Camera, User, Briefcase, GraduationCap, FileText, Loader2, LogOut, ChevronDown, Smile, Trash2, Bell } from 'lucide-react';
+import { Camera, User, Briefcase, GraduationCap, FileText, Loader2, LogOut, ChevronDown, Smile, Trash2, Bell, Shield, BookOpen, Trophy, Clock, Star } from 'lucide-react';
 import { useDeviceType } from '@/hooks/use-device-type';
 import {
   AlertDialog,
