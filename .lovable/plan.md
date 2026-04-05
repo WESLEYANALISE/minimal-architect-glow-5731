@@ -1,46 +1,45 @@
 
 
-## Plano: Corrigir Evelyn respondendo "problemas tecnicos" para audio/imagem/PDF
+## Plano: Refazer Noticia Detalhes — conteudo pronto + markdown correto
 
-### Causa raiz
+### Problemas identificados
 
-Os logs confirmam o problema. Quando um usuario envia midia (imagem, audio, PDF), a Evelyn tenta os 3 modelos e **todos falham**:
+1. **Carregamento lento**: Quando o usuario clica numa noticia, o `NoticiaDetalhes.tsx` verifica se `conteudo_formatado + analise_ia + termos_json` estao todos no cache. Se faltar qualquer um, chama a Edge Function `processar-noticia-juridica` que busca HTML, chama Gemini, e processa — demora 10-30 segundos mostrando "Carregando e processando..."
 
-```
-Tentando modelo=gemini-2.5-flash key=3       → 429 (rate limited)
-Tentando modelo=gemini-2.0-flash-lite key=3   → erro (NAO suporta multimodal)
-Modelo gemini-1.5-flash indisponível           → 404 (descontinuado)
-Concluído: modelo= (vazio) → resposta fallback "dificuldades tecnicas"
-```
+2. **Markdown nao renderiza**: O `conteudo_formatado` contem markdown (`###`, `**`, `•`, `---`) mas a funcao `renderizarConteudoFormatado()` apenas faz split por `\n` e renderiza como `<p>` tags de texto puro. Resultado: o usuario ve `### Titulo` como texto literal
 
-**Problemas especificos:**
-1. **`gemini-2.0-flash-lite`** nao suporta entrada multimodal (imagens, audio, PDFs) — so aceita texto
-2. **`gemini-1.5-flash`** foi descontinuado pela Google e retorna 404
-3. **`gemini-2.5-flash`** funciona mas quando da 429 (rate limit), nao tem fallback funcional
+3. **Edge Function inexistente no fluxo**: A funcao `processar-noticia-juridica` existe mas e chamada sob demanda quando o usuario abre a noticia — deveria ser pre-processada
 
 ### Solucao
 
-Atualizar a lista de modelos na Edge Function para usar modelos que suportam multimodal:
+**Principio**: A noticia deve aparecer **instantaneamente** quando o usuario clica. Se o conteudo formatado ja existe no cache, mostrar direto. Se nao existe, mostrar o `conteudo_completo` (texto bruto) ou a `descricao` como fallback imediato — sem esperar processamento IA.
 
-**Arquivo:** `supabase/functions/processar-mensagem-evelyn/index.ts`
+**Mudancas no `NoticiaDetalhes.tsx`:**
 
-**Mudanca na linha 111:**
-```typescript
-// ANTES
-const MODELOS = ["gemini-2.5-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash"];
+1. **Substituir `renderizarConteudoFormatado()`** por `ReactMarkdown` com `remarkGfm` — assim `###`, `**`, `---`, listas renderizam corretamente como HTML estilizado
 
-// DEPOIS
-const MODELOS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite-preview"];
-```
+2. **Remover o fluxo de processamento sob demanda**: Nao chamar mais `processar-noticia-juridica` quando o usuario abre a noticia. Apenas buscar do cache o que ja existe (`conteudo_formatado`, `conteudo_completo`, `analise_ia`, `termos_json`)
 
-- **`gemini-2.5-flash`** — modelo principal, suporta multimodal
-- **`gemini-2.0-flash`** — fallback robusto, suporta multimodal (sem o "lite")
-- **`gemini-2.5-flash-lite-preview`** — fallback leve mais recente que suporta multimodal
+3. **Fallback inteligente sem espera**:
+   - Se tem `conteudo_formatado` → renderizar com ReactMarkdown
+   - Se so tem `conteudo_completo` → renderizar texto limpo
+   - Se nao tem nenhum → mostrar `descricao` + botao "Abrir no navegador"
+   - Nunca mostrar loading de processamento
 
-Adicionalmente, melhorar o log de erro para capturar **por que** cada modelo falhou (status code + corpo), facilitando debug futuro.
+4. **Buscar `conteudo_formatado` e `conteudo_completo` ja na listagem**: Adicionar esses campos ao select da query em `NoticiasJuridicas.tsx` e passar via `location.state` — assim quando o usuario chega na pagina de detalhes, o conteudo ja esta disponivel sem query adicional
+
+5. **Estilizar markdown corretamente**: Usar classes `prose prose-sm dark:prose-invert` no container do ReactMarkdown para garantir tipografia bonita (headings, bold, listas, separadores)
+
+### Arquivos a modificar
+
+1. **`src/pages/NoticiaDetalhes.tsx`** — Substituir `renderizarConteudoFormatado` por ReactMarkdown, remover chamada a Edge Function, implementar fallback imediato, adicionar estilos prose
+2. **`src/pages/NoticiasJuridicas.tsx`** — Adicionar `conteudo_formatado, conteudo_completo` ao select da query para passar no state
 
 ### O que NAO muda
-- Logica de download de midia (downloadMedia)
-- System prompt, historico, formatacao
-- Fluxo do webhook
+- Edge Functions (continuam processando em background via cron)
+- Tabelas do banco
+- Rotas
+- Layout mobile/desktop
+- Funcionalidade de analise IA (aba "Analise" continua usando dados do cache)
+- Funcionalidade de termos juridicos
 
