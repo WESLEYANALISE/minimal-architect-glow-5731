@@ -406,7 +406,7 @@ const AprendaSeuJeito = lazy(() => import("./pages/AprendaSeuJeito"));
 const AprendaSeuJeitoEstudo = lazy(() => import("./pages/AprendaSeuJeitoEstudo"));
 const Perfil = lazy(() => import("./pages/Perfil"));
 const NotificacoesPreferencias = lazy(() => import("./pages/NotificacoesPreferencias"));
-const Assinatura = lazy(() => import("./pages/Assinatura"));
+const Assinatura = lazy(() => import("./pages/AssinaturaNova"));
 const TelaHub = lazy(() => import("./pages/TelaHub"));
 
 
