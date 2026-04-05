@@ -39,6 +39,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === 'production' && legacy({
       targets: ['defaults', 'not IE 11', 'safari >= 13', 'chrome >= 64', 'iOS >= 13'],
+      modernPolyfills: true,
     }),
     mode === 'development' &&
     componentTagger(),

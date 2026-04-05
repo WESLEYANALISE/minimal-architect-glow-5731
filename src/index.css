@@ -999,6 +999,8 @@ All colors MUST be HSL.
 /* Otimização de blur para melhor performance */
 .optimized-blur {
   will-change: backdrop-filter;
+  -webkit-backdrop-filter: blur(var(--blur-amount, 8px));
+  backdrop-filter: blur(var(--blur-amount, 8px));
   transform: translateZ(0);
 }
 
