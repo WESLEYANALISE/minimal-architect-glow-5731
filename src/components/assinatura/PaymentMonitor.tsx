@@ -44,7 +44,7 @@ export default function PaymentMonitor({ userId, planType, onCancel }: PaymentMo
         console.log('[PaymentMonitor] Polling: verificando pagamento...');
         checkPaymentStatus();
       }
-    }, 5000);
+    }, 10000);
 
     return () => {
       console.log('[PaymentMonitor] Parando polling');

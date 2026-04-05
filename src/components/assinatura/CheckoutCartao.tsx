@@ -223,6 +223,19 @@ export function CheckoutCartao({
 
   const showPhoneInput = profilePhoneLoaded && !hasProfilePhone;
 
+  // Pre-fetch IP on mount (non-blocking)
+  const prefetchedIpRef = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3000);
+    fetch('https://api.ipify.org?format=json', { signal: controller.signal })
+      .then(r => r.json())
+      .then(d => { prefetchedIpRef.current = d.ip; })
+      .catch(() => {})
+      .finally(() => clearTimeout(timer));
+    return () => { controller.abort(); clearTimeout(timer); };
+  }, []);
+
   // Cooldown state
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -405,9 +418,12 @@ export function CheckoutCartao({
     if (cleanedCep.length === 8) {
       setLoadingCep(true);
       try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 3000);
         const { data, error } = await supabase.functions.invoke('geocode-cep', {
           body: { cep: cleanedCep },
         });
+        clearTimeout(timer);
         if (!error && data && !data.error) {
           const addr = data.endereco || '';
           const city = data.cidade || '';
@@ -415,7 +431,7 @@ export function CheckoutCartao({
           setFetchedAddress(`${addr} - ${city}/${state}`);
         }
       } catch {
-        // Silently fail - CEP lookup is just a convenience
+        // Silently fail - CEP lookup is just a convenience (iframe/network)
       } finally {
         setLoadingCep(false);
       }
@@ -469,13 +485,8 @@ export function CheckoutCartao({
 
       const conversionSource = localStorage.getItem('pending_conversion_source') || undefined;
       
-      // Try to get user IP for anti-fraud
-      let remoteIp: string | undefined;
-      try {
-        const ipRes = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipRes.json();
-        remoteIp = ipData.ip;
-      } catch {}
+      // Use pre-fetched IP (non-blocking)
+      const remoteIp = prefetchedIpRef.current;
 
       const { data, error } = await supabase.functions.invoke('asaas-criar-pagamento-cartao', {
         body: {
