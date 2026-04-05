@@ -615,13 +615,11 @@ export default function Perfil() {
           <p className="text-xs text-muted-foreground mt-0.5">Configure suas informações</p>
         </div>
 
-          /* Mobile: original layout */
-          <>
-            <Button
-              variant="outline"
-              className="w-full justify-start gap-2 text-sm"
-              onClick={() => navigate('/notificacoes-preferencias')}
-            >
+        <Button
+          variant="outline"
+          className="w-full justify-start gap-2 text-sm"
+          onClick={() => navigate('/notificacoes-preferencias')}
+        >
               <Bell className="h-4 w-4 text-primary" />
               Preferências de Notificações
             </Button>
