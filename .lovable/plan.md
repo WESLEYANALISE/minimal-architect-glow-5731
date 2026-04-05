@@ -1,54 +1,24 @@
 
 
-## Plano: Sidebar de historico de conversas no Chat Professora (estilo ChatGPT)
+## Plano: Corrigir erro de deploy no Vercel (ERESOLVE)
 
 ### Problema
-A pagina `/chat-professora` mostra apenas o chat centralizado sem historico de conversas. O usuario quer ver uma lista lateral esquerda com conversas anteriores agrupadas por data, como no ChatGPT.
+O `npm install` no Vercel falha com `ERESOLVE` — conflitos de peer dependencies entre pacotes. O Lovable sandbox usa configuracoes mais permissivas, mas o Vercel usa `npm install` padrao que e estrito.
 
 ### Solucao
+Criar um arquivo `.npmrc` na raiz do projeto com `legacy-peer-deps=true` para que o Vercel ignore conflitos de peer dependencies durante a instalacao.
 
-No desktop (lg+), adicionar sidebar esquerda com historico de conversas. No mobile, manter layout atual com um botao para abrir o historico em drawer/sheet.
+### Mudanca
 
-```text
-Desktop:
-┌──────────────┬──────────────────────────────────────┐
-│  + Nova conv │  Header (Professora / Estudar)       │
-│  ──────────  │  ────────────────────────────────────│
-│  Hoje        │                                      │
-│  · Conv 1    │  Chat messages                       │
-│  · Conv 2    │                                      │
-│  Ontem       │                                      │
-│  · Conv 3    │                                      │
-│  Anteriores  │                                      │
-│  · Conv 4    │  Input                               │
-└──────────────┴──────────────────────────────────────┘
+**1. Criar `.npmrc`** (raiz do projeto)
+```
+legacy-peer-deps=true
 ```
 
-### Mudancas
-
-**1. `src/pages/ChatProfessora.tsx`**
-
-- Importar e usar `useProfessoraConversations` (ja existe o hook completo)
-- No desktop: layout `grid grid-cols-[280px_1fr]` envolvendo sidebar + card de chat
-- Sidebar esquerda com:
-  - Botao "Nova conversa" no topo
-  - Lista de conversas agrupadas por data (`groupedConversations()`)
-  - Cada item mostra titulo truncado, hover highlight, botao delete
-  - Item ativo com borda/fundo destacado
-- Ao clicar numa conversa: carregar mensagens via `loadConversationMessages`, popular o chat
-- Ao enviar primeira mensagem de nova conversa: `createConversation` automaticamente
-- Integrar persistencia: salvar mensagens na tabela `chat_professora_historico` com `conversation_id`
-- No mobile: botao de historico no header que abre Sheet/Drawer com a mesma lista
-
-**2. Integracao com `useStreamingChat`**
-- Ao selecionar conversa existente, carregar mensagens e popular o estado do hook
-- Ao iniciar nova conversa, resetar mensagens
-- Ao receber resposta, atualizar `updated_at` da conversa
+Isso e a forma padrao de resolver conflitos ERESOLVE no Vercel sem alterar nenhuma dependencia. Uma unica linha resolve o problema.
 
 ### O que NAO muda
-- `useStreamingChat` (logica de streaming)
-- `useProfessoraConversations` (hook ja pronto)
-- Edge Functions de chat
-- Layout mobile do chat em si
-- Componentes de mensagem (`ChatMessageNew`, `ChatInputNew`)
+- `package.json`, dependencias, versoes
+- Vite config, build config
+- Nenhum codigo da aplicacao
 
