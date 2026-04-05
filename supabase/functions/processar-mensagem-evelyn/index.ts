@@ -108,7 +108,7 @@ const SYSTEM_PROMPT = `Você é a Evelyn, uma superinteligência artificial jur�
 - Se receber um áudio transcrito, responda ao conteúdo falado
 - Se receber um PDF/documento, analise e faça resumo jurídico`;
 
-const MODELOS = ["gemini-2.5-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash"];
+const MODELOS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite-preview"];
 
 const STOPWORDS = new Set([
   'o', 'a', 'os', 'as', 'um', 'uma', 'uns', 'umas', 'de', 'da', 'do', 'das', 'dos',
