@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Brain, BookOpen, FileText, Loader2, Zap, Heart, ListOrdered, Search, ArrowUp, ChevronRight, Crown } from "lucide-react";
+import { Brain, BookOpen, FileText, Loader2, Zap, Heart, ListOrdered, Search, ArrowUp, ChevronRight, Crown, BarChart3, Target, TrendingUp } from "lucide-react";
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,9 @@ import { DotPattern } from "@/components/ui/dot-pattern";
 import { useIndexedDBCache } from "@/hooks/useIndexedDBCache";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
+import { useDeviceType } from "@/hooks/use-device-type";
+import FlashcardsEstatisticas from "@/components/flashcards/FlashcardsEstatisticas";
+import { useFlashcardStats } from "@/hooks/useFlashcardStudyProgress";
 
 // ── Realeza palette ──
 const R = {
