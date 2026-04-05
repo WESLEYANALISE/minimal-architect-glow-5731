@@ -64,6 +64,7 @@ export const vadeMecumRoutes = (
     <Route path="/leis/explicacoes" element={<L><LeisExplicacoes /></L>} />
     <Route path="/vade-mecum/sobre" element={<L><VadeMecumSobre /></L>} />
     <Route path="/vade-mecum/legislacao" element={<L><VadeMecumLegislacao /></L>} />
+    <Route path="/leis-do-dia" element={<L><VadeMecumResenhaDiaria /></L>} />
     <Route path="/vade-mecum/resenha-diaria" element={<L><VadeMecumResenhaDiaria /></L>} />
     <Route path="/vade-mecum/resenha-sobre" element={<L><VadeMecumResenhaSobre /></L>} />
     <Route path="/vade-mecum/resenha/:id" element={<L><VadeMecumResenhaView /></L>} />
