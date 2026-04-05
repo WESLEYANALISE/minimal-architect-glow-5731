@@ -94,6 +94,7 @@ export default function Perfil() {
   });
 
   const [deleting, setDeleting] = useState(false);
+  const { isDesktop } = useDeviceType();
 
   useEffect(() => {
     if (user) {
@@ -347,7 +348,6 @@ export default function Perfil() {
     );
   }
 
-  const { isDesktop } = useDeviceType();
 
   return (
     <div className={cn("min-h-screen bg-background", isDesktop ? "pb-4" : "pb-24")}>
