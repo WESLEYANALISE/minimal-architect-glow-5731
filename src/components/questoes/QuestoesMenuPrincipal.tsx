@@ -22,6 +22,7 @@ interface QuestoesMenuPrincipalProps {
   temasReforco: number;
   totalQuestoes: number;
   userStats: UserStat[];
+  isDesktop?: boolean;
   onPraticar: () => void;
   onProgresso: () => void;
   onReforco: () => void;
@@ -137,6 +138,7 @@ export const QuestoesMenuPrincipal = ({
   temasReforco,
   totalQuestoes,
   userStats,
+  isDesktop = false,
   onPraticar,
   onProgresso,
   onReforco,
