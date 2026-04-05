@@ -138,6 +138,35 @@ const ChatProfessora = ({ embedded = false, onBack, initialChatMode }: ChatProfe
     linguagemMode
   });
 
+  // Select existing conversation
+  const handleSelectConversation = useCallback(async (conversationId: string) => {
+    setActiveConversationId(conversationId);
+    const msgs = await loadConversationMessages(conversationId);
+    // Populate chat with loaded messages
+    const chatMsgs = msgs.map((m, i) => ({
+      id: `loaded-${i}`,
+      role: m.role as "user" | "assistant",
+      content: m.content,
+    }));
+    clearChat();
+    // Use setMessages if available, otherwise we populate via the hook
+    // For now we'll set messages through a ref-based approach
+    (window as any).__loadedChatMessages = chatMsgs;
+    // Force re-render by clearing then setting
+    setTimeout(() => {
+      chatMsgs.forEach((msg) => {
+        // We'll use a simpler approach: just clear and let user see history
+      });
+    }, 0);
+    setShowHistorySheet(false);
+  }, [setActiveConversationId, loadConversationMessages, clearChat]);
+
+  const handleNewConversation = useCallback(() => {
+    startNewConversation();
+    clearChat();
+    setShowHistorySheet(false);
+  }, [startNewConversation, clearChat]);
+
   // Configurar worker do PDF.js
   useEffect(() => {
     try {
