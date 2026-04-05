@@ -69,7 +69,7 @@ export const useOnboardingStatus = (): OnboardingStatus => {
     : false;
 
   // Verificar se já escolheu plano (localStorage OU já é Premium)
-  const planChosen = user ? (hasPlanChosen(user.id) || isPremium) : false;
+  const planChosen = user ? (hasPlanChosen() || isPremium) : false;
 
   // Onboarding é completo se:
   // 1. Já completou antes (localStorage) OU
