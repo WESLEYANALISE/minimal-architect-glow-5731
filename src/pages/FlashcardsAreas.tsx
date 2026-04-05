@@ -370,11 +370,61 @@ const FlashcardsAreas = () => {
   }
 
   if (subView === "categories") {
+    const categoryItems = [
+      { label: "Conceitos", desc: `${totalAreas} áreas`, count: `${totalFlashcards.toLocaleString('pt-BR')} cards`, icon: Brain, onClick: () => setSubView("praticar") },
+      { label: "Lacunas", desc: "Complete a frase", count: `${lacunasCount.toLocaleString('pt-BR')} cards`, icon: PenLine, onClick: () => navigate("/flashcards/lacunas") },
+      { label: "Correspondência", desc: "Associe conceitos", count: correspondenciaCount > 0 ? `${correspondenciaCount} sets` : 'Novo!', icon: Link2, onClick: () => navigate("/ferramentas/questoes/correspondencia") },
+      { label: "Termos Jurídicos", desc: "Dicionário A-Z", count: `${termosCount.toLocaleString('pt-BR')} termos`, icon: BookOpen, onClick: () => navigate("/flashcards/termos-juridicos") },
+    ];
+
+    // Desktop: horizontal grid
+    if (isDesktopDevice) {
+      return (
+        <div className="min-h-screen" style={{ background: R.bg }}>
+          <RealezaHeader onBack={() => setSubView("menu")} backLabel="Menu" />
+          <div className="px-6 pb-8">
+            <h2 className="text-sm font-bold mb-4" style={{ color: R.goldMuted }}>Escolha uma categoria</h2>
+            <div className="grid grid-cols-4 gap-5">
+              {categoryItems.map((item, idx) => {
+                const Icon = item.icon;
+                return (
+                  <motion.button
+                    key={item.label}
+                    onClick={item.onClick}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1, duration: 0.4 }}
+                    className="relative overflow-hidden rounded-2xl p-5 text-left transition-all hover:scale-[1.03] active:scale-95 h-[160px]"
+                    style={{
+                      background: "hsla(0, 0%, 100%, 0.04)",
+                      border: `1px solid ${R.border}`,
+                      boxShadow: `0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 hsla(40, 60%, 80%, 0.06)`,
+                    }}
+                  >
+                    <div className="absolute -right-4 -bottom-4 opacity-[0.07]">
+                      <Icon className="w-24 h-24" style={{ color: R.gold }} />
+                    </div>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-3" style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}>
+                      <Icon className="w-6 h-6" style={{ color: R.gold }} />
+                    </div>
+                    <p className="text-base font-bold text-white">{item.label}</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>{item.desc}</p>
+                    <p className="text-[11px] font-semibold mt-1" style={{ color: R.goldMuted }}>{item.count}</p>
+                    <ChevronRight className="absolute bottom-4 right-4 w-5 h-5" style={{ color: "hsla(40, 70%, 60%, 0.5)" }} />
+                  </motion.button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Mobile: serpentine timeline
     return (
       <div className="min-h-screen pb-20" style={{ background: R.bg }}>
         <RealezaHeader onBack={() => setSubView("menu")} backLabel="Menu" />
 
-        {/* Serpentine timeline with golden accents */}
         <div className="relative px-4 pb-4">
           <div className="absolute inset-0 -top-16 -bottom-4 overflow-hidden pointer-events-none">
             <img src={bgFlashcardsCategorias} alt="" className="w-full h-full object-cover opacity-10" />
@@ -382,7 +432,6 @@ const FlashcardsAreas = () => {
           </div>
 
           <div className="relative py-6 px-2">
-            {/* Central golden line */}
             <div className="absolute left-1/2 top-4 bottom-4 w-0.5 -translate-x-1/2">
               <div className="w-full h-full" style={{ background: "linear-gradient(to bottom, hsla(40, 60%, 50%, 0.3), hsla(40, 60%, 50%, 0.15), hsla(40, 60%, 50%, 0.3))" }} />
               <motion.div
