@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useDeviceType } from "@/hooks/use-device-type";
 import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import { useNavigate } from "react-router-dom";
 import {
@@ -156,6 +157,7 @@ const R = {
 const FlashcardsAreas = () => {
   const navigate = useNavigate();
   const { onTouchStart: prefetchRoute } = usePrefetchRoute();
+  const { isDesktop: isDesktopDevice } = useDeviceType();
   const { isPremium } = useSubscription();
   const { user } = useAuth();
   const isAdmin = user?.email === ADMIN_EMAIL;
@@ -304,6 +306,7 @@ const FlashcardsAreas = () => {
         <RealezaHeader onBack={() => navigate("/")} />
         <FlashcardsMenuPrincipal
           totalFlashcards={totalFlashcards}
+          isDesktop={isDesktopDevice}
           onPraticar={() => setSubView("categories")}
           onProgresso={() => setSubView("progresso")}
           onReforco={() => setSubView("reforco")}
