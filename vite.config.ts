@@ -39,6 +39,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === 'production' && legacy({
       targets: ['defaults', 'not IE 11', 'safari >= 13', 'chrome >= 64', 'iOS >= 13'],
+      modernPolyfills: true,
     }),
     mode === 'development' &&
     componentTagger(),
@@ -165,9 +166,9 @@ export default defineConfig(({ mode }) => ({
         ],
         // Clean old caches
         cleanupOutdatedCaches: true,
-        // Skip waiting to update immediately
         skipWaiting: true,
         clientsClaim: true,
+        navigateFallbackDenylist: [/^\/~oauth/],
         // Increase limit to cache larger bundles (15MB)
         maximumFileSizeToCacheInBytes: 17 * 1024 * 1024
       }
