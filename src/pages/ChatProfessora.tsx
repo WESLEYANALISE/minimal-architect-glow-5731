@@ -40,6 +40,7 @@ const ChatProfessora = ({ embedded = false, onBack, initialChatMode }: ChatProfe
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const { isDesktop } = useDeviceType();
   const defaultMode = initialChatMode || (searchParams.get("mode") as ChatMode) || "study";
   
   const [mode, setMode] = useState<ChatMode>(defaultMode);
@@ -48,6 +49,19 @@ const ChatProfessora = ({ embedded = false, onBack, initialChatMode }: ChatProfe
   const [showPremiumGate, setShowPremiumGate] = useState(false);
   const { topAreas, loading: loadingInterests } = useUserInterests();
   const [profileName, setProfileName] = useState<string | null>(null);
+  const [showHistorySheet, setShowHistorySheet] = useState(false);
+
+  // Conversation history
+  const {
+    activeConversationId,
+    setActiveConversationId,
+    loadingConversations,
+    loadConversationMessages,
+    createConversation,
+    deleteConversation,
+    groupedConversations,
+    startNewConversation,
+  } = useProfessoraConversations();
 
   // Buscar nome do perfil
   useEffect(() => {
