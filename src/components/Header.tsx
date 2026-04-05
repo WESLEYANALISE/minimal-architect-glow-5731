@@ -767,6 +767,12 @@ export const Header = () => {
   const previousPageTitle = getPreviousPageTitle(location.pathname, location.search);
 
   const handleBackNavigation = () => {
+    // Check if any page has registered a back interceptor (e.g. inline flashcard viewer)
+    if ((window as any).__backInterceptor) {
+      (window as any).__backInterceptor();
+      return;
+    }
+
     const destination = getHierarchicalDestination(location.pathname, location.search);
     
     // Se destination é null e estamos em /codigo/*, usar navigate(-1) para voltar à rota anterior
