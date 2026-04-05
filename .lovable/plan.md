@@ -1,45 +1,114 @@
 
 
-## Plano: Refazer Noticia Detalhes — conteudo pronto + markdown correto
+## Auditoria de Compatibilidade: Plugins, Polyfills e Cross-Browser
 
-### Problemas identificados
+### Resumo Executivo
 
-1. **Carregamento lento**: Quando o usuario clica numa noticia, o `NoticiaDetalhes.tsx` verifica se `conteudo_formatado + analise_ia + termos_json` estao todos no cache. Se faltar qualquer um, chama a Edge Function `processar-noticia-juridica` que busca HTML, chama Gemini, e processa — demora 10-30 segundos mostrando "Carregando e processando..."
+Analisei o app inteiro em busca de problemas de compatibilidade com navegadores antigos (Safari 13+, Chrome 64+, iOS 13+), funcionamento em iframes, e estabilidade na tela de autenticacao. Encontrei **7 problemas criticos** e **4 melhorias recomendadas**.
 
-2. **Markdown nao renderiza**: O `conteudo_formatado` contem markdown (`###`, `**`, `•`, `---`) mas a funcao `renderizarConteudoFormatado()` apenas faz split por `\n` e renderiza como `<p>` tags de texto puro. Resultado: o usuario ve `### Titulo` como texto literal
+---
 
-3. **Edge Function inexistente no fluxo**: A funcao `processar-noticia-juridica` existe mas e chamada sob demanda quando o usuario abre a noticia — deveria ser pre-processada
+### PROBLEMAS CRITICOS ENCONTRADOS
 
-### Solucao
+#### 1. Supabase Client NAO usa capacitorStorage (BUG ATIVO)
 
-**Principio**: A noticia deve aparecer **instantaneamente** quando o usuario clica. Se o conteudo formatado ja existe no cache, mostrar direto. Se nao existe, mostrar o `conteudo_completo` (texto bruto) ou a `descricao` como fallback imediato — sem esperar processamento IA.
+O arquivo `src/integrations/supabase/client.ts` usa `localStorage` diretamente, ignorando o `capacitorStorage` que foi criado especificamente para persistir sessao no mobile nativo. Isso causa **logouts inesperados** em iOS/Android quando o SO limpa memoria.
 
-**Mudancas no `NoticiaDetalhes.tsx`:**
+```text
+ATUAL:   storage: localStorage
+CORRETO: storage: capacitorStorage (de src/lib/capacitorStorage.ts)
+```
 
-1. **Substituir `renderizarConteudoFormatado()`** por `ReactMarkdown` com `remarkGfm` — assim `###`, `**`, `---`, listas renderizam corretamente como HTML estilizado
+**Impacto**: Usuarios mobile perdem sessao apos o app ficar em background.
 
-2. **Remover o fluxo de processamento sob demanda**: Nao chamar mais `processar-noticia-juridica` quando o usuario abre a noticia. Apenas buscar do cache o que ja existe (`conteudo_formatado`, `conteudo_completo`, `analise_ia`, `termos_json`)
+#### 2. `@vitejs/plugin-legacy` versao 8 com config incompleta
 
-3. **Fallback inteligente sem espera**:
-   - Se tem `conteudo_formatado` → renderizar com ReactMarkdown
-   - Se so tem `conteudo_completo` → renderizar texto limpo
-   - Se nao tem nenhum → mostrar `descricao` + botao "Abrir no navegador"
-   - Nunca mostrar loading de processamento
+O plugin legacy esta configurado mas falta o parametro `modernPolyfills` para garantir que Safari 13-15 receba polyfills de APIs modernas que o app usa (como `structuredClone`, `AbortController.prototype.reason`, `Array.prototype.at`).
 
-4. **Buscar `conteudo_formatado` e `conteudo_completo` ja na listagem**: Adicionar esses campos ao select da query em `NoticiasJuridicas.tsx` e passar via `location.state` — assim quando o usuario chega na pagina de detalhes, o conteudo ja esta disponivel sem query adicional
+**Correcao**: Adicionar `modernPolyfills: true` para polyfill automatico do bundle moderno em Safari 13-15.
 
-5. **Estilizar markdown corretamente**: Usar classes `prose prose-sm dark:prose-invert` no container do ReactMarkdown para garantir tipografia bonita (headings, bold, listas, separadores)
+#### 3. CSP (Content Security Policy) bloqueando recursos em iframe
 
-### Arquivos a modificar
+A meta tag CSP no `index.html` tem `frame-ancestors` implicito (via `X-Frame-Options: SAMEORIGIN`) que **impede o app de funcionar dentro de iframes de terceiros**. Alem disso, falta o dominio do Lovable preview e possiveis dominios de embed.
 
-1. **`src/pages/NoticiaDetalhes.tsx`** — Substituir `renderizarConteudoFormatado` por ReactMarkdown, remover chamada a Edge Function, implementar fallback imediato, adicionar estilos prose
-2. **`src/pages/NoticiasJuridicas.tsx`** — Adicionar `conteudo_formatado, conteudo_completo` ao select da query para passar no state
+**Correcao**: Remover `X-Frame-Options` meta tag (nao funciona via meta tag de qualquer forma — so via header HTTP) e adicionar dominios necessarios ao CSP `frame-src`.
+
+#### 4. Autenticacao em iframe: cookies de terceiros bloqueados
+
+Safari (todas as versoes) e Chrome 120+ bloqueiam cookies de terceiros em iframes. O Supabase auth usa `localStorage` que funciona, MAS o fluxo de `resetPasswordForEmail` redireciona para uma URL externa que, dentro de um iframe, pode falhar silenciosamente.
+
+**Correcao**: O fluxo de recovery via OTP (codigo de 6 digitos) ja esta implementado e funciona em iframes. Garantir que esse seja o unico fluxo oferecido quando `window.self !== window.top` (iframe detectado).
+
+#### 5. Falta polyfill de `scrollTo({ behavior: 'smooth' })` para Safari 13-14
+
+O app usa `scrollTo({ behavior: 'smooth' })` em `src/lib/utils.ts` e outros locais. Safari 13-14 nao suporta `behavior: 'smooth'` — faz scroll instantaneo sem erro, mas quebra a UX.
+
+**Correcao**: O `@vitejs/plugin-legacy` com `modernPolyfills: true` cobre isso automaticamente via `smoothscroll-polyfill`.
+
+#### 6. `navigator.clipboard` sem fallback adequado em iframe
+
+O `copyToClipboard` em `src/lib/utils.ts` tem um fallback com `document.execCommand('copy')`, que esta **deprecated** e falha em iframes com sandbox restrito. O fallback funciona, mas quando o iframe tem `sandbox` sem `allow-same-origin`, ambos os metodos falham silenciosamente.
+
+**Correcao**: Ja tem fallback razoavel. Adicionar `allow-clipboard-write` quando o app e embeddado em iframes controlados.
+
+#### 7. PWA Service Worker conflita com iframe embedding
+
+O `vite-plugin-pwa` com `skipWaiting: true` e `clientsClaim: true` pode causar reloads inesperados quando o app roda dentro de um iframe, pois o novo SW assume controle e forca refresh.
+
+**Correcao**: Adicionar logica para desabilitar auto-update do SW quando em iframe (`if (window.self === window.top)`).
+
+---
+
+### MELHORIAS RECOMENDADAS
+
+#### A. Adicionar `detectBrowser()` utility para fallbacks condicionais
+
+Criar um utilitario que detecta Safari/iOS/Chrome versao para aplicar fallbacks especificos (ex: desabilitar backdrop-filter em Safari < 15, usar CSS simples).
+
+#### B. Adicionar `modernPolyfills` no plugin-legacy
+
+```typescript
+legacy({
+  targets: ['defaults', 'not IE 11', 'safari >= 13', 'chrome >= 64', 'iOS >= 13'],
+  modernPolyfills: true, // ADICIONAR
+})
+```
+
+Isso adiciona ~15KB gzipped de polyfills ao bundle moderno, cobrindo:
+- `Array.prototype.at()` (Safari < 15.4)
+- `structuredClone` (Safari < 15.4)
+- `Object.hasOwn` (Safari < 15.4)
+- `crypto.randomUUID` (Safari < 15.4)
+- Smooth scroll behavior
+
+#### C. Configurar `detectFrameContext()` para autenticacao
+
+Detectar automaticamente se o app esta em iframe e ajustar o fluxo de auth:
+- Em iframe: usar apenas email+senha e OTP (sem redirecionamentos externos)
+- Fora de iframe: fluxo completo disponivel
+
+#### D. Adicionar `-webkit-` prefixos faltantes
+
+O `autoprefixer` ja esta instalado, mas verificar que `backdrop-filter` sempre tenha `-webkit-backdrop-filter` como fallback (Safari 13-14 precisa do prefixo).
+
+---
+
+### PLANO DE IMPLEMENTACAO
+
+**Arquivos a modificar:**
+
+1. **`src/integrations/supabase/client.ts`** — Usar `capacitorStorage` em vez de `localStorage`
+2. **`vite.config.ts`** — Adicionar `modernPolyfills: true` ao plugin-legacy
+3. **`index.html`** — Remover meta tag `X-Frame-Options` (ineficaz via meta), ajustar CSP
+4. **`src/lib/frameDetection.ts`** (NOVO) — Utilitario para detectar contexto iframe
+5. **`src/pages/Auth.tsx`** — Desabilitar fluxos que dependem de redirecionamento externo quando em iframe
+6. **`src/main.tsx`** — Condicionar registro do SW para evitar auto-reload em iframes
+7. **`src/index.css`** — Garantir `-webkit-backdrop-filter` em classes que usam `backdrop-filter`
 
 ### O que NAO muda
-- Edge Functions (continuam processando em background via cron)
-- Tabelas do banco
-- Rotas
+- Funcionalidades existentes
 - Layout mobile/desktop
-- Funcionalidade de analise IA (aba "Analise" continua usando dados do cache)
-- Funcionalidade de termos juridicos
+- Edge Functions
+- Rotas
+- Dados e queries
 
