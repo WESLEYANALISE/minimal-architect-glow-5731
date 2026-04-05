@@ -200,19 +200,32 @@ const CodigoView = () => {
   // URL do Planalto para o link "Ver no Planalto"
   const urlPlanalto = URLS_PLANALTO[tableName] || "";
 
-  // Use progressive loading: primeiros 50 instantâneos, resto em background
+  // Use progressive loading: primeiros 100 instantâneos, resto em background
   const { 
-    articles, 
+    articles: rawArticles, 
     isLoadingInitial: isLoading, 
     isLoadingMore: isLoadingFull,
     isComplete,
     totalLoaded 
-  } = useProgressiveArticles<Article>({
+  } = useProgressiveArticles<any>({
     tableName,
-    initialChunk: 100,       // Primeiros 100 artigos instantâneos
-    backgroundChunk: 500,   // Carregar 500 por vez em background
-    delayBetweenChunks: 100 // 100ms entre cada chunk
+    initialChunk: 100,
+    backgroundChunk: 500,
+    delayBetweenChunks: 100
   });
+
+  // Adapter: para súmulas, converter campos para formato Article
+  const articles: Article[] = useMemo(() => {
+    if (!isSumula) return rawArticles as Article[];
+    return rawArticles.map((item: any) => ({
+      id: item.id,
+      "Número do Artigo": item.id?.toString() || "",
+      "Artigo": item["Texto da Súmula"] || "",
+      "Narração": item["Narração"] || null,
+      "Comentario": null,
+      "Aula": null,
+    }));
+  }, [rawArticles, isSumula]);
   
   // Função placeholder para updateArticle (se necessário no futuro)
   const updateArticle = useCallback((id: number, updates: Partial<Article>) => {
