@@ -99,7 +99,7 @@ const NoticiaDetalhes = () => {
       }
 
       // Análise IA
-      let analiseObj = cacheData.analise_ia;
+      let analiseObj: any = cacheData.analise_ia;
       if (typeof analiseObj === 'string') {
         try { analiseObj = JSON.parse(analiseObj); } catch { /* ignore */ }
       }
@@ -113,11 +113,11 @@ const NoticiaDetalhes = () => {
       }
 
       // Termos
-      let termosArr = cacheData.termos_json || [];
+      let termosArr: any = cacheData.termos_json || [];
       if (typeof termosArr === 'string') {
         try { termosArr = JSON.parse(termosArr); } catch { termosArr = []; }
       }
-      setTermos(Array.isArray(termosArr) ? termosArr : []);
+      setTermos(Array.isArray(termosArr) ? termosArr as Termo[] : []);
     };
 
     buscarCache();
