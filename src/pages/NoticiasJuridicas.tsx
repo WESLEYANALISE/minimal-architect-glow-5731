@@ -137,7 +137,7 @@ const NoticiasJuridicas = () => {
       const dataInicio = quatorzeDiasAtras.toISOString().split('T')[0];
       const { data, error } = await supabase
         .from('noticias_juridicas_cache')
-        .select('id, titulo, link, imagem, imagem_webp, fonte, categoria, data_publicacao, created_at')
+        .select('id, titulo, link, imagem, imagem_webp, fonte, categoria, data_publicacao, created_at, conteudo_formatado, conteudo_completo')
         .gte('data_publicacao', dataInicio)
         .order('data_publicacao', { ascending: false })
         .limit(50);
@@ -150,6 +150,8 @@ const NoticiasJuridicas = () => {
         capa: n.imagem_webp || n.imagem || '',
         link: n.link,
         dataHora: n.data_publicacao || n.created_at || new Date().toISOString(),
+        conteudo_formatado: n.conteudo_formatado || '',
+        conteudo_completo: n.conteudo_completo || '',
       }));
     },
     cacheDuration: 2 * 60 * 1000,
