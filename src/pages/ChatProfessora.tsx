@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { ArrowLeft, BookOpen, Scale, GraduationCap, Trash2, Crown, Bot } from "lucide-react";
+import { ArrowLeft, BookOpen, Trash2, Crown, Bot, History } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,17 +9,19 @@ import { getDocument, GlobalWorkerOptions, version as pdfjsVersion } from "pdfjs
 import { useStreamingChat, UploadedFile } from "@/hooks/useStreamingChat";
 import { ChatMessageNew } from "@/components/chat/ChatMessageNew";
 import { ChatInputNew } from "@/components/chat/ChatInputNew";
-import { FloatingFlashcardsButton } from "@/components/chat/FloatingFlashcardsButton";
 import { AulaFloatingCard } from "@/components/chat/AulaFloatingCard";
+import { ConversationSidebar } from "@/components/chat/ConversationSidebar";
 
 import { TypingIndicator } from "@/components/simulacao/TypingIndicator";
-import { SuggestedQuestions } from "@/components/chat/SuggestedQuestions";
 import { cn } from "@/lib/utils";
 import themisFull from "@/assets/themis-full.webp";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useTrialStatus } from "@/hooks/useTrialStatus";
 import { PremiumFloatingCard } from "@/components/PremiumFloatingCard";
 import { useUserInterests } from "@/hooks/useUserInterests";
+import { useDeviceType } from "@/hooks/use-device-type";
+import { useProfessoraConversations } from "@/hooks/useProfessoraConversations";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 
 type ChatMode = "study" | "realcase" | "recommendation" | "psychologist" | "tcc" | "refutacao" | "aula";
