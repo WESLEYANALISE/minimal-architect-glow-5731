@@ -144,7 +144,7 @@ export const LeiHeader = ({
       
       {/* Ementa em vermelho - abaixo da linha */}
       {ementaFinal && (
-        <p className="text-xs text-red-400 mt-3 text-center italic max-w-md">
+        <p className="text-xs mt-3 text-center italic max-w-md" style={{ color: 'hsla(40, 60%, 65%, 0.8)' }}>
           {ementaFinal}
         </p>
       )}
