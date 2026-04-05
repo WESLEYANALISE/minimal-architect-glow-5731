@@ -169,148 +169,171 @@ export const FlashcardsMenuPrincipal = ({
 
   const isTyping = shouldAnimate && displayedText.length < feedbackTextRef.current.length;
 
+  const renderStats = () => (
+    <div className={`grid grid-cols-4 gap-2 ${isDesktop ? 'gap-3' : ''}`}>
+      <div className="relative rounded-2xl py-4 px-2 text-center overflow-hidden" style={{ background: "hsl(0, 0%, 10%)", border: `1px solid ${R.border}` }}>
+        <p className={`font-bold text-white tracking-tight ${isDesktop ? 'text-2xl' : 'text-xl'}`}>{total.toLocaleString("pt-BR")}</p>
+        <p className="text-[9px] mt-1 font-medium" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>de {totalFlashcards.toLocaleString("pt-BR")}</p>
+        <div className="mt-2 mx-auto w-4/5 h-1.5 rounded-full overflow-hidden" style={{ background: "hsla(40, 60%, 50%, 0.1)" }}>
+          <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progressoEstudados}%`, background: R.gold }} />
+        </div>
+      </div>
+      <div className="relative rounded-2xl py-4 px-2 text-center overflow-hidden" style={{ background: "hsl(0, 0%, 10%)", border: `1px solid ${R.border}` }}>
+        <p className={`font-bold tracking-tight ${isDesktop ? 'text-2xl' : 'text-xl'}`} style={{ color: "hsl(152, 75%, 50%)" }}>{taxaCompreendi}%</p>
+        <p className="text-[9px] mt-1 font-medium" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Compreendi</p>
+        <div className="mt-2 mx-auto w-4/5 h-1 rounded-full overflow-hidden" style={{ background: "hsla(152, 50%, 40%, 0.15)" }}>
+          <div className="h-full rounded-full transition-all duration-700" style={{ width: `${taxaCompreendi}%`, background: "hsl(152, 72%, 42%)" }} />
+        </div>
+      </div>
+      <div className="relative rounded-2xl py-4 px-2 text-center overflow-hidden" style={{ background: "hsl(0, 0%, 10%)", border: `1px solid ${R.border}` }}>
+        <p className={`font-bold tracking-tight ${isDesktop ? 'text-2xl' : 'text-xl'}`} style={{ color: "hsl(0, 78%, 58%)" }}>{taxaRevisar}%</p>
+        <p className="text-[9px] mt-1 font-medium" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Revisar</p>
+        <div className="mt-2 mx-auto w-4/5 h-1 rounded-full overflow-hidden" style={{ background: "hsla(0, 50%, 42%, 0.15)" }}>
+          <div className="h-full rounded-full transition-all duration-700" style={{ width: `${taxaRevisar}%`, background: "hsl(0, 78%, 50%)" }} />
+        </div>
+      </div>
+      <div className="relative rounded-2xl py-4 px-2 text-center overflow-hidden" style={{ background: "hsl(0, 0%, 10%)", border: `1px solid ${R.border}` }}>
+        <Flame className="w-4 h-4 mx-auto mb-0.5" style={{ color: R.gold }} />
+        <p className={`font-bold text-white tracking-tight ${isDesktop ? 'text-2xl' : 'text-xl'}`}>{streak}</p>
+        <p className="text-[9px] mt-1 font-medium" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Dias seguidos</p>
+      </div>
+    </div>
+  );
+
+  const renderMenuCards = () => (
+    <div className={`grid grid-cols-2 gap-3 ${isDesktop ? 'gap-4' : ''}`}>
+      {MENU_ITEMS.map((item, i) => {
+        const Icon = item.icon;
+        const BgIcon = item.bgIcon;
+        const badge = getBadge(item.key);
+        return (
+          <button
+            key={item.key}
+            onClick={handlers[item.key]}
+            className={`relative p-4 rounded-2xl text-left transition-all duration-200 hover:scale-[1.03] active:scale-95 overflow-hidden animate-fade-in group ${isDesktop ? 'h-[150px]' : 'h-[130px]'}`}
+            style={{
+              background: "hsla(0, 0%, 100%, 0.04)",
+              border: `1px solid ${R.border}`,
+              boxShadow: `0 4px 20px -4px rgba(0,0,0,0.4), inset 0 1px 0 hsla(40, 60%, 80%, 0.06)`,
+              animationDelay: `${i * 80}ms`,
+              animationFillMode: "both",
+            }}
+          >
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ background: "linear-gradient(105deg, transparent 40%, hsla(40, 80%, 70%, 0.06) 45%, hsla(40, 80%, 70%, 0.12) 50%, hsla(40, 80%, 70%, 0.06) 55%, transparent 60%)" }} />
+            <BgIcon className="absolute -bottom-2 -right-2 pointer-events-none" style={{ width: 88, height: 88, opacity: 0.06, color: R.gold }} />
+            {badge && item.key !== "progresso" && (
+              <span className="absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "hsla(40, 60%, 50%, 0.15)", border: `1px solid ${R.border}`, color: R.goldMuted }}>{badge}</span>
+            )}
+            {item.key === "progresso" && total > 0 && (
+              <div className="absolute top-2 right-2">
+                <svg width="30" height="30" viewBox="0 0 30 30" className="transform -rotate-90">
+                  <circle cx="15" cy="15" r="12" fill="none" stroke="hsla(40, 60%, 50%, 0.15)" strokeWidth="3" />
+                  <circle cx="15" cy="15" r="12" fill="none" stroke={R.gold} strokeWidth="3" strokeDasharray={2 * Math.PI * 12} strokeDashoffset={2 * Math.PI * 12 - (taxaCompreendi / 100) * 2 * Math.PI * 12} strokeLinecap="round" className="transition-all duration-700" />
+                </svg>
+                <span className="absolute inset-0 flex items-center justify-center text-[7px] font-bold" style={{ color: R.gold }}>{taxaCompreendi}%</span>
+              </div>
+            )}
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-2" style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}>
+              <Icon className="w-6 h-6" style={{ color: R.gold }} />
+            </div>
+            <p className={`font-bold text-white ${isDesktop ? 'text-base' : 'text-sm'}`}>{item.label}</p>
+            <p className={`mt-0.5 ${isDesktop ? 'text-xs' : 'text-[10px]'}`} style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>{item.desc}</p>
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  const renderArabella = () => {
+    if (!displayedText) return null;
+    return (
+      <motion.div
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="space-y-2"
+      >
+        <div className="flex items-center gap-2.5">
+          <img src={draArabellaAvatar} alt="Dra. Arabella" className="w-9 h-9 rounded-full object-cover border-2" style={{ borderColor: R.gold }} />
+          <span className="text-xs font-bold text-white">Dra. Arabella</span>
+        </div>
+        <div className="ml-5 relative">
+          <div className="absolute -top-1 left-3 w-3 h-3 rotate-45" style={{ background: "hsl(0, 0%, 12%)" }} />
+          <div className="relative rounded-2xl rounded-tl-md px-4 py-3" style={{ background: "hsl(0, 0%, 12%)", border: `1px solid ${R.border}` }}>
+            <span className="text-xs text-white leading-relaxed" dangerouslySetInnerHTML={{ __html: displayedText }} />
+            {isTyping && <span className="inline-block w-0.5 h-3 ml-0.5 animate-pulse" style={{ background: R.gold }} />}
+          </div>
+        </div>
+        {!isTyping && (
+          <button
+            onClick={onDiagnostico}
+            className="ml-5 w-[calc(100%-20px)] relative flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-white transition-colors hover:opacity-90 overflow-hidden"
+            style={{ background: `linear-gradient(135deg, ${R.gold}, hsl(35, 70%, 40%))` }}
+          >
+            Ver análise completa <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </motion.div>
+    );
+  };
+
+  const renderDesktopSidebar = () => (
+    <div className="space-y-5">
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: "hsl(0, 0%, 10%)", border: `1px solid ${R.border}` }}>
+        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <Brain className="w-4 h-4" style={{ color: R.gold }} />
+          Resumo Rápido
+        </h3>
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-xs" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Compreendidos</span>
+            <span className="text-xs font-semibold text-white">{compreendi.toLocaleString("pt-BR")}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-xs" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Para revisar</span>
+            <span className="text-xs font-semibold" style={{ color: "hsl(0, 78%, 58%)" }}>{revisar.toLocaleString("pt-BR")}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-xs" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Total disponível</span>
+            <span className="text-xs font-semibold text-white">{totalFlashcards.toLocaleString("pt-BR")}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-xs" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Dias consecutivos</span>
+            <span className="text-xs font-semibold" style={{ color: R.gold }}>🔥 {streak}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-xs" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Áreas para reforço</span>
+            <span className="text-xs font-semibold" style={{ color: temasReforco > 0 ? "hsl(0, 78%, 58%)" : "hsl(152, 75%, 50%)" }}>{temasReforco}</span>
+          </div>
+        </div>
+      </div>
+      {renderArabella()}
+    </div>
+  );
+
+  // ── DESKTOP ──
+  if (isDesktop) {
+    return (
+      <div className="px-6 pb-8">
+        {renderStats()}
+        <div className="mt-5 grid grid-cols-3 gap-6">
+          <div className="col-span-2 space-y-5">
+            {renderMenuCards()}
+          </div>
+          <div>
+            {renderDesktopSidebar()}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── MOBILE ──
   return (
     <div className="px-4 space-y-5 pb-8">
-      {/* Stats resumo - 4 columns with golden borders */}
-      <div className="grid grid-cols-4 gap-2">
-        <div
-          className="relative rounded-2xl py-4 px-2 text-center overflow-hidden"
-          style={{ background: "hsl(0, 0%, 10%)", border: `1px solid ${R.border}` }}
-        >
-          <p className="text-xl font-bold text-white tracking-tight">{total.toLocaleString("pt-BR")}</p>
-          <p className="text-[9px] mt-1 font-medium" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>de {totalFlashcards.toLocaleString("pt-BR")}</p>
-          <div className="mt-2 mx-auto w-4/5 h-1.5 rounded-full overflow-hidden" style={{ background: "hsla(40, 60%, 50%, 0.1)" }}>
-            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progressoEstudados}%`, background: R.gold }} />
-          </div>
-        </div>
-
-        <div
-          className="relative rounded-2xl py-4 px-2 text-center overflow-hidden"
-          style={{ background: "hsl(0, 0%, 10%)", border: `1px solid ${R.border}` }}
-        >
-          <p className="text-xl font-bold tracking-tight" style={{ color: "hsl(152, 75%, 50%)" }}>{taxaCompreendi}%</p>
-          <p className="text-[9px] mt-1 font-medium" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Compreendi</p>
-          <div className="mt-2 mx-auto w-4/5 h-1 rounded-full overflow-hidden" style={{ background: "hsla(152, 50%, 40%, 0.15)" }}>
-            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${taxaCompreendi}%`, background: "hsl(152, 72%, 42%)" }} />
-          </div>
-        </div>
-
-        <div
-          className="relative rounded-2xl py-4 px-2 text-center overflow-hidden"
-          style={{ background: "hsl(0, 0%, 10%)", border: `1px solid ${R.border}` }}
-        >
-          <p className="text-xl font-bold tracking-tight" style={{ color: "hsl(0, 78%, 58%)" }}>{taxaRevisar}%</p>
-          <p className="text-[9px] mt-1 font-medium" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Revisar</p>
-          <div className="mt-2 mx-auto w-4/5 h-1 rounded-full overflow-hidden" style={{ background: "hsla(0, 50%, 42%, 0.15)" }}>
-            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${taxaRevisar}%`, background: "hsl(0, 78%, 50%)" }} />
-          </div>
-        </div>
-
-        <div
-          className="relative rounded-2xl py-4 px-2 text-center overflow-hidden"
-          style={{ background: "hsl(0, 0%, 10%)", border: `1px solid ${R.border}` }}
-        >
-          <Flame className="w-4 h-4 mx-auto mb-0.5" style={{ color: R.gold }} />
-          <p className="text-xl font-bold text-white tracking-tight">{streak}</p>
-          <p className="text-[9px] mt-1 font-medium" style={{ color: "hsla(40, 60%, 70%, 0.5)" }}>Dias seguidos</p>
-        </div>
-      </div>
-
-      {/* Grid 2x2 — golden borders */}
-      <div className="grid grid-cols-2 gap-3">
-        {MENU_ITEMS.map((item, i) => {
-          const Icon = item.icon;
-          const BgIcon = item.bgIcon;
-          const badge = getBadge(item.key);
-          return (
-            <button
-              key={item.key}
-              onClick={handlers[item.key]}
-              className="relative h-[130px] p-4 rounded-2xl text-left transition-all duration-200 hover:scale-[1.03] active:scale-95 overflow-hidden animate-fade-in group"
-              style={{
-                background: "hsla(0, 0%, 100%, 0.04)",
-                border: `1px solid ${R.border}`,
-                boxShadow: `0 4px 20px -4px rgba(0,0,0,0.4), inset 0 1px 0 hsla(40, 60%, 80%, 0.06)`,
-                animationDelay: `${i * 80}ms`,
-                animationFillMode: "both",
-              }}
-            >
-              {/* Shimmer */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{
-                  background: "linear-gradient(105deg, transparent 40%, hsla(40, 80%, 70%, 0.06) 45%, hsla(40, 80%, 70%, 0.12) 50%, hsla(40, 80%, 70%, 0.06) 55%, transparent 60%)",
-                }}
-              />
-              <BgIcon
-                className="absolute -bottom-2 -right-2 pointer-events-none"
-                style={{ width: 88, height: 88, opacity: 0.06, color: R.gold }}
-              />
-              {badge && item.key !== "progresso" && (
-                <span
-                  className="absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full"
-                  style={{ background: "hsla(40, 60%, 50%, 0.15)", border: `1px solid ${R.border}`, color: R.goldMuted }}
-                >
-                  {badge}
-                </span>
-              )}
-              {item.key === "progresso" && total > 0 && (
-                <div className="absolute top-2 right-2">
-                  <svg width="30" height="30" viewBox="0 0 30 30" className="transform -rotate-90">
-                    <circle cx="15" cy="15" r="12" fill="none" stroke="hsla(40, 60%, 50%, 0.15)" strokeWidth="3" />
-                    <circle cx="15" cy="15" r="12" fill="none" stroke={R.gold} strokeWidth="3"
-                      strokeDasharray={2 * Math.PI * 12}
-                      strokeDashoffset={2 * Math.PI * 12 - (taxaCompreendi / 100) * 2 * Math.PI * 12}
-                      strokeLinecap="round"
-                      className="transition-all duration-700"
-                    />
-                  </svg>
-                  <span className="absolute inset-0 flex items-center justify-center text-[7px] font-bold" style={{ color: R.gold }}>{taxaCompreendi}%</span>
-                </div>
-              )}
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-2"
-                style={{ background: R.iconBg, border: `1px solid ${R.iconBorder}` }}
-              >
-                <Icon className="w-6 h-6" style={{ color: R.gold }} />
-              </div>
-              <p className="text-sm font-bold text-white">{item.label}</p>
-              <p className="text-[10px] mt-0.5" style={{ color: "hsla(40, 60%, 70%, 0.6)" }}>{item.desc}</p>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Dra. Arabella */}
-      {displayedText && (
-        <motion.div
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="space-y-2"
-        >
-          <div className="flex items-center gap-2.5">
-            <img src={draArabellaAvatar} alt="Dra. Arabella" className="w-9 h-9 rounded-full object-cover border-2" style={{ borderColor: R.gold }} />
-            <span className="text-xs font-bold text-white">Dra. Arabella</span>
-          </div>
-          <div className="ml-5 relative">
-            <div className="absolute -top-1 left-3 w-3 h-3 rotate-45" style={{ background: "hsl(0, 0%, 12%)" }} />
-            <div className="relative rounded-2xl rounded-tl-md px-4 py-3" style={{ background: "hsl(0, 0%, 12%)", border: `1px solid ${R.border}` }}>
-              <span className="text-xs text-white leading-relaxed" dangerouslySetInnerHTML={{ __html: displayedText }} />
-              {isTyping && <span className="inline-block w-0.5 h-3 ml-0.5 animate-pulse" style={{ background: R.gold }} />}
-            </div>
-          </div>
-          {!isTyping && (
-            <button
-              onClick={onDiagnostico}
-              className="ml-5 w-[calc(100%-20px)] relative flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-white transition-colors hover:opacity-90 overflow-hidden"
-              style={{ background: `linear-gradient(135deg, ${R.gold}, hsl(35, 70%, 40%))` }}
-            >
-              Ver análise completa <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </motion.div>
-      )}
+      {renderStats()}
+      {renderMenuCards()}
+      {renderArabella()}
     </div>
   );
 };
