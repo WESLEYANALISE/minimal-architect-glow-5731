@@ -198,7 +198,7 @@ export default function AssinaturaNova() {
   const handleAssinar = () => {
     if (!user) {
       toast({ title: "Faça login primeiro", description: "Você precisa estar logado para assinar.", variant: "destructive" });
-      navigate("/auth");
+      startTransition(() => navigate("/auth"));
       return;
     }
     trackFunnel({ event_type: "payment_method_select", plan_type: selectedPlan, payment_method: "asaas", amount: plan.price });
@@ -339,7 +339,7 @@ export default function AssinaturaNova() {
         <div className="px-5 max-w-md sm:max-w-2xl mx-auto mb-4">
           <button
             onClick={() => {
-              if (!user) { navigate("/auth"); return; }
+              if (!user) { startTransition(() => navigate("/auth")); return; }
               setShowCpfInput(true);
             }}
             className="w-full py-2.5 text-center text-xs text-zinc-500 font-medium hover:text-zinc-300 transition-colors"
@@ -387,7 +387,7 @@ export default function AssinaturaNova() {
           planLabel={plan.label}
           userEmail={user.email || ""}
           userId={user.id}
-          onSuccess={() => { setShowCardModal(false); navigate("/"); }}
+          onSuccess={() => { setShowCardModal(false); startTransition(() => navigate("/")); }}
           installments={cardInstallments || plan.installments}
         />
       )}
@@ -438,7 +438,7 @@ export default function AssinaturaNova() {
           onRetry={handleRetryPix}
           hasError={!!(!pixLoading && !pixData)}
           onCancel={() => { setShowPixScreen(false); resetPix(); }}
-          onPaymentApproved={() => { setShowPixScreen(false); resetPix(); navigate("/"); }}
+          onPaymentApproved={() => { setShowPixScreen(false); resetPix(); startTransition(() => navigate("/")); }}
         />
       )}
     </>
