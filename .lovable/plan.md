@@ -1,36 +1,71 @@
 
 
-## Plano: Corrigir erro de deploy Vercel (plugin-legacy incompativel)
+## Plano: Redesign Desktop da Biblioteca — Sidebar lateral + Detalhe tela cheia
 
-### Problema
-O deploy Vercel falha porque o `@vitejs/plugin-legacy` esta sendo resolvido como versao `8.0.1`, que exige `vite@^8.0.0`. O projeto usa Vite 5. Mesmo com `.npmrc` tendo `legacy-peer-deps=true`, o conflito persiste no GitHub — provavelmente o `package.json` no repositorio tem uma versao diferente (com caret `^` que permitiu upgrade para v8).
+### Problema atual
+No desktop, as categorias (Classicos, Estudos, OAB...) ficam como abas horizontais no topo. Ao clicar num livro, abre um painel lateral de 35%. O usuario quer:
+1. Categorias como **sidebar vertical** no lado esquerdo
+2. Livros em **grid** no centro
+3. Ao clicar num livro, abrir **tela cheia** com todos os detalhes (nao painel lateral)
+4. Header seguindo o padrao global
 
-### Solucao
+### Mudancas
 
-**1. Fixar versao exata do plugin-legacy no `package.json`**
+**1. Reestruturar o layout desktop em `Bibliotecas.tsx`**
 
-Mudar de:
+Substituir o layout atual (abas horizontais + grid + painel lateral) por:
+
+```text
+┌─────────────────────────────────────────────────┐
+│  Header global (DesktopTopNav)                  │
+├────────────┬────────────────────────────────────┤
+│  SIDEBAR   │  GRID DE LIVROS                   │
+│            │                                    │
+│ Classicos ◄│  [capa] [capa] [capa] [capa] ...  │
+│ Estudos    │  [capa] [capa] [capa] [capa] ...  │
+│ OAB        │                                    │
+│ Politica   │  Busca no topo do grid             │
+│ Oratoria   │  Plano/Favoritos como botoes       │
+│ Portugues  │                                    │
+│ Lideranca  │                                    │
+│ Fora Toga  │                                    │
+│ Pesquisa   │                                    │
+│            │                                    │
+│ ── Info ── │                                    │
+│ Total obras│                                    │
+│ Colecoes   │                                    │
+└────────────┴────────────────────────────────────┘
 ```
-"@vitejs/plugin-legacy": "^5.4.0"
-```
-Para:
-```
-"@vitejs/plugin-legacy": "5.4.3"
-```
-(sem caret, versao exata compativel com Vite 5)
 
-**2. Garantir `.npmrc` esta presente** (ja existe, apenas confirmar que sera commitado)
+- Sidebar fixa (w-64) com lista vertical de categorias, icones, contagem de livros, item ativo destacado
+- Area central com busca + grid de capas
+- Botoes Plano/Favoritos movidos para a sidebar ou topo do grid
 
-```
-legacy-peer-deps=true
-```
+**2. Tela cheia ao clicar num livro**
 
-### Por que funciona
-- A versao exata `5.4.3` impede o npm de resolver para v8
-- O `.npmrc` serve como fallback para outros conflitos menores
+Em vez do `BibliotecaLivroDetalhePanel` lateral, ao clicar num livro no desktop:
+- Abrir um **overlay/modal de tela cheia** (ou estado inline que substitui o grid)
+- Mostrar capa grande, titulo, autor, sobre, botoes Ler/Download/Video
+- Botao de fechar (X) ou voltar que retorna ao grid
+- Reutilizar a logica do `BibliotecaLivroDetalhePanel` mas em layout expandido
+
+**3. Header padrao**
+
+- Remover o header customizado interno
+- Usar o `StandardPageHeader` que ja existe (titulo "Bibliotecas", botao voltar via Header global)
+
+### Detalhes tecnicos
+
+- Manter o `selectedCollection` state para sidebar ativa
+- Substituir `selectedBookId` + painel lateral por `selectedBookId` + overlay fullscreen
+- Manter queries existentes (contagens, livros preview)
+- Mobile permanece identico (bloco `lg:hidden` nao muda)
+- Componente novo: `BibliotecaLivroFullscreen` — reutiliza dados do DetalhePanel mas em layout centralizado com mais espaco
 
 ### O que NAO muda
-- Vite config, build config
-- Nenhum codigo da aplicacao
-- Funcionalidade do plugin-legacy
+- Queries Supabase, dados, cache
+- Layout mobile (lg:hidden)
+- Rotas, lazy loading
+- BibliotecaTopNav (usado apenas no mobile)
+- Paginas individuais (BibliotecaClassicos, etc.)
 
