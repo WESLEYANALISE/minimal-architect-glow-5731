@@ -6,7 +6,7 @@ import { LivroCarouselCard } from "@/components/LivroCarouselCard";
 import { ORDEM_LEITURA_CLASSICOS } from "@/components/biblioteca/BibliotecaSortToggle";
 import { Input } from "@/components/ui/input";
 import { useState, lazy, Suspense, useMemo, useCallback } from "react";
-import { BibliotecaLivroDetalhePanel } from "@/components/biblioteca/BibliotecaLivroDetalhePanel";
+import { BibliotecaLivroFullscreen } from "@/components/biblioteca/BibliotecaLivroFullscreen";
 import { Heart, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
