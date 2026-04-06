@@ -7,7 +7,9 @@ import type { PlanType } from "@/hooks/use-mercadopago-pix";
 import {
   Shield, ArrowRight, Crown, Sparkles, BookOpen, Brain,
   Headphones, FileText, Scale, CheckCircle, Target,
-  Monitor, Map, Video, Layers, ScrollText, Infinity, Calendar, Check, Star
+  Monitor, Video, Layers, ScrollText, Infinity, Calendar, Check, Star,
+  ChevronLeft, ChevronRight as ChevronRightIcon, Gavel, Users, Mic,
+  GraduationCap, Briefcase, Library, Landmark, Globe, Pencil
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -16,7 +18,8 @@ import { useSubscription } from "@/contexts/SubscriptionContext";
 import AssinaturaGerenciamento from "@/components/AssinaturaGerenciamento";
 import { useFacebookPixel } from "@/hooks/useFacebookPixel";
 import { useSubscriptionFunnelTracking } from "@/hooks/useSubscriptionFunnelTracking";
-import { motion } from "framer-motion";
+import { useAssinaturaBackgroundAudio } from "@/hooks/useAssinaturaBackgroundAudio";
+import { motion, AnimatePresence } from "framer-motion";
 import newLogo from "@/assets/logo-direito-premium-new.webp";
 import heroBackground from "@/assets/assinatura-bg.webp";
 
@@ -57,21 +60,35 @@ const PLANS: Record<string, { price: number; label: string; days: number; badge:
   vitalicio: { price: 249.90, label: "Vitalício", days: 36500, badge: "Melhor custo",  installments: 12, sub: "Pague uma vez só" },
 };
 
-// ─── Benefits ───
-const BENEFITS = [
-  { Icon: Scale,       title: "Vade Mecum",     value: "2026" },
-  { Icon: BookOpen,    title: "Cursos",          value: "+36" },
-  { Icon: FileText,    title: "Resumos",         value: "+13 mil" },
-  { Icon: Layers,      title: "Biblioteca",      value: "+1.200" },
-  { Icon: Brain,       title: "Flashcards",      value: "+101 mil" },
-  { Icon: Target,      title: "Questões",        value: "+136 mil" },
-  { Icon: Headphones,  title: "Audioaulas",      value: "" },
-  { Icon: Sparkles,    title: "IA Evelyn",       value: "24h" },
-  { Icon: Map,         title: "Mapas mentais",   value: "+500" },
-  { Icon: Video,       title: "Videoaulas",      value: "+80" },
-  { Icon: Monitor,     title: "Acesso Desktop",  value: "" },
-  { Icon: ScrollText,  title: "Legislação",      value: "" },
+// ─── Benefits (paginated, 8 per page) ───
+const ALL_BENEFITS = [
+  // Page 1
+  { Icon: Scale,         title: "Vade Mecum",           value: "2026" },
+  { Icon: BookOpen,      title: "Cursos",               value: "+36" },
+  { Icon: FileText,      title: "Resumos",              value: "+13 mil" },
+  { Icon: Layers,        title: "Biblioteca",           value: "+1.200" },
+  { Icon: Brain,         title: "Flashcards",           value: "+101 mil" },
+  { Icon: Target,        title: "Questões",             value: "+136 mil" },
+  { Icon: Headphones,    title: "Audioaulas",           value: "" },
+  { Icon: Sparkles,      title: "IA Evelyn",            value: "24h" },
+  // Page 2
+  { Icon: Monitor,       title: "Acesso Desktop",       value: "" },
+  { Icon: Video,         title: "Videoaulas",           value: "+80" },
+  { Icon: ScrollText,    title: "Legislação",           value: "" },
+  { Icon: Gavel,         title: "Simulados OAB",        value: "+50" },
+  { Icon: GraduationCap, title: "Bib. Estudos",         value: "+300" },
+  { Icon: Landmark,      title: "Bib. Clássicos",       value: "+200" },
+  { Icon: Briefcase,     title: "Bib. OAB",             value: "+150" },
+  { Icon: Pencil,        title: "Bib. Português",       value: "+80" },
+  // Page 3
+  { Icon: Mic,           title: "Bib. Oratória",        value: "+60" },
+  { Icon: Globe,         title: "Bib. Política",        value: "+70" },
+  { Icon: Users,         title: "Comunidade",           value: "" },
+  { Icon: Library,       title: "Bib. Pesquisa",        value: "+400" },
+  { Icon: Crown,         title: "Conteúdo Exclusivo",   value: "" },
+  { Icon: Star,          title: "Atualizações 2026",    value: "" },
 ];
+const BENEFITS_PER_PAGE = 8;
 
 // ─── Plan themes ───
 const THEME = {
