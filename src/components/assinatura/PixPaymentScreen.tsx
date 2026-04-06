@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Check, Clock, QrCode, Shield, Loader2, Smartphone, ArrowLeft, RefreshCw, RotateCcw, Zap, CheckCircle2 } from 'lucide-react';
+import { X, Copy, Check, Clock, QrCode, Shield, Loader2, Smartphone, ArrowLeft, RefreshCw, RotateCcw, Zap, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -21,6 +21,8 @@ interface PixPaymentScreenProps {
   onCopyCode: () => Promise<void>;
   onPaymentApproved?: () => void;
   isGenerating?: boolean;
+  onRetry?: () => void;
+  hasError?: boolean;
 }
 
 const PLAN_LABELS: Record<string, string> = {
@@ -28,6 +30,8 @@ const PLAN_LABELS: Record<string, string> = {
   anual: 'Anual',
   vitalicio: 'Vitalício',
 };
+
+const PIX_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
 
 const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
   userId,
@@ -41,6 +45,8 @@ const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
   onCopyCode,
   onPaymentApproved,
   isGenerating = false,
+  onRetry,
+  hasError = false,
 }) => {
   const { isPremium, refreshSubscription } = useSubscription();
   const { trackEvent } = useFacebookPixel();
@@ -49,6 +55,16 @@ const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
   const [showSuccess, setShowSuccess] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [timeLeft, setTimeLeft] = useState<string>('');
+  const [isExpired, setIsExpired] = useState(false);
+  const pixCreatedAtRef = useRef(Date.now());
+
+  // Reset timer ref when new PIX is generated
+  useEffect(() => {
+    if (qrCode) {
+      pixCreatedAtRef.current = Date.now();
+      setIsExpired(false);
+    }
+  }, [qrCode]);
 
   // Verificar status do pagamento
   const checkPaymentStatus = useCallback(async () => {
@@ -60,16 +76,16 @@ const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
   // Verificar ao voltar para o app
   useAppLifecycle(checkPaymentStatus);
 
-  // Polling fallback a cada 10s (Realtime listener below handles instant detection)
+  // Polling fallback a cada 10s
   useEffect(() => {
-    if (showSuccess || isGenerating || !qrCode) return;
+    if (showSuccess || isGenerating || !qrCode || isExpired) return;
     
     const interval = setInterval(async () => {
       await refreshSubscription();
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [refreshSubscription, showSuccess, isGenerating, qrCode]);
+  }, [refreshSubscription, showSuccess, isGenerating, qrCode, isExpired]);
 
   // Listener realtime para mudanças na tabela subscriptions
   useEffect(() => {
@@ -97,7 +113,7 @@ const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
     };
   }, [userId, refreshSubscription]);
 
-  // Mostrar sucesso quando isPremium mudar e parar o áudio
+  // Mostrar sucesso quando isPremium mudar
   useEffect(() => {
     if (isPremium && !purchaseTrackedRef.current) {
       purchaseTrackedRef.current = true;
@@ -111,17 +127,19 @@ const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
     }
   }, [isPremium, onPaymentApproved, amount, trackEvent]);
 
-  // Timer de expiração do PIX
+  // Timer de expiração — usa expiresAt do backend OU fallback de 10 minutos
   useEffect(() => {
-    if (!expiresAt) return;
+    const expiryTime = expiresAt
+      ? new Date(expiresAt).getTime()
+      : pixCreatedAtRef.current + PIX_TIMEOUT_MS;
 
     const updateTimer = () => {
-      const now = new Date().getTime();
-      const expiry = new Date(expiresAt).getTime();
-      const diff = expiry - now;
+      const now = Date.now();
+      const diff = expiryTime - now;
 
       if (diff <= 0) {
         setTimeLeft('Expirado');
+        setIsExpired(true);
         return;
       }
 
@@ -135,6 +153,16 @@ const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
 
     return () => clearInterval(interval);
   }, [expiresAt]);
+
+  // Auto-cancel quando expirar
+  useEffect(() => {
+    if (isExpired && !showSuccess) {
+      const timeout = setTimeout(() => {
+        onCancel();
+      }, 3000); // 3s delay to show "Expirado" before closing
+      return () => clearTimeout(timeout);
+    }
+  }, [isExpired, showSuccess, onCancel]);
 
   // Handle copiar código
   const handleCopy = async () => {
@@ -152,6 +180,76 @@ const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
         amount={amount}
         onClose={() => {}}
       />
+    );
+  }
+
+  // Error screen with retry
+  if (hasError && !isGenerating && !qrCode) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="fixed inset-0 bg-gradient-to-b from-gray-50 to-white z-50 flex flex-col items-center justify-center"
+      >
+        <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white/80 backdrop-blur-sm absolute top-0 left-0 right-0">
+          <button onClick={onCancel} className="flex items-center gap-2 text-gray-500 hover:text-gray-800 transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+            <span className="text-sm">Voltar</span>
+          </button>
+          <div className="w-8" />
+        </div>
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="flex flex-col items-center gap-5 px-6 text-center"
+        >
+          <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+            <AlertCircle className="w-8 h-8 text-red-500" />
+          </div>
+          <div>
+            <p className="text-lg font-bold text-gray-800">Erro ao gerar PIX</p>
+            <p className="text-sm text-gray-500 mt-1">Não foi possível gerar o QR Code. Tente novamente.</p>
+          </div>
+          {onRetry && (
+            <Button
+              onClick={onRetry}
+              className="bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-xl h-12 px-8"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Tentar novamente
+            </Button>
+          )}
+          <button onClick={onCancel} className="text-sm text-gray-400 hover:text-gray-600 mt-2">
+            Voltar para cartão
+          </button>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
+  // Expired screen
+  if (isExpired && !showSuccess) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="fixed inset-0 bg-gradient-to-b from-gray-50 to-white z-50 flex flex-col items-center justify-center"
+      >
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="flex flex-col items-center gap-5 px-6 text-center"
+        >
+          <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
+            <Clock className="w-8 h-8 text-amber-500" />
+          </div>
+          <div>
+            <p className="text-lg font-bold text-gray-800">PIX expirado</p>
+            <p className="text-sm text-gray-500 mt-1">O tempo de 10 minutos acabou. Gerando novo código...</p>
+          </div>
+          <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
+        </motion.div>
+      </motion.div>
     );
   }
 
@@ -248,7 +346,6 @@ const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
             transition={{ delay: 0.2, type: "spring", stiffness: 300, damping: 20 }}
             className="relative bg-white rounded-2xl shadow-lg border border-gray-100 p-5 mx-auto w-fit mb-6"
           >
-            {/* Animated glow ring */}
             <motion.div
               className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-amber-200 via-emerald-200 to-amber-200 opacity-50 blur-sm"
               animate={{ 

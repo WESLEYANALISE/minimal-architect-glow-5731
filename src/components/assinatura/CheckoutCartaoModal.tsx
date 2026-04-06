@@ -124,10 +124,15 @@ export function CheckoutCartaoModal({
     }
     setShowCpfInput(false);
     setPixActive(true);
-    const ok = await createPix(userId, userEmail, planType as PlanType, amount, clean);
-    if (!ok) {
-      setPixActive(false);
-      setShowCpfInput(true);
+    await createPix(userId, userEmail, planType as PlanType, amount, clean);
+  };
+
+  // Retry PIX generation
+  const handleRetryPix = async () => {
+    const clean = pixCpf.replace(/\D/g, "");
+    if (clean.length === 11) {
+      resetPix();
+      await createPix(userId, userEmail, planType as PlanType, amount, clean);
     }
   };
 
@@ -143,6 +148,8 @@ export function CheckoutCartaoModal({
         expiresAt={pixData?.expiresAt}
         isGenerating={pixLoading}
         onCopyCode={copyPixCode}
+        onRetry={handleRetryPix}
+        hasError={!!(!pixLoading && !pixData)}
         onCancel={() => {
           setPixActive(false);
           resetPix();

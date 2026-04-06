@@ -221,8 +221,16 @@ export default function AssinaturaNova() {
     }
     setShowCpfInput(false);
     setShowPixScreen(true);
-    const ok = await createPix(user.id, user.email || "", selectedPlan, plan.price, clean);
-    if (!ok) setShowPixScreen(false);
+    await createPix(user.id, user.email || "", selectedPlan, plan.price, clean);
+  };
+
+  const handleRetryPix = async () => {
+    if (!user) return;
+    const clean = pixCpf.replace(/\D/g, "");
+    if (clean.length === 11) {
+      resetPix();
+      await createPix(user.id, user.email || "", selectedPlan, plan.price, clean);
+    }
   };
 
   const handleSelectCard = (inst?: number) => {
@@ -427,6 +435,8 @@ export default function AssinaturaNova() {
           expiresAt={pixData?.expiresAt}
           isGenerating={pixLoading}
           onCopyCode={copyPixCode}
+          onRetry={handleRetryPix}
+          hasError={!!(!pixLoading && !pixData)}
           onCancel={() => { setShowPixScreen(false); resetPix(); }}
           onPaymentApproved={() => { setShowPixScreen(false); resetPix(); navigate("/"); }}
         />
