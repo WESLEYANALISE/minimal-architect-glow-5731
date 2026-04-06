@@ -435,6 +435,8 @@ export default function AssinaturaNova() {
           expiresAt={pixData?.expiresAt}
           isGenerating={pixLoading}
           onCopyCode={copyPixCode}
+          onRetry={handleRetryPix}
+          hasError={!!(!pixLoading && !pixData)}
           onCancel={() => { setShowPixScreen(false); resetPix(); }}
           onPaymentApproved={() => { setShowPixScreen(false); resetPix(); navigate("/"); }}
         />
