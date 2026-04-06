@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, startTransition } from "react";
 import { PaymentMethodModal } from "@/components/assinatura/PaymentMethodModal";
 import { CheckoutCartaoModal } from "@/components/assinatura/CheckoutCartaoModal";
 import PixPaymentScreen from "@/components/assinatura/PixPaymentScreen";
