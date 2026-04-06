@@ -412,13 +412,37 @@ const Bibliotecas = () => {
           )}
         </div>
 
-        {/* ── DESKTOP: fixed full-screen layout, no scrollbars ── */}
-        <div className="hidden lg:flex flex-col pt-14 max-w-[1600px] mx-auto" style={{ height: '100vh' }}>
-          
-          {/* TOP BAR: Search + Plano/Favoritos */}
-          <div className="flex items-center gap-3 px-5 py-3 border-b border-white/10 flex-shrink-0">
-            {/* Collection tabs */}
-            <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide flex-1">
+        {/* ── DESKTOP: sidebar + grid + fullscreen detail ── */}
+        <div className="hidden lg:flex pt-14 relative" style={{ height: '100vh' }}>
+          {/* Left sidebar */}
+          <div className="w-60 xl:w-64 flex-shrink-0 border-r border-white/10 bg-black/20 backdrop-blur-sm flex flex-col overflow-y-auto scrollbar-hide">
+            {/* Sidebar header */}
+            <div className="px-4 py-4 border-b border-white/10">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                  <Library className="w-4.5 h-4.5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-foreground">Biblioteca</h2>
+                  <p className="text-[10px] text-muted-foreground">{totalObras} obras · {bibliotecas.length} coleções</p>
+                </div>
+              </div>
+
+              {/* Search */}
+              <div className="relative">
+                <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Buscar..."
+                  className="pl-8 h-8 text-xs bg-card/50 border-white/10 rounded-lg"
+                />
+              </div>
+            </div>
+
+            {/* Collections list */}
+            <div className="flex-1 py-2 px-2 space-y-0.5">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1.5">Coleções</p>
               {bibliotecas.map((b) => {
                 const isActive = selectedCollection === b.key;
                 const icons: Record<string, any> = {
@@ -429,173 +453,160 @@ const Bibliotecas = () => {
                 return (
                   <button
                     key={b.key}
-                    onClick={() => setSelectedCollection(b.key)}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                    onClick={() => { setSelectedCollection(b.key); setSelectedBookId(null); }}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
                       isActive
-                        ? 'bg-amber-500/20 text-amber-200 border border-amber-500/30'
+                        ? 'bg-amber-500/15 text-amber-200 border border-amber-500/25'
                         : 'text-muted-foreground hover:text-foreground hover:bg-white/5 border border-transparent'
                     }`}
                   >
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    {b.title}
+                    <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-amber-400' : ''}`} />
+                    <span className="flex-1 text-left truncate">{b.title}</span>
+                    <span className={`text-[10px] tabular-nums ${isActive ? 'text-amber-400/80' : 'text-muted-foreground/60'}`}>
+                      {contagens?.[b.key] || 0}
+                    </span>
                   </button>
                 );
               })}
             </div>
 
-            {/* Search */}
-            <div className="relative w-[220px] xl:w-[280px] flex-shrink-0">
-              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={`Buscar em ${selectedBib.title}...`}
-                className="pl-10 h-9 text-xs bg-card/50 border-amber-900/20 focus:border-amber-500/50 rounded-full"
-              />
+            {/* Sidebar footer: Plano / Favoritos */}
+            <div className="px-2 py-3 border-t border-white/10 space-y-1">
+              <button
+                onClick={() => { setDesktopRightTab(desktopRightTab === 'plano' ? null : 'plano'); setSelectedBookId(null); }}
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
+                  desktopRightTab === 'plano'
+                    ? 'bg-amber-500/15 text-amber-200 border border-amber-500/25'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-white/5 border border-transparent'
+                }`}
+              >
+                <BookOpen className="w-4 h-4 flex-shrink-0" />
+                <span className="flex-1 text-left">Plano de Leitura</span>
+              </button>
+              <button
+                onClick={() => { setDesktopRightTab(desktopRightTab === 'favoritos' ? null : 'favoritos'); setSelectedBookId(null); }}
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
+                  desktopRightTab === 'favoritos'
+                    ? 'bg-amber-500/15 text-amber-200 border border-amber-500/25'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-white/5 border border-transparent'
+                }`}
+              >
+                <Heart className="w-4 h-4 flex-shrink-0" />
+                <span className="flex-1 text-left">Favoritos</span>
+              </button>
             </div>
-
-            {/* Plano / Favoritos buttons */}
-            <button
-              onClick={() => setDesktopRightTab(desktopRightTab === 'plano' ? null : 'plano')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                desktopRightTab === 'plano'
-                  ? 'bg-amber-500/20 text-amber-200 border border-amber-500/30'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-white/5 border border-transparent'
-              }`}
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              Plano
-            </button>
-            <button
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                desktopRightTab === 'favoritos'
-                  ? 'bg-amber-500/20 text-amber-200 border border-amber-500/30'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-white/5 border border-transparent'
-              }`}
-              onClick={() => setDesktopRightTab(desktopRightTab === 'favoritos' ? null : 'favoritos')}
-            >
-              <Heart className="w-3.5 h-3.5" />
-              Favoritos
-            </button>
-            <button
-              onClick={() => navigate(selectedBib.route)}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs font-medium hover:bg-amber-500/25 transition-colors whitespace-nowrap"
-            >
-              Ver todos <ArrowRight className="w-3 h-3" />
-            </button>
           </div>
 
-          {/* CONTENT: books grid + optional detail panel */}
-          <div className="flex-1 flex overflow-hidden">
-            {/* Books grid area */}
-            <div className={`flex-1 overflow-y-auto scrollbar-hide px-5 py-4 ${selectedBookId ? 'max-w-[65%]' : ''}`}>
-              {desktopRightTab === 'plano' || desktopRightTab === 'favoritos' ? (
-                <div className="max-w-3xl mx-auto">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold text-foreground">
-                      {desktopRightTab === 'plano' ? 'Plano de Leitura' : 'Favoritos'}
-                    </h2>
-                    <button
-                      onClick={() => setDesktopRightTab(null)}
-                      className="text-xs text-muted-foreground hover:text-foreground"
-                    >
-                      ← Voltar ao acervo
-                    </button>
-                  </div>
-                  <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-amber-500" /></div>}>
-                    {desktopRightTab === 'plano' ? <PlanoLeituraInline /> : <FavoritosInline />}
-                  </Suspense>
+          {/* Main content area */}
+          <div className="flex-1 overflow-y-auto scrollbar-hide relative">
+            {desktopRightTab === 'plano' || desktopRightTab === 'favoritos' ? (
+              <div className="max-w-4xl mx-auto px-6 py-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold text-foreground">
+                    {desktopRightTab === 'plano' ? 'Plano de Leitura' : 'Favoritos'}
+                  </h2>
+                  <button
+                    onClick={() => setDesktopRightTab(null)}
+                    className="text-xs text-muted-foreground hover:text-foreground"
+                  >
+                    ← Voltar ao acervo
+                  </button>
                 </div>
-              ) : (
-                <>
-                  {(selectedCollection === 'estudos' || selectedCollection === 'oab') && filteredSelectedBooks.length > 0 ? (
-                    <div className="space-y-2">
-                      <h2 className="text-lg font-bold text-foreground mb-3">
-                        {selectedBib.title} <span className="text-xs text-muted-foreground font-normal">— {selectedBib.subtitle}</span>
-                      </h2>
-                      <div className="flex flex-wrap gap-3">
-                        {filteredSelectedBooks.map((book, index) => {
-                          const isLocked = !isPremium && FREE_LIMITS[selectedCollection] !== undefined && index >= (FREE_LIMITS[selectedCollection] || 0);
-                          return (
-                            <div
-                              key={book.id}
-                              onClick={() => {
-                                if (isLocked) return;
-                                navigate(selectedBib.route, { state: { selectedArea: book.titulo } });
-                              }}
-                              className="flex-[0_0_160px] cursor-pointer group"
-                            >
-                              <div className={`relative aspect-[2/3] rounded-xl overflow-hidden shadow-lg border transition-all hover:shadow-amber-500/20 ${selectedBookId === book.id ? 'border-amber-500/60 ring-2 ring-amber-500/30' : 'border-white/10 hover:border-amber-500/40'}`}>
-                                {book.capa ? (
-                                  <img src={book.capa} alt={book.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                                ) : (
-                                  <div className="w-full h-full bg-gradient-to-br from-amber-500/20 to-amber-700/20 flex items-center justify-center">
-                                    <BookOpen className="w-10 h-10 text-amber-400/60" />
-                                  </div>
-                                )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                                <div className="absolute bottom-0 left-0 right-0 p-3">
-                                  <h3 className="text-white font-semibold text-sm leading-tight line-clamp-2">{book.titulo}</h3>
-                                </div>
-                                {isLocked && (
-                                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                    <span className="text-amber-400 text-xs font-semibold">Premium</span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex items-baseline gap-3 mb-4">
-                        <h2 className="text-lg font-bold text-foreground">{selectedBib.title}</h2>
-                        {selectedBib.subtitle && <span className="text-xs text-muted-foreground">— {selectedBib.subtitle}</span>}
-                      </div>
-                      <div className={`grid gap-3 xl:gap-4 ${selectedBookId ? 'grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : 'grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8'}`}>
-                        {livrosLoading ? (
-                          Array.from({ length: 16 }).map((_, i) => (
-                            <div key={i} className="aspect-[2/3] rounded-lg bg-white/10 animate-pulse" />
-                          ))
-                        ) : filteredSelectedBooks.length > 0 ? (
-                          filteredSelectedBooks.map((book, index) => {
-                            const isLocked = !isPremium && FREE_LIMITS[selectedCollection] !== undefined && index >= (FREE_LIMITS[selectedCollection] || 0);
-                            return (
-                              <LivroCarouselCard
-                                key={book.id}
-                                titulo={book.titulo}
-                                capaUrl={book.capa}
-                                isPremiumLocked={isLocked}
-                                priority={index < 8}
-                                isSelected={selectedBookId === book.id}
-                                onClick={() => {
-                                  if (isLocked) return;
-                                  handleDesktopBookClick(book.id);
-                                }}
-                              />
-                            );
-                          })
-                        ) : (
-                          <p className="text-sm text-muted-foreground col-span-full text-center py-12">Nenhum livro encontrado.</p>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-
-            {/* Detail panel */}
-            {selectedBookId && (
-              <div className="w-[35%] min-w-[320px] max-w-[400px] flex-shrink-0 h-full">
-                <BibliotecaLivroDetalhePanel
-                  bookId={selectedBookId}
-                  collectionKey={selectedCollection}
-                  onClose={() => setSelectedBookId(null)}
-                />
+                <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-amber-500" /></div>}>
+                  {desktopRightTab === 'plano' ? <PlanoLeituraInline /> : <FavoritosInline />}
+                </Suspense>
               </div>
+            ) : (
+              <div className="px-6 py-5">
+                {/* Collection header */}
+                <div className="flex items-center justify-between mb-5">
+                  <div>
+                    <h2 className="text-xl font-bold text-foreground">{selectedBib.title}</h2>
+                    {selectedBib.subtitle && <p className="text-sm text-muted-foreground mt-0.5">{selectedBib.subtitle}</p>}
+                  </div>
+                  <button
+                    onClick={() => navigate(selectedBib.route)}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs font-medium hover:bg-amber-500/25 transition-colors"
+                  >
+                    Ver todos <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
+
+                {/* Books grid */}
+                {(selectedCollection === 'estudos' || selectedCollection === 'oab') && filteredSelectedBooks.length > 0 ? (
+                  <div className="flex flex-wrap gap-4">
+                    {filteredSelectedBooks.map((book, index) => {
+                      const isLocked = !isPremium && FREE_LIMITS[selectedCollection] !== undefined && index >= (FREE_LIMITS[selectedCollection] || 0);
+                      return (
+                        <div
+                          key={book.id}
+                          onClick={() => {
+                            if (isLocked) return;
+                            navigate(selectedBib.route, { state: { selectedArea: book.titulo } });
+                          }}
+                          className="flex-[0_0_170px] cursor-pointer group"
+                        >
+                          <div className={`relative aspect-[2/3] rounded-xl overflow-hidden shadow-lg border transition-all hover:shadow-amber-500/20 border-white/10 hover:border-amber-500/40`}>
+                            {book.capa ? (
+                              <img src={book.capa} alt={book.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-amber-500/20 to-amber-700/20 flex items-center justify-center">
+                                <BookOpen className="w-10 h-10 text-amber-400/60" />
+                              </div>
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                            <div className="absolute bottom-0 left-0 right-0 p-3">
+                              <h3 className="text-white font-semibold text-sm leading-tight line-clamp-2">{book.titulo}</h3>
+                            </div>
+                            {isLocked && (
+                              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                <span className="text-amber-400 text-xs font-semibold">Premium</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-4">
+                    {livrosLoading ? (
+                      Array.from({ length: 16 }).map((_, i) => (
+                        <div key={i} className="aspect-[2/3] rounded-lg bg-white/10 animate-pulse" />
+                      ))
+                    ) : filteredSelectedBooks.length > 0 ? (
+                      filteredSelectedBooks.map((book, index) => {
+                        const isLocked = !isPremium && FREE_LIMITS[selectedCollection] !== undefined && index >= (FREE_LIMITS[selectedCollection] || 0);
+                        return (
+                          <LivroCarouselCard
+                            key={book.id}
+                            titulo={book.titulo}
+                            capaUrl={book.capa}
+                            isPremiumLocked={isLocked}
+                            priority={index < 8}
+                            isSelected={false}
+                            onClick={() => {
+                              if (isLocked) return;
+                              handleDesktopBookClick(book.id);
+                            }}
+                          />
+                        );
+                      })
+                    ) : (
+                      <p className="text-sm text-muted-foreground col-span-full text-center py-12">Nenhum livro encontrado.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Fullscreen book detail overlay */}
+            {selectedBookId && (
+              <BibliotecaLivroFullscreen
+                bookId={selectedBookId}
+                collectionKey={selectedCollection}
+                onClose={() => setSelectedBookId(null)}
+              />
             )}
           </div>
         </div>
