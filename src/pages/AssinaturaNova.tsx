@@ -188,8 +188,15 @@ export default function AssinaturaNova() {
   const [pixCpf, setPixCpf] = useState("");
   const [cardInstallments, setCardInstallments] = useState(1);
   const [fraseIndex] = useState(() => Math.floor(Math.random() * FRASES_PERSUASIVAS.length));
+  const [benefitPage, setBenefitPage] = useState(0);
+
+  const totalBenefitPages = Math.ceil(ALL_BENEFITS.length / BENEFITS_PER_PAGE);
+  const currentBenefits = ALL_BENEFITS.slice(benefitPage * BENEFITS_PER_PAGE, (benefitPage + 1) * BENEFITS_PER_PAGE);
 
   const { pixData, loading: pixLoading, createPix, copyPixCode, reset: resetPix } = useMercadoPagoPix();
+
+  // Background audio
+  useAssinaturaBackgroundAudio(!isPremium && !showPixScreen && !showCardModal);
 
   const plan = PLANS[selectedPlan] ?? PLANS.anual;
   const theme = THEME[selectedPlan as keyof typeof THEME] ?? THEME.anual;
@@ -287,28 +294,64 @@ export default function AssinaturaNova() {
           </motion.div>
         </div>
 
-        {/* ═══ Benefits ═══ */}
+        {/* ═══ Benefits (paginated) ═══ */}
         <div className="px-5 max-w-md sm:max-w-2xl mx-auto mb-8">
-          <div className="grid grid-cols-2 gap-2">
-            {BENEFITS.map((b, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.03 }}
-                className="flex items-center gap-2.5 rounded-xl px-3 py-2.5"
-                style={{ background: "hsl(0 0% 7%)", border: "1px solid hsl(0 0% 14%)" }}
-              >
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: "hsl(43 70% 50% / 0.1)" }}>
-                  <b.Icon className="w-4 h-4 text-amber-400" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[11px] text-white font-semibold leading-tight truncate">{b.title}</p>
-                  {b.value && <p className="text-[10px] font-bold text-amber-400/80 mt-0.5">{b.value}</p>}
-                </div>
-              </motion.div>
-            ))}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={benefitPage}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.25 }}
+              className="grid grid-cols-2 gap-2"
+            >
+              {currentBenefits.map((b, i) => (
+                <motion.div
+                  key={b.title}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 + i * 0.03 }}
+                  className="flex items-center gap-2.5 rounded-xl px-3 py-2.5"
+                  style={{ background: "hsl(0 0% 7%)", border: "1px solid hsl(0 0% 14%)" }}
+                >
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: "hsl(43 70% 50% / 0.1)" }}>
+                    <b.Icon className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] text-white font-semibold leading-tight truncate">{b.title}</p>
+                    {b.value && <p className="text-[10px] font-bold text-amber-400/80 mt-0.5">{b.value}</p>}
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Pagination arrows + dots */}
+          <div className="flex items-center justify-center gap-4 mt-3">
+            <button
+              onClick={() => setBenefitPage(p => Math.max(0, p - 1))}
+              disabled={benefitPage === 0}
+              className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-800 border border-zinc-700 text-zinc-400 disabled:opacity-20 hover:bg-zinc-700 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <div className="flex gap-1.5">
+              {Array.from({ length: totalBenefitPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setBenefitPage(i)}
+                  className={`w-2 h-2 rounded-full transition-all ${i === benefitPage ? "bg-amber-400 w-4" : "bg-zinc-600"}`}
+                />
+              ))}
+            </div>
+            <button
+              onClick={() => setBenefitPage(p => Math.min(totalBenefitPages - 1, p + 1))}
+              disabled={benefitPage === totalBenefitPages - 1}
+              className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-800 border border-zinc-700 text-zinc-400 disabled:opacity-20 hover:bg-zinc-700 transition-colors"
+            >
+              <ChevronRightIcon className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
