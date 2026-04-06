@@ -1,71 +1,51 @@
 
+## Plano: Investigar e corrigir a falha de deploy no Vercel
 
-## Plano: Redesign Desktop da Biblioteca — Sidebar lateral + Detalhe tela cheia
+### Achados da investigação
+- `package.json` já está com `@vitejs/plugin-legacy` fixado em `5.4.3`.
+- `.npmrc` já existe com `legacy-peer-deps=true`.
+- Mas `package-lock.json` está desalinhado do `package.json`: ele não reflete dependências que hoje existem no manifesto, incluindo `@vitejs/plugin-legacy`.
+- Também existe `bun.lock` ainda carregando o range antigo `^5.4.0`, o que mostra drift entre lockfiles.
+- O Vercel está buildando o commit `d4c1cbe`; se esse commit no GitHub não contém os arquivos corrigidos e sincronizados, o erro vai continuar.
 
-### Problema atual
-No desktop, as categorias (Classicos, Estudos, OAB...) ficam como abas horizontais no topo. Ao clicar num livro, abre um painel lateral de 35%. O usuario quer:
-1. Categorias como **sidebar vertical** no lado esquerdo
-2. Livros em **grid** no centro
-3. Ao clicar num livro, abrir **tela cheia** com todos os detalhes (nao painel lateral)
-4. Header seguindo o padrao global
+### Causa provável
+A falha está muito provavelmente na camada de dependências, não no código da aplicação:
+1. o `package.json` foi corrigido;
+2. o `package-lock.json` não foi atualizado junto;
+3. o Vercel usa npm e depende desse lockfile para montar a árvore de instalação;
+4. o repositório remoto pode ainda estar com uma versão antiga/incompleta da correção.
 
-### Mudancas
+### O que ajustar
+1. **Sincronizar os manifests**
+   - manter `@vitejs/plugin-legacy: "5.4.3"` no `package.json`
+   - manter `.npmrc` com `legacy-peer-deps=true`
 
-**1. Reestruturar o layout desktop em `Bibliotecas.tsx`**
+2. **Regenerar o lockfile do npm**
+   - recriar `package-lock.json` com base no `package.json` atual
+   - garantir que o lockfile passe a incluir `@vitejs/plugin-legacy@5.4.3` e as demais dependências ausentes
 
-Substituir o layout atual (abas horizontais + grid + painel lateral) por:
+3. **Padronizar o gerenciador para deploy**
+   - usar npm como fonte de verdade no Vercel
+   - evitar depender de um estado misto entre `package-lock.json` e `bun.lock`
 
-```text
-┌─────────────────────────────────────────────────┐
-│  Header global (DesktopTopNav)                  │
-├────────────┬────────────────────────────────────┤
-│  SIDEBAR   │  GRID DE LIVROS                   │
-│            │                                    │
-│ Classicos ◄│  [capa] [capa] [capa] [capa] ...  │
-│ Estudos    │  [capa] [capa] [capa] [capa] ...  │
-│ OAB        │                                    │
-│ Politica   │  Busca no topo do grid             │
-│ Oratoria   │  Plano/Favoritos como botoes       │
-│ Portugues  │                                    │
-│ Lideranca  │                                    │
-│ Fora Toga  │                                    │
-│ Pesquisa   │                                    │
-│            │                                    │
-│ ── Info ── │                                    │
-│ Total obras│                                    │
-│ Colecoes   │                                    │
-└────────────┴────────────────────────────────────┘
-```
+4. **Garantir que o GitHub recebeu a correção**
+   - confirmar que foram enviados ao repositório:
+     - `package.json`
+     - `package-lock.json`
+     - `.npmrc`
+   - só depois disso disparar novo deploy
 
-- Sidebar fixa (w-64) com lista vertical de categorias, icones, contagem de livros, item ativo destacado
-- Area central com busca + grid de capas
-- Botoes Plano/Favoritos movidos para a sidebar ou topo do grid
+5. **Revalidar no Vercel**
+   - primeiro verificar se o build sai de `Installing dependencies...`
+   - se surgir um novo erro depois disso, tratar o próximo conflito já com a instalação estabilizada
 
-**2. Tela cheia ao clicar num livro**
+### Arquivos envolvidos
+- `package.json`
+- `package-lock.json`
+- `.npmrc`
+- opcionalmente `bun.lock` / `bun.lockb`
 
-Em vez do `BibliotecaLivroDetalhePanel` lateral, ao clicar num livro no desktop:
-- Abrir um **overlay/modal de tela cheia** (ou estado inline que substitui o grid)
-- Mostrar capa grande, titulo, autor, sobre, botoes Ler/Download/Video
-- Botao de fechar (X) ou voltar que retorna ao grid
-- Reutilizar a logica do `BibliotecaLivroDetalhePanel` mas em layout expandido
-
-**3. Header padrao**
-
-- Remover o header customizado interno
-- Usar o `StandardPageHeader` que ja existe (titulo "Bibliotecas", botao voltar via Header global)
-
-### Detalhes tecnicos
-
-- Manter o `selectedCollection` state para sidebar ativa
-- Substituir `selectedBookId` + painel lateral por `selectedBookId` + overlay fullscreen
-- Manter queries existentes (contagens, livros preview)
-- Mobile permanece identico (bloco `lg:hidden` nao muda)
-- Componente novo: `BibliotecaLivroFullscreen` — reutiliza dados do DetalhePanel mas em layout centralizado com mais espaco
-
-### O que NAO muda
-- Queries Supabase, dados, cache
-- Layout mobile (lg:hidden)
-- Rotas, lazy loading
-- BibliotecaTopNav (usado apenas no mobile)
-- Paginas individuais (BibliotecaClassicos, etc.)
-
+### Detalhes técnicos
+- O principal sinal hoje é a inconsistência entre `package.json` e `package-lock.json`.
+- Em especial, `@vitejs/plugin-legacy` está no manifesto, mas não aparece no lockfile npm atual.
+- Isso explica por que o Vercel pode continuar resolvendo dependências de forma diferente do esperado, mesmo após a correção aparente no `package.json`.
