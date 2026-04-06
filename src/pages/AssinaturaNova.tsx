@@ -7,7 +7,9 @@ import type { PlanType } from "@/hooks/use-mercadopago-pix";
 import {
   Shield, ArrowRight, Crown, Sparkles, BookOpen, Brain,
   Headphones, FileText, Scale, CheckCircle, Target,
-  Monitor, Map, Video, Layers, ScrollText, Infinity, Calendar, Check, Star
+  Monitor, Video, Layers, ScrollText, Infinity, Calendar, Check, Star,
+  ChevronLeft, ChevronRight as ChevronRightIcon, Gavel, Users, Mic,
+  GraduationCap, Briefcase, Library, Landmark, Globe, Pencil
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -16,7 +18,8 @@ import { useSubscription } from "@/contexts/SubscriptionContext";
 import AssinaturaGerenciamento from "@/components/AssinaturaGerenciamento";
 import { useFacebookPixel } from "@/hooks/useFacebookPixel";
 import { useSubscriptionFunnelTracking } from "@/hooks/useSubscriptionFunnelTracking";
-import { motion } from "framer-motion";
+import { useAssinaturaBackgroundAudio } from "@/hooks/useAssinaturaBackgroundAudio";
+import { motion, AnimatePresence } from "framer-motion";
 import newLogo from "@/assets/logo-direito-premium-new.webp";
 import heroBackground from "@/assets/assinatura-bg.webp";
 
@@ -57,21 +60,35 @@ const PLANS: Record<string, { price: number; label: string; days: number; badge:
   vitalicio: { price: 249.90, label: "Vitalício", days: 36500, badge: "Melhor custo",  installments: 12, sub: "Pague uma vez só" },
 };
 
-// ─── Benefits ───
-const BENEFITS = [
-  { Icon: Scale,       title: "Vade Mecum",     value: "2026" },
-  { Icon: BookOpen,    title: "Cursos",          value: "+36" },
-  { Icon: FileText,    title: "Resumos",         value: "+13 mil" },
-  { Icon: Layers,      title: "Biblioteca",      value: "+1.200" },
-  { Icon: Brain,       title: "Flashcards",      value: "+101 mil" },
-  { Icon: Target,      title: "Questões",        value: "+136 mil" },
-  { Icon: Headphones,  title: "Audioaulas",      value: "" },
-  { Icon: Sparkles,    title: "IA Evelyn",       value: "24h" },
-  { Icon: Map,         title: "Mapas mentais",   value: "+500" },
-  { Icon: Video,       title: "Videoaulas",      value: "+80" },
-  { Icon: Monitor,     title: "Acesso Desktop",  value: "" },
-  { Icon: ScrollText,  title: "Legislação",      value: "" },
+// ─── Benefits (paginated, 8 per page) ───
+const ALL_BENEFITS = [
+  // Page 1
+  { Icon: Scale,         title: "Vade Mecum",           value: "2026" },
+  { Icon: BookOpen,      title: "Cursos",               value: "+36" },
+  { Icon: FileText,      title: "Resumos",              value: "+13 mil" },
+  { Icon: Layers,        title: "Biblioteca",           value: "+1.200" },
+  { Icon: Brain,         title: "Flashcards",           value: "+101 mil" },
+  { Icon: Target,        title: "Questões",             value: "+136 mil" },
+  { Icon: Headphones,    title: "Audioaulas",           value: "" },
+  { Icon: Sparkles,      title: "IA Evelyn",            value: "24h" },
+  // Page 2
+  { Icon: Monitor,       title: "Acesso Desktop",       value: "" },
+  { Icon: Video,         title: "Videoaulas",           value: "+80" },
+  { Icon: ScrollText,    title: "Legislação",           value: "" },
+  { Icon: Gavel,         title: "Simulados OAB",        value: "+50" },
+  { Icon: GraduationCap, title: "Bib. Estudos",         value: "+300" },
+  { Icon: Landmark,      title: "Bib. Clássicos",       value: "+200" },
+  { Icon: Briefcase,     title: "Bib. OAB",             value: "+150" },
+  { Icon: Pencil,        title: "Bib. Português",       value: "+80" },
+  // Page 3
+  { Icon: Mic,           title: "Bib. Oratória",        value: "+60" },
+  { Icon: Globe,         title: "Bib. Política",        value: "+70" },
+  { Icon: Users,         title: "Comunidade",           value: "" },
+  { Icon: Library,       title: "Bib. Pesquisa",        value: "+400" },
+  { Icon: Crown,         title: "Conteúdo Exclusivo",   value: "" },
+  { Icon: Star,          title: "Atualizações 2026",    value: "" },
 ];
+const BENEFITS_PER_PAGE = 8;
 
 // ─── Plan themes ───
 const THEME = {
@@ -171,8 +188,15 @@ export default function AssinaturaNova() {
   const [pixCpf, setPixCpf] = useState("");
   const [cardInstallments, setCardInstallments] = useState(1);
   const [fraseIndex] = useState(() => Math.floor(Math.random() * FRASES_PERSUASIVAS.length));
+  const [benefitPage, setBenefitPage] = useState(0);
+
+  const totalBenefitPages = Math.ceil(ALL_BENEFITS.length / BENEFITS_PER_PAGE);
+  const currentBenefits = ALL_BENEFITS.slice(benefitPage * BENEFITS_PER_PAGE, (benefitPage + 1) * BENEFITS_PER_PAGE);
 
   const { pixData, loading: pixLoading, createPix, copyPixCode, reset: resetPix } = useMercadoPagoPix();
+
+  // Background audio
+  useAssinaturaBackgroundAudio(!isPremium && !showPixScreen && !showCardModal);
 
   const plan = PLANS[selectedPlan] ?? PLANS.anual;
   const theme = THEME[selectedPlan as keyof typeof THEME] ?? THEME.anual;
@@ -270,28 +294,64 @@ export default function AssinaturaNova() {
           </motion.div>
         </div>
 
-        {/* ═══ Benefits ═══ */}
+        {/* ═══ Benefits (paginated) ═══ */}
         <div className="px-5 max-w-md sm:max-w-2xl mx-auto mb-8">
-          <div className="grid grid-cols-2 gap-2">
-            {BENEFITS.map((b, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.03 }}
-                className="flex items-center gap-2.5 rounded-xl px-3 py-2.5"
-                style={{ background: "hsl(0 0% 7%)", border: "1px solid hsl(0 0% 14%)" }}
-              >
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: "hsl(43 70% 50% / 0.1)" }}>
-                  <b.Icon className="w-4 h-4 text-amber-400" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[11px] text-white font-semibold leading-tight truncate">{b.title}</p>
-                  {b.value && <p className="text-[10px] font-bold text-amber-400/80 mt-0.5">{b.value}</p>}
-                </div>
-              </motion.div>
-            ))}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={benefitPage}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.25 }}
+              className="grid grid-cols-2 gap-2"
+            >
+              {currentBenefits.map((b, i) => (
+                <motion.div
+                  key={b.title}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 + i * 0.03 }}
+                  className="flex items-center gap-2.5 rounded-xl px-3 py-2.5"
+                  style={{ background: "hsl(0 0% 7%)", border: "1px solid hsl(0 0% 14%)" }}
+                >
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: "hsl(43 70% 50% / 0.1)" }}>
+                    <b.Icon className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[11px] text-white font-semibold leading-tight truncate">{b.title}</p>
+                    {b.value && <p className="text-[10px] font-bold text-amber-400/80 mt-0.5">{b.value}</p>}
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Pagination arrows + dots */}
+          <div className="flex items-center justify-center gap-4 mt-3">
+            <button
+              onClick={() => setBenefitPage(p => Math.max(0, p - 1))}
+              disabled={benefitPage === 0}
+              className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-800 border border-zinc-700 text-zinc-400 disabled:opacity-20 hover:bg-zinc-700 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <div className="flex gap-1.5">
+              {Array.from({ length: totalBenefitPages }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setBenefitPage(i)}
+                  className={`w-2 h-2 rounded-full transition-all ${i === benefitPage ? "bg-amber-400 w-4" : "bg-zinc-600"}`}
+                />
+              ))}
+            </div>
+            <button
+              onClick={() => setBenefitPage(p => Math.min(totalBenefitPages - 1, p + 1))}
+              disabled={benefitPage === totalBenefitPages - 1}
+              className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-800 border border-zinc-700 text-zinc-400 disabled:opacity-20 hover:bg-zinc-700 transition-colors"
+            >
+              <ChevronRightIcon className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
