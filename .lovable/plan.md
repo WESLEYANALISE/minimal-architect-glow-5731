@@ -1,44 +1,36 @@
 
 
-## Plano: Responsividade desktop para SimuladosHub
+## Plano: Corrigir erro de deploy Vercel (plugin-legacy incompativel)
 
 ### Problema
-A pagina `/ferramentas/simulados` (SimuladosHub) tem layout mobile no desktop: lista vertical estreita, botao voltar duplicado (um no Header global + um interno), laterais vazias.
+O deploy Vercel falha porque o `@vitejs/plugin-legacy` esta sendo resolvido como versao `8.0.1`, que exige `vite@^8.0.0`. O projeto usa Vite 5. Mesmo com `.npmrc` tendo `legacy-peer-deps=true`, o conflito persiste no GitHub — provavelmente o `package.json` no repositorio tem uma versao diferente (com caret `^` que permitiu upgrade para v8).
 
 ### Solucao
 
-Seguir o padrao do projeto: usar `useDeviceType` para detectar desktop e criar layout de 3 colunas com sidebars laterais preenchidas. Remover botao voltar interno (o Header global ja cuida disso).
+**1. Fixar versao exata do plugin-legacy no `package.json`**
 
-```text
-Desktop:
-┌──────────────┬──────────────────────────┬──────────────┐
-│  Estatisticas│  Header (sem botao vol.) │  Info/Dicas  │
-│  - Total     │  Cards de cargos         │  - Como      │
-│    provas    │  (lista vertical com     │    funciona  │
-│  - Total     │   cards maiores)         │  - Ranking   │
-│    questoes  │                          │  - Ultimos   │
-│  - Desempenho│                          │    resultados│
-│  - Cargos    │                          │              │
-└──────────────┴──────────────────────────┴──────────────┘
+Mudar de:
+```
+"@vitejs/plugin-legacy": "^5.4.0"
+```
+Para:
+```
+"@vitejs/plugin-legacy": "5.4.3"
+```
+(sem caret, versao exata compativel com Vite 5)
+
+**2. Garantir `.npmrc` esta presente** (ja existe, apenas confirmar que sera commitado)
+
+```
+legacy-peer-deps=true
 ```
 
-### Mudancas
-
-**1. `src/pages/ferramentas/SimuladosHub.tsx`**
-
-- Importar `useDeviceType`
-- Remover botao voltar interno (ArrowLeft) — o Header global ja faz isso
-- No desktop (`isDesktop`):
-  - Layout `grid grid-cols-[260px_1fr_260px]` com altura `h-[calc(100vh-4.5rem)]`
-  - **Sidebar esquerda**: estatisticas resumidas (total de cargos, total de provas, total de questoes, calculados dos dados ja carregados)
-  - **Centro**: lista de cargos existente, cards um pouco maiores
-  - **Sidebar direita**: dicas/info sobre simulados, como funciona, card motivacional
-- No mobile: manter layout atual (sem o botao voltar duplicado)
+### Por que funciona
+- A versao exata `5.4.3` impede o npm de resolver para v8
+- O `.npmrc` serve como fallback para outros conflitos menores
 
 ### O que NAO muda
-- Query de dados (Supabase)
-- Logica de navegacao aos cargos
-- `SimuladoFreeConfirmDialog`, `PremiumBadge`
-- Paginas internas (CargoLista, Detalhes, Resolver, Resultado)
-- Rotas
+- Vite config, build config
+- Nenhum codigo da aplicacao
+- Funcionalidade do plugin-legacy
 
